@@ -6,12 +6,12 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://xupin.im">
-  <title>Tag: server | Mark blog</title>
+  <title>Mark blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="安静的小码农">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Mark blog">
-<meta property="og:url" content="http://xupin.im/tags/server/index.html">
+<meta property="og:url" content="http://xupin.im/page/3/index.html">
 <meta property="og:site_name" content="Mark blog">
 <meta property="og:description" content="安静的小码农">
 <meta name="twitter:card" content="summary">
@@ -156,34 +156,54 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-php7" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/22/php7/">Nginx + PHP7 + Mysql(MariaDB) + Memcached + Redis的环境搭建(可选)</a>
+    </h1>
+  
+
+        
+        <a href="/2017/02/22/php7/" class="archive-article-date">
+  	<time datetime="2017-02-22T07:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-22</time>
+</a>
+        
+      </header>
     
-    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="http://php.net/" target="_blank" rel="external">PHP</a> is a popular general-purpose scripting language that is especially suited to web development.</p>
+<p>Fast, flexible and pragmatic, PHP powers everything from your blog to the most popular websites in the world.</p>
+<h3 id="1-更新yum源-安装扩展包"><a href="#1-更新yum源-安装扩展包" class="headerlink" title="1.更新yum源,安装扩展包"></a>1.更新yum源,安装扩展包</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ yum update</div><div class="line">$ yum install epel-release</div><div class="line">$ yum install git</div></pre></td></tr></table></figure>
+<h3 id="2-添加Nginx源"><a href="#2-添加Nginx源" class="headerlink" title="2.添加Nginx源"></a>2.添加Nginx源</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ vi /etc/yum.repos.d/nginx.repo</div></pre></td></tr></table></figure>
+<blockquote>
+<p>[nginx]<br>name=nginx repo<br><br>baseurl=<a href="http://nginx.org/packages/centos/$releasever/$basearch/" target="_blank" rel="external">http://nginx.org/packages/centos/$releasever/$basearch/</a><br><br>gpgcheck=0<br><br>enabled=1<br></p>
+</blockquote>
+<h3 id="3-安装开发库-可选"><a href="#3-安装开发库-可选" class="headerlink" title="3.安装开发库(可选)"></a>3.安装开发库(可选)</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ yum install ntp make openssl openssl-devel pcre pcre-devel libpng libpng-devel libjpeg-6b libjpeg-devel-6b freetype freetype-devel gd gd-devel zlib zlib-devel gcc gcc-c++ libXpm libXpm-devel ncurses ncurses-devel libmcrypt libmcrypt-devel libxml2 libxml2-devel imake autoconf automake screen sysstat compat-libstdc++-33 curl curl-devel</div></pre></td></tr></table></figure>
+<h3 id="4-安装Nginx"><a href="#4-安装Nginx" class="headerlink" title="4.安装Nginx"></a>4.安装Nginx</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ yum install nginx</div><div class="line">$ chkconfig --levels 235 nginx on // 设2、3、5级别开机启动</div><div class="line">$ service nginx start</div></pre></td></tr></table></figure>
+<h3 id="5-安装Mysql-MariaDB"><a href="#5-安装Mysql-MariaDB" class="headerlink" title="5.安装Mysql(MariaDB)"></a>5.安装Mysql(MariaDB)</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ yum install mariadb mariadb-server mariadb-devel</div><div class="line">$ chkconfig --levels 235 mariadb on</div><div class="line">$ service mariadb start</div></pre></td></tr></table></figure>
+<h3 id="6-安装PHP-FPM"><a href="#6-安装PHP-FPM" class="headerlink" title="6.安装PHP-FPM"></a>6.安装PHP-FPM</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm</div><div class="line">$ yum install php70w lighttpd-fastcgi php70w-cli php70w-gd php70w-imap php70w-ldap php70w-odbc php70w-pear php70w-xml php70w-xmlrpc php70w-mbstring php70w-mcrypt php70w-mssql php70w-snmp php70w-soap php70w-tidy php70w-common php70w-devel php70w-fpm php70w-mysql // 安装php和所需组件使PHP支持MySQL、FastCGI模式</div><div class="line">$ chkconfig --levels 235 php-fpm on</div><div class="line">$ service php-fpm start</div></pre></td></tr></table></figure>
+<h3 id="7-安装Memcached-可选"><a href="#7-安装Memcached-可选" class="headerlink" title="7.安装Memcached(可选)"></a>7.安装Memcached(可选)</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">$ yum install –enablerepo=rpmforge memcached libevent libevent-devel</div><div class="line">$ wget https://launchpad.net/libmemcached/1.0/1.0.18/+download/libmemcached-1.0.18.tar.gz</div><div class="line">$ tar -zxf libmemcached-1.0.18.tar.gz</div><div class="line">$ <span class="built_in">cd</span> libmemcached-1.0.18/</div><div class="line">$ ./configure</div><div class="line">$ make &amp;&amp; make install</div><div class="line">$ git <span class="built_in">clone</span> https://github.com/php-memcached-dev/php-memcached.git</div><div class="line">$ <span class="built_in">cd</span> php-memcached/</div><div class="line">$ git checkout php7</div><div class="line">$ phpize</div><div class="line">$ ./configure --disable-memcached-sasl</div><div class="line">$ make &amp;&amp; make install</div><div class="line">$ chkconfig --level 2345 memcached on</div><div class="line">$ service memcached start</div><div class="line">$ vim /etc/php.ini // 末行增加</div></pre></td></tr></table></figure>
+<blockquote>
+<p>[Memcached]<br><br>extension=memcached.so<br></p>
+</blockquote>
+<h3 id="8-安装Redis-可选"><a href="#8-安装Redis-可选" class="headerlink" title="8.安装Redis(可选)"></a>8.安装Redis(可选)</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">$ yum install redis</div><div class="line">$ git <span class="built_in">clone</span> https://github.com/phpredis/phpredis.git</div><div class="line">$ <span class="built_in">cd</span> phpredis</div><div class="line">$ git checkout php7</div><div class="line">$ phpize</div><div class="line">$ ./configure</div><div class="line">$ make &amp;&amp; make install</div><div class="line">$ chkconfig --level 2345 redis on</div><div class="line">$ service redis start</div><div class="line">$ vim /etc/php.ini // 末行增加</div></pre></td></tr></table></figure>
+<blockquote>
+<p>[Redis]<br><br>extension=redis.so<br></p>
+</blockquote>
+<h3 id="9-重启PHP-FPM"><a href="#9-重启PHP-FPM" class="headerlink" title="9.重启PHP-FPM"></a>9.重启PHP-FPM</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ service php-fpm restart</div></pre></td></tr></table></figure>
+<h3 id="完成"><a href="#完成" class="headerlink" title="完成"></a>完成</h3>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/12/17/elasticsearch-group/" class="archive-article-date">
-  	<time datetime="2019-12-17T11:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-17</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/12/17/elasticsearch-group/">Elasticsearch实现字段分组</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -193,331 +213,37 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">elasticsearch</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">php</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/12/17/nginx-proxy/" class="archive-article-date">
-  	<time datetime="2019-12-17T04:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-17</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/12/17/nginx-proxy/">Nginx正向代理和反向代理</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">server</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">nginx</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/12/16/mysql-index/" class="archive-article-date">
-  	<time datetime="2019-12-16T11:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-16</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/12/16/mysql-index/">简单的优化Mysql索引</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">server</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/12/05/mysql-transaction/" class="archive-article-date">
-  	<time datetime="2019-12-05T04:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-05</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/12/05/mysql-transaction/">Mysql的事务隔离级别</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">server</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/12/04/pessimistic-optimistic/" class="archive-article-date">
-  	<time datetime="2019-12-04T11:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-04</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/12/04/pessimistic-optimistic/">通俗解释什么是悲观锁/乐观锁</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">server</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/12/03/redis-aof-rdb/" class="archive-article-date">
-  	<time datetime="2019-12-03T07:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-03</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/12/03/redis-aof-rdb/">Redis持久化方式aof/rdb浅析</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">server</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
       
-        </div></section>
+
       
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/02/22/php7/">展开全文 >></a>
+        </p>
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/03/22/php-webp/" class="archive-article-date">
-  	<time datetime="2017-03-21T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-22</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/03/22/php-webp/">PHP 图片转换Webp格式</a>
-    </h1>
-  
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">server</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">webp</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/02/28/google-msg-push/" class="archive-article-date">
-  	<time datetime="2017-02-28T09:10:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-28</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/02/28/google-msg-push/">PHP + Google(FCM)安卓设备消息推送/群发</a>
-    </h1>
-  
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">server</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">google fcm</a>
-        		</li>
-      		
-		</ul>
-	</div>
 
-          
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
+
+
+
+
+
   
   
-    </div></section>
-  
-
-    
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/tags/server/page/2/">2</a><a class="extend next" rel="next" href="/tags/server/page/2/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
     </nav>
   
 
@@ -541,10 +267,10 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: false,
+		isHome: true,
 		isPost: false,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		root: "/",

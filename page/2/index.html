@@ -156,6 +156,89 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-wekan" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/09/wekan/">部署像Trello一样的看板工具,Wekan</a>
+    </h1>
+  
+
+        
+        <a href="/2017/06/09/wekan/" class="archive-article-date">
+  	<time datetime="2017-06-09T04:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-09</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Wekan is an completely Open Source and Free software collaborative kanban board application with MIT license.</p>
+<h3 id="1-安装MongoDB"><a href="#1-安装MongoDB" class="headerlink" title="1.安装MongoDB"></a>1.安装MongoDB</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ vi /etc/yum.repos.d/mongodb-org-3.2.repo </div><div class="line">$ [mongodb-org-3.2]</div><div class="line">$ name=MongoDB Repository</div><div class="line">$ baseurl=https://repo.mongodb.org/yum/redhat/<span class="variable">$releasever</span>/mongodb-org/3.2/x86_64/</div><div class="line">$ gpgcheck=1</div><div class="line">$ enabled=1</div><div class="line">$ gpgkey=https://www.mongodb.org/static/pgp/server-3.2.asc</div><div class="line">$ yum install mongodb-org</div><div class="line">$ service mongod start // 启动MongoDB</div></pre></td></tr></table></figure>
+<h3 id="2-安装NodeJS"><a href="#2-安装NodeJS" class="headerlink" title="2.安装NodeJS"></a>2.安装NodeJS</h3><blockquote>
+<p><a href="http://nodejs.org/dist/latest/" target="_blank" rel="external">http://nodejs.org/dist/latest/</a> // pkg列表</p>
+</blockquote>
+<p>我下载的是 <a href="http://nodejs.org/dist/latest/node-v8.1.0.tar.xz" target="_blank" rel="external">http://nodejs.org/dist/latest/node-v8.1.0.tar.xz</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ yum install gcc gcc-c++ wget</div><div class="line">$ <span class="built_in">cd</span> /tmp</div><div class="line">$ wget http://nodejs.org/dist/latest/node-v8.1.0.tar.xz</div><div class="line">$ xz <span class="_">-d</span> node-v8.1.0.tar.xz</div><div class="line">$ tar -vxf node-v8.1.0.tar</div><div class="line">$ <span class="built_in">cd</span> node-v8.1.0</div><div class="line">$ vi README.md // To build 有告诉需要的环境,以及安装步骤</div><div class="line">$ ./configure</div><div class="line">$ make &amp;&amp; make install</div><div class="line">$ node -v</div><div class="line">$ v8.1.0</div></pre></td></tr></table></figure>
+<h3 id="3-获取Wekan项目"><a href="#3-获取Wekan项目" class="headerlink" title="3.获取Wekan项目"></a>3.获取Wekan项目</h3><blockquote>
+<p><a href="https://github.com/wekan/wekan/releases/" target="_blank" rel="external">https://github.com/wekan/wekan/releases/</a> // 版本列表</p>
+</blockquote>
+<p>我下载的是 v0.23</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ <span class="built_in">cd</span> /tmp</div><div class="line">$ wget https://github.com/wekan/wekan/releases/download/v0.23/wekan-0.23.tar.gz</div><div class="line">$ tar -zxvf wekan wekan-0.23.tar.gz</div><div class="line">$ mkdir wekan</div><div class="line">$ mv ./bundle ./wekan </div><div class="line">$ <span class="built_in">cd</span> wekan/bundle</div><div class="line">$ <span class="built_in">export</span> MONGO_URL=<span class="string">'mongodb://127.0.0.1:27017/wekan'</span> </div><div class="line">$ <span class="built_in">export</span> ROOT_URL=<span class="string">'https://example.com'</span> </div><div class="line">$ <span class="built_in">export</span> MAIL_URL=<span class="string">'smtp://user:pass@mailserver.example.com:25/'</span> </div><div class="line">$ <span class="built_in">export</span> PORT=8080</div><div class="line">$ node main.js // 如果没有报错,访问http://host:8080就可以使用Wekan啦</div></pre></td></tr></table></figure>
+<h3 id="4-一些错误问题"><a href="#4-一些错误问题" class="headerlink" title="4.一些错误问题"></a>4.一些错误问题</h3><ul>
+<li>##There is an issue with <code>node-fibers</code>##<blockquote>
+<p>npm install fibers</p>
+</blockquote>
+</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tools</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">wekan</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/06/09/wekan/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
     <article id="post-php-webp" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1185,94 +1268,9 @@
 
 
   
-    <article id="post-php7" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/22/php7/">Nginx + PHP7 + Mysql(MariaDB) + Memcached + Redis的环境搭建(可选)</a>
-    </h1>
-  
-
-        
-        <a href="/2017/02/22/php7/" class="archive-article-date">
-  	<time datetime="2017-02-22T07:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="http://php.net/" target="_blank" rel="external">PHP</a> is a popular general-purpose scripting language that is especially suited to web development.</p>
-<p>Fast, flexible and pragmatic, PHP powers everything from your blog to the most popular websites in the world.</p>
-<h3 id="1-更新yum源-安装扩展包"><a href="#1-更新yum源-安装扩展包" class="headerlink" title="1.更新yum源,安装扩展包"></a>1.更新yum源,安装扩展包</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ yum update</div><div class="line">$ yum install epel-release</div><div class="line">$ yum install git</div></pre></td></tr></table></figure>
-<h3 id="2-添加Nginx源"><a href="#2-添加Nginx源" class="headerlink" title="2.添加Nginx源"></a>2.添加Nginx源</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ vi /etc/yum.repos.d/nginx.repo</div></pre></td></tr></table></figure>
-<blockquote>
-<p>[nginx]<br>name=nginx repo<br><br>baseurl=<a href="http://nginx.org/packages/centos/$releasever/$basearch/" target="_blank" rel="external">http://nginx.org/packages/centos/$releasever/$basearch/</a><br><br>gpgcheck=0<br><br>enabled=1<br></p>
-</blockquote>
-<h3 id="3-安装开发库-可选"><a href="#3-安装开发库-可选" class="headerlink" title="3.安装开发库(可选)"></a>3.安装开发库(可选)</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ yum install ntp make openssl openssl-devel pcre pcre-devel libpng libpng-devel libjpeg-6b libjpeg-devel-6b freetype freetype-devel gd gd-devel zlib zlib-devel gcc gcc-c++ libXpm libXpm-devel ncurses ncurses-devel libmcrypt libmcrypt-devel libxml2 libxml2-devel imake autoconf automake screen sysstat compat-libstdc++-33 curl curl-devel</div></pre></td></tr></table></figure>
-<h3 id="4-安装Nginx"><a href="#4-安装Nginx" class="headerlink" title="4.安装Nginx"></a>4.安装Nginx</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ yum install nginx</div><div class="line">$ chkconfig --levels 235 nginx on // 设2、3、5级别开机启动</div><div class="line">$ service nginx start</div></pre></td></tr></table></figure>
-<h3 id="5-安装Mysql-MariaDB"><a href="#5-安装Mysql-MariaDB" class="headerlink" title="5.安装Mysql(MariaDB)"></a>5.安装Mysql(MariaDB)</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ yum install mariadb mariadb-server mariadb-devel</div><div class="line">$ chkconfig --levels 235 mariadb on</div><div class="line">$ service mariadb start</div></pre></td></tr></table></figure>
-<h3 id="6-安装PHP-FPM"><a href="#6-安装PHP-FPM" class="headerlink" title="6.安装PHP-FPM"></a>6.安装PHP-FPM</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm</div><div class="line">$ yum install php70w lighttpd-fastcgi php70w-cli php70w-gd php70w-imap php70w-ldap php70w-odbc php70w-pear php70w-xml php70w-xmlrpc php70w-mbstring php70w-mcrypt php70w-mssql php70w-snmp php70w-soap php70w-tidy php70w-common php70w-devel php70w-fpm php70w-mysql // 安装php和所需组件使PHP支持MySQL、FastCGI模式</div><div class="line">$ chkconfig --levels 235 php-fpm on</div><div class="line">$ service php-fpm start</div></pre></td></tr></table></figure>
-<h3 id="7-安装Memcached-可选"><a href="#7-安装Memcached-可选" class="headerlink" title="7.安装Memcached(可选)"></a>7.安装Memcached(可选)</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">$ yum install –enablerepo=rpmforge memcached libevent libevent-devel</div><div class="line">$ wget https://launchpad.net/libmemcached/1.0/1.0.18/+download/libmemcached-1.0.18.tar.gz</div><div class="line">$ tar -zxf libmemcached-1.0.18.tar.gz</div><div class="line">$ <span class="built_in">cd</span> libmemcached-1.0.18/</div><div class="line">$ ./configure</div><div class="line">$ make &amp;&amp; make install</div><div class="line">$ git <span class="built_in">clone</span> https://github.com/php-memcached-dev/php-memcached.git</div><div class="line">$ <span class="built_in">cd</span> php-memcached/</div><div class="line">$ git checkout php7</div><div class="line">$ phpize</div><div class="line">$ ./configure --disable-memcached-sasl</div><div class="line">$ make &amp;&amp; make install</div><div class="line">$ chkconfig --level 2345 memcached on</div><div class="line">$ service memcached start</div><div class="line">$ vim /etc/php.ini // 末行增加</div></pre></td></tr></table></figure>
-<blockquote>
-<p>[Memcached]<br><br>extension=memcached.so<br></p>
-</blockquote>
-<h3 id="8-安装Redis-可选"><a href="#8-安装Redis-可选" class="headerlink" title="8.安装Redis(可选)"></a>8.安装Redis(可选)</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">$ yum install redis</div><div class="line">$ git <span class="built_in">clone</span> https://github.com/phpredis/phpredis.git</div><div class="line">$ <span class="built_in">cd</span> phpredis</div><div class="line">$ git checkout php7</div><div class="line">$ phpize</div><div class="line">$ ./configure</div><div class="line">$ make &amp;&amp; make install</div><div class="line">$ chkconfig --level 2345 redis on</div><div class="line">$ service redis start</div><div class="line">$ vim /etc/php.ini // 末行增加</div></pre></td></tr></table></figure>
-<blockquote>
-<p>[Redis]<br><br>extension=redis.so<br></p>
-</blockquote>
-<h3 id="9-重启PHP-FPM"><a href="#9-重启PHP-FPM" class="headerlink" title="9.重启PHP-FPM"></a>9.重启PHP-FPM</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ service php-fpm restart</div></pre></td></tr></table></figure>
-<h3 id="完成"><a href="#完成" class="headerlink" title="完成"></a>完成</h3>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">server</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">php</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/02/22/php7/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 
@@ -1416,6 +1414,10 @@
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">wekan</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">tmux</a>
               </li>
             
             <div class="clearfix"></div>

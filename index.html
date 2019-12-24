@@ -156,6 +156,108 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-tmux" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/24/tmux/">10分钟学会使用Tmux</a>
+    </h1>
+  
+
+        
+        <a href="/2019/12/24/tmux/" class="archive-article-date">
+  	<time datetime="2019-12-24T04:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Tmux是一个终端多路复用器：它使从单个屏幕创建，访问和控制多个终端成为可能。Tmux可能会与屏幕分离，并继续在后台运行，然后再重新连接。</p>
+<h3 id="1-Tmux的结构"><a href="#1-Tmux的结构" class="headerlink" title="1.Tmux的结构"></a>1.Tmux的结构</h3><ul>
+<li>Session<ul>
+<li>Window<ul>
+<li>Panel</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>即，Tmux允许访问多个会话，每个会话可以拥有多个窗口，每个窗口还可以进行划分窗格。</p>
+<h3 id="2-安装运行Tmux"><a href="#2-安装运行Tmux" class="headerlink" title="2.安装运行Tmux"></a>2.安装运行Tmux</h3><p>安装<br><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># centos</span></div><div class="line">$ yum <span class="keyword">install </span>tmux</div><div class="line"></div><div class="line"><span class="comment"># ubuntu</span></div><div class="line">$ apt <span class="keyword">install </span>tmux</div><div class="line"></div><div class="line"><span class="comment"># mac</span></div><div class="line">$ <span class="keyword">brew </span><span class="keyword">install </span>tmux</div></pre></td></tr></table></figure></p>
+<p>运行<br><figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$ </span>tmux</div></pre></td></tr></table></figure></p>
+<p>效果图，如下：<br><img src="/assets/tmux/started.png" alt=""><br>底面状态栏的左侧是会话窗口相关信息，右侧是系统相关信息。</p>
+<p>退出</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ <span class="keyword">exit</span> <span class="regexp">//</span> 或者Ctrl + D</div></pre></td></tr></table></figure>
+<h3 id="3-Tmux怎么分屏呢？"><a href="#3-Tmux怎么分屏呢？" class="headerlink" title="3.Tmux怎么分屏呢？"></a>3.Tmux怎么分屏呢？</h3><p>首先，在Tmux中所有的快捷键都是以Ctrl + B开头的（默认是这样）。</p>
+<p>横向划分窗格：Ctrl + B %<br>竖向划分窗格：Ctrl + B “（英文）</p>
+<p>窗格分好了，怎么切换窗格呢？</p>
+<p>Ctrl + B Up/Down/Left/Right（键盘方向键）亦或自定义键。<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">vim</span> ~/.tmux.conf</div><div class="line"><span class="keyword">bind </span>h <span class="keyword">select-pane </span>-L</div><div class="line"><span class="keyword">bind </span>j <span class="keyword">select-pane </span>-D</div><div class="line"><span class="keyword">bind </span>k <span class="keyword">select-pane </span>-U</div><div class="line"><span class="keyword">bind </span>l <span class="keyword">select-pane </span>-R</div></pre></td></tr></table></figure></p>
+<p>示例图，如下：<br><img src="/assets/tmux/example.png" alt=""></p>
+<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>本小白文仅仅简单教会入门使用Tmux，Tmux支持的操作远远不止这么简单。 </p>
+<p>比如快捷键：</p>
+<blockquote>
+<p>新建窗口：Ctrl + B c</p>
+<p>切换下一个窗口：Ctrl + B n</p>
+<p>切换上一个窗口：Ctrl + B p</p>
+</blockquote>
+<p>比如命令：</p>
+<blockquote>
+<p>新建会话：tmux new -s</p>
+<p>会话列表：tmux ls / tmux list-session</p>
+</blockquote>
+<p>关于Tmux更多内容可以去官方文档了解一下</p>
+<blockquote>
+<p><a href="https://github.com/tmux/tmux#documentation" target="_blank" rel="external">https://github.com/tmux/tmux#documentation</a></p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tools</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">tmux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/12/24/tmux/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
     <article id="post-elasticsearch-group" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -375,7 +477,7 @@
 <li>索引建立的数量不要过多</li>
 <li>索引列不要使用函数或者表达式</li>
 <li>行锁依赖索引的建立</li>
-<li>普通索引的数据重复率过高导致会索引失效</li>
+<li>普通索引的数据重复率过高会导致索引失效</li>
 <li><code>最左原则</code></li>
 </ol>
 
@@ -726,92 +828,9 @@
 
 
   
-    <article id="post-wekan" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/09/wekan/">部署像Trello一样的看板工具,Wekan</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/09/wekan/" class="archive-article-date">
-  	<time datetime="2017-06-09T04:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-09</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Wekan is an completely Open Source and Free software collaborative kanban board application with MIT license.</p>
-<h3 id="1-安装MongoDB"><a href="#1-安装MongoDB" class="headerlink" title="1.安装MongoDB"></a>1.安装MongoDB</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ vi /etc/yum.repos.d/mongodb-org-3.2.repo </div><div class="line">$ [mongodb-org-3.2]</div><div class="line">$ name=MongoDB Repository</div><div class="line">$ baseurl=https://repo.mongodb.org/yum/redhat/<span class="variable">$releasever</span>/mongodb-org/3.2/x86_64/</div><div class="line">$ gpgcheck=1</div><div class="line">$ enabled=1</div><div class="line">$ gpgkey=https://www.mongodb.org/static/pgp/server-3.2.asc</div><div class="line">$ yum install mongodb-org</div><div class="line">$ service mongod start // 启动MongoDB</div></pre></td></tr></table></figure>
-<h3 id="2-安装NodeJS"><a href="#2-安装NodeJS" class="headerlink" title="2.安装NodeJS"></a>2.安装NodeJS</h3><blockquote>
-<p><a href="http://nodejs.org/dist/latest/" target="_blank" rel="external">http://nodejs.org/dist/latest/</a> // pkg列表</p>
-</blockquote>
-<p>我下载的是 <a href="http://nodejs.org/dist/latest/node-v8.1.0.tar.xz" target="_blank" rel="external">http://nodejs.org/dist/latest/node-v8.1.0.tar.xz</a></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ yum install gcc gcc-c++ wget</div><div class="line">$ <span class="built_in">cd</span> /tmp</div><div class="line">$ wget http://nodejs.org/dist/latest/node-v8.1.0.tar.xz</div><div class="line">$ xz <span class="_">-d</span> node-v8.1.0.tar.xz</div><div class="line">$ tar -vxf node-v8.1.0.tar</div><div class="line">$ <span class="built_in">cd</span> node-v8.1.0</div><div class="line">$ vi README.md // To build 有告诉需要的环境,以及安装步骤</div><div class="line">$ ./configure</div><div class="line">$ make &amp;&amp; make install</div><div class="line">$ node -v</div><div class="line">$ v8.1.0</div></pre></td></tr></table></figure>
-<h3 id="3-获取Wekan项目"><a href="#3-获取Wekan项目" class="headerlink" title="3.获取Wekan项目"></a>3.获取Wekan项目</h3><blockquote>
-<p><a href="https://github.com/wekan/wekan/releases/" target="_blank" rel="external">https://github.com/wekan/wekan/releases/</a> // 版本列表</p>
-</blockquote>
-<p>我下载的是 v0.23</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ <span class="built_in">cd</span> /tmp</div><div class="line">$ wget https://github.com/wekan/wekan/releases/download/v0.23/wekan-0.23.tar.gz</div><div class="line">$ tar -zxvf wekan wekan-0.23.tar.gz</div><div class="line">$ mkdir wekan</div><div class="line">$ mv ./bundle ./wekan </div><div class="line">$ <span class="built_in">cd</span> wekan/bundle</div><div class="line">$ <span class="built_in">export</span> MONGO_URL=<span class="string">'mongodb://127.0.0.1:27017/wekan'</span> </div><div class="line">$ <span class="built_in">export</span> ROOT_URL=<span class="string">'https://example.com'</span> </div><div class="line">$ <span class="built_in">export</span> MAIL_URL=<span class="string">'smtp://user:pass@mailserver.example.com:25/'</span> </div><div class="line">$ <span class="built_in">export</span> PORT=8080</div><div class="line">$ node main.js // 如果没有报错,访问http://host:8080就可以使用Wekan啦</div></pre></td></tr></table></figure>
-<h3 id="4-一些错误问题"><a href="#4-一些错误问题" class="headerlink" title="4.一些错误问题"></a>4.一些错误问题</h3><ul>
-<li>##There is an issue with <code>node-fibers</code>##<blockquote>
-<p>npm install fibers</p>
-</blockquote>
-</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tools</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">wekan</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/09/wekan/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 
@@ -955,6 +974,10 @@
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">wekan</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">tmux</a>
               </li>
             
             <div class="clearfix"></div>
