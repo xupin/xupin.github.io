@@ -156,6 +156,93 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-go-gin" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/31/go-gin/">Gin高性能Golang WEB框架 - 初探</a>
+    </h1>
+  
+
+        
+        <a href="/2019/12/31/go-gin/" class="archive-article-date">
+  	<time datetime="2019-12-31T04:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-31</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://github.com/gin-gonic/gin" target="_blank" rel="external">Gin</a> 是一个用 Go (Golang) 编写的 HTTP web 框架。 它是一个类似于 martini 但拥有更好性能的 API 框架, 由于 httprouter，速度提高了近 40 倍。</p>
+<h3 id="1-有哪些优点"><a href="#1-有哪些优点" class="headerlink" title="1.有哪些优点"></a>1.有哪些优点</h3><blockquote>
+<p>较高的性能（<a href="https://github.com/julienschmidt/go-http-routing-benchmark" target="_blank" rel="external">Golang WEB框架比对数据</a>）</p>
+<p>简单易用的中间件</p>
+<p>使用了性能高可扩展的HTTP路由<a href="https://github.com/julienschmidt/httprouter" target="_blank" rel="external">httprouter</a></p>
+<p>社区长期有着很高的活跃度</p>
+<p>Github星星多（Orz）</p>
+</blockquote>
+<p>…等</p>
+<h3 id="2-安装-更新"><a href="#2-安装-更新" class="headerlink" title="2.安装/更新"></a>2.安装/更新</h3><p>安装<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ <span class="keyword">go</span> <span class="built_in">get</span> github.<span class="keyword">com</span>/gin-gonic/gin</div></pre></td></tr></table></figure></p>
+<p>更新<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ <span class="keyword">go</span> <span class="built_in">get</span> -<span class="keyword">u</span> github.<span class="keyword">com</span>/gin-gonic/gin</div></pre></td></tr></table></figure></p>
+<h3 id="3-Hello-World"><a href="#3-Hello-World" class="headerlink" title="3.Hello World"></a>3.Hello World</h3><figure class="highlight golang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> (</div><div class="line">    <span class="string">"github.com/gin-gonic/gin"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="comment">// 框架</span></div><div class="line">    g := gin.Default()</div><div class="line"></div><div class="line">    <span class="comment">// 路由</span></div><div class="line">    g.GET(<span class="string">"/t"</span>, test)</div><div class="line"></div><div class="line">    <span class="comment">// 服务端口</span></div><div class="line">    g.Run(<span class="string">":4000"</span>)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">test</span><span class="params">(c *gin.Context)</span></span> &#123;</div><div class="line">    c.String(<span class="number">200</span>, <span class="string">"Hallo!"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>运行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ go run main.go</div></pre></td></tr></table></figure></p>
+<p>访问 <a href="http://127.0.0.1:4000/t" target="_blank" rel="external">http://127.0.0.1:4000/t</a> ，页面输出Hallo!。</p>
+<h3 id="4-路由"><a href="#4-路由" class="headerlink" title="4.路由"></a>4.路由</h3><p>Gin支持的路由方式和大部分主流框架基本一致。<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    g := gin.Default()</div><div class="line"></div><div class="line">    g.GET(<span class="string">"/someGet"</span>, getting)</div><div class="line">    g.POST(<span class="string">"/somePost"</span>, posting)</div><div class="line">    g.PUT(<span class="string">"/somePut"</span>, putting)</div><div class="line">    g.DELETE(<span class="string">"/someDelete"</span>, deleting)</div><div class="line">    g.PATCH(<span class="string">"/somePatch"</span>, patching)</div><div class="line">    g.HEAD(<span class="string">"/someHead"</span>, head)</div><div class="line">    g.OPTIONS(<span class="string">"/someOptions"</span>, options)</div><div class="line"></div><div class="line">    g.Run(<span class="string">":4000"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Gin同样也支持路由参数，不过不支持路由正则表达式。<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    g := gin.Default()</div><div class="line"></div><div class="line">    <span class="comment">// 此 handler 只能匹配 /user/&#123;PARAM&#125;</span></div><div class="line">    g.GET(<span class="string">"/user/:name"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</div><div class="line">        name := c.Param(<span class="string">"name"</span>)</div><div class="line">        c.String(http.StatusOK, <span class="string">"Hello %s"</span>, name)</div><div class="line">    &#125;)</div><div class="line"></div><div class="line">    <span class="comment">// 此 handler 会匹配 /user/&#123;PARAM&#125;/ 和 /user/&#123;PARAM&#125;/&#123;ACTION_2&#125;</span></div><div class="line">    <span class="comment">// 如果访问 /user/&#123;PARAM&#125;，在没有 "/user/:name" 路由的情况下，会重定向至 /user/&#123;PARAM&#125;/ 匹配当前路由。</span></div><div class="line">    g.GET(<span class="string">"/user/:name/*action"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</div><div class="line">        name := c.Param(<span class="string">"name"</span>)</div><div class="line">        action := c.Param(<span class="string">"action"</span>)</div><div class="line">        message := name + <span class="string">" is "</span> + action</div><div class="line">        c.String(http.StatusOK, message)</div><div class="line">    &#125;)</div><div class="line"></div><div class="line">    g.Run(<span class="string">":4000"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="5-路由组"><a href="#5-路由组" class="headerlink" title="5.路由组"></a>5.路由组</h3><p>Gin在路由分组上的做法和其他框架也都是一致的，再次体现了Gin简单易用极容易上手的优点。<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    g := gin.Default()</div><div class="line"></div><div class="line">    userGroup := g.Group(<span class="string">"/user"</span>)</div><div class="line">    &#123;</div><div class="line">        userGroup.POST(<span class="string">"/login"</span>, ctrls.Login)</div><div class="line">        userGroup.POST(<span class="string">"/logout"</span>, ctrls.Logout)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    reportGroup := g.Group(<span class="string">"/report"</span>)</div><div class="line">    &#123;</div><div class="line">        reportGroup.POST(<span class="string">"/revenue"</span>, ctrls.RevenueReport)</div><div class="line">        reportGroup.POST(<span class="string">"/cost"</span>, ctrls.CostReport)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    g.Run(<span class="string">":4000"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="6-中间件"><a href="#6-中间件" class="headerlink" title="6.中间件"></a>6.中间件</h3><p>Gin的中间件分为：全局，路由组，路由级别。<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    g := gin.Default()</div><div class="line"></div><div class="line">    <span class="comment">// 全局中间件</span></div><div class="line">    g.Use(middleware)</div><div class="line"></div><div class="line">    <span class="comment">// 路由组中间件</span></div><div class="line">    routerGroup := g.Group(<span class="string">"/user"</span>, middleware)</div><div class="line">    &#123;</div><div class="line">        <span class="comment">// 路由中间件</span></div><div class="line">        routerGroup.GET(<span class="string">"/login"</span>, middleware, ctrls.Login)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    g.Run(<span class="string">":4000"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="7-参数"><a href="#7-参数" class="headerlink" title="7.参数"></a>7.参数</h3><p>Gin如何获取请求参数？下面的简单例子：<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    g := gin.Default()</div><div class="line"></div><div class="line">    <span class="comment">// URL参数</span></div><div class="line">    <span class="comment">// URL：/user?email=mark@im.com</span></div><div class="line">    g.GET(<span class="string">"/user"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</div><div class="line">        <span class="comment">// 使用 DefaultQuery 或者 Query</span></div><div class="line">        email := c.DefaultQuery(<span class="string">"email"</span>, <span class="string">"default value"</span>)</div><div class="line">        email = c.Query(<span class="string">"email"</span>)</div><div class="line"></div><div class="line">        c.String(http.StatusOK, <span class="string">"Hallo, %s"</span>, email)</div><div class="line">    &#125;)</div><div class="line"></div><div class="line">    <span class="comment">// POST参数</span></div><div class="line">    g.POST(<span class="string">"/user/login"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</div><div class="line">        <span class="comment">// 使用 DefaultPostForm 或者 PostForm</span></div><div class="line">        email := c.PostForm(<span class="string">"email"</span>)</div><div class="line">        email = c.DefaultPostForm(<span class="string">"email"</span>, <span class="string">"default value"</span>)</div><div class="line"></div><div class="line">        c.String(http.StatusOK, <span class="string">"Hallo, %s"</span>, email)</div><div class="line">    &#125;)</div><div class="line"></div><div class="line">    g.Run(<span class="string">":4000"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>Gin支持的操作还有很多，比如：数据绑定、数据验证、上传文件、静态资源嵌入等。 </p>
+<p>Gin没有提供的组件也有很多，比如：ORM、Console、日志滚动分割等。 </p>
+<p>仁者见仁智者见智，Gin专注做HTTP WEB框架的核心，更多扩展需要开发人员自己去选择，组件化的设计无疑是好的。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">server</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">golang</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/12/31/go-gin/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
     <article id="post-tmux" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -755,79 +842,6 @@
 
 
   
-    <article id="post-guetzli" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/12/guetzli/">使用Guetzli去高质量的压缩图片，不同于WebP</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/12/guetzli/" class="archive-article-date">
-  	<time datetime="2017-06-12T03:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Guetzli is a JPEG encoder that aims for excellent compression density at high visual quality. Guetzli-generated images are typically 20-30% smaller than images of equivalent quality generated by libjpeg. Guetzli generates only sequential (nonprogressive) JPEGs due to faster decompression speeds they offer.</p>
-<h3 id="1-安装libpng依赖库"><a href="#1-安装libpng依赖库" class="headerlink" title="1.安装libpng依赖库"></a>1.安装libpng依赖库</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ yum install libpng-devel git</div></pre></td></tr></table></figure>
-<h3 id="2-获取Guetzli项目"><a href="#2-获取Guetzli项目" class="headerlink" title="2.获取Guetzli项目"></a>2.获取Guetzli项目</h3><blockquote>
-<p><a href="https://github.com/google/guetzli" target="_blank" rel="external">https://github.com/google/guetzli</a></p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">$ <span class="built_in">cd</span> /tmp</div><div class="line">$ git <span class="built_in">clone</span> https://github.com/google/guetzli</div><div class="line">$ <span class="built_in">cd</span> guetzli</div><div class="line">$ make</div><div class="line">$ ./bin/Release/guetzli // 这里我就不加软连接,为了方便使用你们可以加入软连接</div><div class="line">Guetzli JPEG compressor. Usage: </div><div class="line">guetzli [flags] input_filename output_filename // 这里是使用方法</div><div class="line"></div><div class="line">Flags:</div><div class="line">  --verbose    - Print a verbose trace of all attempts to standard output.</div><div class="line">  --quality Q  - Visual quality to aim <span class="keyword">for</span>, expressed as a JPEG quality value.</div><div class="line">                 Default value is 95.</div><div class="line">  --memlimit M - Memory <span class="built_in">limit</span> <span class="keyword">in</span> MB. Guetzli will fail <span class="keyword">if</span> unable to stay under</div><div class="line">                 the limit. Default <span class="built_in">limit</span> is 6000 MB.</div><div class="line">  --nomemlimit - Do not <span class="built_in">limit</span> memory usage.</div></pre></td></tr></table></figure>
-<h3 id="3-压缩前后对比"><a href="#3-压缩前后对比" class="headerlink" title="3.压缩前后对比"></a>3.压缩前后对比</h3><h6 id="压缩前-920KB"><a href="#压缩前-920KB" class="headerlink" title="压缩前(920KB)"></a>压缩前(920KB)</h6><p><img src="/assets/guetzli/guetzli-res.jpg" alt=""></p>
-<h6 id="压缩后-748KB-20"><a href="#压缩后-748KB-20" class="headerlink" title="压缩后(748KB),20%"></a>压缩后(748KB),20%</h6><p><img src="/assets/guetzli/guetzli-res.jpg" alt=""></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">guetzli</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tools</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/12/guetzli/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -929,19 +943,19 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">google fcm</a>
+                <a href="javascript:void(0)" class="js-tag color4">xss</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">nginx</a>
+                <a href="javascript:void(0)" class="js-tag color2">golang</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">elasticsearch</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">nginx</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -953,11 +967,11 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">xss</a>
+                <a href="javascript:void(0)" class="js-tag color1">google fcm</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">php</a>
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -969,15 +983,19 @@
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">php</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">tmux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">short names</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">wekan</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">tmux</a>
               </li>
             
             <div class="clearfix"></div>
