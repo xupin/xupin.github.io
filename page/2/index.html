@@ -156,6 +156,82 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-redis-aof-rdb" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/03/redis-aof-rdb/">Redis持久化方式aof/rdb浅析</a>
+    </h1>
+  
+
+        
+        <a href="/2019/12/03/redis-aof-rdb/" class="archive-article-date">
+  	<time datetime="2019-12-03T07:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-03</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Redis 是一个开源（BSD许可）的，内存中的数据结构存储系统，它可以用作数据库、缓存和消息中间件。它支持多种类型的数据结构，如 字符串（strings）， 散列（hashes）， 列表（lists）， 集合（sets）， 有序集合（sorted sets） 与范围查询， bitmaps， hyperloglogs 和 地理空间（geospatial） 索引半径查询。 Redis 内置了 复制（replication），LUA脚本（Lua scripting）， LRU驱动事件（LRU eviction），事务（transactions） 和不同级别的 磁盘持久化（persistence）， 并通过 Redis哨兵（Sentinel）和自动 分区（Cluster）提供高可用性（high availability）。</p>
+<h3 id="一、Redis数据存储的方式有两种"><a href="#一、Redis数据存储的方式有两种" class="headerlink" title="一、Redis数据存储的方式有两种"></a>一、Redis数据存储的方式有两种</h3><figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">单纯的缓存模式, 整个数据的生命周期随着Redis <span class="built_in">Server</span>的停止而消失。</div><div class="line">persistence模式, 数据会持续备份到磁盘文件。</div></pre></td></tr></table></figure>
+<h3 id="二、Redis如何实现持久化存储？Redis提供了两种方式。"><a href="#二、Redis如何实现持久化存储？Redis提供了两种方式。" class="headerlink" title="二、Redis如何实现持久化存储？Redis提供了两种方式。"></a>二、Redis如何实现持久化存储？Redis提供了两种方式。</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="title">RDB</span><span class="params">(Redis DataBase)</span></span></div><div class="line"><span class="function"><span class="title">AOF</span><span class="params">(Append-only file)</span></span></div></pre></td></tr></table></figure>
+<h3 id="三、RDB"><a href="#三、RDB" class="headerlink" title="三、RDB"></a>三、RDB</h3><p>RDB的工作原理有点像运维脚本自动化定时备份数据一样，当内存中的数据到达配置的阈值就会执行DUMP操作备份数据到临时文件,备份成功结束后重命名为dump.rdb文件。<br><figure class="highlight perl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">优点：<span class="keyword">fork</span>子进程来进行备份,父进程不会进行io操作。恢复数据时的速度很快。</div><div class="line">缺点：这种方式是每隔一次才会进行备份,假如下一次备份前down机会丢失部分数据。而且如果备份的数据比较大，<span class="keyword">fork</span>的子进程将会比较耗时，这段时间内会导致父进程阻塞。</div><div class="line">补充：因为这种每隔一段时间去备份一次的方式，类似快照。所以又叫 Snapshot。</div></pre></td></tr></table></figure></p>
+<h3 id="四、AOF"><a href="#四、AOF" class="headerlink" title="四、AOF"></a>四、AOF</h3><p>AOF的工作原理是讲写操作（数据）格式化追加到日志尾部，该日志文件保存了所有的历史操作数据，这一点非常类似Mysql中的bin.log。<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">优点：AOF这种方式可以保证较高的数据完整性，可以设置不同的策略，比如不保存，每一秒钟保存一次，或者每执行一个命令保存一次。AOF的默认策略为每一秒钟保存一次, 就算出现down机最多也就丢失<span class="number">1</span>秒钟的数据, AOF备份数据因为是在后台线程执行fork子进程, 所以不会阻塞主线程。</div><div class="line">缺点：对于同样规模的数据备份的文件体积AOF要大于RDB。在备份速度上面也会慢于RDB，恢复速度同样也没有RDB快。</div></pre></td></tr></table></figure></p>
+<h3 id="五、那究竟使用哪种方式？"><a href="#五、那究竟使用哪种方式？" class="headerlink" title="五、那究竟使用哪种方式？"></a>五、那究竟使用哪种方式？</h3><figure class="highlight lua"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">RDB 会有丢失数据风险，备份文件体积小，数据备份/恢复速度快。</div><div class="line">AOF 数据完整性更加安全，但是频繁备份需要过多的<span class="built_in">io</span>操作性能会受到影响，备份文件体积较大，数据恢复速度慢。</div></pre></td></tr></table></figure>
+<p>首先，我们明白AOF, RDB的优缺点之后可以概括出: AOF适合热备，RDB适合冷备。所以完全可以搭配在一起使用</p>
+<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>附上Redis对于持久化方式说明的文档</p>
+<blockquote>
+<p><a href="https://redis.io/topics/persistence" target="_blank" rel="external">https://redis.io/topics/persistence</a></p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">server</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/12/03/redis-aof-rdb/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
     <article id="post-guetzli" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1194,80 +1270,6 @@
 
 
   
-    <article id="post-nginx-ups" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/23/nginx-ups/">Nginx负载均衡配置</a>
-    </h1>
-  
-
-        
-        <a href="/2017/02/23/nginx-ups/" class="archive-article-date">
-  	<time datetime="2017-02-23T03:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="http://nginx.org/" target="_blank" rel="external">nginx</a> [engine x] is an HTTP and reverse proxy server, a mail proxy server, and a generic TCP/UDP proxy server, originally written by Igor Sysoev.</p>
-<h3 id="1-服务器列表"><a href="#1-服务器列表" class="headerlink" title="1.服务器列表"></a>1.服务器列表</h3><blockquote>
-<p>// 我们有如下两台服务器,都部署了Nginx</p>
-<p>192.168.1.1 // host指向这台服务器</p>
-<p>192.168.1.2</p>
-</blockquote>
-<h3 id="2-Nginx配置"><a href="#2-Nginx配置" class="headerlink" title="2.Nginx配置"></a>2.Nginx配置</h3><figure class="highlight glsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 打开192.168.1.1这台服务器的nginx.conf,编辑后保存</span></div><div class="line">http &#123;</div><div class="line">	.</div><div class="line">	.</div><div class="line">	. <span class="comment">// 无关紧要的部分忽略掉</span></div><div class="line">	upstream lee&#123; <span class="comment">// 这里的ups name自定义,我这里使用lee</span></div><div class="line">		<span class="comment">// 这里除了80端口以外,其他端口都可以使用</span></div><div class="line">		server  <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">8080</span>;</div><div class="line">		server  <span class="number">192.168</span><span class="number">.1</span><span class="number">.2</span>:<span class="number">8080</span>;</div><div class="line">	&#125;</div><div class="line">	server&#123;</div><div class="line">		listen <span class="number">80</span>; <span class="comment">// ups监听80</span></div><div class="line">		server_name www.xxx.com xxx.comn; <span class="comment">// 这个可选,一般是你指向这台服务器的Host</span></div><div class="line">		<span class="keyword">location</span> / &#123;</div><div class="line">			proxy_pass         http:<span class="comment">//lee; // 这里是上面自定的ups name</span></div><div class="line">			proxy_set_header   Host             $host;</div><div class="line">			proxy_set_header   X-Real-IP        $remote_addr;</div><div class="line">			proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	server</div><div class="line">	&#123;</div><div class="line">		listen <span class="number">8080</span>;</div><div class="line">		server_name <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>;</div><div class="line">		root   /var/www/html; <span class="comment">// 这里是你的Nginx根目录</span></div><div class="line">		<span class="keyword">index</span>  <span class="keyword">index</span>.php <span class="keyword">index</span>.html <span class="keyword">index</span>.htm;</div><div class="line">		<span class="keyword">location</span> /status</div><div class="line">		&#123;</div><div class="line">			stub_status on;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">location</span> ~ \.php</div><div class="line">		&#123;</div><div class="line">			fastcgi_pass <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">9000</span>;</div><div class="line">			fastcgi_index <span class="keyword">index</span>.php;</div><div class="line">			fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;</div><div class="line">			include /etc/nginx/fastcgi_params;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">location</span> ~ .*\.(gif|jpg|jpeg|png|bmp|swf|js|css)$</div><div class="line">		&#123;</div><div class="line">			expires <span class="number">30</span>d;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 打开192.168.1.2这台服务器的nginx.conf,编辑后保存</span></div><div class="line">http &#123;</div><div class="line">	.</div><div class="line">	.</div><div class="line">	. <span class="comment">// 无关紧要的部分忽略掉</span></div><div class="line">	server</div><div class="line">	&#123;</div><div class="line">		listen <span class="number">8080</span>;</div><div class="line">		server_name <span class="number">192.168</span><span class="number">.1</span><span class="number">.2</span>;</div><div class="line">		root   /var/www/html; <span class="comment">// 这里是你的Nginx根目录</span></div><div class="line">		<span class="keyword">index</span>  <span class="keyword">index</span>.php <span class="keyword">index</span>.html <span class="keyword">index</span>.htm;</div><div class="line">		<span class="keyword">location</span> /status</div><div class="line">		&#123;</div><div class="line">			stub_status on;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">location</span> ~ \.php</div><div class="line">		&#123;</div><div class="line">			fastcgi_pass <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">9000</span>;</div><div class="line">			fastcgi_index <span class="keyword">index</span>.php;</div><div class="line">			fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;</div><div class="line">			include /etc/nginx/fastcgi_params;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">location</span> ~ .*\.(gif|jpg|jpeg|png|bmp|swf|js|css)$</div><div class="line">		&#123;</div><div class="line">			expires <span class="number">30</span>d;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="3-重新加载Nginx配置"><a href="#3-重新加载Nginx配置" class="headerlink" title="3.重新加载Nginx配置"></a>3.重新加载Nginx配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ nginx -tc /etc/nginx/nginx.conf // 你nginx.conf所在的目录,检查配置是否存在问题</div><div class="line">nginx: the configuration file /etc/nginx/nginx.conf syntax is ok</div><div class="line">nginx: configuration file /etc/nginx/nginx.conf <span class="built_in">test</span> is successful</div><div class="line">$ nginx <span class="_">-s</span> reload // 不需要停服,直接重载配置</div></pre></td></tr></table></figure>
-<h3 id="4-Hi-007-任务完成"><a href="#4-Hi-007-任务完成" class="headerlink" title="4.Hi 007,任务完成"></a>4.Hi 007,任务完成</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 编辑个脚本测试一下,</span></div><div class="line"><span class="keyword">echo</span> <span class="string">'Hi 007'</span>;</div></pre></td></tr></table></figure>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">server</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">nginx</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/02/23/nginx-ups/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-
-
-
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
@@ -1282,7 +1284,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2019 Mark
+    		&copy; 2020 Mark
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten

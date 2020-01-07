@@ -156,6 +156,80 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-nginx-ups" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/23/nginx-ups/">Nginx负载均衡配置</a>
+    </h1>
+  
+
+        
+        <a href="/2017/02/23/nginx-ups/" class="archive-article-date">
+  	<time datetime="2017-02-23T03:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-23</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="http://nginx.org/" target="_blank" rel="external">nginx</a> [engine x] is an HTTP and reverse proxy server, a mail proxy server, and a generic TCP/UDP proxy server, originally written by Igor Sysoev.</p>
+<h3 id="1-服务器列表"><a href="#1-服务器列表" class="headerlink" title="1.服务器列表"></a>1.服务器列表</h3><blockquote>
+<p>// 我们有如下两台服务器,都部署了Nginx</p>
+<p>192.168.1.1 // host指向这台服务器</p>
+<p>192.168.1.2</p>
+</blockquote>
+<h3 id="2-Nginx配置"><a href="#2-Nginx配置" class="headerlink" title="2.Nginx配置"></a>2.Nginx配置</h3><figure class="highlight glsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 打开192.168.1.1这台服务器的nginx.conf,编辑后保存</span></div><div class="line">http &#123;</div><div class="line">	.</div><div class="line">	.</div><div class="line">	. <span class="comment">// 无关紧要的部分忽略掉</span></div><div class="line">	upstream lee&#123; <span class="comment">// 这里的ups name自定义,我这里使用lee</span></div><div class="line">		<span class="comment">// 这里除了80端口以外,其他端口都可以使用</span></div><div class="line">		server  <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">8080</span>;</div><div class="line">		server  <span class="number">192.168</span><span class="number">.1</span><span class="number">.2</span>:<span class="number">8080</span>;</div><div class="line">	&#125;</div><div class="line">	server&#123;</div><div class="line">		listen <span class="number">80</span>; <span class="comment">// ups监听80</span></div><div class="line">		server_name www.xxx.com xxx.comn; <span class="comment">// 这个可选,一般是你指向这台服务器的Host</span></div><div class="line">		<span class="keyword">location</span> / &#123;</div><div class="line">			proxy_pass         http:<span class="comment">//lee; // 这里是上面自定的ups name</span></div><div class="line">			proxy_set_header   Host             $host;</div><div class="line">			proxy_set_header   X-Real-IP        $remote_addr;</div><div class="line">			proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	server</div><div class="line">	&#123;</div><div class="line">		listen <span class="number">8080</span>;</div><div class="line">		server_name <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>;</div><div class="line">		root   /var/www/html; <span class="comment">// 这里是你的Nginx根目录</span></div><div class="line">		<span class="keyword">index</span>  <span class="keyword">index</span>.php <span class="keyword">index</span>.html <span class="keyword">index</span>.htm;</div><div class="line">		<span class="keyword">location</span> /status</div><div class="line">		&#123;</div><div class="line">			stub_status on;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">location</span> ~ \.php</div><div class="line">		&#123;</div><div class="line">			fastcgi_pass <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">9000</span>;</div><div class="line">			fastcgi_index <span class="keyword">index</span>.php;</div><div class="line">			fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;</div><div class="line">			include /etc/nginx/fastcgi_params;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">location</span> ~ .*\.(gif|jpg|jpeg|png|bmp|swf|js|css)$</div><div class="line">		&#123;</div><div class="line">			expires <span class="number">30</span>d;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 打开192.168.1.2这台服务器的nginx.conf,编辑后保存</span></div><div class="line">http &#123;</div><div class="line">	.</div><div class="line">	.</div><div class="line">	. <span class="comment">// 无关紧要的部分忽略掉</span></div><div class="line">	server</div><div class="line">	&#123;</div><div class="line">		listen <span class="number">8080</span>;</div><div class="line">		server_name <span class="number">192.168</span><span class="number">.1</span><span class="number">.2</span>;</div><div class="line">		root   /var/www/html; <span class="comment">// 这里是你的Nginx根目录</span></div><div class="line">		<span class="keyword">index</span>  <span class="keyword">index</span>.php <span class="keyword">index</span>.html <span class="keyword">index</span>.htm;</div><div class="line">		<span class="keyword">location</span> /status</div><div class="line">		&#123;</div><div class="line">			stub_status on;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">location</span> ~ \.php</div><div class="line">		&#123;</div><div class="line">			fastcgi_pass <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">9000</span>;</div><div class="line">			fastcgi_index <span class="keyword">index</span>.php;</div><div class="line">			fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;</div><div class="line">			include /etc/nginx/fastcgi_params;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">location</span> ~ .*\.(gif|jpg|jpeg|png|bmp|swf|js|css)$</div><div class="line">		&#123;</div><div class="line">			expires <span class="number">30</span>d;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="3-重新加载Nginx配置"><a href="#3-重新加载Nginx配置" class="headerlink" title="3.重新加载Nginx配置"></a>3.重新加载Nginx配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ nginx -tc /etc/nginx/nginx.conf // 你nginx.conf所在的目录,检查配置是否存在问题</div><div class="line">nginx: the configuration file /etc/nginx/nginx.conf syntax is ok</div><div class="line">nginx: configuration file /etc/nginx/nginx.conf <span class="built_in">test</span> is successful</div><div class="line">$ nginx <span class="_">-s</span> reload // 不需要停服,直接重载配置</div></pre></td></tr></table></figure>
+<h3 id="4-Hi-007-任务完成"><a href="#4-Hi-007-任务完成" class="headerlink" title="4.Hi 007,任务完成"></a>4.Hi 007,任务完成</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 编辑个脚本测试一下,</span></div><div class="line"><span class="keyword">echo</span> <span class="string">'Hi 007'</span>;</div></pre></td></tr></table></figure>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">server</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">nginx</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/02/23/nginx-ups/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
     <article id="post-apple-msg-push" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -328,7 +402,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2019 Mark
+    		&copy; 2020 Mark
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
