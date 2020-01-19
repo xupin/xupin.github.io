@@ -156,6 +156,84 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-cookie-httponly" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/23/cookie-httponly/">PHP防止XSS攻击、脚本访问Cookie</a>
+    </h1>
+  
+
+        
+        <a href="/2017/02/23/cookie-httponly/" class="archive-article-date">
+  	<time datetime="2017-02-23T08:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-23</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>httponly是微软对cookie做的扩展,主要是解决用户的cookie可能被盗用的问题。</p>
+<h3 id="1-Cookie漏洞"><a href="#1-Cookie漏洞" class="headerlink" title="1.Cookie漏洞"></a>1.Cookie漏洞</h3><figure class="highlight oxygene"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">Missing `httpOnly` Cookie Attribute	<span class="number">105925</span>	http (<span class="number">80</span>/tcp)	High  </div><div class="line">Vulnerability Detection <span class="keyword">Result</span>:</div><div class="line"></div><div class="line">The cookies:</div><div class="line"></div><div class="line"><span class="keyword">Set</span>-Cookie: PHPSESSID=esjpr7dkb64rgn1kjhr1r45j05; path=/ </div><div class="line"></div><div class="line">are missing the httpOnly attribute.</div><div class="line"></div><div class="line">Summary:</div><div class="line"></div><div class="line">The application <span class="keyword">is</span> missing the <span class="string">'httpOnly'</span> cookie attribute</div><div class="line"></div><div class="line">Solution:</div><div class="line"></div><div class="line"><span class="keyword">Set</span> the <span class="string">'httpOnly'</span> attribute <span class="keyword">for</span> any session cookie.</div><div class="line"></div><div class="line">Vulnerability Detection <span class="function"><span class="keyword">Method</span>:</span></div><div class="line"></div><div class="line">Check all cookies sent <span class="keyword">by</span> the application <span class="keyword">for</span> a missing <span class="string">'httpOnly'</span> attribute</div><div class="line"></div><div class="line">Insight:</div><div class="line"></div><div class="line">The flaw <span class="keyword">is</span> due <span class="keyword">to</span> a cookie <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">using</span> the <span class="string">'httpOnly'</span> attribute. This</div><div class="line">allows a cookie <span class="keyword">to</span> be accessed <span class="keyword">by</span> JavaScript which could lead <span class="keyword">to</span> session hijacking attacks.</div><div class="line"></div><div class="line">CVSS Base Vector:</div><div class="line"></div><div class="line">AV:N/AC:L/Au:N/C:P/I:N/A:N</div><div class="line"></div><div class="line">Affected Software/OS:</div><div class="line"></div><div class="line">Application <span class="keyword">with</span> session handling <span class="keyword">in</span> cookies.</div><div class="line"></div><div class="line">References:</div><div class="line"></div><div class="line">https:<span class="comment">//www.owasp.org/index.php/HttpOnly</span></div><div class="line">https:<span class="comment">//www.owasp.org/index.php/Testing_for_cookies_attributes_(OTG-SESS-002)</span></div></pre></td></tr></table></figure>
+<h3 id="2-漏洞表现"><a href="#2-漏洞表现" class="headerlink" title="2.漏洞表现"></a>2.漏洞表现</h3><blockquote>
+<p>跨站点脚本攻击 // 这种攻击手段具体表现,很多博主都写过,在此不表了</p>
+</blockquote>
+<h3 id="3-解决方案"><a href="#3-解决方案" class="headerlink" title="3.解决方案"></a>3.解决方案</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ vi /etc/php.ini // PHP 5.2版本及以上</div></pre></td></tr></table></figure>
+<blockquote>
+<p>session.cookie_httponly = true/1</p>
+</blockquote>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// PHP 5.2版本及以上</span></div><div class="line">ini_set(<span class="string">'session.cookie_httponly'</span>, <span class="number">1</span>); <span class="comment">// 注册php.ini配置</span></div><div class="line">session_set_cookie_params(<span class="number">0</span>, <span class="built_in">NULL</span>, <span class="built_in">NULL</span>, <span class="built_in">NULL</span>, <span class="literal">TRUE</span>);</div><div class="line">setcookie(<span class="string">'cookieName'</span>, <span class="string">'cookieValue'</span>, <span class="built_in">NULL</span>, <span class="built_in">NULL</span>, <span class="built_in">NULL</span>, <span class="built_in">NULL</span>, <span class="literal">TRUE</span>);</div><div class="line">setrawcookie(<span class="string">'cookieName'</span>, <span class="string">'cookieValue'</span>, <span class="built_in">NULL</span>, <span class="built_in">NULL</span>, <span class="built_in">NULL</span>, <span class="built_in">NULL</span>, <span class="literal">TRUE</span>);</div><div class="line"><span class="comment">// PHP 5.1版本及以下</span></div><div class="line"><span class="keyword">header</span>(<span class="string">'Set-Cookie: hidden=value; httpOnly'</span>);</div></pre></td></tr></table></figure>
+<h3 id="4-网站安全扫描工具"><a href="#4-网站安全扫描工具" class="headerlink" title="4.网站安全扫描工具"></a>4.网站安全扫描工具</h3><blockquote>
+<p>Nikto、WebScarab等</p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">server</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">xss</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/02/23/cookie-httponly/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
     <article id="post-nginx-ups" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     

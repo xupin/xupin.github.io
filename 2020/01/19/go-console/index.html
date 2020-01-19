@@ -6,21 +6,24 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://xupin.im">
-  <title>部署像Trello一样的看板工具 - Wekan | Mark blog</title>
+  <title>Golang 实现定时任务调度 | Mark blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Wekan is an completely Open Source and Free software collaborative kanban board application with MIT license.
-1.安装MongoDB123456789$ vi /etc/yum.repos.d/mongodb-org-3.2.repo $ [mongodb-org-3.2]$ name=M">
+  <meta name="description" content="每一个任务都需要编写一个Crontab命令，这是件很麻烦且很不友好的事情。 任务调度器允许你以代码的形式定义调度命令，并且服务器上只需要一个Crontab命令即可, 任务调度又是我们俗称的 “计划任务”
+1.工欲善其事，必先利其器Github一番搜索，发现Golang有个cron包（robfig/cron）大概满足需求，于是学习一下。
+2.介绍看了一遍文档，cron包支持的已经很全面了~~~不用自">
 <meta property="og:type" content="article">
-<meta property="og:title" content="部署像Trello一样的看板工具 - Wekan">
-<meta property="og:url" content="http://xupin.im/2017/06/09/wekan/index.html">
+<meta property="og:title" content="Golang 实现定时任务调度">
+<meta property="og:url" content="http://xupin.im/2020/01/19/go-console/index.html">
 <meta property="og:site_name" content="Mark blog">
-<meta property="og:description" content="Wekan is an completely Open Source and Free software collaborative kanban board application with MIT license.
-1.安装MongoDB123456789$ vi /etc/yum.repos.d/mongodb-org-3.2.repo $ [mongodb-org-3.2]$ name=M">
-<meta property="og:updated_time" content="2020-01-19T10:28:13.512Z">
+<meta property="og:description" content="每一个任务都需要编写一个Crontab命令，这是件很麻烦且很不友好的事情。 任务调度器允许你以代码的形式定义调度命令，并且服务器上只需要一个Crontab命令即可, 任务调度又是我们俗称的 “计划任务”
+1.工欲善其事，必先利其器Github一番搜索，发现Golang有个cron包（robfig/cron）大概满足需求，于是学习一下。
+2.介绍看了一遍文档，cron包支持的已经很全面了~~~不用自">
+<meta property="og:updated_time" content="2020-01-19T10:53:39.061Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="部署像Trello一样的看板工具 - Wekan">
-<meta name="twitter:description" content="Wekan is an completely Open Source and Free software collaborative kanban board application with MIT license.
-1.安装MongoDB123456789$ vi /etc/yum.repos.d/mongodb-org-3.2.repo $ [mongodb-org-3.2]$ name=M">
+<meta name="twitter:title" content="Golang 实现定时任务调度">
+<meta name="twitter:description" content="每一个任务都需要编写一个Crontab命令，这是件很麻烦且很不友好的事情。 任务调度器允许你以代码的形式定义调度命令，并且服务器上只需要一个Crontab命令即可, 任务调度又是我们俗称的 “计划任务”
+1.工欲善其事，必先利其器Github一番搜索，发现Golang有个cron包（robfig/cron）大概满足需求，于是学习一下。
+2.介绍看了一遍文档，cron包支持的已经很全面了~~~不用自">
   
     <link rel="alternative" href="/atom.xml" title="Mark blog" type="application/atom+xml">
   
@@ -158,44 +161,62 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-wekan" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-go-console" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      部署像Trello一样的看板工具 - Wekan
+      Golang 实现定时任务调度
     </h1>
   
 
         
-        <a href="/2017/06/09/wekan/" class="archive-article-date">
-  	<time datetime="2017-06-09T04:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-09</time>
+        <a href="/2020/01/19/go-console/" class="archive-article-date">
+  	<time datetime="2020-01-19T11:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-19</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Wekan is an completely Open Source and Free software collaborative kanban board application with MIT license.</p>
-<h3 id="1-安装MongoDB"><a href="#1-安装MongoDB" class="headerlink" title="1.安装MongoDB"></a>1.安装MongoDB</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ vi /etc/yum.repos.d/mongodb-org-3.2.repo </div><div class="line">$ [mongodb-org-3.2]</div><div class="line">$ name=MongoDB Repository</div><div class="line">$ baseurl=https://repo.mongodb.org/yum/redhat/<span class="variable">$releasever</span>/mongodb-org/3.2/x86_64/</div><div class="line">$ gpgcheck=1</div><div class="line">$ enabled=1</div><div class="line">$ gpgkey=https://www.mongodb.org/static/pgp/server-3.2.asc</div><div class="line">$ yum install mongodb-org</div><div class="line">$ service mongod start // 启动MongoDB</div></pre></td></tr></table></figure>
-<h3 id="2-安装NodeJS"><a href="#2-安装NodeJS" class="headerlink" title="2.安装NodeJS"></a>2.安装NodeJS</h3><blockquote>
-<p><a href="http://nodejs.org/dist/latest/" target="_blank" rel="external">http://nodejs.org/dist/latest/</a> // pkg列表</p>
+        <p>每一个任务都需要编写一个Crontab命令，这是件很麻烦且很不友好的事情。 任务调度器允许你以代码的形式定义调度命令，并且服务器上只需要一个Crontab命令即可, 任务调度又是我们俗称的 “计划任务”</p>
+<h3 id="1-工欲善其事，必先利其器"><a href="#1-工欲善其事，必先利其器" class="headerlink" title="1.工欲善其事，必先利其器"></a>1.工欲善其事，必先利其器</h3><p>Github一番搜索，发现Golang有个cron包（<a href="https://github.com/robfig/cron" target="_blank" rel="external">robfig/cron</a>）大概满足需求，于是学习一下。</p>
+<h3 id="2-介绍"><a href="#2-介绍" class="headerlink" title="2.介绍"></a>2.介绍</h3><p>看了一遍文档，cron包支持的已经很全面了~~~不用自己造轮子了。</p>
+<p>表达式</p>
+<blockquote>
+<p>兼容Linux的crontab表达式（支持分钟级别）。</p>
 </blockquote>
-<p>我下载的是 <a href="http://nodejs.org/dist/latest/node-v8.1.0.tar.xz" target="_blank" rel="external">http://nodejs.org/dist/latest/node-v8.1.0.tar.xz</a></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ yum install gcc gcc-c++ wget</div><div class="line">$ <span class="built_in">cd</span> /tmp</div><div class="line">$ wget http://nodejs.org/dist/latest/node-v8.1.0.tar.xz</div><div class="line">$ xz <span class="_">-d</span> node-v8.1.0.tar.xz</div><div class="line">$ tar -vxf node-v8.1.0.tar</div><div class="line">$ <span class="built_in">cd</span> node-v8.1.0</div><div class="line">$ vi README.md // To build 有告诉需要的环境,以及安装步骤</div><div class="line">$ ./configure</div><div class="line">$ make &amp;&amp; make install</div><div class="line">$ node -v</div><div class="line">$ v8.1.0</div></pre></td></tr></table></figure>
-<h3 id="3-获取Wekan项目"><a href="#3-获取Wekan项目" class="headerlink" title="3.获取Wekan项目"></a>3.获取Wekan项目</h3><blockquote>
-<p><a href="https://github.com/wekan/wekan/releases/" target="_blank" rel="external">https://github.com/wekan/wekan/releases/</a> // 版本列表</p>
+<p>日志</p>
+<blockquote>
+<p>可以很详细的记录调度的任务状态</p>
 </blockquote>
-<p>我下载的是 v0.23</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ <span class="built_in">cd</span> /tmp</div><div class="line">$ wget https://github.com/wekan/wekan/releases/download/v0.23/wekan-0.23.tar.gz</div><div class="line">$ tar -zxvf wekan wekan-0.23.tar.gz</div><div class="line">$ mkdir wekan</div><div class="line">$ mv ./bundle ./wekan </div><div class="line">$ <span class="built_in">cd</span> wekan/bundle</div><div class="line">$ <span class="built_in">export</span> MONGO_URL=<span class="string">'mongodb://127.0.0.1:27017/wekan'</span> </div><div class="line">$ <span class="built_in">export</span> ROOT_URL=<span class="string">'https://example.com'</span> </div><div class="line">$ <span class="built_in">export</span> MAIL_URL=<span class="string">'smtp://user:pass@mailserver.example.com:25/'</span> </div><div class="line">$ <span class="built_in">export</span> PORT=8080</div><div class="line">$ node main.js // 如果没有报错,访问http://host:8080就可以使用Wekan啦</div></pre></td></tr></table></figure>
-<h3 id="4-一些错误问题"><a href="#4-一些错误问题" class="headerlink" title="4.一些错误问题"></a>4.一些错误问题</h3><ul>
-<li>##There is an issue with <code>node-fibers</code>##<blockquote>
-<p>npm install fibers</p>
+<p>时区</p>
+<blockquote>
+<p>支持任务级别的时区配置</p>
 </blockquote>
+<p>预定义计划</p>
+<blockquote>
+<p>支持在未来指定的时间去运行</p>
+</blockquote>
+<p><code>线程安全问题</code></p>
+<blockquote>
+<p>该cron lib管理任务队列的slice没有做并发安全考虑，可能会出现任务竟抢行为。</p>
+</blockquote>
+<h3 id="3-实例"><a href="#3-实例" class="headerlink" title="3.实例"></a>3.实例</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> (</div><div class="line">    <span class="string">"fmt"</span></div><div class="line">    <span class="string">"time"</span></div><div class="line"></div><div class="line">    <span class="string">"github.com/robfig/cron"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    c := cron.New()</div><div class="line">    c.AddFunc(<span class="string">"* * * * * *"</span>, test)</div><div class="line">    c.Start()</div><div class="line"></div><div class="line">    timer := time.NewTimer(time.Second * <span class="number">10</span>)</div><div class="line">    <span class="keyword">for</span> &#123;</div><div class="line">        <span class="keyword">select</span> &#123;</div><div class="line">        <span class="keyword">case</span> &lt;-timer.C:</div><div class="line">            timer.Reset(time.Second * <span class="number">10</span>)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">test</span><span class="params">()</span></span> &#123;</div><div class="line">    fmt.Println(<span class="string">"I'm a test script!"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ go run .</div><div class="line">I<span class="string">'m a test script!!!</span></div><div class="line">I'm a <span class="built_in">test</span> script!!!</div><div class="line">I<span class="string">'m a test script!!!</span></div><div class="line">...</div></pre></td></tr></table></figure>
+<h3 id="4-简单封装"><a href="#4-简单封装" class="headerlink" title="4.简单封装"></a>4.简单封装</h3><ul>
+<li><p>main.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> <span class="string">"cron-example/console"</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line"></div><div class="line">    quitChan := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">bool</span>, <span class="number">1</span>)</div><div class="line"></div><div class="line">    <span class="comment">// console</span></div><div class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</div><div class="line">        console.Default()</div><div class="line">    &#125;()</div><div class="line"></div><div class="line">    &lt;-quitChan</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>console.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> console</div><div class="line"></div><div class="line"><span class="keyword">import</span> (</div><div class="line">    <span class="string">"log"</span></div><div class="line">    <span class="string">"time"</span></div><div class="line"></div><div class="line">    <span class="string">"cron-example/console/commands"</span></div><div class="line"></div><div class="line">    <span class="string">"github.com/robfig/cron"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">schedule</span><span class="params">(c *cron.Cron)</span></span> &#123;</div><div class="line">    c.AddFunc(<span class="string">"* * * * * *"</span>, commands.Test)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">Default</span><span class="params">()</span></span> &#123;</div><div class="line">    log.Println(<span class="string">"Starting..."</span>)</div><div class="line"></div><div class="line">    c := cron.New()</div><div class="line">    c.Start()</div><div class="line"></div><div class="line">    schedule(c)</div><div class="line"></div><div class="line">    timer := time.NewTimer(time.Second * <span class="number">10</span>)</div><div class="line">    <span class="keyword">for</span> &#123;</div><div class="line">        <span class="keyword">select</span> &#123;</div><div class="line">        <span class="keyword">case</span> &lt;-timer.C:</div><div class="line">            timer.Reset(time.Second * <span class="number">10</span>)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 </li>
 </ul>
+<blockquote>
+<p><a href="https://github.com/xupin/go-cron-example" target="_blank" rel="external">https://github.com/xupin/go-cron-example</a></p>
+</blockquote>
 
       
 
@@ -240,11 +261,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tools</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">server</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">wekan</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">golang</a>
         		</li>
       		
 		</ul>
@@ -300,7 +321,7 @@
   <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
   <p>扫一扫，分享到微信</p>
   <div class="wx-qrcode">
-    <img src="http://qr.topscan.com/api.php?text=http://xupin.im/2017/06/09/wekan/" alt="微信分享二维码">
+    <img src="http://qr.topscan.com/api.php?text=http://xupin.im/2020/01/19/go-console/" alt="微信分享二维码">
   </div>
 </div>
 
@@ -314,18 +335,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2017/06/12/guetzli/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          使用Guetzli压缩图片
-        
-      </div>
-    </a>
   
-  
-    <a href="/2017/03/22/php-webp/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">PHP 图片转换Webp格式</div>
+    <a href="/2020/01/07/php-aliyundb/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">PHP踩坑小记 - aliyundb SQLSetStatement is NOT supported</div>
       <i class="icon-circle-right"></i>
     </a>
   
