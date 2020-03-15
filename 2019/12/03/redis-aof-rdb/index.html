@@ -18,7 +18,7 @@
 <meta property="og:description" content="Redis是一个开放源代码（BSD许可）的内存中数据结构存储，用作数据库，缓存和消息代理。
 一、Redis数据存储的方式有两种12单纯的缓存模式, 整个数据的生命周期随着Redis Server的停止而消失。persistence模式, 数据会持续备份到磁盘文件。
 二、Redis如何实现持久化存储？Redis提供了两种方式。12RDB(Redis DataBase)AOF(Append-only">
-<meta property="og:updated_time" content="2020-03-15T11:10:46.250Z">
+<meta property="og:updated_time" content="2020-03-15T11:14:19.044Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis持久化方式aof/rdb浅析">
 <meta name="twitter:description" content="Redis是一个开放源代码（BSD许可）的内存中数据结构存储，用作数据库，缓存和消息代理。
@@ -190,7 +190,7 @@
 <h3 id="五、AOF备份触发机制"><a href="#五、AOF备份触发机制" class="headerlink" title="五、AOF备份触发机制"></a>五、AOF备份触发机制</h3><figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="number">1.</span> Redis服务端接收到客户端bgrewriteaof指令请求，如果当前没有在进行备份那么立即进行备份，否则等待备份完毕之后再执行备份。</div><div class="line"><span class="number">2.</span> Redis conf配置了<span class="keyword">auto</span>-aof-rewrite-percentage和<span class="keyword">auto</span>-aof-rewrite-<span class="built_in">min</span>-<span class="built_in">size</span>参数，并且当前AOF文件大小server.aof_current_size大于<span class="keyword">auto</span>-aof-rewrite-<span class="built_in">min</span>-<span class="built_in">size</span>，且AOF文件大小的增长率大于<span class="keyword">auto</span>-aof-rewrite-percentage时触发备份。</div><div class="line"><span class="number">3.</span> 使用<span class="built_in">config</span> set appendonly yes命令时，调用startAppendOnly()函数触发备份。</div></pre></td></tr></table></figure>
 <h3 id="六、那究竟使用哪种方式？"><a href="#六、那究竟使用哪种方式？" class="headerlink" title="六、那究竟使用哪种方式？"></a>六、那究竟使用哪种方式？</h3><figure class="highlight lua"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">RDB 会有丢失数据风险，备份文件体积小，数据备份/恢复速度快。</div><div class="line">AOF 数据完整性更加安全，但是频繁备份需要过多的<span class="built_in">io</span>操作性能会受到影响，备份文件体积较大，数据恢复速度慢。</div></pre></td></tr></table></figure>
 <p>首先，我们明白AOF, RDB的优缺点之后可以概括出: AOF适合热备，RDB适合冷备，Redis4.0以后允许使用aof-use-rdb-preamble配置项打开RDB-AOF混合持久化。</p>
-<h3 id="七、RDB-AOF混合使用的之后备份文件的变化"><a href="#七、RDB-AOF混合使用的之后备份文件的变化" class="headerlink" title="七、RDB/AOF混合使用的之后备份文件的变化"></a>七、RDB/AOF混合使用的之后备份文件的变化</h3><p>当RDB和AOF同时开启之后<br><figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="bullet">1. </span>Redis默认会优先加载AOF的配置文件。</div><div class="line"><span class="bullet">2. </span>aof备份文件的内容格式发生改变，备份文件前半段是RDB格式的全量数据后半段是redis命令格式的增量数据。</div></pre></td></tr></table></figure></p>
+<h3 id="七、RDB-AOF混合使用的之后备份文件的变化"><a href="#七、RDB-AOF混合使用的之后备份文件的变化" class="headerlink" title="七、RDB/AOF混合使用的之后备份文件的变化"></a>七、RDB/AOF混合使用的之后备份文件的变化</h3><p>当RDB和AOF同时开启之后<br><figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="bullet">1. </span>Redis默认会优先加载AOF的配置文件。</div><div class="line"><span class="bullet">2. </span>AOF备份文件的内容格式发生改变，备份文件前半段是RDB格式的全量数据后半段是Redis命令格式的增量数据。</div></pre></td></tr></table></figure></p>
 <h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>附上Redis对于持久化方式说明的文档</p>
 <blockquote>
 <p><a href="https://redis.io/topics/persistence" target="_blank" rel="external">https://redis.io/topics/persistence</a></p>
@@ -511,6 +511,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">redis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">mysql int length</a>
               </li>
             
             <div class="clearfix"></div>
