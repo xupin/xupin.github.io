@@ -1,26 +1,25 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
   <meta name="renderer" content="webkit">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Mysql中Int长度的问题 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="创建数据表的时候我们总是要考虑存储数据的字段该用哪种类型、多少长度比较合适，不过在Mysql中如果字段类型是Int，此时长度是不生效的。
-1.Int类型的长度问题12345CREATE TABLE `test` (  `id` int(3) NOT NULL,  `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,  PRIMARY KEY">
+  <meta name="description" content="创建数据表的时候我们总是要考虑存储数据的字段该用哪种类型、多少长度比较合适，不过在Mysql中如果字段类型是Int，此时长度是不生效的。 1.Int类型的长度问题12345CREATE TABLE `test` (  `id` int(3) NOT NULL,  `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,  PRIMARY KEY">
+<meta name="keywords" content="develop,mysql int length">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Mysql中Int长度的问题">
 <meta property="og:url" content="http://xupin.im/2020/03/15/mysql-int-length/index.html">
-<meta property="og:site_name" content="Mark's blog">
-<meta property="og:description" content="创建数据表的时候我们总是要考虑存储数据的字段该用哪种类型、多少长度比较合适，不过在Mysql中如果字段类型是Int，此时长度是不生效的。
-1.Int类型的长度问题12345CREATE TABLE `test` (  `id` int(3) NOT NULL,  `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,  PRIMARY KEY">
-<meta property="og:updated_time" content="2020-03-15T12:15:49.950Z">
+<meta property="og:site_name" content="Mark&#39;s blog">
+<meta property="og:description" content="创建数据表的时候我们总是要考虑存储数据的字段该用哪种类型、多少长度比较合适，不过在Mysql中如果字段类型是Int，此时长度是不生效的。 1.Int类型的长度问题12345CREATE TABLE `test` (  `id` int(3) NOT NULL,  `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,  PRIMARY KEY">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-03-18T09:47:42.290Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mysql中Int长度的问题">
-<meta name="twitter:description" content="创建数据表的时候我们总是要考虑存储数据的字段该用哪种类型、多少长度比较合适，不过在Mysql中如果字段类型是Int，此时长度是不生效的。
-1.Int类型的长度问题12345CREATE TABLE `test` (  `id` int(3) NOT NULL,  `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,  PRIMARY KEY">
+<meta name="twitter:description" content="创建数据表的时候我们总是要考虑存储数据的字段该用哪种类型、多少长度比较合适，不过在Mysql中如果字段类型是Int，此时长度是不生效的。 1.Int类型的长度问题12345CREATE TABLE `test` (  `id` int(3) NOT NULL,  `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,  PRIMARY KEY">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -39,7 +38,7 @@
   
 
 </head>
-
+</html>
 <body>
   <div id="container" q-class="show:isCtnShow">
     <canvas id="anm-canvas" class="anm-canvas"></canvas>
@@ -179,17 +178,17 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>创建数据表的时候我们总是要考虑存储数据的字段该用哪种类型、多少长度比较合适，不过在Mysql中如果字段类型是Int，此时长度是不生效的。</p>
-<h3 id="1-Int类型的长度问题"><a href="#1-Int类型的长度问题" class="headerlink" title="1.Int类型的长度问题"></a>1.Int类型的长度问题</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">CREATE TABLE `test` (</div><div class="line">  `id` int(3) NOT NULL,</div><div class="line">  `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,</div><div class="line">  PRIMARY KEY (`id`)</div><div class="line">) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci</div></pre></td></tr></table></figure>
-<p>有这样一张表，<code>id</code>是Int类型长度3的字段，那么理论上是不能存储长度超过3的值，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">INSERT INTO `test`(`id`, `name`) VALUES (1000000, &apos;name&apos;);</div></pre></td></tr></table></figure></p>
+<h3 id="1-Int类型的长度问题"><a href="#1-Int类型的长度问题" class="headerlink" title="1.Int类型的长度问题"></a>1.Int类型的长度问题</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `test` (</span><br><span class="line">  `id` int(3) NOT NULL,</span><br><span class="line">  `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,</span><br><span class="line">  PRIMARY KEY (`id`)</span><br><span class="line">) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci</span><br></pre></td></tr></table></figure>
+<p>有这样一张表，<code>id</code>是Int类型长度3的字段，那么理论上是不能存储长度超过3的值，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO `test`(`id`, `name`) VALUES (1000000, &apos;name&apos;);</span><br></pre></td></tr></table></figure></p>
 <p>不过结果是意外的，这条数据可以正常写入。</p>
-<h3 id="2-Int类型的长度为什么不生效"><a href="#2-Int类型的长度为什么不生效" class="headerlink" title="2.Int类型的长度为什么不生效"></a>2.Int类型的长度为什么不生效</h3><p>翻了一下Mysql的<a href="https://dev.mysql.com/doc/refman/5.6/en/data-types.html" target="_blank" rel="external">数据类型文档</a>，发现这么一句话：</p>
+<h3 id="2-Int类型的长度为什么不生效"><a href="#2-Int类型的长度为什么不生效" class="headerlink" title="2.Int类型的长度为什么不生效"></a>2.Int类型的长度为什么不生效</h3><p>翻了一下Mysql的<a href="https://dev.mysql.com/doc/refman/5.6/en/data-types.html" target="_blank" rel="noopener">数据类型文档</a>，发现这么一句话：</p>
 <blockquote>
 <p>对于整数类型，M表示最大显示宽度。 对于浮点和定点类型，M是可以存储的总位数（精度）。 对于字符串类型，M是最大长度。 M的最大允许值取决于数据类型。</p>
 </blockquote>
 <p>所以这个Int类型的“长度”其实叫宽度，也可以理解为显示长度。</p>
-<h3 id="3-如果存储的数据长度低于显示宽度会怎样？"><a href="#3-如果存储的数据长度低于显示宽度会怎样？" class="headerlink" title="3.如果存储的数据长度低于显示宽度会怎样？"></a>3.如果存储的数据长度低于显示宽度会怎样？</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">INSERT INTO `test`(`id`, `name`) VALUES (1, &apos;name&apos;);</div></pre></td></tr></table></figure>
-<p>当然是可以写入的，但是好像并没有什么特别的不一样，不过我们再执行一条SQL<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ALTER TABLE `test` MODIFY COLUMN `id` int(3) UNSIGNED ZEROFILL;</div></pre></td></tr></table></figure></p>
-<p>这次数据产生变化了，变成了这样<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">id      |   name</div><div class="line">001     |   name</div><div class="line">1000000 |   name</div></pre></td></tr></table></figure></p>
+<h3 id="3-如果存储的数据长度低于显示宽度会怎样？"><a href="#3-如果存储的数据长度低于显示宽度会怎样？" class="headerlink" title="3.如果存储的数据长度低于显示宽度会怎样？"></a>3.如果存储的数据长度低于显示宽度会怎样？</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO `test`(`id`, `name`) VALUES (1, &apos;name&apos;);</span><br></pre></td></tr></table></figure>
+<p>当然是可以写入的，但是好像并没有什么特别的不一样，不过我们再执行一条SQL<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE `test` MODIFY COLUMN `id` int(3) UNSIGNED ZEROFILL;</span><br></pre></td></tr></table></figure></p>
+<p>这次数据产生变化了，变成了这样<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">id      |   name</span><br><span class="line">001     |   name</span><br><span class="line">1000000 |   name</span><br></pre></td></tr></table></figure></p>
 <h3 id="4-为什么要设计显示宽度？"><a href="#4-为什么要设计显示宽度？" class="headerlink" title="4.为什么要设计显示宽度？"></a>4.为什么要设计显示宽度？</h3><p>我也没有得出明确的答案，和小伙伴讨论这个问题~ta觉得是为了方便<code>排序</code>，你觉得呢？</p>
 
       
@@ -308,6 +307,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2020/03/18/mysql-lru/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Mysql学习笔记 - LRU算法
+        
+      </div>
+    </a>
   
   
     <a href="/2020/01/19/go-console/" id="article-nav-older" class="article-nav-link-wrap">
@@ -437,15 +445,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">guetzli</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">tools</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">xss</a>
+                <a href="javascript:void(0)" class="js-tag color5">apns</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -453,7 +453,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">apns</a>
+                <a href="javascript:void(0)" class="js-tag color4">xss</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -465,15 +465,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">google fcm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">guetzli</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tools</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">wekan</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">google fcm</a>
+                <a href="javascript:void(0)" class="js-tag color2">mysql int length</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -489,7 +497,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">tmux</a>
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -497,11 +505,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+                <a href="javascript:void(0)" class="js-tag color5">tmux</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">mysql int length</a>
+                <a href="javascript:void(0)" class="js-tag color1">wekan</a>
               </li>
             
             <div class="clearfix"></div>

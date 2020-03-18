@@ -1,57 +1,26 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
   <meta name="renderer" content="webkit">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Nginx正向代理和反向代理 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="代理通常用于在几台服务器之间分配负载，无缝显示来自不同网站的内容或通过除HTTP之外的协议将处理请求传递给应用服务器。
-1.代理的常用场景及优点正向代理
-
-gfw科学上网。
-客户端访问鉴权。
-
-反向代理
-
-负载均衡。
-保证内网的安全，阻止web攻击。
-
-2.正向代理和反向代理有什么不同比较通俗的来解释：正向代理代理的是客户端，服务端不知道实际发起请求的客户端、反向代理代理的是服务端，客户端不知道实">
+  <meta name="description" content="代理通常用于在几台服务器之间分配负载，无缝显示来自不同网站的内容或通过除HTTP之外的协议将处理请求传递给应用服务器。 1.代理的常用场景及优点正向代理  gfw科学上网。 客户端访问鉴权。  反向代理  负载均衡。 保证内网的安全，阻止web攻击。  2.正向代理和反向代理有什么不同比较通俗的来解释：正向代理代理的是客户端，服务端不知道实际发起请求的客户端、反向代理代理的是服务端，客户端不知道实">
+<meta name="keywords" content="develop,nginx">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Nginx正向代理和反向代理">
 <meta property="og:url" content="http://xupin.im/2019/12/17/nginx-proxy/index.html">
-<meta property="og:site_name" content="Mark's blog">
-<meta property="og:description" content="代理通常用于在几台服务器之间分配负载，无缝显示来自不同网站的内容或通过除HTTP之外的协议将处理请求传递给应用服务器。
-1.代理的常用场景及优点正向代理
-
-gfw科学上网。
-客户端访问鉴权。
-
-反向代理
-
-负载均衡。
-保证内网的安全，阻止web攻击。
-
-2.正向代理和反向代理有什么不同比较通俗的来解释：正向代理代理的是客户端，服务端不知道实际发起请求的客户端、反向代理代理的是服务端，客户端不知道实">
+<meta property="og:site_name" content="Mark&#39;s blog">
+<meta property="og:description" content="代理通常用于在几台服务器之间分配负载，无缝显示来自不同网站的内容或通过除HTTP之外的协议将处理请求传递给应用服务器。 1.代理的常用场景及优点正向代理  gfw科学上网。 客户端访问鉴权。  反向代理  负载均衡。 保证内网的安全，阻止web攻击。  2.正向代理和反向代理有什么不同比较通俗的来解释：正向代理代理的是客户端，服务端不知道实际发起请求的客户端、反向代理代理的是服务端，客户端不知道实">
+<meta property="og:locale" content="default">
 <meta property="og:image" content="http://xupin.im/assets/nginx-proxy/relation.jpg">
-<meta property="og:updated_time" content="2020-01-22T09:23:39.086Z">
+<meta property="og:updated_time" content="2020-03-18T09:47:42.290Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Nginx正向代理和反向代理">
-<meta name="twitter:description" content="代理通常用于在几台服务器之间分配负载，无缝显示来自不同网站的内容或通过除HTTP之外的协议将处理请求传递给应用服务器。
-1.代理的常用场景及优点正向代理
-
-gfw科学上网。
-客户端访问鉴权。
-
-反向代理
-
-负载均衡。
-保证内网的安全，阻止web攻击。
-
-2.正向代理和反向代理有什么不同比较通俗的来解释：正向代理代理的是客户端，服务端不知道实际发起请求的客户端、反向代理代理的是服务端，客户端不知道实">
+<meta name="twitter:description" content="代理通常用于在几台服务器之间分配负载，无缝显示来自不同网站的内容或通过除HTTP之外的协议将处理请求传递给应用服务器。 1.代理的常用场景及优点正向代理  gfw科学上网。 客户端访问鉴权。  反向代理  负载均衡。 保证内网的安全，阻止web攻击。  2.正向代理和反向代理有什么不同比较通俗的来解释：正向代理代理的是客户端，服务端不知道实际发起请求的客户端、反向代理代理的是服务端，客户端不知道实">
 <meta name="twitter:image" content="http://xupin.im/assets/nginx-proxy/relation.jpg">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
@@ -71,7 +40,7 @@ gfw科学上网。
   
 
 </head>
-
+</html>
 <body>
   <div id="container" q-class="show:isCtnShow">
     <canvas id="anm-canvas" class="anm-canvas"></canvas>
@@ -222,7 +191,7 @@ gfw科学上网。
 <p>保证内网的安全，阻止web攻击。</p>
 </blockquote>
 <h3 id="2-正向代理和反向代理有什么不同"><a href="#2-正向代理和反向代理有什么不同" class="headerlink" title="2.正向代理和反向代理有什么不同"></a>2.正向代理和反向代理有什么不同</h3><p>比较通俗的来解释：正向代理代理的是客户端，服务端不知道实际发起请求的客户端、反向代理代理的是服务端，客户端不知道实际接收请求的服务端。</p>
-<p>一张图表示（来源：<a href="https://zhuanlan.zhihu.com/p/82300486" target="_blank" rel="external">知乎wplulala</a>）<br><img src="/assets/nginx-proxy/relation.jpg" alt=""></p>
+<p>一张图表示（来源：<a href="https://zhuanlan.zhihu.com/p/82300486" target="_blank" rel="noopener">知乎wplulala</a>）<br><img src="/assets/nginx-proxy/relation.jpg" alt></p>
 
       
 
@@ -478,15 +447,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">guetzli</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">tools</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">xss</a>
+                <a href="javascript:void(0)" class="js-tag color5">apns</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -494,7 +455,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">apns</a>
+                <a href="javascript:void(0)" class="js-tag color4">xss</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -506,15 +467,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">google fcm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">guetzli</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tools</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">wekan</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">google fcm</a>
+                <a href="javascript:void(0)" class="js-tag color2">mysql int length</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -530,7 +499,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">tmux</a>
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -538,11 +507,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+                <a href="javascript:void(0)" class="js-tag color5">tmux</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">mysql int length</a>
+                <a href="javascript:void(0)" class="js-tag color1">wekan</a>
               </li>
             
             <div class="clearfix"></div>

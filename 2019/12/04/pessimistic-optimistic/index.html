@@ -1,26 +1,25 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
   <meta name="renderer" content="webkit">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>通俗解释什么是悲观锁/乐观锁 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="什么是锁？在多进程（线程）编程中为了数据的一致性、有效性，如果一资源被某进程（线程）上锁，那么在释放锁之前其他进程（线程）无法进行操作或者等待获取（上）锁。
-一、悲观锁悲观锁（Pessimistic locking），顾名思义对待任何事务都持悲观态度，做任何事情都会认为会有竞抢行为~所以在进行任何操作之前都要做好万全准备（上锁）才会继续执行后续的操作。通常是利用系统提供的锁机制来实现。比如：12M">
+  <meta name="description" content="什么是锁？在多进程（线程）编程中为了数据的一致性、有效性，如果一资源被某进程（线程）上锁，那么在释放锁之前其他进程（线程）无法进行操作或者等待获取（上）锁。 一、悲观锁悲观锁（Pessimistic locking），顾名思义对待任何事务都持悲观态度，做任何事情都会认为会有竞抢行为~所以在进行任何操作之前都要做好万全准备（上锁）才会继续执行后续的操作。通常是利用系统提供的锁机制来实现。比如：12M">
+<meta name="keywords" content="develop,mysql">
 <meta property="og:type" content="article">
-<meta property="og:title" content="通俗解释什么是悲观锁/乐观锁">
+<meta property="og:title" content="通俗解释什么是悲观锁&#x2F;乐观锁">
 <meta property="og:url" content="http://xupin.im/2019/12/04/pessimistic-optimistic/index.html">
-<meta property="og:site_name" content="Mark's blog">
-<meta property="og:description" content="什么是锁？在多进程（线程）编程中为了数据的一致性、有效性，如果一资源被某进程（线程）上锁，那么在释放锁之前其他进程（线程）无法进行操作或者等待获取（上）锁。
-一、悲观锁悲观锁（Pessimistic locking），顾名思义对待任何事务都持悲观态度，做任何事情都会认为会有竞抢行为~所以在进行任何操作之前都要做好万全准备（上锁）才会继续执行后续的操作。通常是利用系统提供的锁机制来实现。比如：12M">
-<meta property="og:updated_time" content="2020-03-15T11:29:45.038Z">
+<meta property="og:site_name" content="Mark&#39;s blog">
+<meta property="og:description" content="什么是锁？在多进程（线程）编程中为了数据的一致性、有效性，如果一资源被某进程（线程）上锁，那么在释放锁之前其他进程（线程）无法进行操作或者等待获取（上）锁。 一、悲观锁悲观锁（Pessimistic locking），顾名思义对待任何事务都持悲观态度，做任何事情都会认为会有竞抢行为~所以在进行任何操作之前都要做好万全准备（上锁）才会继续执行后续的操作。通常是利用系统提供的锁机制来实现。比如：12M">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-03-18T09:47:42.293Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="通俗解释什么是悲观锁/乐观锁">
-<meta name="twitter:description" content="什么是锁？在多进程（线程）编程中为了数据的一致性、有效性，如果一资源被某进程（线程）上锁，那么在释放锁之前其他进程（线程）无法进行操作或者等待获取（上）锁。
-一、悲观锁悲观锁（Pessimistic locking），顾名思义对待任何事务都持悲观态度，做任何事情都会认为会有竞抢行为~所以在进行任何操作之前都要做好万全准备（上锁）才会继续执行后续的操作。通常是利用系统提供的锁机制来实现。比如：12M">
+<meta name="twitter:title" content="通俗解释什么是悲观锁&#x2F;乐观锁">
+<meta name="twitter:description" content="什么是锁？在多进程（线程）编程中为了数据的一致性、有效性，如果一资源被某进程（线程）上锁，那么在释放锁之前其他进程（线程）无法进行操作或者等待获取（上）锁。 一、悲观锁悲观锁（Pessimistic locking），顾名思义对待任何事务都持悲观态度，做任何事情都会认为会有竞抢行为~所以在进行任何操作之前都要做好万全准备（上锁）才会继续执行后续的操作。通常是利用系统提供的锁机制来实现。比如：12M">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -39,7 +38,7 @@
   
 
 </head>
-
+</html>
 <body>
   <div id="container" q-class="show:isCtnShow">
     <canvas id="anm-canvas" class="anm-canvas"></canvas>
@@ -179,8 +178,8 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>什么是锁？在多进程（线程）编程中为了数据的一致性、有效性，如果一资源被某进程（线程）上锁，那么在释放锁之前其他进程（线程）无法进行操作或者等待获取（上）锁。</p>
-<h3 id="一、悲观锁"><a href="#一、悲观锁" class="headerlink" title="一、悲观锁"></a>一、悲观锁</h3><p>悲观锁（Pessimistic locking），顾名思义对待任何事务都持悲观态度，做任何事情都会认为会有竞抢行为~所以在进行任何操作之前都要做好万全准备（上锁）才会继续执行后续的操作。通常是利用系统提供的锁机制来实现。<br>比如：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Mysql中的上锁命令：for <span class="keyword">update</span>、<span class="keyword">lock</span> <span class="keyword">in</span> <span class="keyword">share</span> <span class="keyword">mode</span>等</div><div class="line">Redis中的一些操作命令：setnx、getset等（原子操作）</div></pre></td></tr></table></figure></p>
-<h3 id="二、乐观锁"><a href="#二、乐观锁" class="headerlink" title="二、乐观锁"></a>二、乐观锁</h3><p>乐观锁（Optimistic locking），和悲观锁相反对待任何事务都持乐观态度，只会在最后即将执行操作的时刻前才会进行验证。通常是通过程序配合来实现。<br>比如：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">update</span> <span class="string">`orders`</span> <span class="keyword">set</span> <span class="keyword">hash</span> = <span class="keyword">md5</span>(<span class="keyword">now</span>()) <span class="keyword">where</span> uid = <span class="number">1</span> <span class="keyword">and</span> <span class="keyword">hash</span> = &#123;lastHash&#125;;</div></pre></td></tr></table></figure></p>
+<h3 id="一、悲观锁"><a href="#一、悲观锁" class="headerlink" title="一、悲观锁"></a>一、悲观锁</h3><p>悲观锁（Pessimistic locking），顾名思义对待任何事务都持悲观态度，做任何事情都会认为会有竞抢行为~所以在进行任何操作之前都要做好万全准备（上锁）才会继续执行后续的操作。通常是利用系统提供的锁机制来实现。<br>比如：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Mysql中的上锁命令：for <span class="keyword">update</span>、<span class="keyword">lock</span> <span class="keyword">in</span> <span class="keyword">share</span> <span class="keyword">mode</span>等</span><br><span class="line">Redis中的一些操作命令：setnx、getset等（原子操作）</span><br></pre></td></tr></table></figure></p>
+<h3 id="二、乐观锁"><a href="#二、乐观锁" class="headerlink" title="二、乐观锁"></a>二、乐观锁</h3><p>乐观锁（Optimistic locking），和悲观锁相反对待任何事务都持乐观态度，只会在最后即将执行操作的时刻前才会进行验证。通常是通过程序配合来实现。<br>比如：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">update</span> <span class="string">`orders`</span> <span class="keyword">set</span> <span class="keyword">hash</span> = <span class="keyword">md5</span>(<span class="keyword">now</span>()) <span class="keyword">where</span> uid = <span class="number">1</span> <span class="keyword">and</span> <span class="keyword">hash</span> = &#123;lastHash&#125;;</span><br></pre></td></tr></table></figure></p>
 <h3 id="三、优缺点"><a href="#三、优缺点" class="headerlink" title="三、优缺点"></a>三、优缺点</h3><p>悲观锁优点很鲜明，因为每次执行的操作都是独占的，数据的一致性、有效性、安全性较高。但缺点同样突出，每次操作都会产生上锁的开销，在并发请求比较密集的情况下容易阻塞或者驳回请求，甚至是造成死锁，也大大降低了系统的性能。</p>
 <p>乐观锁优点是省去了锁的开销，能较高的提高系统吞吐量，缺点是如果出现在并发高且竟抢（冲突）行为比较多的场景下数据的一致性很难保证。</p>
 
@@ -438,15 +437,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">guetzli</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">tools</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">xss</a>
+                <a href="javascript:void(0)" class="js-tag color5">apns</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -454,7 +445,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">apns</a>
+                <a href="javascript:void(0)" class="js-tag color4">xss</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -466,15 +457,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">google fcm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">guetzli</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tools</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">wekan</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">google fcm</a>
+                <a href="javascript:void(0)" class="js-tag color2">mysql int length</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -490,7 +489,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">tmux</a>
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -498,11 +497,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+                <a href="javascript:void(0)" class="js-tag color5">tmux</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">mysql int length</a>
+                <a href="javascript:void(0)" class="js-tag color1">wekan</a>
               </li>
             
             <div class="clearfix"></div>

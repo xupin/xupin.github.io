@@ -1,26 +1,25 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
   <meta name="renderer" content="webkit">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Nginx + PHP7 + Mysql(MariaDB) + Memcached + Redis的环境搭建(可选) | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="PHP is a popular general-purpose scripting language that is especially suited to web development.
-Fast, flexible and pragmatic, PHP powers everything from your blog to the most popular websites in the">
+  <meta name="description" content="PHP is a popular general-purpose scripting language that is especially suited to web development. Fast, flexible and pragmatic, PHP powers everything from your blog to the most popular websites in the">
+<meta name="keywords" content="develop,php">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Nginx + PHP7 + Mysql(MariaDB) + Memcached + Redis的环境搭建(可选)">
 <meta property="og:url" content="http://xupin.im/2017/02/22/php7/index.html">
-<meta property="og:site_name" content="Mark's blog">
-<meta property="og:description" content="PHP is a popular general-purpose scripting language that is especially suited to web development.
-Fast, flexible and pragmatic, PHP powers everything from your blog to the most popular websites in the">
-<meta property="og:updated_time" content="2020-01-22T09:23:39.091Z">
+<meta property="og:site_name" content="Mark&#39;s blog">
+<meta property="og:description" content="PHP is a popular general-purpose scripting language that is especially suited to web development. Fast, flexible and pragmatic, PHP powers everything from your blog to the most popular websites in the">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-03-18T09:47:42.293Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Nginx + PHP7 + Mysql(MariaDB) + Memcached + Redis的环境搭建(可选)">
-<meta name="twitter:description" content="PHP is a popular general-purpose scripting language that is especially suited to web development.
-Fast, flexible and pragmatic, PHP powers everything from your blog to the most popular websites in the">
+<meta name="twitter:description" content="PHP is a popular general-purpose scripting language that is especially suited to web development. Fast, flexible and pragmatic, PHP powers everything from your blog to the most popular websites in the">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -39,7 +38,7 @@ Fast, flexible and pragmatic, PHP powers everything from your blog to the most p
   
 
 </head>
-
+</html>
 <body>
   <div id="container" q-class="show:isCtnShow">
     <canvas id="anm-canvas" class="anm-canvas"></canvas>
@@ -178,26 +177,26 @@ Fast, flexible and pragmatic, PHP powers everything from your blog to the most p
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="http://php.net/" target="_blank" rel="external">PHP</a> is a popular general-purpose scripting language that is especially suited to web development.</p>
+        <p><a href="http://php.net/" target="_blank" rel="noopener">PHP</a> is a popular general-purpose scripting language that is especially suited to web development.</p>
 <p>Fast, flexible and pragmatic, PHP powers everything from your blog to the most popular websites in the world.</p>
-<h3 id="1-更新yum源-安装扩展包"><a href="#1-更新yum源-安装扩展包" class="headerlink" title="1.更新yum源,安装扩展包"></a>1.更新yum源,安装扩展包</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ yum update</div><div class="line">$ yum install epel-release</div><div class="line">$ yum install git</div></pre></td></tr></table></figure>
-<h3 id="2-添加Nginx源"><a href="#2-添加Nginx源" class="headerlink" title="2.添加Nginx源"></a>2.添加Nginx源</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ vi /etc/yum.repos.d/nginx.repo</div></pre></td></tr></table></figure>
+<h3 id="1-更新yum源-安装扩展包"><a href="#1-更新yum源-安装扩展包" class="headerlink" title="1.更新yum源,安装扩展包"></a>1.更新yum源,安装扩展包</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ yum update</span><br><span class="line">$ yum install epel-release</span><br><span class="line">$ yum install git</span><br></pre></td></tr></table></figure>
+<h3 id="2-添加Nginx源"><a href="#2-添加Nginx源" class="headerlink" title="2.添加Nginx源"></a>2.添加Nginx源</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ vi /etc/yum.repos.d/nginx.repo</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>[nginx]<br>name=nginx repo<br><br>baseurl=<a href="http://nginx.org/packages/centos/$releasever/$basearch/" target="_blank" rel="external">http://nginx.org/packages/centos/$releasever/$basearch/</a><br><br>gpgcheck=0<br><br>enabled=1<br></p>
+<p>[nginx]<br>name=nginx repo<br><br>baseurl=<a href="http://nginx.org/packages/centos/$releasever/$basearch/" target="_blank" rel="noopener">http://nginx.org/packages/centos/$releasever/$basearch/</a><br><br>gpgcheck=0<br><br>enabled=1<br></p>
 </blockquote>
-<h3 id="3-安装开发库-可选"><a href="#3-安装开发库-可选" class="headerlink" title="3.安装开发库(可选)"></a>3.安装开发库(可选)</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ yum install ntp make openssl openssl-devel pcre pcre-devel libpng libpng-devel libjpeg-6b libjpeg-devel-6b freetype freetype-devel gd gd-devel zlib zlib-devel gcc gcc-c++ libXpm libXpm-devel ncurses ncurses-devel libmcrypt libmcrypt-devel libxml2 libxml2-devel imake autoconf automake screen sysstat compat-libstdc++-33 curl curl-devel</div></pre></td></tr></table></figure>
-<h3 id="4-安装Nginx"><a href="#4-安装Nginx" class="headerlink" title="4.安装Nginx"></a>4.安装Nginx</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ yum install nginx</div><div class="line">$ chkconfig --levels 235 nginx on // 设2、3、5级别开机启动</div><div class="line">$ service nginx start</div></pre></td></tr></table></figure>
-<h3 id="5-安装Mysql-MariaDB"><a href="#5-安装Mysql-MariaDB" class="headerlink" title="5.安装Mysql(MariaDB)"></a>5.安装Mysql(MariaDB)</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ yum install mariadb mariadb-server mariadb-devel</div><div class="line">$ chkconfig --levels 235 mariadb on</div><div class="line">$ service mariadb start</div></pre></td></tr></table></figure>
-<h3 id="6-安装PHP-FPM"><a href="#6-安装PHP-FPM" class="headerlink" title="6.安装PHP-FPM"></a>6.安装PHP-FPM</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm</div><div class="line">$ yum install php70w lighttpd-fastcgi php70w-cli php70w-gd php70w-imap php70w-ldap php70w-odbc php70w-pear php70w-xml php70w-xmlrpc php70w-mbstring php70w-mcrypt php70w-mssql php70w-snmp php70w-soap php70w-tidy php70w-common php70w-devel php70w-fpm php70w-mysql // 安装php和所需组件使PHP支持MySQL、FastCGI模式</div><div class="line">$ chkconfig --levels 235 php-fpm on</div><div class="line">$ service php-fpm start</div></pre></td></tr></table></figure>
-<h3 id="7-安装Memcached-可选"><a href="#7-安装Memcached-可选" class="headerlink" title="7.安装Memcached(可选)"></a>7.安装Memcached(可选)</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">$ yum install –enablerepo=rpmforge memcached libevent libevent-devel</div><div class="line">$ wget https://launchpad.net/libmemcached/1.0/1.0.18/+download/libmemcached-1.0.18.tar.gz</div><div class="line">$ tar -zxf libmemcached-1.0.18.tar.gz</div><div class="line">$ <span class="built_in">cd</span> libmemcached-1.0.18/</div><div class="line">$ ./configure</div><div class="line">$ make &amp;&amp; make install</div><div class="line">$ git <span class="built_in">clone</span> https://github.com/php-memcached-dev/php-memcached.git</div><div class="line">$ <span class="built_in">cd</span> php-memcached/</div><div class="line">$ git checkout php7</div><div class="line">$ phpize</div><div class="line">$ ./configure --disable-memcached-sasl</div><div class="line">$ make &amp;&amp; make install</div><div class="line">$ chkconfig --level 2345 memcached on</div><div class="line">$ service memcached start</div><div class="line">$ vim /etc/php.ini // 末行增加</div></pre></td></tr></table></figure>
+<h3 id="3-安装开发库-可选"><a href="#3-安装开发库-可选" class="headerlink" title="3.安装开发库(可选)"></a>3.安装开发库(可选)</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ yum install ntp make openssl openssl-devel pcre pcre-devel libpng libpng-devel libjpeg-6b libjpeg-devel-6b freetype freetype-devel gd gd-devel zlib zlib-devel gcc gcc-c++ libXpm libXpm-devel ncurses ncurses-devel libmcrypt libmcrypt-devel libxml2 libxml2-devel imake autoconf automake screen sysstat compat-libstdc++-33 curl curl-devel</span><br></pre></td></tr></table></figure>
+<h3 id="4-安装Nginx"><a href="#4-安装Nginx" class="headerlink" title="4.安装Nginx"></a>4.安装Nginx</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ yum install nginx</span><br><span class="line">$ chkconfig --levels 235 nginx on // 设2、3、5级别开机启动</span><br><span class="line">$ service nginx start</span><br></pre></td></tr></table></figure>
+<h3 id="5-安装Mysql-MariaDB"><a href="#5-安装Mysql-MariaDB" class="headerlink" title="5.安装Mysql(MariaDB)"></a>5.安装Mysql(MariaDB)</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ yum install mariadb mariadb-server mariadb-devel</span><br><span class="line">$ chkconfig --levels 235 mariadb on</span><br><span class="line">$ service mariadb start</span><br></pre></td></tr></table></figure>
+<h3 id="6-安装PHP-FPM"><a href="#6-安装PHP-FPM" class="headerlink" title="6.安装PHP-FPM"></a>6.安装PHP-FPM</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm</span><br><span class="line">$ yum install php70w lighttpd-fastcgi php70w-cli php70w-gd php70w-imap php70w-ldap php70w-odbc php70w-pear php70w-xml php70w-xmlrpc php70w-mbstring php70w-mcrypt php70w-mssql php70w-snmp php70w-soap php70w-tidy php70w-common php70w-devel php70w-fpm php70w-mysql // 安装php和所需组件使PHP支持MySQL、FastCGI模式</span><br><span class="line">$ chkconfig --levels 235 php-fpm on</span><br><span class="line">$ service php-fpm start</span><br></pre></td></tr></table></figure>
+<h3 id="7-安装Memcached-可选"><a href="#7-安装Memcached-可选" class="headerlink" title="7.安装Memcached(可选)"></a>7.安装Memcached(可选)</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$ yum install –enablerepo=rpmforge memcached libevent libevent-devel</span><br><span class="line">$ wget https://launchpad.net/libmemcached/1.0/1.0.18/+download/libmemcached-1.0.18.tar.gz</span><br><span class="line">$ tar -zxf libmemcached-1.0.18.tar.gz</span><br><span class="line">$ <span class="built_in">cd</span> libmemcached-1.0.18/</span><br><span class="line">$ ./configure</span><br><span class="line">$ make &amp;&amp; make install</span><br><span class="line">$ git <span class="built_in">clone</span> https://github.com/php-memcached-dev/php-memcached.git</span><br><span class="line">$ <span class="built_in">cd</span> php-memcached/</span><br><span class="line">$ git checkout php7</span><br><span class="line">$ phpize</span><br><span class="line">$ ./configure --<span class="built_in">disable</span>-memcached-sasl</span><br><span class="line">$ make &amp;&amp; make install</span><br><span class="line">$ chkconfig --level 2345 memcached on</span><br><span class="line">$ service memcached start</span><br><span class="line">$ vim /etc/php.ini // 末行增加</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>[Memcached]<br><br>extension=memcached.so<br></p>
 </blockquote>
-<h3 id="8-安装Redis-可选"><a href="#8-安装Redis-可选" class="headerlink" title="8.安装Redis(可选)"></a>8.安装Redis(可选)</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">$ yum install redis</div><div class="line">$ git <span class="built_in">clone</span> https://github.com/phpredis/phpredis.git</div><div class="line">$ <span class="built_in">cd</span> phpredis</div><div class="line">$ git checkout php7</div><div class="line">$ phpize</div><div class="line">$ ./configure</div><div class="line">$ make &amp;&amp; make install</div><div class="line">$ chkconfig --level 2345 redis on</div><div class="line">$ service redis start</div><div class="line">$ vim /etc/php.ini // 末行增加</div></pre></td></tr></table></figure>
+<h3 id="8-安装Redis-可选"><a href="#8-安装Redis-可选" class="headerlink" title="8.安装Redis(可选)"></a>8.安装Redis(可选)</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ yum install redis</span><br><span class="line">$ git <span class="built_in">clone</span> https://github.com/phpredis/phpredis.git</span><br><span class="line">$ <span class="built_in">cd</span> phpredis</span><br><span class="line">$ git checkout php7</span><br><span class="line">$ phpize</span><br><span class="line">$ ./configure</span><br><span class="line">$ make &amp;&amp; make install</span><br><span class="line">$ chkconfig --level 2345 redis on</span><br><span class="line">$ service redis start</span><br><span class="line">$ vim /etc/php.ini // 末行增加</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>[Redis]<br><br>extension=redis.so<br></p>
 </blockquote>
-<h3 id="9-重启PHP-FPM"><a href="#9-重启PHP-FPM" class="headerlink" title="9.重启PHP-FPM"></a>9.重启PHP-FPM</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ service php-fpm restart</div></pre></td></tr></table></figure>
+<h3 id="9-重启PHP-FPM"><a href="#9-重启PHP-FPM" class="headerlink" title="9.重启PHP-FPM"></a>9.重启PHP-FPM</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ service php-fpm restart</span><br></pre></td></tr></table></figure>
 <h3 id="完成"><a href="#完成" class="headerlink" title="完成"></a>完成</h3>
       
 
@@ -448,15 +447,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">guetzli</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">tools</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">xss</a>
+                <a href="javascript:void(0)" class="js-tag color5">apns</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -464,7 +455,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">apns</a>
+                <a href="javascript:void(0)" class="js-tag color4">xss</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -476,15 +467,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">google fcm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">guetzli</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tools</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">wekan</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">google fcm</a>
+                <a href="javascript:void(0)" class="js-tag color2">mysql int length</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -500,7 +499,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">tmux</a>
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -508,11 +507,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+                <a href="javascript:void(0)" class="js-tag color5">tmux</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">mysql int length</a>
+                <a href="javascript:void(0)" class="js-tag color1">wekan</a>
               </li>
             
             <div class="clearfix"></div>

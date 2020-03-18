@@ -1,26 +1,25 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
   <meta name="renderer" content="webkit">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Nginx recv() failed (104 Connection reset by peer) | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Error: recv() failed (104: Connection reset by peer) while reading response header from upstream
-1.日志信息123456789// www.xxxx.com 公司域名,故此屏蔽2017/02/18 12:03:58 [error] 7519#7519: *33 recv() failed (104:">
+  <meta name="description" content="Error: recv() failed (104: Connection reset by peer) while reading response header from upstream 1.日志信息123456789// www.xxxx.com 公司域名,故此屏蔽2017/02/18 12:03:58 [error] 7519#7519: *33 recv() failed (104:">
+<meta name="keywords" content="develop,nginx">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Nginx recv() failed (104 Connection reset by peer)">
 <meta property="og:url" content="http://xupin.im/2017/02/23/nginx-recv-104/index.html">
-<meta property="og:site_name" content="Mark's blog">
-<meta property="og:description" content="Error: recv() failed (104: Connection reset by peer) while reading response header from upstream
-1.日志信息123456789// www.xxxx.com 公司域名,故此屏蔽2017/02/18 12:03:58 [error] 7519#7519: *33 recv() failed (104:">
-<meta property="og:updated_time" content="2020-01-22T09:23:39.086Z">
+<meta property="og:site_name" content="Mark&#39;s blog">
+<meta property="og:description" content="Error: recv() failed (104: Connection reset by peer) while reading response header from upstream 1.日志信息123456789// www.xxxx.com 公司域名,故此屏蔽2017/02/18 12:03:58 [error] 7519#7519: *33 recv() failed (104:">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-03-18T09:47:42.290Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Nginx recv() failed (104 Connection reset by peer)">
-<meta name="twitter:description" content="Error: recv() failed (104: Connection reset by peer) while reading response header from upstream
-1.日志信息123456789// www.xxxx.com 公司域名,故此屏蔽2017/02/18 12:03:58 [error] 7519#7519: *33 recv() failed (104:">
+<meta name="twitter:description" content="Error: recv() failed (104: Connection reset by peer) while reading response header from upstream 1.日志信息123456789// www.xxxx.com 公司域名,故此屏蔽2017/02/18 12:03:58 [error] 7519#7519: *33 recv() failed (104:">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -39,7 +38,7 @@
   
 
 </head>
-
+</html>
 <body>
   <div id="container" q-class="show:isCtnShow">
     <canvas id="anm-canvas" class="anm-canvas"></canvas>
@@ -179,18 +178,18 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>Error: recv() failed (104: Connection reset by peer) while reading response header from upstream</p>
-<h3 id="1-日志信息"><a href="#1-日志信息" class="headerlink" title="1.日志信息"></a>1.日志信息</h3><figure class="highlight accesslog"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">// www.xxxx.com 公司域名,故此屏蔽</div><div class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">03</span>:<span class="number">58</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">33</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192.168.1.207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></div><div class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">03</span>:<span class="number">59</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">35</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192.168.1.207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></div><div class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">00</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">37</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192.168.1.207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></div><div class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">02</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">39</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192.168.1.207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></div><div class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">07</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">9</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192.168.1.207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">GET</span> /Api/GetRegSvrInfo&amp;pid=1&amp;ver=3003 HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201:81"</span></div><div class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">08</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">42</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192.168.1.207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></div><div class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">09</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">44</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192.168.1.207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></div><div class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">10</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">46</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192.168.1.207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></div></pre></td></tr></table></figure>
+<h3 id="1-日志信息"><a href="#1-日志信息" class="headerlink" title="1.日志信息"></a>1.日志信息</h3><figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// www.xxxx.com 公司域名,故此屏蔽</span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">03</span>:<span class="number">58</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">33</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">03</span>:<span class="number">59</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">35</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">00</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">37</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">02</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">39</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">07</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">9</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">GET</span> /Api/GetRegSvrInfo&amp;pid=1&amp;ver=3003 HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201:81"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">08</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">42</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">09</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">44</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">10</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">46</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br></pre></td></tr></table></figure>
 <h3 id="2-异常原因"><a href="#2-异常原因" class="headerlink" title="2.异常原因"></a>2.异常原因</h3><blockquote>
 <p>ups请求9000端口之后重置 // 我遇见的问题</p>
 </blockquote>
-<h3 id="3-解决方案"><a href="#3-解决方案" class="headerlink" title="3.解决方案"></a>3.解决方案</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ iptables -L -n // 检查是否有其他进程占用9000端口</div></pre></td></tr></table></figure>
+<h3 id="3-解决方案"><a href="#3-解决方案" class="headerlink" title="3.解决方案"></a>3.解决方案</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ iptables -L -n // 检查是否有其他进程占用9000端口</span><br></pre></td></tr></table></figure>
 <p>9000端口没有被占用</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ vi /etc/sysconfig/iptables</div><div class="line">-A INPUT -i lo -j ACCEPT // 本地回环(lo一般指127.0.0.1),检查是否有这条配置</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ vi /etc/sysconfig/iptables</span><br><span class="line">-A INPUT -i lo -j ACCEPT // 本地回环(lo一般指127.0.0.1),检查是否有这条配置</span><br></pre></td></tr></table></figure>
 <p>lo防火墙策略未配置</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ iptables -A INPUT -i lo -j ACCEPT // 没有配置,执行这个指令</div><div class="line">$ iptables save // 保存</div><div class="line">$ iptables restart // 重启生效</div></pre></td></tr></table></figure>
-<h3 id="4-依然未解决"><a href="#4-依然未解决" class="headerlink" title="4.依然未解决"></a>4.依然未解决</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ vi /etc/php-fpm.d/www.conf // 这是我的PHP-FPM配置文件</div><div class="line">request_terminate_timeout = 0/600; // 这样解决一般是PHP某些脚本执行时间过长超时</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ iptables -A INPUT -i lo -j ACCEPT // 没有配置,执行这个指令</span><br><span class="line">$ iptables save // 保存</span><br><span class="line">$ iptables restart // 重启生效</span><br></pre></td></tr></table></figure>
+<h3 id="4-依然未解决"><a href="#4-依然未解决" class="headerlink" title="4.依然未解决"></a>4.依然未解决</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ vi /etc/php-fpm.d/www.conf // 这是我的PHP-FPM配置文件</span><br><span class="line">request_terminate_timeout = 0/600; // 这样解决一般是PHP某些脚本执行时间过长超时</span><br></pre></td></tr></table></figure>
 <p>顽固分子,就是不行!!!</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ iptables stop // 关闭防火墙之后(慎用,生产环境谨慎操作),试试是否可以访问</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ iptables stop // 关闭防火墙之后(慎用,生产环境谨慎操作),试试是否可以访问</span><br></pre></td></tr></table></figure>
 <p>如果可以访问,麻烦运维哥哥帮忙看一下防火墙策略o(╯□╰)o!!!</p>
 <h3 id="5-其他问题"><a href="#5-其他问题" class="headerlink" title="5.其他问题"></a>5.其他问题</h3><p>欢迎邮箱我一起讨论解决</p>
 
@@ -448,15 +447,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">guetzli</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">tools</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">xss</a>
+                <a href="javascript:void(0)" class="js-tag color5">apns</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -464,7 +455,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">apns</a>
+                <a href="javascript:void(0)" class="js-tag color4">xss</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -476,15 +467,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">google fcm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">guetzli</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tools</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">wekan</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">google fcm</a>
+                <a href="javascript:void(0)" class="js-tag color2">mysql int length</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -500,7 +499,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">tmux</a>
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -508,11 +507,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+                <a href="javascript:void(0)" class="js-tag color5">tmux</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">mysql int length</a>
+                <a href="javascript:void(0)" class="js-tag color1">wekan</a>
               </li>
             
             <div class="clearfix"></div>

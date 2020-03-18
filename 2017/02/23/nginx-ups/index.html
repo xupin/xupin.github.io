@@ -1,32 +1,25 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
   <meta name="renderer" content="webkit">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Nginx负载均衡配置 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="nginx [engine x] is an HTTP and reverse proxy server, a mail proxy server, and a generic TCP/UDP proxy server, originally written by Igor Sysoev.
-1.服务器列表
-// 我们有如下两台服务器,都部署了Nginx
-192.168.1.1 // host指向这">
+  <meta name="description" content="nginx [engine x] is an HTTP and reverse proxy server, a mail proxy server, and a generic TCP/UDP proxy server, originally written by Igor Sysoev. 1.服务器列表 // 我们有如下两台服务器,都部署了Nginx 192.168.1.1 // host指向这">
+<meta name="keywords" content="develop,nginx">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Nginx负载均衡配置">
 <meta property="og:url" content="http://xupin.im/2017/02/23/nginx-ups/index.html">
-<meta property="og:site_name" content="Mark's blog">
-<meta property="og:description" content="nginx [engine x] is an HTTP and reverse proxy server, a mail proxy server, and a generic TCP/UDP proxy server, originally written by Igor Sysoev.
-1.服务器列表
-// 我们有如下两台服务器,都部署了Nginx
-192.168.1.1 // host指向这">
-<meta property="og:updated_time" content="2020-01-22T09:23:39.087Z">
+<meta property="og:site_name" content="Mark&#39;s blog">
+<meta property="og:description" content="nginx [engine x] is an HTTP and reverse proxy server, a mail proxy server, and a generic TCP/UDP proxy server, originally written by Igor Sysoev. 1.服务器列表 // 我们有如下两台服务器,都部署了Nginx 192.168.1.1 // host指向这">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-03-18T09:47:42.290Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Nginx负载均衡配置">
-<meta name="twitter:description" content="nginx [engine x] is an HTTP and reverse proxy server, a mail proxy server, and a generic TCP/UDP proxy server, originally written by Igor Sysoev.
-1.服务器列表
-// 我们有如下两台服务器,都部署了Nginx
-192.168.1.1 // host指向这">
+<meta name="twitter:description" content="nginx [engine x] is an HTTP and reverse proxy server, a mail proxy server, and a generic TCP/UDP proxy server, originally written by Igor Sysoev. 1.服务器列表 // 我们有如下两台服务器,都部署了Nginx 192.168.1.1 // host指向这">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -45,7 +38,7 @@
   
 
 </head>
-
+</html>
 <body>
   <div id="container" q-class="show:isCtnShow">
     <canvas id="anm-canvas" class="anm-canvas"></canvas>
@@ -184,15 +177,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="http://nginx.org/" target="_blank" rel="external">nginx</a> [engine x] is an HTTP and reverse proxy server, a mail proxy server, and a generic TCP/UDP proxy server, originally written by Igor Sysoev.</p>
+        <p><a href="http://nginx.org/" target="_blank" rel="noopener">nginx</a> [engine x] is an HTTP and reverse proxy server, a mail proxy server, and a generic TCP/UDP proxy server, originally written by Igor Sysoev.</p>
 <h3 id="1-服务器列表"><a href="#1-服务器列表" class="headerlink" title="1.服务器列表"></a>1.服务器列表</h3><blockquote>
 <p>// 我们有如下两台服务器,都部署了Nginx</p>
 <p>192.168.1.1 // host指向这台服务器</p>
 <p>192.168.1.2</p>
 </blockquote>
-<h3 id="2-Nginx配置"><a href="#2-Nginx配置" class="headerlink" title="2.Nginx配置"></a>2.Nginx配置</h3><figure class="highlight glsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 打开192.168.1.1这台服务器的nginx.conf,编辑后保存</span></div><div class="line">http &#123;</div><div class="line">	.</div><div class="line">	.</div><div class="line">	. <span class="comment">// 无关紧要的部分忽略掉</span></div><div class="line">	upstream lee&#123; <span class="comment">// 这里的ups name自定义,我这里使用lee</span></div><div class="line">		<span class="comment">// 这里除了80端口以外,其他端口都可以使用</span></div><div class="line">		server  <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">8080</span>;</div><div class="line">		server  <span class="number">192.168</span><span class="number">.1</span><span class="number">.2</span>:<span class="number">8080</span>;</div><div class="line">	&#125;</div><div class="line">	server&#123;</div><div class="line">		listen <span class="number">80</span>; <span class="comment">// ups监听80</span></div><div class="line">		server_name www.xxx.com xxx.comn; <span class="comment">// 这个可选,一般是你指向这台服务器的Host</span></div><div class="line">		<span class="keyword">location</span> / &#123;</div><div class="line">			proxy_pass         http:<span class="comment">//lee; // 这里是上面自定的ups name</span></div><div class="line">			proxy_set_header   Host             $host;</div><div class="line">			proxy_set_header   X-Real-IP        $remote_addr;</div><div class="line">			proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	server</div><div class="line">	&#123;</div><div class="line">		listen <span class="number">8080</span>;</div><div class="line">		server_name <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>;</div><div class="line">		root   /var/www/html; <span class="comment">// 这里是你的Nginx根目录</span></div><div class="line">		<span class="keyword">index</span>  <span class="keyword">index</span>.php <span class="keyword">index</span>.html <span class="keyword">index</span>.htm;</div><div class="line">		<span class="keyword">location</span> /status</div><div class="line">		&#123;</div><div class="line">			stub_status on;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">location</span> ~ \.php</div><div class="line">		&#123;</div><div class="line">			fastcgi_pass <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">9000</span>;</div><div class="line">			fastcgi_index <span class="keyword">index</span>.php;</div><div class="line">			fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;</div><div class="line">			include /etc/nginx/fastcgi_params;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">location</span> ~ .*\.(gif|jpg|jpeg|png|bmp|swf|js|css)$</div><div class="line">		&#123;</div><div class="line">			expires <span class="number">30</span>d;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 打开192.168.1.2这台服务器的nginx.conf,编辑后保存</span></div><div class="line">http &#123;</div><div class="line">	.</div><div class="line">	.</div><div class="line">	. <span class="comment">// 无关紧要的部分忽略掉</span></div><div class="line">	server</div><div class="line">	&#123;</div><div class="line">		listen <span class="number">8080</span>;</div><div class="line">		server_name <span class="number">192.168</span><span class="number">.1</span><span class="number">.2</span>;</div><div class="line">		root   /var/www/html; <span class="comment">// 这里是你的Nginx根目录</span></div><div class="line">		<span class="keyword">index</span>  <span class="keyword">index</span>.php <span class="keyword">index</span>.html <span class="keyword">index</span>.htm;</div><div class="line">		<span class="keyword">location</span> /status</div><div class="line">		&#123;</div><div class="line">			stub_status on;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">location</span> ~ \.php</div><div class="line">		&#123;</div><div class="line">			fastcgi_pass <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">9000</span>;</div><div class="line">			fastcgi_index <span class="keyword">index</span>.php;</div><div class="line">			fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;</div><div class="line">			include /etc/nginx/fastcgi_params;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">location</span> ~ .*\.(gif|jpg|jpeg|png|bmp|swf|js|css)$</div><div class="line">		&#123;</div><div class="line">			expires <span class="number">30</span>d;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="3-重新加载Nginx配置"><a href="#3-重新加载Nginx配置" class="headerlink" title="3.重新加载Nginx配置"></a>3.重新加载Nginx配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ nginx -tc /etc/nginx/nginx.conf // 你nginx.conf所在的目录,检查配置是否存在问题</div><div class="line">nginx: the configuration file /etc/nginx/nginx.conf syntax is ok</div><div class="line">nginx: configuration file /etc/nginx/nginx.conf <span class="built_in">test</span> is successful</div><div class="line">$ nginx <span class="_">-s</span> reload // 不需要停服,直接重载配置</div></pre></td></tr></table></figure>
-<h3 id="4-Hi-007-任务完成"><a href="#4-Hi-007-任务完成" class="headerlink" title="4.Hi 007,任务完成"></a>4.Hi 007,任务完成</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 编辑个脚本测试一下,</span></div><div class="line"><span class="keyword">echo</span> <span class="string">'Hi 007'</span>;</div></pre></td></tr></table></figure>
+<h3 id="2-Nginx配置"><a href="#2-Nginx配置" class="headerlink" title="2.Nginx配置"></a>2.Nginx配置</h3><figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 打开192.168.1.1这台服务器的nginx.conf,编辑后保存</span></span><br><span class="line">http &#123;</span><br><span class="line">	.</span><br><span class="line">	.</span><br><span class="line">	. <span class="comment">// 无关紧要的部分忽略掉</span></span><br><span class="line">	upstream lee&#123; <span class="comment">// 这里的ups name自定义,我这里使用lee</span></span><br><span class="line">		<span class="comment">// 这里除了80端口以外,其他端口都可以使用</span></span><br><span class="line">		server  <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">8080</span>;</span><br><span class="line">		server  <span class="number">192.168</span><span class="number">.1</span><span class="number">.2</span>:<span class="number">8080</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	server&#123;</span><br><span class="line">		listen <span class="number">80</span>; <span class="comment">// ups监听80</span></span><br><span class="line">		server_name www.xxx.com xxx.comn; <span class="comment">// 这个可选,一般是你指向这台服务器的Host</span></span><br><span class="line">		<span class="keyword">location</span> / &#123;</span><br><span class="line">			proxy_pass         http:<span class="comment">//lee; // 这里是上面自定的ups name</span></span><br><span class="line">			proxy_set_header   Host             $host;</span><br><span class="line">			proxy_set_header   X-Real-IP        $remote_addr;</span><br><span class="line">			proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	server</span><br><span class="line">	&#123;</span><br><span class="line">		listen <span class="number">8080</span>;</span><br><span class="line">		server_name <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>;</span><br><span class="line">		root   /var/www/html; <span class="comment">// 这里是你的Nginx根目录</span></span><br><span class="line">		<span class="keyword">index</span>  <span class="keyword">index</span>.php <span class="keyword">index</span>.html <span class="keyword">index</span>.htm;</span><br><span class="line">		<span class="keyword">location</span> /status</span><br><span class="line">		&#123;</span><br><span class="line">			stub_status on;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">location</span> ~ \.php</span><br><span class="line">		&#123;</span><br><span class="line">			fastcgi_pass <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">9000</span>;</span><br><span class="line">			fastcgi_index <span class="keyword">index</span>.php;</span><br><span class="line">			fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;</span><br><span class="line">			include /etc/nginx/fastcgi_params;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">location</span> ~ .*\.(gif|jpg|jpeg|png|bmp|swf|js|css)$</span><br><span class="line">		&#123;</span><br><span class="line">			expires <span class="number">30</span>d;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打开192.168.1.2这台服务器的nginx.conf,编辑后保存</span></span><br><span class="line">http &#123;</span><br><span class="line">	.</span><br><span class="line">	.</span><br><span class="line">	. <span class="comment">// 无关紧要的部分忽略掉</span></span><br><span class="line">	server</span><br><span class="line">	&#123;</span><br><span class="line">		listen <span class="number">8080</span>;</span><br><span class="line">		server_name <span class="number">192.168</span><span class="number">.1</span><span class="number">.2</span>;</span><br><span class="line">		root   /var/www/html; <span class="comment">// 这里是你的Nginx根目录</span></span><br><span class="line">		<span class="keyword">index</span>  <span class="keyword">index</span>.php <span class="keyword">index</span>.html <span class="keyword">index</span>.htm;</span><br><span class="line">		<span class="keyword">location</span> /status</span><br><span class="line">		&#123;</span><br><span class="line">			stub_status on;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">location</span> ~ \.php</span><br><span class="line">		&#123;</span><br><span class="line">			fastcgi_pass <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">9000</span>;</span><br><span class="line">			fastcgi_index <span class="keyword">index</span>.php;</span><br><span class="line">			fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;</span><br><span class="line">			include /etc/nginx/fastcgi_params;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">location</span> ~ .*\.(gif|jpg|jpeg|png|bmp|swf|js|css)$</span><br><span class="line">		&#123;</span><br><span class="line">			expires <span class="number">30</span>d;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-重新加载Nginx配置"><a href="#3-重新加载Nginx配置" class="headerlink" title="3.重新加载Nginx配置"></a>3.重新加载Nginx配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ nginx -tc /etc/nginx/nginx.conf // 你nginx.conf所在的目录,检查配置是否存在问题</span><br><span class="line">nginx: the configuration file /etc/nginx/nginx.conf syntax is ok</span><br><span class="line">nginx: configuration file /etc/nginx/nginx.conf <span class="built_in">test</span> is successful</span><br><span class="line">$ nginx -s reload // 不需要停服,直接重载配置</span><br></pre></td></tr></table></figure>
+<h3 id="4-Hi-007-任务完成"><a href="#4-Hi-007-任务完成" class="headerlink" title="4.Hi 007,任务完成"></a>4.Hi 007,任务完成</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 编辑个脚本测试一下,</span></span><br><span class="line"><span class="keyword">echo</span> <span class="string">'Hi 007'</span>;</span><br></pre></td></tr></table></figure>
 
       
 
@@ -448,15 +441,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">guetzli</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">tools</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">xss</a>
+                <a href="javascript:void(0)" class="js-tag color5">apns</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -464,7 +449,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">apns</a>
+                <a href="javascript:void(0)" class="js-tag color4">xss</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -476,15 +461,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">google fcm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">guetzli</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tools</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">wekan</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">google fcm</a>
+                <a href="javascript:void(0)" class="js-tag color2">mysql int length</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -500,7 +493,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">tmux</a>
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -508,11 +501,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+                <a href="javascript:void(0)" class="js-tag color5">tmux</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">mysql int length</a>
+                <a href="javascript:void(0)" class="js-tag color1">wekan</a>
               </li>
             
             <div class="clearfix"></div>

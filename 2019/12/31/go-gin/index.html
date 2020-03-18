@@ -1,47 +1,25 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
   <meta name="renderer" content="webkit">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>高性能Golang WEB框架Gin - 初探 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Gin 是一个用 Go (Golang) 编写的 HTTP web 框架。 它是一个类似于 martini 但拥有更好性能的 API 框架, 由于 httprouter，速度提高了近 40 倍。
-1.有哪些优点
-较高的性能（Golang WEB框架比对数据）
-简单易用的中间件
-使用了性能高可扩展的HTTP路由httprouter
-社区长期有着很高的活跃度
-Github星星多（Orz）
-
-…等">
+  <meta name="description" content="Gin 是一个用 Go (Golang) 编写的 HTTP web 框架。 它是一个类似于 martini 但拥有更好性能的 API 框架, 由于 httprouter，速度提高了近 40 倍。 1.有哪些优点 较高的性能（Golang WEB框架比对数据） 简单易用的中间件 使用了性能高可扩展的HTTP路由httprouter 社区长期有着很高的活跃度 Github星星多（Orz）  …等">
+<meta name="keywords" content="develop,golang">
 <meta property="og:type" content="article">
 <meta property="og:title" content="高性能Golang WEB框架Gin - 初探">
 <meta property="og:url" content="http://xupin.im/2019/12/31/go-gin/index.html">
-<meta property="og:site_name" content="Mark's blog">
-<meta property="og:description" content="Gin 是一个用 Go (Golang) 编写的 HTTP web 框架。 它是一个类似于 martini 但拥有更好性能的 API 框架, 由于 httprouter，速度提高了近 40 倍。
-1.有哪些优点
-较高的性能（Golang WEB框架比对数据）
-简单易用的中间件
-使用了性能高可扩展的HTTP路由httprouter
-社区长期有着很高的活跃度
-Github星星多（Orz）
-
-…等">
-<meta property="og:updated_time" content="2020-01-22T09:23:39.082Z">
+<meta property="og:site_name" content="Mark&#39;s blog">
+<meta property="og:description" content="Gin 是一个用 Go (Golang) 编写的 HTTP web 框架。 它是一个类似于 martini 但拥有更好性能的 API 框架, 由于 httprouter，速度提高了近 40 倍。 1.有哪些优点 较高的性能（Golang WEB框架比对数据） 简单易用的中间件 使用了性能高可扩展的HTTP路由httprouter 社区长期有着很高的活跃度 Github星星多（Orz）  …等">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-03-18T09:47:42.290Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="高性能Golang WEB框架Gin - 初探">
-<meta name="twitter:description" content="Gin 是一个用 Go (Golang) 编写的 HTTP web 框架。 它是一个类似于 martini 但拥有更好性能的 API 框架, 由于 httprouter，速度提高了近 40 倍。
-1.有哪些优点
-较高的性能（Golang WEB框架比对数据）
-简单易用的中间件
-使用了性能高可扩展的HTTP路由httprouter
-社区长期有着很高的活跃度
-Github星星多（Orz）
-
-…等">
+<meta name="twitter:description" content="Gin 是一个用 Go (Golang) 编写的 HTTP web 框架。 它是一个类似于 martini 但拥有更好性能的 API 框架, 由于 httprouter，速度提高了近 40 倍。 1.有哪些优点 较高的性能（Golang WEB框架比对数据） 简单易用的中间件 使用了性能高可扩展的HTTP路由httprouter 社区长期有着很高的活跃度 Github星星多（Orz）  …等">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -60,7 +38,7 @@ Github星星多（Orz）
   
 
 </head>
-
+</html>
 <body>
   <div id="container" q-class="show:isCtnShow">
     <canvas id="anm-canvas" class="anm-canvas"></canvas>
@@ -199,26 +177,26 @@ Github星星多（Orz）
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://github.com/gin-gonic/gin" target="_blank" rel="external">Gin</a> 是一个用 Go (Golang) 编写的 HTTP web 框架。 它是一个类似于 martini 但拥有更好性能的 API 框架, 由于 httprouter，速度提高了近 40 倍。</p>
+        <p><a href="https://github.com/gin-gonic/gin" target="_blank" rel="noopener">Gin</a> 是一个用 Go (Golang) 编写的 HTTP web 框架。 它是一个类似于 martini 但拥有更好性能的 API 框架, 由于 httprouter，速度提高了近 40 倍。</p>
 <h3 id="1-有哪些优点"><a href="#1-有哪些优点" class="headerlink" title="1.有哪些优点"></a>1.有哪些优点</h3><blockquote>
-<p>较高的性能（<a href="https://github.com/julienschmidt/go-http-routing-benchmark" target="_blank" rel="external">Golang WEB框架比对数据</a>）</p>
+<p>较高的性能（<a href="https://github.com/julienschmidt/go-http-routing-benchmark" target="_blank" rel="noopener">Golang WEB框架比对数据</a>）</p>
 <p>简单易用的中间件</p>
-<p>使用了性能高可扩展的HTTP路由<a href="https://github.com/julienschmidt/httprouter" target="_blank" rel="external">httprouter</a></p>
+<p>使用了性能高可扩展的HTTP路由<a href="https://github.com/julienschmidt/httprouter" target="_blank" rel="noopener">httprouter</a></p>
 <p>社区长期有着很高的活跃度</p>
 <p>Github星星多（Orz）</p>
 </blockquote>
 <p>…等</p>
 <a id="more"></a>
-<h3 id="2-安装-更新"><a href="#2-安装-更新" class="headerlink" title="2.安装/更新"></a>2.安装/更新</h3><p>安装<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ <span class="keyword">go</span> <span class="built_in">get</span> github.<span class="keyword">com</span>/gin-gonic/gin</div></pre></td></tr></table></figure></p>
-<p>更新<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ <span class="keyword">go</span> <span class="built_in">get</span> -<span class="keyword">u</span> github.<span class="keyword">com</span>/gin-gonic/gin</div></pre></td></tr></table></figure></p>
-<h3 id="3-Hello-World"><a href="#3-Hello-World" class="headerlink" title="3.Hello World"></a>3.Hello World</h3><figure class="highlight golang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> (</div><div class="line">    <span class="string">"github.com/gin-gonic/gin"</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="comment">// 框架</span></div><div class="line">    g := gin.Default()</div><div class="line"></div><div class="line">    <span class="comment">// 路由</span></div><div class="line">    g.GET(<span class="string">"/t"</span>, test)</div><div class="line"></div><div class="line">    <span class="comment">// 服务端口</span></div><div class="line">    g.Run(<span class="string">":4000"</span>)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">test</span><span class="params">(c *gin.Context)</span></span> &#123;</div><div class="line">    c.String(<span class="number">200</span>, <span class="string">"Hallo!"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>运行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ go run main.go</div></pre></td></tr></table></figure></p>
-<p>访问 <a href="http://127.0.0.1:4000/t" target="_blank" rel="external">http://127.0.0.1:4000/t</a> ，页面输出Hallo!。</p>
-<h3 id="4-路由"><a href="#4-路由" class="headerlink" title="4.路由"></a>4.路由</h3><p>Gin支持的路由方式和大部分主流框架基本一致。<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    g := gin.Default()</div><div class="line"></div><div class="line">    g.GET(<span class="string">"/someGet"</span>, getting)</div><div class="line">    g.POST(<span class="string">"/somePost"</span>, posting)</div><div class="line">    g.PUT(<span class="string">"/somePut"</span>, putting)</div><div class="line">    g.DELETE(<span class="string">"/someDelete"</span>, deleting)</div><div class="line">    g.PATCH(<span class="string">"/somePatch"</span>, patching)</div><div class="line">    g.HEAD(<span class="string">"/someHead"</span>, head)</div><div class="line">    g.OPTIONS(<span class="string">"/someOptions"</span>, options)</div><div class="line"></div><div class="line">    g.Run(<span class="string">":4000"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>Gin同样也支持路由参数，不过不支持路由正则表达式。<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    g := gin.Default()</div><div class="line"></div><div class="line">    <span class="comment">// 此 handler 只能匹配 /user/&#123;PARAM&#125;</span></div><div class="line">    g.GET(<span class="string">"/user/:name"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</div><div class="line">        name := c.Param(<span class="string">"name"</span>)</div><div class="line">        c.String(http.StatusOK, <span class="string">"Hello %s"</span>, name)</div><div class="line">    &#125;)</div><div class="line"></div><div class="line">    <span class="comment">// 此 handler 会匹配 /user/&#123;PARAM&#125;/ 和 /user/&#123;PARAM&#125;/&#123;ACTION_2&#125;</span></div><div class="line">    <span class="comment">// 如果访问 /user/&#123;PARAM&#125;，在没有 "/user/:name" 路由的情况下，会重定向至 /user/&#123;PARAM&#125;/ 匹配当前路由。</span></div><div class="line">    g.GET(<span class="string">"/user/:name/*action"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</div><div class="line">        name := c.Param(<span class="string">"name"</span>)</div><div class="line">        action := c.Param(<span class="string">"action"</span>)</div><div class="line">        message := name + <span class="string">" is "</span> + action</div><div class="line">        c.String(http.StatusOK, message)</div><div class="line">    &#125;)</div><div class="line"></div><div class="line">    g.Run(<span class="string">":4000"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h3 id="5-路由组"><a href="#5-路由组" class="headerlink" title="5.路由组"></a>5.路由组</h3><p>Gin在路由分组上的做法和其他框架也都是一致的，再次体现了Gin简单易用极容易上手的优点。<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    g := gin.Default()</div><div class="line"></div><div class="line">    userGroup := g.Group(<span class="string">"/user"</span>)</div><div class="line">    &#123;</div><div class="line">        userGroup.POST(<span class="string">"/login"</span>, ctrls.Login)</div><div class="line">        userGroup.POST(<span class="string">"/logout"</span>, ctrls.Logout)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    reportGroup := g.Group(<span class="string">"/report"</span>)</div><div class="line">    &#123;</div><div class="line">        reportGroup.POST(<span class="string">"/revenue"</span>, ctrls.RevenueReport)</div><div class="line">        reportGroup.POST(<span class="string">"/cost"</span>, ctrls.CostReport)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    g.Run(<span class="string">":4000"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h3 id="6-中间件"><a href="#6-中间件" class="headerlink" title="6.中间件"></a>6.中间件</h3><p>Gin的中间件分为：全局，路由组，路由级别。<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    g := gin.Default()</div><div class="line"></div><div class="line">    <span class="comment">// 全局中间件</span></div><div class="line">    g.Use(middleware)</div><div class="line"></div><div class="line">    <span class="comment">// 路由组中间件</span></div><div class="line">    routerGroup := g.Group(<span class="string">"/user"</span>, middleware)</div><div class="line">    &#123;</div><div class="line">        <span class="comment">// 路由中间件</span></div><div class="line">        routerGroup.GET(<span class="string">"/login"</span>, middleware, ctrls.Login)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    g.Run(<span class="string">":4000"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h3 id="7-参数"><a href="#7-参数" class="headerlink" title="7.参数"></a>7.参数</h3><p>Gin如何获取请求参数？下面的简单例子：<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    g := gin.Default()</div><div class="line"></div><div class="line">    <span class="comment">// URL参数</span></div><div class="line">    <span class="comment">// URL：/user?email=mark@im.com</span></div><div class="line">    g.GET(<span class="string">"/user"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</div><div class="line">        <span class="comment">// 使用 DefaultQuery 或者 Query</span></div><div class="line">        email := c.DefaultQuery(<span class="string">"email"</span>, <span class="string">"default value"</span>)</div><div class="line">        email = c.Query(<span class="string">"email"</span>)</div><div class="line"></div><div class="line">        c.String(http.StatusOK, <span class="string">"Hallo, %s"</span>, email)</div><div class="line">    &#125;)</div><div class="line"></div><div class="line">    <span class="comment">// POST参数</span></div><div class="line">    g.POST(<span class="string">"/user/login"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</div><div class="line">        <span class="comment">// 使用 DefaultPostForm 或者 PostForm</span></div><div class="line">        email := c.PostForm(<span class="string">"email"</span>)</div><div class="line">        email = c.DefaultPostForm(<span class="string">"email"</span>, <span class="string">"default value"</span>)</div><div class="line"></div><div class="line">        c.String(http.StatusOK, <span class="string">"Hallo, %s"</span>, email)</div><div class="line">    &#125;)</div><div class="line"></div><div class="line">    g.Run(<span class="string">":4000"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="2-安装-更新"><a href="#2-安装-更新" class="headerlink" title="2.安装/更新"></a>2.安装/更新</h3><p>安装<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="keyword">go</span> <span class="built_in">get</span> github.<span class="keyword">com</span>/gin-gonic/gin</span><br></pre></td></tr></table></figure></p>
+<p>更新<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="keyword">go</span> <span class="built_in">get</span> -<span class="keyword">u</span> github.<span class="keyword">com</span>/gin-gonic/gin</span><br></pre></td></tr></table></figure></p>
+<h3 id="3-Hello-World"><a href="#3-Hello-World" class="headerlink" title="3.Hello World"></a>3.Hello World</h3><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"github.com/gin-gonic/gin"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 框架</span></span><br><span class="line">    g := gin.Default()</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 路由</span></span><br><span class="line">    g.GET(<span class="string">"/t"</span>, test)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 服务端口</span></span><br><span class="line">    g.Run(<span class="string">":4000"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">test</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">    c.String(<span class="number">200</span>, <span class="string">"Hallo!"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ go run main.go</span><br></pre></td></tr></table></figure></p>
+<p>访问 <a href="http://127.0.0.1:4000/t" target="_blank" rel="noopener">http://127.0.0.1:4000/t</a> ，页面输出Hallo!。</p>
+<h3 id="4-路由"><a href="#4-路由" class="headerlink" title="4.路由"></a>4.路由</h3><p>Gin支持的路由方式和大部分主流框架基本一致。<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    g := gin.Default()</span><br><span class="line"></span><br><span class="line">    g.GET(<span class="string">"/someGet"</span>, getting)</span><br><span class="line">    g.POST(<span class="string">"/somePost"</span>, posting)</span><br><span class="line">    g.PUT(<span class="string">"/somePut"</span>, putting)</span><br><span class="line">    g.DELETE(<span class="string">"/someDelete"</span>, deleting)</span><br><span class="line">    g.PATCH(<span class="string">"/somePatch"</span>, patching)</span><br><span class="line">    g.HEAD(<span class="string">"/someHead"</span>, head)</span><br><span class="line">    g.OPTIONS(<span class="string">"/someOptions"</span>, options)</span><br><span class="line"></span><br><span class="line">    g.Run(<span class="string">":4000"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Gin同样也支持路由参数，不过不支持路由正则表达式。<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    g := gin.Default()</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 此 handler 只能匹配 /user/&#123;PARAM&#125;</span></span><br><span class="line">    g.GET(<span class="string">"/user/:name"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">        name := c.Param(<span class="string">"name"</span>)</span><br><span class="line">        c.String(http.StatusOK, <span class="string">"Hello %s"</span>, name)</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 此 handler 会匹配 /user/&#123;PARAM&#125;/ 和 /user/&#123;PARAM&#125;/&#123;ACTION_2&#125;</span></span><br><span class="line">    <span class="comment">// 如果访问 /user/&#123;PARAM&#125;，在没有 "/user/:name" 路由的情况下，会重定向至 /user/&#123;PARAM&#125;/ 匹配当前路由。</span></span><br><span class="line">    g.GET(<span class="string">"/user/:name/*action"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">        name := c.Param(<span class="string">"name"</span>)</span><br><span class="line">        action := c.Param(<span class="string">"action"</span>)</span><br><span class="line">        message := name + <span class="string">" is "</span> + action</span><br><span class="line">        c.String(http.StatusOK, message)</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    g.Run(<span class="string">":4000"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="5-路由组"><a href="#5-路由组" class="headerlink" title="5.路由组"></a>5.路由组</h3><p>Gin在路由分组上的做法和其他框架也都是一致的，再次体现了Gin简单易用极容易上手的优点。<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    g := gin.Default()</span><br><span class="line"></span><br><span class="line">    userGroup := g.Group(<span class="string">"/user"</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        userGroup.POST(<span class="string">"/login"</span>, ctrls.Login)</span><br><span class="line">        userGroup.POST(<span class="string">"/logout"</span>, ctrls.Logout)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    reportGroup := g.Group(<span class="string">"/report"</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        reportGroup.POST(<span class="string">"/revenue"</span>, ctrls.RevenueReport)</span><br><span class="line">        reportGroup.POST(<span class="string">"/cost"</span>, ctrls.CostReport)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    g.Run(<span class="string">":4000"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="6-中间件"><a href="#6-中间件" class="headerlink" title="6.中间件"></a>6.中间件</h3><p>Gin的中间件分为：全局，路由组，路由级别。<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    g := gin.Default()</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 全局中间件</span></span><br><span class="line">    g.Use(middleware)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 路由组中间件</span></span><br><span class="line">    routerGroup := g.Group(<span class="string">"/user"</span>, middleware)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 路由中间件</span></span><br><span class="line">        routerGroup.GET(<span class="string">"/login"</span>, middleware, ctrls.Login)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    g.Run(<span class="string">":4000"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="7-参数"><a href="#7-参数" class="headerlink" title="7.参数"></a>7.参数</h3><p>Gin如何获取请求参数？下面的简单例子：<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    g := gin.Default()</span><br><span class="line"></span><br><span class="line">    <span class="comment">// URL参数</span></span><br><span class="line">    <span class="comment">// URL：/user?email=mark@im.com</span></span><br><span class="line">    g.GET(<span class="string">"/user"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">        <span class="comment">// 使用 DefaultQuery 或者 Query</span></span><br><span class="line">        email := c.DefaultQuery(<span class="string">"email"</span>, <span class="string">"default value"</span>)</span><br><span class="line">        email = c.Query(<span class="string">"email"</span>)</span><br><span class="line"></span><br><span class="line">        c.String(http.StatusOK, <span class="string">"Hallo, %s"</span>, email)</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// POST参数</span></span><br><span class="line">    g.POST(<span class="string">"/user/login"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">        <span class="comment">// 使用 DefaultPostForm 或者 PostForm</span></span><br><span class="line">        email := c.PostForm(<span class="string">"email"</span>)</span><br><span class="line">        email = c.DefaultPostForm(<span class="string">"email"</span>, <span class="string">"default value"</span>)</span><br><span class="line"></span><br><span class="line">        c.String(http.StatusOK, <span class="string">"Hallo, %s"</span>, email)</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    g.Run(<span class="string">":4000"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>Gin支持的操作还有很多，比如：数据绑定、数据验证、上传文件、静态资源嵌入等。 </p>
 <p>Gin没有提供的组件也有很多，比如：ORM、Console、日志滚动分割等。 </p>
 <p>仁者见仁智者见智，Gin专注做HTTP WEB框架的核心，更多扩展需要开发人员自己去选择，组件化的设计无疑是好的。</p>
@@ -477,15 +455,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">guetzli</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">tools</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">xss</a>
+                <a href="javascript:void(0)" class="js-tag color5">apns</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -493,7 +463,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">apns</a>
+                <a href="javascript:void(0)" class="js-tag color4">xss</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -505,15 +475,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">google fcm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">guetzli</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tools</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">wekan</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">google fcm</a>
+                <a href="javascript:void(0)" class="js-tag color2">mysql int length</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -529,7 +507,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">tmux</a>
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -537,11 +515,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+                <a href="javascript:void(0)" class="js-tag color5">tmux</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">mysql int length</a>
+                <a href="javascript:void(0)" class="js-tag color1">wekan</a>
               </li>
             
             <div class="clearfix"></div>

@@ -1,32 +1,28 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
   <meta name="renderer" content="webkit">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>PHP 图片转换Webp格式 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="WebP是Google推出的一种图片格式，它基于VP8编码，可对图像大幅压缩。与JPEG相同，WebP也是一种有损压缩，但在画质相同的情况下，WebP格式比JPEG图像小40%。
-1.利与弊
-WebP 与 JPEG 图像相比，这种格式可对图像大幅压缩。从而显著优化页面加载时间和带宽使用情况。WebP 目前支持桌面上的 Chrome 和 Opera 浏览器。手机支持仅限于原生的 Android 浏览">
+  <meta name="description" content="WebP是Google推出的一种图片格式，它基于VP8编码，可对图像大幅压缩。与JPEG相同，WebP也是一种有损压缩，但在画质相同的情况下，WebP格式比JPEG图像小40%。 1.利与弊 WebP 与 JPEG 图像相比，这种格式可对图像大幅压缩。从而显著优化页面加载时间和带宽使用情况。WebP 目前支持桌面上的 Chrome 和 Opera 浏览器。手机支持仅限于原生的 Android 浏览">
+<meta name="keywords" content="develop,webp">
 <meta property="og:type" content="article">
 <meta property="og:title" content="PHP 图片转换Webp格式">
 <meta property="og:url" content="http://xupin.im/2017/03/22/php-webp/index.html">
-<meta property="og:site_name" content="Mark's blog">
-<meta property="og:description" content="WebP是Google推出的一种图片格式，它基于VP8编码，可对图像大幅压缩。与JPEG相同，WebP也是一种有损压缩，但在画质相同的情况下，WebP格式比JPEG图像小40%。
-1.利与弊
-WebP 与 JPEG 图像相比，这种格式可对图像大幅压缩。从而显著优化页面加载时间和带宽使用情况。WebP 目前支持桌面上的 Chrome 和 Opera 浏览器。手机支持仅限于原生的 Android 浏览">
+<meta property="og:site_name" content="Mark&#39;s blog">
+<meta property="og:description" content="WebP是Google推出的一种图片格式，它基于VP8编码，可对图像大幅压缩。与JPEG相同，WebP也是一种有损压缩，但在画质相同的情况下，WebP格式比JPEG图像小40%。 1.利与弊 WebP 与 JPEG 图像相比，这种格式可对图像大幅压缩。从而显著优化页面加载时间和带宽使用情况。WebP 目前支持桌面上的 Chrome 和 Opera 浏览器。手机支持仅限于原生的 Android 浏览">
+<meta property="og:locale" content="default">
 <meta property="og:image" content="http://xupin.im/assets/webp/webp-app.jpg">
 <meta property="og:image" content="http://xupin.im/assets/webp/webp-res.png">
 <meta property="og:image" content="http://xupin.im/assets/webp/webp-after.webp">
-<meta property="og:updated_time" content="2020-01-22T09:23:39.090Z">
+<meta property="og:updated_time" content="2020-03-18T09:47:42.293Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PHP 图片转换Webp格式">
-<meta name="twitter:description" content="WebP是Google推出的一种图片格式，它基于VP8编码，可对图像大幅压缩。与JPEG相同，WebP也是一种有损压缩，但在画质相同的情况下，WebP格式比JPEG图像小40%。
-1.利与弊
-WebP 与 JPEG 图像相比，这种格式可对图像大幅压缩。从而显著优化页面加载时间和带宽使用情况。WebP 目前支持桌面上的 Chrome 和 Opera 浏览器。手机支持仅限于原生的 Android 浏览">
+<meta name="twitter:description" content="WebP是Google推出的一种图片格式，它基于VP8编码，可对图像大幅压缩。与JPEG相同，WebP也是一种有损压缩，但在画质相同的情况下，WebP格式比JPEG图像小40%。 1.利与弊 WebP 与 JPEG 图像相比，这种格式可对图像大幅压缩。从而显著优化页面加载时间和带宽使用情况。WebP 目前支持桌面上的 Chrome 和 Opera 浏览器。手机支持仅限于原生的 Android 浏览">
 <meta name="twitter:image" content="http://xupin.im/assets/webp/webp-app.jpg">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
@@ -46,7 +42,7 @@ WebP 与 JPEG 图像相比，这种格式可对图像大幅压缩。从而显著
   
 
 </head>
-
+</html>
 <body>
   <div id="container" q-class="show:isCtnShow">
     <canvas id="anm-canvas" class="anm-canvas"></canvas>
@@ -189,13 +185,13 @@ WebP 与 JPEG 图像相比，这种格式可对图像大幅压缩。从而显著
 <h3 id="1-利与弊"><a href="#1-利与弊" class="headerlink" title="1.利与弊"></a>1.利与弊</h3><blockquote>
 <p>WebP 与 JPEG 图像相比，这种格式可对图像大幅压缩。从而显著优化页面加载时间和带宽使用情况。<br>WebP 目前支持桌面上的 Chrome 和 Opera 浏览器。手机支持仅限于原生的 Android 浏览器和 Android 系统上的 Chrome 浏览器,后面会介绍关于如何处理这个限制的方法。</p>
 </blockquote>
-<p><img src="/assets/webp/webp-app.jpg" alt=""></p>
+<p><img src="/assets/webp/webp-app.jpg" alt></p>
 <p>（Google 已和正在部署的 WebP 的产品）</p>
-<h3 id="2-后端PHP代码如何转换？"><a href="#2-后端PHP代码如何转换？" class="headerlink" title="2.后端PHP代码如何转换？"></a>2.后端PHP代码如何转换？</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="php"><span class="meta">&lt;?php</span></span></div><div class="line"></div><div class="line"><span class="comment">// 文件名</span></div><div class="line">$fileName = <span class="string">'./res.png'</span>;</div><div class="line"></div><div class="line"><span class="comment">// 图片源</span></div><div class="line">$res = imagecreatefrompng($fileName); <span class="comment">// 如果是jpg(imagecreatefromjpg),其他格式自行查阅手册</span></div><div class="line"></div><div class="line"><span class="comment">// 输出.webp文件</span></div><div class="line">imagewebp($res, <span class="string">'./res.webp'</span>);</div></pre></td></tr></table></figure>
+<h3 id="2-后端PHP代码如何转换？"><a href="#2-后端PHP代码如何转换？" class="headerlink" title="2.后端PHP代码如何转换？"></a>2.后端PHP代码如何转换？</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"></span><br><span class="line"><span class="php"><span class="comment">// 文件名</span></span></span><br><span class="line"><span class="php">$fileName = <span class="string">'./res.png'</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="php"><span class="comment">// 图片源</span></span></span><br><span class="line"><span class="php">$res = imagecreatefrompng($fileName); <span class="comment">// 如果是jpg(imagecreatefromjpg),其他格式自行查阅手册</span></span></span><br><span class="line"></span><br><span class="line"><span class="php"><span class="comment">// 输出.webp文件</span></span></span><br><span class="line"><span class="php">imagewebp($res, <span class="string">'./res.webp'</span>);</span></span><br></pre></td></tr></table></figure>
 <p>(非常简单!)</p>
-<h3 id="3-前端JS代码如何判断浏览器支持"><a href="#3-前端JS代码如何判断浏览器支持" class="headerlink" title="3.前端JS代码如何判断浏览器支持?"></a>3.前端JS代码如何判断浏览器支持?</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 代码片段摘自网站,亲测可用</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">checkWebp</span>(<span class="params">callback</span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> img = <span class="keyword">new</span> Image();</div><div class="line">  img.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> result = (img.width &gt; <span class="number">0</span>) &amp;&amp; (img.height &gt; <span class="number">0</span>);</div><div class="line">    callback(result);</div><div class="line">  &#125;;</div><div class="line">  img.onerror = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    callback(<span class="literal">false</span>);</div><div class="line">  &#125;;</div><div class="line">  img.src = <span class="string">'data:image/webp;base64,UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEADsD+JaQAA3AAAAAA'</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">showImage</span>(<span class="params">useWebp</span>)</span>&#123;</div><div class="line">  <span class="keyword">var</span> imgs = <span class="built_in">Array</span>.from(<span class="built_in">document</span>.querySelectorAll(<span class="string">'img'</span>));</div><div class="line"></div><div class="line">  imgs.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">i</span>)</span>&#123;</div><div class="line">    <span class="keyword">var</span> src = i.attributes[<span class="string">'data-src'</span>].value;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (useWebp)&#123;</div><div class="line">      src = src.replace(<span class="regexp">/\.jpg$/</span>, <span class="string">'.webp'</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    i.src = src;</div><div class="line">  &#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">checkWebp(showImage);</div></pre></td></tr></table></figure>
-<h3 id="4-实例前后对比"><a href="#4-实例前后对比" class="headerlink" title="4.实例前后对比"></a>4.实例前后对比</h3><h6 id="转换前-378KB"><a href="#转换前-378KB" class="headerlink" title="转换前(378KB)"></a>转换前(378KB)</h6><p><img src="/assets/webp/webp-res.png" alt=""></p>
-<h6 id="转换后-8KB"><a href="#转换后-8KB" class="headerlink" title="转换后(8KB)"></a>转换后(8KB)</h6><p><img src="/assets/webp/webp-after.webp" alt=""></p>
+<h3 id="3-前端JS代码如何判断浏览器支持"><a href="#3-前端JS代码如何判断浏览器支持" class="headerlink" title="3.前端JS代码如何判断浏览器支持?"></a>3.前端JS代码如何判断浏览器支持?</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 代码片段摘自网站,亲测可用</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">checkWebp</span>(<span class="params">callback</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> img = <span class="keyword">new</span> Image();</span><br><span class="line">  img.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> result = (img.width &gt; <span class="number">0</span>) &amp;&amp; (img.height &gt; <span class="number">0</span>);</span><br><span class="line">    callback(result);</span><br><span class="line">  &#125;;</span><br><span class="line">  img.onerror = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    callback(<span class="literal">false</span>);</span><br><span class="line">  &#125;;</span><br><span class="line">  img.src = <span class="string">'data:image/webp;base64,UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEADsD+JaQAA3AAAAAA'</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">showImage</span>(<span class="params">useWebp</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> imgs = <span class="built_in">Array</span>.from(<span class="built_in">document</span>.querySelectorAll(<span class="string">'img'</span>));</span><br><span class="line"></span><br><span class="line">  imgs.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">i</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> src = i.attributes[<span class="string">'data-src'</span>].value;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (useWebp)&#123;</span><br><span class="line">      src = src.replace(<span class="regexp">/\.jpg$/</span>, <span class="string">'.webp'</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    i.src = src;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">checkWebp(showImage);</span><br></pre></td></tr></table></figure>
+<h3 id="4-实例前后对比"><a href="#4-实例前后对比" class="headerlink" title="4.实例前后对比"></a>4.实例前后对比</h3><h6 id="转换前-378KB"><a href="#转换前-378KB" class="headerlink" title="转换前(378KB)"></a>转换前(378KB)</h6><p><img src="/assets/webp/webp-res.png" alt></p>
+<h6 id="转换后-8KB"><a href="#转换后-8KB" class="headerlink" title="转换后(8KB)"></a>转换后(8KB)</h6><p><img src="/assets/webp/webp-after.webp" alt></p>
 
       
 
@@ -451,15 +447,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">guetzli</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">tools</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">xss</a>
+                <a href="javascript:void(0)" class="js-tag color5">apns</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -467,7 +455,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">apns</a>
+                <a href="javascript:void(0)" class="js-tag color4">xss</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -479,15 +467,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">google fcm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">guetzli</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tools</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">wekan</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">google fcm</a>
+                <a href="javascript:void(0)" class="js-tag color2">mysql int length</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -503,7 +499,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">tmux</a>
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -511,11 +507,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+                <a href="javascript:void(0)" class="js-tag color5">tmux</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">mysql int length</a>
+                <a href="javascript:void(0)" class="js-tag color1">wekan</a>
               </li>
             
             <div class="clearfix"></div>

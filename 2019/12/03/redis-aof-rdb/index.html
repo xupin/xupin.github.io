@@ -1,29 +1,25 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
   <meta name="renderer" content="webkit">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Redis持久化方式aof/rdb浅析 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Redis是一个开放源代码（BSD许可）的内存中数据结构存储，用作数据库，缓存和消息代理。
-一、Redis数据存储的方式有两种12单纯的缓存模式, 整个数据的生命周期随着Redis Server的停止而消失。persistence模式, 数据会持续备份到磁盘文件。
-二、Redis如何实现持久化存储？Redis提供了两种方式。12RDB(Redis DataBase)AOF(Append-only">
+  <meta name="description" content="Redis是一个开放源代码（BSD许可）的内存中数据结构存储，用作数据库，缓存和消息代理。 一、Redis数据存储的方式有两种12单纯的缓存模式, 整个数据的生命周期随着Redis Server的停止而消失。persistence模式, 数据会持续备份到磁盘文件。 二、Redis如何实现持久化存储？Redis提供了两种方式。12RDB(Redis DataBase)AOF(Append-only">
+<meta name="keywords" content="develop,redis">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Redis持久化方式aof/rdb浅析">
+<meta property="og:title" content="Redis持久化方式aof&#x2F;rdb浅析">
 <meta property="og:url" content="http://xupin.im/2019/12/03/redis-aof-rdb/index.html">
-<meta property="og:site_name" content="Mark's blog">
-<meta property="og:description" content="Redis是一个开放源代码（BSD许可）的内存中数据结构存储，用作数据库，缓存和消息代理。
-一、Redis数据存储的方式有两种12单纯的缓存模式, 整个数据的生命周期随着Redis Server的停止而消失。persistence模式, 数据会持续备份到磁盘文件。
-二、Redis如何实现持久化存储？Redis提供了两种方式。12RDB(Redis DataBase)AOF(Append-only">
-<meta property="og:updated_time" content="2020-03-15T11:14:19.044Z">
+<meta property="og:site_name" content="Mark&#39;s blog">
+<meta property="og:description" content="Redis是一个开放源代码（BSD许可）的内存中数据结构存储，用作数据库，缓存和消息代理。 一、Redis数据存储的方式有两种12单纯的缓存模式, 整个数据的生命周期随着Redis Server的停止而消失。persistence模式, 数据会持续备份到磁盘文件。 二、Redis如何实现持久化存储？Redis提供了两种方式。12RDB(Redis DataBase)AOF(Append-only">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-03-18T09:47:42.293Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Redis持久化方式aof/rdb浅析">
-<meta name="twitter:description" content="Redis是一个开放源代码（BSD许可）的内存中数据结构存储，用作数据库，缓存和消息代理。
-一、Redis数据存储的方式有两种12单纯的缓存模式, 整个数据的生命周期随着Redis Server的停止而消失。persistence模式, 数据会持续备份到磁盘文件。
-二、Redis如何实现持久化存储？Redis提供了两种方式。12RDB(Redis DataBase)AOF(Append-only">
+<meta name="twitter:title" content="Redis持久化方式aof&#x2F;rdb浅析">
+<meta name="twitter:description" content="Redis是一个开放源代码（BSD许可）的内存中数据结构存储，用作数据库，缓存和消息代理。 一、Redis数据存储的方式有两种12单纯的缓存模式, 整个数据的生命周期随着Redis Server的停止而消失。persistence模式, 数据会持续备份到磁盘文件。 二、Redis如何实现持久化存储？Redis提供了两种方式。12RDB(Redis DataBase)AOF(Append-only">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -42,7 +38,7 @@
   
 
 </head>
-
+</html>
 <body>
   <div id="container" q-class="show:isCtnShow">
     <canvas id="anm-canvas" class="anm-canvas"></canvas>
@@ -182,18 +178,18 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>Redis是一个开放源代码（BSD许可）的内存中数据结构存储，用作数据库，缓存和消息代理。</p>
-<h3 id="一、Redis数据存储的方式有两种"><a href="#一、Redis数据存储的方式有两种" class="headerlink" title="一、Redis数据存储的方式有两种"></a>一、Redis数据存储的方式有两种</h3><figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">单纯的缓存模式, 整个数据的生命周期随着Redis <span class="built_in">Server</span>的停止而消失。</div><div class="line">persistence模式, 数据会持续备份到磁盘文件。</div></pre></td></tr></table></figure>
-<h3 id="二、Redis如何实现持久化存储？Redis提供了两种方式。"><a href="#二、Redis如何实现持久化存储？Redis提供了两种方式。" class="headerlink" title="二、Redis如何实现持久化存储？Redis提供了两种方式。"></a>二、Redis如何实现持久化存储？Redis提供了两种方式。</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="title">RDB</span><span class="params">(Redis DataBase)</span></span></div><div class="line"><span class="function"><span class="title">AOF</span><span class="params">(Append-only file)</span></span></div></pre></td></tr></table></figure>
+<h3 id="一、Redis数据存储的方式有两种"><a href="#一、Redis数据存储的方式有两种" class="headerlink" title="一、Redis数据存储的方式有两种"></a>一、Redis数据存储的方式有两种</h3><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">单纯的缓存模式, 整个数据的生命周期随着Redis <span class="built_in">Server</span>的停止而消失。</span><br><span class="line">persistence模式, 数据会持续备份到磁盘文件。</span><br></pre></td></tr></table></figure>
+<h3 id="二、Redis如何实现持久化存储？Redis提供了两种方式。"><a href="#二、Redis如何实现持久化存储？Redis提供了两种方式。" class="headerlink" title="二、Redis如何实现持久化存储？Redis提供了两种方式。"></a>二、Redis如何实现持久化存储？Redis提供了两种方式。</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">RDB</span><span class="params">(Redis DataBase)</span></span></span><br><span class="line"><span class="function"><span class="title">AOF</span><span class="params">(Append-only file)</span></span></span><br></pre></td></tr></table></figure>
 <a id="more"></a>
-<h3 id="三、RDB"><a href="#三、RDB" class="headerlink" title="三、RDB"></a>三、RDB</h3><p>RDB的工作原理有点像运维脚本自动化定时备份数据一样，当内存中的数据到达配置的阈值就会执行DUMP操作备份数据到临时文件,备份成功结束后重命名为dump.rdb文件。<br><figure class="highlight perl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">优点：<span class="keyword">fork</span>子进程来进行备份,父进程不会进行io操作。恢复数据时的速度很快。</div><div class="line">缺点：这种方式是每隔一次才会进行备份,假如下一次备份前down机会丢失部分数据。而且如果备份的数据比较大，<span class="keyword">fork</span>的子进程将会比较耗时，这段时间内会导致父进程阻塞。</div><div class="line">补充：因为这种每隔一段时间去备份一次的方式，类似快照。所以又叫 Snapshot。</div></pre></td></tr></table></figure></p>
-<h3 id="四、AOF"><a href="#四、AOF" class="headerlink" title="四、AOF"></a>四、AOF</h3><p>AOF的工作原理是讲写操作（数据）格式化追加到日志尾部，该日志文件保存了所有的历史操作数据，这一点非常类似Mysql中的bin.log。<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">优点：AOF这种方式可以保证较高的数据完整性，可以设置不同的策略，比如不保存，每一秒钟保存一次，或者每执行一个命令保存一次。AOF的默认策略为每一秒钟保存一次, 就算出现down机最多也就丢失<span class="number">1</span>秒钟的数据, AOF备份数据因为是在后台线程执行fork子进程, 所以不会阻塞主线程。</div><div class="line">缺点：对于同样规模的数据备份的文件体积AOF要大于RDB。在备份速度上面也会慢于RDB，恢复速度同样也没有RDB快。</div></pre></td></tr></table></figure></p>
-<h3 id="五、AOF备份触发机制"><a href="#五、AOF备份触发机制" class="headerlink" title="五、AOF备份触发机制"></a>五、AOF备份触发机制</h3><figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="number">1.</span> Redis服务端接收到客户端bgrewriteaof指令请求，如果当前没有在进行备份那么立即进行备份，否则等待备份完毕之后再执行备份。</div><div class="line"><span class="number">2.</span> Redis conf配置了<span class="keyword">auto</span>-aof-rewrite-percentage和<span class="keyword">auto</span>-aof-rewrite-<span class="built_in">min</span>-<span class="built_in">size</span>参数，并且当前AOF文件大小server.aof_current_size大于<span class="keyword">auto</span>-aof-rewrite-<span class="built_in">min</span>-<span class="built_in">size</span>，且AOF文件大小的增长率大于<span class="keyword">auto</span>-aof-rewrite-percentage时触发备份。</div><div class="line"><span class="number">3.</span> 使用<span class="built_in">config</span> set appendonly yes命令时，调用startAppendOnly()函数触发备份。</div></pre></td></tr></table></figure>
-<h3 id="六、那究竟使用哪种方式？"><a href="#六、那究竟使用哪种方式？" class="headerlink" title="六、那究竟使用哪种方式？"></a>六、那究竟使用哪种方式？</h3><figure class="highlight lua"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">RDB 会有丢失数据风险，备份文件体积小，数据备份/恢复速度快。</div><div class="line">AOF 数据完整性更加安全，但是频繁备份需要过多的<span class="built_in">io</span>操作性能会受到影响，备份文件体积较大，数据恢复速度慢。</div></pre></td></tr></table></figure>
+<h3 id="三、RDB"><a href="#三、RDB" class="headerlink" title="三、RDB"></a>三、RDB</h3><p>RDB的工作原理有点像运维脚本自动化定时备份数据一样，当内存中的数据到达配置的阈值就会执行DUMP操作备份数据到临时文件,备份成功结束后重命名为dump.rdb文件。<br><figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">优点：<span class="keyword">fork</span>子进程来进行备份,父进程不会进行io操作。恢复数据时的速度很快。</span><br><span class="line">缺点：这种方式是每隔一次才会进行备份,假如下一次备份前down机会丢失部分数据。而且如果备份的数据比较大，<span class="keyword">fork</span>的子进程将会比较耗时，这段时间内会导致父进程阻塞。</span><br><span class="line">补充：因为这种每隔一段时间去备份一次的方式，类似快照。所以又叫 Snapshot。</span><br></pre></td></tr></table></figure></p>
+<h3 id="四、AOF"><a href="#四、AOF" class="headerlink" title="四、AOF"></a>四、AOF</h3><p>AOF的工作原理是讲写操作（数据）格式化追加到日志尾部，该日志文件保存了所有的历史操作数据，这一点非常类似Mysql中的bin.log。<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">优点：AOF这种方式可以保证较高的数据完整性，可以设置不同的策略，比如不保存，每一秒钟保存一次，或者每执行一个命令保存一次。AOF的默认策略为每一秒钟保存一次, 就算出现down机最多也就丢失<span class="number">1</span>秒钟的数据, AOF备份数据因为是在后台线程执行fork子进程, 所以不会阻塞主线程。</span><br><span class="line">缺点：对于同样规模的数据备份的文件体积AOF要大于RDB。在备份速度上面也会慢于RDB，恢复速度同样也没有RDB快。</span><br></pre></td></tr></table></figure></p>
+<h3 id="五、AOF备份触发机制"><a href="#五、AOF备份触发机制" class="headerlink" title="五、AOF备份触发机制"></a>五、AOF备份触发机制</h3><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> Redis服务端接收到客户端bgrewriteaof指令请求，如果当前没有在进行备份那么立即进行备份，否则等待备份完毕之后再执行备份。</span><br><span class="line"><span class="number">2.</span> Redis conf配置了<span class="keyword">auto</span>-aof-rewrite-percentage和<span class="keyword">auto</span>-aof-rewrite-<span class="built_in">min</span>-<span class="built_in">size</span>参数，并且当前AOF文件大小server.aof_current_size大于<span class="keyword">auto</span>-aof-rewrite-<span class="built_in">min</span>-<span class="built_in">size</span>，且AOF文件大小的增长率大于<span class="keyword">auto</span>-aof-rewrite-percentage时触发备份。</span><br><span class="line"><span class="number">3.</span> 使用<span class="built_in">config</span> <span class="built_in">set</span> appendonly yes命令时，调用startAppendOnly()函数触发备份。</span><br></pre></td></tr></table></figure>
+<h3 id="六、那究竟使用哪种方式？"><a href="#六、那究竟使用哪种方式？" class="headerlink" title="六、那究竟使用哪种方式？"></a>六、那究竟使用哪种方式？</h3><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RDB 会有丢失数据风险，备份文件体积小，数据备份/恢复速度快。</span><br><span class="line">AOF 数据完整性更加安全，但是频繁备份需要过多的<span class="built_in">io</span>操作性能会受到影响，备份文件体积较大，数据恢复速度慢。</span><br></pre></td></tr></table></figure>
 <p>首先，我们明白AOF, RDB的优缺点之后可以概括出: AOF适合热备，RDB适合冷备，Redis4.0以后允许使用aof-use-rdb-preamble配置项打开RDB-AOF混合持久化。</p>
-<h3 id="七、RDB-AOF混合使用的之后备份文件的变化"><a href="#七、RDB-AOF混合使用的之后备份文件的变化" class="headerlink" title="七、RDB/AOF混合使用的之后备份文件的变化"></a>七、RDB/AOF混合使用的之后备份文件的变化</h3><p>当RDB和AOF同时开启之后<br><figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="bullet">1. </span>Redis默认会优先加载AOF的配置文件。</div><div class="line"><span class="bullet">2. </span>AOF备份文件的内容格式发生改变，备份文件前半段是RDB格式的全量数据后半段是Redis命令格式的增量数据。</div></pre></td></tr></table></figure></p>
+<h3 id="七、RDB-AOF混合使用的之后备份文件的变化"><a href="#七、RDB-AOF混合使用的之后备份文件的变化" class="headerlink" title="七、RDB/AOF混合使用的之后备份文件的变化"></a>七、RDB/AOF混合使用的之后备份文件的变化</h3><p>当RDB和AOF同时开启之后<br><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">1. </span>Redis默认会优先加载AOF的配置文件。</span><br><span class="line"><span class="bullet">2. </span>AOF备份文件的内容格式发生改变，备份文件前半段是RDB格式的全量数据后半段是Redis命令格式的增量数据。</span><br></pre></td></tr></table></figure></p>
 <h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>附上Redis对于持久化方式说明的文档</p>
 <blockquote>
-<p><a href="https://redis.io/topics/persistence" target="_blank" rel="external">https://redis.io/topics/persistence</a></p>
+<p><a href="https://redis.io/topics/persistence" target="_blank" rel="noopener">https://redis.io/topics/persistence</a></p>
 </blockquote>
 
       
@@ -450,15 +446,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">guetzli</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">tools</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">xss</a>
+                <a href="javascript:void(0)" class="js-tag color5">apns</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -466,7 +454,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">apns</a>
+                <a href="javascript:void(0)" class="js-tag color4">xss</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -478,15 +466,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">google fcm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">guetzli</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tools</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">wekan</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">google fcm</a>
+                <a href="javascript:void(0)" class="js-tag color2">mysql int length</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -502,7 +498,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">tmux</a>
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -510,11 +506,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+                <a href="javascript:void(0)" class="js-tag color5">tmux</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">mysql int length</a>
+                <a href="javascript:void(0)" class="js-tag color1">wekan</a>
               </li>
             
             <div class="clearfix"></div>

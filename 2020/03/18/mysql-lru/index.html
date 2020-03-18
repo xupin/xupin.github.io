@@ -6,19 +6,23 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
-  <title>Mark&#39;s blog</title>
+  <title>Mysql学习笔记 - LRU算法 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="安静的小码农">
-<meta name="keywords" content="nginx,php,golang,memcached,redis,mysql,mariadb,php7,前端,js,jquery,javascript,html5,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Mark&#39;s blog">
-<meta property="og:url" content="http://xupin.im/page/2/index.html">
+  <meta name="description" content="1.什么是LRU？LRU（Least recently used，最近最少使用）算法根据数据的历史访问记录来进行淘汰数据，其核心思想是“最近使用的页面数据会在未来一段时期内仍然被使用,已经很久没有使用的页面很有可能在未来较长的一段时间内仍然不会被使用”。 2.LRU的实现LRU算法最常见的实现是使用链表来保存数据，该链表是双向链表，然后利用先进先出的特性，最新写入的数据会最快被获取。  访问不存在">
+<meta name="keywords" content="develop,mysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql学习笔记 - LRU算法">
+<meta property="og:url" content="http://xupin.im/2020/03/18/mysql-lru/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="安静的小码农">
+<meta property="og:description" content="1.什么是LRU？LRU（Least recently used，最近最少使用）算法根据数据的历史访问记录来进行淘汰数据，其核心思想是“最近使用的页面数据会在未来一段时期内仍然被使用,已经很久没有使用的页面很有可能在未来较长的一段时间内仍然不会被使用”。 2.LRU的实现LRU算法最常见的实现是使用链表来保存数据，该链表是双向链表，然后利用先进先出的特性，最新写入的数据会最快被获取。  访问不存在">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="http://xupin.im/assets/lru/struct.png">
+<meta property="og:image" content="http://xupin.im/assets/lru/innodb-buffer-pool-list.png">
+<meta property="og:updated_time" content="2020-03-18T14:14:09.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Mark&#39;s blog">
-<meta name="twitter:description" content="安静的小码农">
+<meta name="twitter:title" content="Mysql学习笔记 - LRU算法">
+<meta name="twitter:description" content="1.什么是LRU？LRU（Least recently used，最近最少使用）算法根据数据的历史访问记录来进行淘汰数据，其核心思想是“最近使用的页面数据会在未来一段时期内仍然被使用,已经很久没有使用的页面很有可能在未来较长的一段时间内仍然不会被使用”。 2.LRU的实现LRU算法最常见的实现是使用链表来保存数据，该链表是双向链表，然后利用先进先出的特性，最新写入的数据会最快被获取。  访问不存在">
+<meta name="twitter:image" content="http://xupin.im/assets/lru/struct.png">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -156,580 +160,89 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-mysql-index" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-mysql-lru" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/16/mysql-index/">简单的优化Mysql索引</a>
+    <h1 class="article-title" itemprop="name">
+      Mysql学习笔记 - LRU算法
     </h1>
   
 
         
-        <a href="/2019/12/16/mysql-index/" class="archive-article-date">
-  	<time datetime="2019-12-16T11:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-16</time>
+        <a href="/2020/03/18/mysql-lru/" class="archive-article-date">
+  	<time datetime="2020-03-17T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-18</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>索引用于快速查找具有特定列值的行。没有索引，MySQL必须从第一行开始，然后通读整个表以找到相关的行。桌子越大，花费越多。如果表中有相关​​列的索引，MySQL可以快速确定要在数据文件中间查找的位置，而不必查看所有数据。这比顺序读取每一行要快得多。<br>InnoDB和MyISAM只支持BTREE，因此默认均是BTree，MEMORY和HEAP支持Hash和Btree，如无明确声明，则默认索引均是Hash（包括主键）。</p>
-<h3 id="1-Mysql有哪些常用的索引"><a href="#1-Mysql有哪些常用的索引" class="headerlink" title="1.Mysql有哪些常用的索引"></a>1.Mysql有哪些常用的索引</h3><blockquote>
-<p>主键索引：数据列不允许重复，不允许为null，一个表只能有一个主键。</p>
-<p>唯一索引：数据列不允许重复，允许为null，一个表允许多个列创建唯一索引。</p>
-<p>普通索引：基本的索引类型，没有唯一性的限制，允许为null。</p>
-<p>全文索引：全文索引是目前实现大数据搜索的关键技术。</p>
-</blockquote>
-<h3 id="2-如何分析SQL语句执行性能"><a href="#2-如何分析SQL语句执行性能" class="headerlink" title="2.如何分析SQL语句执行性能"></a>2.如何分析SQL语句执行性能</h3><p>以下是两种分析SQL性能的常用方式，explain、show profiles/show profile。</p>
-<blockquote>
-<p>explain + SQL语句，获取SQL分析数据</p>
+        <h3 id="1-什么是LRU？"><a href="#1-什么是LRU？" class="headerlink" title="1.什么是LRU？"></a>1.什么是LRU？</h3><p>LRU（Least recently used，最近最少使用）算法根据数据的历史访问记录来进行淘汰数据，其核心思想是“最近使用的页面数据会在未来一段时期内仍然被使用,已经很久没有使用的页面很有可能在未来较长的一段时间内仍然不会被使用”。</p>
+<h3 id="2-LRU的实现"><a href="#2-LRU的实现" class="headerlink" title="2.LRU的实现"></a>2.LRU的实现</h3><p>LRU算法最常见的实现是使用链表来保存数据，该链表是双向链表，然后利用先进先出的特性，最新写入的数据会最快被获取。</p>
 <ul>
-<li>select_type：对应SQL语句的查询复杂度。</li>
-<li>table：正在访问的表。</li>
-<li>partitions：数据所在的分区。</li>
-<li>type：表示是否用上索引，以及索引是如何使用的，此字段决定索引的性能。<code>ALL&lt;TYPE&lt;RANGE&lt;REF&lt;CONST</code></li>
-<li>possible_keys：查询条件存在的索引。</li>
-<li>key：触发的索引。</li>
-<li>key_len：索引字段的长度。</li>
-<li>ref：索引访问，返回所有匹配某个单值的行。</li>
-<li>rows：执行查询必须检查的行数，在InnoDB中此值不精确。</li>
-<li>filtered：条件过滤出的行数的百分比。</li>
-<li>extra：查询分析结果的额外信息，很重要 e.g. Using index、Using where …</li>
+<li>访问不存在的数据时，缓存数据则会写入链表的头部，链表写满时会淘汰掉尾部的缓存数据。</li>
+<li>当缓存数据被访问时，则将该缓存数据向链表头部移动。</li>
 </ul>
-<p>show profiles 获得当前会话中执行的SQL语句，字段为：Query_ID, Duration, Query，show profile all for query {Query_ID}</p>
+<p><img src="/assets/lru/struct.png" alt></p>
+<blockquote>
+<p>优点：面对频繁访问的热点数据，查询效率高</p>
+<p>缺点：如果一次查询扫描全表，那么LRU列表会被污染</p>
 </blockquote>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/16/mysql-index/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-mysql-transaction" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/05/mysql-transaction/">Mysql的事务隔离级别</a>
-    </h1>
-  
-
-        
-        <a href="/2019/12/05/mysql-transaction/" class="archive-article-date">
-  	<time datetime="2019-12-05T04:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>什么是事务？事务（Transaction）一般是指要做的或所做的事情。在计算机术语中是指访问并可能更新数据库中各种数据项的一个程序执行单元(unit)，具有4个特性：原子性、一致性、隔离性、持久性，简称ACID。</p>
-<p>那么Mysql的事务隔离级别又是什么呢？Mysql的事务隔离级别分别是4种：未提交读（Read Uncommitted）、已提交读（Read Committed）、Repeatable Read（可重复读）、Serializable（可串行化）。可以简单理解为Mysql事务的4种执行标准。</p>
-<h3 id="一、ACID特性"><a href="#一、ACID特性" class="headerlink" title="一、ACID特性"></a>一、ACID特性</h3><blockquote>
-<p>原子性（Atomicity）：一个事务是一个不可分割的工作单位，事务中包括的诸操作要么都做，要么都不做。</p>
-<p>一致性（Consistency）：事务必须是使数据库从一个一致性状态变到另一个一致性状态。一致性与原子性是密切相关的。</p>
-<p>隔离性（Isolation）：一个事务的执行不能被其他事务干扰。即一个事务内部的操作及使用的数据对并发的其他事务是隔离的，并发执行的各个事务之间不能互相干扰。</p>
-<p>持久性（Durability）：指一个事务一旦提交，它对数据库中数据的改变就应该是永久性的。接下来的其他操作或故障不应该对其有任何影响。</p>
+<h3 id="3-Mysql-LRU算法有何不同？"><a href="#3-Mysql-LRU算法有何不同？" class="headerlink" title="3.Mysql LRU算法有何不同？"></a>3.Mysql LRU算法有何不同？</h3><p>Mysql（InnoDB）使用了LRU算法的变体，将链表分为三个部分：young、midpoint、old。链表比例(5、3)分配给young、old。其中young占据5/8，old占据3/8，此比例受参数innodb_old_blocks_pct控制。</p>
+<blockquote>
+<p>young是链表中最近访问过的新子表。</p>
+<p>old是链表中最近访问的旧子表。</p>
+<p>midpoint是介于新子表 &amp; 旧子表的边界中间位置（也可以理解为旧子表的头部）。</p>
 </blockquote>
-<h3 id="二、Mysql事务隔离级别"><a href="#二、Mysql事务隔离级别" class="headerlink" title="二、Mysql事务隔离级别"></a>二、Mysql事务隔离级别</h3><blockquote>
-<p>未提交读（Read Uncommitted），指当前事务可以读取到其他事务还未提交的数据变化，最容易带来的问题是脏读（Dirty Read），很少应用到生产环境。</p>
-<p>已提交读（Read Committed），大部分数据库默认隔离级别但不包括Mysql，指当前事务可以读取其他事务已提交的数据变化，具有隔离性的基本标准，但是在出现交叉事务的并发操作场景中会发生两次读取的数据结果集不一致的问题，即不可重复读（Nonrepeatable Read）。</p>
-<p>Repeatable Read（可重复读），Mysql数据库的默认隔离级别，这里顺便解释一下为什么Mysql的隔离级别不是Read Committed，因为在Mysql5.0之前日志格式只有statement这一种，这种格式导致主从复制一致性很难得到保证。这种隔离级别可以解决Nonrepeatable Read的问题，但如果也出现在交叉事务的并发操作场景会出现幻读（Phantom Read）的现象，这一行为状态是当前事务不能及时有效的读取其他事务的数据变化。</p>
-<p>Serializable（可串行化），Mysql事务隔离最高级别，望文生义大概意思是事务的执行是有序（串行化顺序）的，不存在事务交叉执行的场景从而解决了Phantom Read的问题，但是在高并发的业务场景下请求会出现阻塞、超时、锁竟抢的问题，系统的可用性也随之降低。</p>
-</blockquote>
-<h3 id="收尾"><a href="#收尾" class="headerlink" title="收尾"></a>收尾</h3><blockquote>
-<p><a href="https://dev.mysql.com/doc/refman/5.7/en/innodb-transaction-isolation-levels.html" target="_blank" rel="noopener">https://dev.mysql.com/doc/refman/5.7/en/innodb-transaction-isolation-levels.html</a> // Mysql事务官方文档</p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/05/mysql-transaction/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-pessimistic-optimistic" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/04/pessimistic-optimistic/">通俗解释什么是悲观锁/乐观锁</a>
-    </h1>
-  
-
-        
-        <a href="/2019/12/04/pessimistic-optimistic/" class="archive-article-date">
-  	<time datetime="2019-12-04T11:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>什么是锁？在多进程（线程）编程中为了数据的一致性、有效性，如果一资源被某进程（线程）上锁，那么在释放锁之前其他进程（线程）无法进行操作或者等待获取（上）锁。</p>
-<h3 id="一、悲观锁"><a href="#一、悲观锁" class="headerlink" title="一、悲观锁"></a>一、悲观锁</h3><p>悲观锁（Pessimistic locking），顾名思义对待任何事务都持悲观态度，做任何事情都会认为会有竞抢行为~所以在进行任何操作之前都要做好万全准备（上锁）才会继续执行后续的操作。通常是利用系统提供的锁机制来实现。<br>比如：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Mysql中的上锁命令：for <span class="keyword">update</span>、<span class="keyword">lock</span> <span class="keyword">in</span> <span class="keyword">share</span> <span class="keyword">mode</span>等</span><br><span class="line">Redis中的一些操作命令：setnx、getset等（原子操作）</span><br></pre></td></tr></table></figure></p>
-<h3 id="二、乐观锁"><a href="#二、乐观锁" class="headerlink" title="二、乐观锁"></a>二、乐观锁</h3><p>乐观锁（Optimistic locking），和悲观锁相反对待任何事务都持乐观态度，只会在最后即将执行操作的时刻前才会进行验证。通常是通过程序配合来实现。<br>比如：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">update</span> <span class="string">`orders`</span> <span class="keyword">set</span> <span class="keyword">hash</span> = <span class="keyword">md5</span>(<span class="keyword">now</span>()) <span class="keyword">where</span> uid = <span class="number">1</span> <span class="keyword">and</span> <span class="keyword">hash</span> = &#123;lastHash&#125;;</span><br></pre></td></tr></table></figure></p>
-<h3 id="三、优缺点"><a href="#三、优缺点" class="headerlink" title="三、优缺点"></a>三、优缺点</h3><p>悲观锁优点很鲜明，因为每次执行的操作都是独占的，数据的一致性、有效性、安全性较高。但缺点同样突出，每次操作都会产生上锁的开销，在并发请求比较密集的情况下容易阻塞或者驳回请求，甚至是造成死锁，也大大降低了系统的性能。</p>
-<p>乐观锁优点是省去了锁的开销，能较高的提高系统吞吐量，缺点是如果出现在并发高且竟抢（冲突）行为比较多的场景下数据的一致性很难保证。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/04/pessimistic-optimistic/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-redis-aof-rdb" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/03/redis-aof-rdb/">Redis持久化方式aof/rdb浅析</a>
-    </h1>
-  
-
-        
-        <a href="/2019/12/03/redis-aof-rdb/" class="archive-article-date">
-  	<time datetime="2019-12-03T07:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Redis是一个开放源代码（BSD许可）的内存中数据结构存储，用作数据库，缓存和消息代理。</p>
-<h3 id="一、Redis数据存储的方式有两种"><a href="#一、Redis数据存储的方式有两种" class="headerlink" title="一、Redis数据存储的方式有两种"></a>一、Redis数据存储的方式有两种</h3><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">单纯的缓存模式, 整个数据的生命周期随着Redis <span class="built_in">Server</span>的停止而消失。</span><br><span class="line">persistence模式, 数据会持续备份到磁盘文件。</span><br></pre></td></tr></table></figure>
-<h3 id="二、Redis如何实现持久化存储？Redis提供了两种方式。"><a href="#二、Redis如何实现持久化存储？Redis提供了两种方式。" class="headerlink" title="二、Redis如何实现持久化存储？Redis提供了两种方式。"></a>二、Redis如何实现持久化存储？Redis提供了两种方式。</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">RDB</span><span class="params">(Redis DataBase)</span></span></span><br><span class="line"><span class="function"><span class="title">AOF</span><span class="params">(Append-only file)</span></span></span><br></pre></td></tr></table></figure>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/03/redis-aof-rdb/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-guetzli" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/12/guetzli/">使用Guetzli压缩图片</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/12/guetzli/" class="archive-article-date">
-  	<time datetime="2017-06-12T03:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Guetzli is a JPEG encoder that aims for excellent compression density at high visual quality. Guetzli-generated images are typically 20-30% smaller than images of equivalent quality generated by libjpeg. Guetzli generates only sequential (nonprogressive) JPEGs due to faster decompression speeds they offer.</p>
-<h3 id="1-安装libpng依赖库"><a href="#1-安装libpng依赖库" class="headerlink" title="1.安装libpng依赖库"></a>1.安装libpng依赖库</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ yum install libpng-devel git</span><br></pre></td></tr></table></figure>
-<h3 id="2-获取Guetzli项目"><a href="#2-获取Guetzli项目" class="headerlink" title="2.获取Guetzli项目"></a>2.获取Guetzli项目</h3><blockquote>
-<p><a href="https://github.com/google/guetzli" target="_blank" rel="noopener">https://github.com/google/guetzli</a></p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /tmp</span><br><span class="line">$ git <span class="built_in">clone</span> https://github.com/google/guetzli</span><br><span class="line">$ <span class="built_in">cd</span> guetzli</span><br><span class="line">$ make</span><br><span class="line">$ ./bin/Release/guetzli // 这里我就不加软连接,为了方便使用你们可以加入软连接</span><br><span class="line">Guetzli JPEG compressor. Usage: </span><br><span class="line">guetzli [flags] input_filename output_filename // 这里是使用方法</span><br><span class="line"></span><br><span class="line">Flags:</span><br><span class="line">  --verbose    - Print a verbose trace of all attempts to standard output.</span><br><span class="line">  --quality Q  - Visual quality to aim <span class="keyword">for</span>, expressed as a JPEG quality value.</span><br><span class="line">                 Default value is 95.</span><br><span class="line">  --memlimit M - Memory <span class="built_in">limit</span> <span class="keyword">in</span> MB. Guetzli will fail <span class="keyword">if</span> unable to stay under</span><br><span class="line">                 the <span class="built_in">limit</span>. Default <span class="built_in">limit</span> is 6000 MB.</span><br><span class="line">  --nomemlimit - Do not <span class="built_in">limit</span> memory usage.</span><br></pre></td></tr></table></figure>
-<h3 id="3-压缩前后对比"><a href="#3-压缩前后对比" class="headerlink" title="3.压缩前后对比"></a>3.压缩前后对比</h3><h6 id="压缩前-920KB"><a href="#压缩前-920KB" class="headerlink" title="压缩前(920KB)"></a>压缩前(920KB)</h6><p><img src="/assets/guetzli/guetzli-res.jpg" alt></p>
-<h6 id="压缩后-748KB-20"><a href="#压缩后-748KB-20" class="headerlink" title="压缩后(748KB),20%"></a>压缩后(748KB),20%</h6><p><img src="/assets/guetzli/guetzli-res.jpg" alt></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">guetzli</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tools</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/12/guetzli/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-wekan" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/09/wekan/">部署像Trello一样的看板工具 - Wekan</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/09/wekan/" class="archive-article-date">
-  	<time datetime="2017-06-09T04:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-09</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Wekan is an completely Open Source and Free software collaborative kanban board application with MIT license.</p>
-<h3 id="1-安装MongoDB"><a href="#1-安装MongoDB" class="headerlink" title="1.安装MongoDB"></a>1.安装MongoDB</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ vi /etc/yum.repos.d/mongodb-org-3.2.repo </span><br><span class="line">$ [mongodb-org-3.2]</span><br><span class="line">$ name=MongoDB Repository</span><br><span class="line">$ baseurl=https://repo.mongodb.org/yum/redhat/<span class="variable">$releasever</span>/mongodb-org/3.2/x86_64/</span><br><span class="line">$ gpgcheck=1</span><br><span class="line">$ enabled=1</span><br><span class="line">$ gpgkey=https://www.mongodb.org/static/pgp/server-3.2.asc</span><br><span class="line">$ yum install mongodb-org</span><br><span class="line">$ service mongod start // 启动MongoDB</span><br></pre></td></tr></table></figure>
-<h3 id="2-安装NodeJS"><a href="#2-安装NodeJS" class="headerlink" title="2.安装NodeJS"></a>2.安装NodeJS</h3><blockquote>
-<p><a href="http://nodejs.org/dist/latest/" target="_blank" rel="noopener">http://nodejs.org/dist/latest/</a> // pkg列表</p>
-</blockquote>
-<p>我下载的是 <a href="http://nodejs.org/dist/latest/node-v8.1.0.tar.xz" target="_blank" rel="noopener">http://nodejs.org/dist/latest/node-v8.1.0.tar.xz</a></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ yum install gcc gcc-c++ wget</span><br><span class="line">$ <span class="built_in">cd</span> /tmp</span><br><span class="line">$ wget http://nodejs.org/dist/latest/node-v8.1.0.tar.xz</span><br><span class="line">$ xz -d node-v8.1.0.tar.xz</span><br><span class="line">$ tar -vxf node-v8.1.0.tar</span><br><span class="line">$ <span class="built_in">cd</span> node-v8.1.0</span><br><span class="line">$ vi README.md // To build 有告诉需要的环境,以及安装步骤</span><br><span class="line">$ ./configure</span><br><span class="line">$ make &amp;&amp; make install</span><br><span class="line">$ node -v</span><br><span class="line">$ v8.1.0</span><br></pre></td></tr></table></figure>
-<h3 id="3-获取Wekan项目"><a href="#3-获取Wekan项目" class="headerlink" title="3.获取Wekan项目"></a>3.获取Wekan项目</h3><blockquote>
-<p><a href="https://github.com/wekan/wekan/releases/" target="_blank" rel="noopener">https://github.com/wekan/wekan/releases/</a> // 版本列表</p>
-</blockquote>
-<p>我下载的是 v0.23</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /tmp</span><br><span class="line">$ wget https://github.com/wekan/wekan/releases/download/v0.23/wekan-0.23.tar.gz</span><br><span class="line">$ tar -zxvf wekan wekan-0.23.tar.gz</span><br><span class="line">$ mkdir wekan</span><br><span class="line">$ mv ./bundle ./wekan </span><br><span class="line">$ <span class="built_in">cd</span> wekan/bundle</span><br><span class="line">$ <span class="built_in">export</span> MONGO_URL=<span class="string">'mongodb://127.0.0.1:27017/wekan'</span> </span><br><span class="line">$ <span class="built_in">export</span> ROOT_URL=<span class="string">'https://example.com'</span> </span><br><span class="line">$ <span class="built_in">export</span> MAIL_URL=<span class="string">'smtp://user:pass@mailserver.example.com:25/'</span> </span><br><span class="line">$ <span class="built_in">export</span> PORT=8080</span><br><span class="line">$ node main.js // 如果没有报错,访问http://host:8080就可以使用Wekan啦</span><br></pre></td></tr></table></figure>
-<h3 id="4-一些错误问题"><a href="#4-一些错误问题" class="headerlink" title="4.一些错误问题"></a>4.一些错误问题</h3><ul>
-<li>##There is an issue with <code>node-fibers</code>##<blockquote>
-<p>npm install fibers</p>
-</blockquote>
-</li>
+<a id="more"></a>
+<ul>
+<li>数据库刚启动LRU链表为空时，此时会检查Free List中是否有空闲的数据页，如果有则从Free List中删除并且在LRU链表中写入相同的数据页。</li>
+<li>访问不存在的数据页时，数据页不会直接写入链表的头部，而是写入中间位置，如果链表满了则会从旧子表尾部淘汰数据页。</li>
+<li>当数据页被访问时，则判断访问数据页的时间是否大于设定innodb_old_blocks_time（默认：1000ms），如果大于则向链表头部移动，如果小于其位置不变。</li>
 </ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tools</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">wekan</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/09/wekan/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-php-webp" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/22/php-webp/">PHP 图片转换Webp格式</a>
-    </h1>
-  
-
-        
-        <a href="/2017/03/22/php-webp/" class="archive-article-date">
-  	<time datetime="2017-03-21T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>WebP是Google推出的一种图片格式，它基于VP8编码，可对图像大幅压缩。与JPEG相同，WebP也是一种有损压缩，但在画质相同的情况下，WebP格式比JPEG图像小40%。</p>
-<h3 id="1-利与弊"><a href="#1-利与弊" class="headerlink" title="1.利与弊"></a>1.利与弊</h3><blockquote>
-<p>WebP 与 JPEG 图像相比，这种格式可对图像大幅压缩。从而显著优化页面加载时间和带宽使用情况。<br>WebP 目前支持桌面上的 Chrome 和 Opera 浏览器。手机支持仅限于原生的 Android 浏览器和 Android 系统上的 Chrome 浏览器,后面会介绍关于如何处理这个限制的方法。</p>
+<p><img src="/assets/lru/innodb-buffer-pool-list.png" alt></p>
+<blockquote>
+<p>改进优点：能够防止单次大量的全表扫描污染整个LRU链表。</p>
 </blockquote>
-<p><img src="/assets/webp/webp-app.jpg" alt></p>
-<p>（Google 已和正在部署的 WebP 的产品）</p>
-<h3 id="2-后端PHP代码如何转换？"><a href="#2-后端PHP代码如何转换？" class="headerlink" title="2.后端PHP代码如何转换？"></a>2.后端PHP代码如何转换？</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"></span><br><span class="line"><span class="php"><span class="comment">// 文件名</span></span></span><br><span class="line"><span class="php">$fileName = <span class="string">'./res.png'</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="php"><span class="comment">// 图片源</span></span></span><br><span class="line"><span class="php">$res = imagecreatefrompng($fileName); <span class="comment">// 如果是jpg(imagecreatefromjpg),其他格式自行查阅手册</span></span></span><br><span class="line"></span><br><span class="line"><span class="php"><span class="comment">// 输出.webp文件</span></span></span><br><span class="line"><span class="php">imagewebp($res, <span class="string">'./res.webp'</span>);</span></span><br></pre></td></tr></table></figure>
-<p>(非常简单!)</p>
-<h3 id="3-前端JS代码如何判断浏览器支持"><a href="#3-前端JS代码如何判断浏览器支持" class="headerlink" title="3.前端JS代码如何判断浏览器支持?"></a>3.前端JS代码如何判断浏览器支持?</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 代码片段摘自网站,亲测可用</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">checkWebp</span>(<span class="params">callback</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> img = <span class="keyword">new</span> Image();</span><br><span class="line">  img.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> result = (img.width &gt; <span class="number">0</span>) &amp;&amp; (img.height &gt; <span class="number">0</span>);</span><br><span class="line">    callback(result);</span><br><span class="line">  &#125;;</span><br><span class="line">  img.onerror = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    callback(<span class="literal">false</span>);</span><br><span class="line">  &#125;;</span><br><span class="line">  img.src = <span class="string">'data:image/webp;base64,UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEADsD+JaQAA3AAAAAA'</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">showImage</span>(<span class="params">useWebp</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> imgs = <span class="built_in">Array</span>.from(<span class="built_in">document</span>.querySelectorAll(<span class="string">'img'</span>));</span><br><span class="line"></span><br><span class="line">  imgs.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">i</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> src = i.attributes[<span class="string">'data-src'</span>].value;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (useWebp)&#123;</span><br><span class="line">      src = src.replace(<span class="regexp">/\.jpg$/</span>, <span class="string">'.webp'</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    i.src = src;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">checkWebp(showImage);</span><br></pre></td></tr></table></figure>
-<h3 id="4-实例前后对比"><a href="#4-实例前后对比" class="headerlink" title="4.实例前后对比"></a>4.实例前后对比</h3><h6 id="转换前-378KB"><a href="#转换前-378KB" class="headerlink" title="转换前(378KB)"></a>转换前(378KB)</h6><p><img src="/assets/webp/webp-res.png" alt></p>
-<h6 id="转换后-8KB"><a href="#转换后-8KB" class="headerlink" title="转换后(8KB)"></a>转换后(8KB)</h6><p><img src="/assets/webp/webp-after.webp" alt></p>
+<h3 id="4-Mysql-LRU相关查询命令"><a href="#4-Mysql-LRU相关查询命令" class="headerlink" title="4.Mysql LRU相关查询命令"></a>4.Mysql LRU相关查询命令</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&gt;show engine innodb status\G;</span><br><span class="line">----------------------</span><br><span class="line">BUFFER<span class="built_in"> POOL </span><span class="keyword">AND</span> MEMORY</span><br><span class="line">----------------------</span><br><span class="line">Total memory allocated 137756672; <span class="keyword">in</span> additional<span class="built_in"> pool </span>allocated 0</span><br><span class="line">Total memory allocated by read views 88</span><br><span class="line">Internal hash tables (constant factor + variable factor)</span><br><span class="line">    Adaptive hash index 2217584         (2213368 + 4216)</span><br><span class="line">   <span class="built_in"> Page </span>hash           139112 (buffer<span class="built_in"> pool </span>0 only)</span><br><span class="line">    Dictionary cache    593780  (554768 + 39012)</span><br><span class="line">    File<span class="built_in"> system </span>        83536   (82672 + 864)</span><br><span class="line">    Lock<span class="built_in"> system </span>        333248  (332872 + 376)</span><br><span class="line">    Recovery<span class="built_in"> system </span>    0       (0 + 0)</span><br><span class="line">Dictionary memory allocated 39012</span><br><span class="line">Buffer<span class="built_in"> pool </span>size        8191</span><br><span class="line">Buffer<span class="built_in"> pool </span>size, bytes 134201344</span><br><span class="line">Free buffers            8048</span><br><span class="line">Database pages          143</span><br><span class="line">Old database pages      0</span><br><span class="line">Modified db pages       0</span><br><span class="line">Pending reads 0</span><br><span class="line">Pending writes: LRU 0, flush list 0, single<span class="built_in"> page </span>0</span><br><span class="line">Pages made young 0, <span class="keyword">not</span> young 0</span><br><span class="line">0.00 youngs/s, 0.00 non-youngs/s</span><br><span class="line">Pages read 143, created 0, written 0</span><br><span class="line">0.00 reads/s, 0.00 creates/s, 0.00 writes/s</span><br><span class="line"><span class="literal">No</span> buffer<span class="built_in"> pool page </span>gets since the last printout</span><br><span class="line">Pages read ahead 0.00/s, evicted without access 0.00/s, Random read ahead 0.00/s</span><br><span class="line">LRU len: 143, unzip_LRU len: 0</span><br><span class="line">I/O sum[0]:cur[0], unzip sum[0]:cur[0]</span><br></pre></td></tr></table></figure>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Buffer<span class="built_in"> pool </span>size                |   innodb_buffer_pool的大小</span><br><span class="line">Free buffers                    |   当前Free List中数据页数量</span><br><span class="line">Database pages                  |   LRU链表中数据页数量</span><br><span class="line">Old database pages              |   LRU链表中旧子表数据页数量</span><br><span class="line">Modified db pages               |   LRU链表中脏页数量</span><br><span class="line"></span><br><span class="line">Pages made young 0, <span class="keyword">not</span> young 0 |   数据页从old移至young的行为：page made young,数据页因为innodb_old_blocks_time导致没有从old移至young的行为：page <span class="keyword">not</span> young。后面的数值是该行为发生的次数。</span><br></pre></td></tr></table></figure>
 
       
 
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>罗马家园1204房间, 洗好等你<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/imgs/avatar.jpg">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/imgs/weixin.jpg">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
       
     </div>
     <div class="article-info article-info-index">
@@ -744,7 +257,7 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">webp</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
         		</li>
       		
 		</ul>
@@ -753,16 +266,75 @@
       
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/03/22/php-webp/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+  <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+  <p>扫一扫，分享到微信</p>
+  <div class="wx-qrcode">
+    <img src="//qr.topscan.com/api.php?text=http://xupin.im/2020/03/18/mysql-lru/" alt="微信分享二维码">
+  </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2020/03/15/mysql-int-length/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Mysql中Int长度的问题</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -782,98 +354,14 @@
 
 
 
-
-  
-    <article id="post-google-msg-push" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/28/google-msg-push/">PHP + Google(FCM)安卓设备消息推送/群发</a>
-    </h1>
-  
-
-        
-        <a href="/2017/02/28/google-msg-push/" class="archive-article-date">
-  	<time datetime="2017-02-28T09:10:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-28</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Firebase 是一个移动平台，可以帮助您快速开发高品质应用，扩大用户群，并赚取更多收益。Firebase 由多种互补功能组成，您可以自行组合和匹配这些功能以满足自己的需求。</p>
-<h3 id="1-获取Google推送的KEY-Google应用后台"><a href="#1-获取Google推送的KEY-Google应用后台" class="headerlink" title="1.获取Google推送的KEY(Google应用后台)"></a>1.获取Google推送的KEY(Google应用后台)</h3><blockquote>
-<p>AIzaSyCm5Vufc1FAtWE1kupGhVDRb0ThkCoWC7d // 这个是我的</p>
-</blockquote>
-<h3 id="2-PHP推送代码"><a href="#2-PHP推送代码" class="headerlink" title="2.PHP推送代码"></a>2.PHP推送代码</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化环境</span></span><br><span class="line">$url = <span class="string">'https://fcm.googleapis.com/fcm/send'</span>;</span><br><span class="line">$ch = curl_init($url);</span><br><span class="line">curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, <span class="keyword">false</span>);</span><br><span class="line">curl_setopt($ch, CURLOPT_RETURNTRANSFER,<span class="number">1</span>);</span><br><span class="line">curl_setopt($ch, CURLOPT_POST, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">$header = <span class="keyword">array</span>(</span><br><span class="line">	<span class="string">'Content-Type: application/json'</span>,</span><br><span class="line">	<span class="string">'Authorization: key=AIzaSyCm5Vufc1FAtWE1kupGhVDRb0ThkCoWC7d'</span> <span class="comment">// 这里是刚才的KEY</span></span><br><span class="line">);</span><br><span class="line">curl_setopt($ch, CURLOPT_HTTPHEADER, $header);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 构建消息体,json编码</span></span><br><span class="line">$content = json_encode([</span><br><span class="line"><span class="string">'notification'</span>=&gt;[</span><br><span class="line">	<span class="string">'title'</span> =&gt; <span class="string">'这里是标题'</span>, </span><br><span class="line">	<span class="string">'body'</span> =&gt; <span class="string">'这里是内容'</span>, </span><br><span class="line">	<span class="string">'icon'</span> =&gt; <span class="string">'这里是后台设置的iconName'</span></span><br><span class="line">],</span><br><span class="line"><span class="string">'to'</span>=&gt;<span class="string">'设备标识(Google SDK可以获取)'</span>,</span><br><span class="line"><span class="string">'registration_ids'</span>=&gt;[<span class="string">'设备标识'</span>,<span class="string">'设备标识'</span>] <span class="comment">// 如果要推送多台设备,可以使用此字段,最多支持1000台设备</span></span><br><span class="line">]);</span><br><span class="line"></span><br><span class="line">curl_setopt($ch, CURLOPT_POSTFIELDS, $content);</span><br><span class="line"></span><br><span class="line">$ret = json_decode(curl_exec($ch), <span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line">$ret[<span class="string">'success'</span>]; <span class="comment">// 推送成功数</span></span><br><span class="line"></span><br><span class="line">$ret[<span class="string">'failure'</span>]; <span class="comment">// 推送失败数</span></span><br></pre></td></tr></table></figure>
-<h3 id="3-返回值示例"><a href="#3-返回值示例" class="headerlink" title="3.返回值示例"></a>3.返回值示例</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"multicast_id"</span>: <span class="number">7669649331143639654</span>,</span><br><span class="line">    <span class="attr">"success"</span>: <span class="number">3</span>,</span><br><span class="line">    <span class="attr">"failure"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"canonical_ids"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"results"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"message_id"</span>: <span class="string">"0:1488360060090224%6490a2d16490a2d1"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"message_id"</span>: <span class="string">"0:1488360060095871%6490a2d16490a2d1"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"message_id"</span>: <span class="string">"0:1488360060090765%6490a2d16490a2d1"</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="4-Google-FCM-文档"><a href="#4-Google-FCM-文档" class="headerlink" title="4.Google(FCM) 文档"></a>4.Google(FCM) 文档</h3><blockquote>
-<p><a href="https://firebase.google.com/docs" target="_blank" rel="noopener">https://firebase.google.com/docs</a></p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">google fcm</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/02/28/google-msg-push/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
   
   
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
-    </nav>
+  
+
+  
+
+  
+
   
 
 
@@ -896,8 +384,8 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,

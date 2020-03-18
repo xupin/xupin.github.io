@@ -1,32 +1,25 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
   
   <meta name="renderer" content="webkit">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>PHP + Apple苹果设备消息推送(APNS) | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="1.合成证书(需要两个文件.cer,.p12,苹果开发者后台获取)
-ios.cer,ios.p12 // 我这里的文件名
-
-123456$ openssl x509 -in ios.cer -inform der -out ios_cer.pem$ openssl pkcs12 -nocerts -out ios_p12.pem -in ios.p12Enter Import Password:">
+  <meta name="description" content="1.合成证书(需要两个文件.cer,.p12,苹果开发者后台获取) ios.cer,ios.p12 // 我这里的文件名  123456$ openssl x509 -in ios.cer -inform der -out ios_cer.pem$ openssl pkcs12 -nocerts -out ios_p12.pem -in ios.p12Enter Import Password:">
+<meta name="keywords" content="apns,develop">
 <meta property="og:type" content="article">
 <meta property="og:title" content="PHP + Apple苹果设备消息推送(APNS)">
 <meta property="og:url" content="http://xupin.im/2017/02/22/apple-msg-push/index.html">
-<meta property="og:site_name" content="Mark's blog">
-<meta property="og:description" content="1.合成证书(需要两个文件.cer,.p12,苹果开发者后台获取)
-ios.cer,ios.p12 // 我这里的文件名
-
-123456$ openssl x509 -in ios.cer -inform der -out ios_cer.pem$ openssl pkcs12 -nocerts -out ios_p12.pem -in ios.p12Enter Import Password:">
-<meta property="og:updated_time" content="2020-01-22T09:23:39.078Z">
+<meta property="og:site_name" content="Mark&#39;s blog">
+<meta property="og:description" content="1.合成证书(需要两个文件.cer,.p12,苹果开发者后台获取) ios.cer,ios.p12 // 我这里的文件名  123456$ openssl x509 -in ios.cer -inform der -out ios_cer.pem$ openssl pkcs12 -nocerts -out ios_p12.pem -in ios.p12Enter Import Password:">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-03-18T09:47:42.290Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PHP + Apple苹果设备消息推送(APNS)">
-<meta name="twitter:description" content="1.合成证书(需要两个文件.cer,.p12,苹果开发者后台获取)
-ios.cer,ios.p12 // 我这里的文件名
-
-123456$ openssl x509 -in ios.cer -inform der -out ios_cer.pem$ openssl pkcs12 -nocerts -out ios_p12.pem -in ios.p12Enter Import Password:">
+<meta name="twitter:description" content="1.合成证书(需要两个文件.cer,.p12,苹果开发者后台获取) ios.cer,ios.p12 // 我这里的文件名  123456$ openssl x509 -in ios.cer -inform der -out ios_cer.pem$ openssl pkcs12 -nocerts -out ios_p12.pem -in ios.p12Enter Import Password:">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -45,7 +38,7 @@ ios.cer,ios.p12 // 我这里的文件名
   
 
 </head>
-
+</html>
 <body>
   <div id="container" q-class="show:isCtnShow">
     <canvas id="anm-canvas" class="anm-canvas"></canvas>
@@ -187,10 +180,10 @@ ios.cer,ios.p12 // 我这里的文件名
         <h3 id="1-合成证书-需要两个文件-cer-p12-苹果开发者后台获取"><a href="#1-合成证书-需要两个文件-cer-p12-苹果开发者后台获取" class="headerlink" title="1.合成证书(需要两个文件.cer,.p12,苹果开发者后台获取)"></a>1.合成证书(需要两个文件<em>.cer,</em>.p12,苹果开发者后台获取)</h3><blockquote>
 <p>ios.cer,ios.p12 // 我这里的文件名</p>
 </blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ openssl x509 -in ios.cer -inform der -out ios_cer.pem</div><div class="line">$ openssl pkcs12 -nocerts -out ios_p12.pem -in ios.p12</div><div class="line">Enter Import Password: // 这里输入Apple后台文件导出时的密码</div><div class="line">MAC verified OK</div><div class="line">Enter PEM pass phrase: // 这里输入新的pem密码(用于代码中),我输入的是123456789</div><div class="line">$ cat ios_cer.pem ios_p12.pem &gt; key.pem</div></pre></td></tr></table></figure>
-<h3 id="2-PHP推送代码"><a href="#2-PHP推送代码" class="headerlink" title="2.PHP推送代码"></a>2.PHP推送代码</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 初始化环境</span></div><div class="line">$ctx = stream_context_create();</div><div class="line"></div><div class="line">stream_context_set_option($ctx, <span class="string">'ssl'</span>, <span class="string">'local_cert'</span>, <span class="string">'assets/key/key.pem'</span>); <span class="comment">// key文件的路径</span></div><div class="line">stream_context_set_option($ctx, <span class="string">'ssl'</span>, <span class="string">'passphrase'</span>, <span class="string">'123456789'</span>); <span class="comment">// 生成pem输入的密码</span></div><div class="line"></div><div class="line"><span class="comment">// 建立APNS连接</span></div><div class="line">$fp = stream_socket_client( <span class="string">'ssl://gateway.push.apple.com:2195'</span>, $err, $errstr, <span class="number">60</span>, STREAM_CLIENT_CONNECT|STREAM_CLIENT_PERSISTENT, $ctx);</div><div class="line"></div><div class="line"><span class="comment">// 构建消息体,json编码</span></div><div class="line">$payload = json_encode( <span class="keyword">array</span>( <span class="string">'aps'</span>=&gt;<span class="keyword">array</span>(<span class="string">'alert'</span> =&gt; <span class="string">'这里是内容'</span>, <span class="string">'sound'</span> =&gt; <span class="string">'这里是提示声音'</span>)));</div><div class="line"></div><div class="line"><span class="comment">// 转换二进制</span></div><div class="line">$msg = chr(<span class="number">0</span>) . pack(<span class="string">'n'</span>, <span class="number">32</span>) . pack(<span class="string">'H*'</span>, <span class="string">'设备标识(Apple SDK可以获取)'</span>) . pack(<span class="string">'n'</span>, strlen($payload)) . $payload;</div><div class="line"></div><div class="line"><span class="comment">// 发送消息</span></div><div class="line">$result = fwrite($fp, $msg, strlen($msg));</div><div class="line"></div><div class="line"><span class="keyword">if</span>(!$result)&#123;</div><div class="line">	<span class="comment">// 推送失败</span></div><div class="line">&#125;<span class="keyword">else</span>&#123;</div><div class="line">	<span class="comment">// 推送成功</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">fclose($fp);</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ openssl x509 -<span class="keyword">in</span> ios.cer -inform der -out ios_cer.pem</span><br><span class="line">$ openssl pkcs12 -nocerts -out ios_p12.pem -<span class="keyword">in</span> ios.p12</span><br><span class="line">Enter Import Password: // 这里输入Apple后台文件导出时的密码</span><br><span class="line">MAC verified OK</span><br><span class="line">Enter PEM pass phrase: // 这里输入新的pem密码(用于代码中),我输入的是123456789</span><br><span class="line">$ cat ios_cer.pem ios_p12.pem &gt; key.pem</span><br></pre></td></tr></table></figure>
+<h3 id="2-PHP推送代码"><a href="#2-PHP推送代码" class="headerlink" title="2.PHP推送代码"></a>2.PHP推送代码</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化环境</span></span><br><span class="line">$ctx = stream_context_create();</span><br><span class="line"></span><br><span class="line">stream_context_set_option($ctx, <span class="string">'ssl'</span>, <span class="string">'local_cert'</span>, <span class="string">'assets/key/key.pem'</span>); <span class="comment">// key文件的路径</span></span><br><span class="line">stream_context_set_option($ctx, <span class="string">'ssl'</span>, <span class="string">'passphrase'</span>, <span class="string">'123456789'</span>); <span class="comment">// 生成pem输入的密码</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 建立APNS连接</span></span><br><span class="line">$fp = stream_socket_client( <span class="string">'ssl://gateway.push.apple.com:2195'</span>, $err, $errstr, <span class="number">60</span>, STREAM_CLIENT_CONNECT|STREAM_CLIENT_PERSISTENT, $ctx);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 构建消息体,json编码</span></span><br><span class="line">$payload = json_encode( <span class="keyword">array</span>( <span class="string">'aps'</span>=&gt;<span class="keyword">array</span>(<span class="string">'alert'</span> =&gt; <span class="string">'这里是内容'</span>, <span class="string">'sound'</span> =&gt; <span class="string">'这里是提示声音'</span>)));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 转换二进制</span></span><br><span class="line">$msg = chr(<span class="number">0</span>) . pack(<span class="string">'n'</span>, <span class="number">32</span>) . pack(<span class="string">'H*'</span>, <span class="string">'设备标识(Apple SDK可以获取)'</span>) . pack(<span class="string">'n'</span>, strlen($payload)) . $payload;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 发送消息</span></span><br><span class="line">$result = fwrite($fp, $msg, strlen($msg));</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!$result)&#123;</span><br><span class="line">	<span class="comment">// 推送失败</span></span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	<span class="comment">// 推送成功</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fclose($fp);</span><br></pre></td></tr></table></figure>
 <h3 id="3-APNS文档"><a href="#3-APNS文档" class="headerlink" title="3.APNS文档"></a>3.APNS文档</h3><blockquote>
-<p><a href="https://developer.apple.com/notifications/" target="_blank" rel="external">https://developer.apple.com/notifications/</a></p>
+<p><a href="https://developer.apple.com/notifications/" target="_blank" rel="noopener">https://developer.apple.com/notifications/</a></p>
 </blockquote>
 
       
@@ -236,11 +229,11 @@ ios.cer,ios.p12 // 我这里的文件名
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">apns</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">apns</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
         		</li>
       		
 		</ul>
@@ -447,15 +440,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">guetzli</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">tools</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">xss</a>
+                <a href="javascript:void(0)" class="js-tag color5">apns</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -463,7 +448,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">apns</a>
+                <a href="javascript:void(0)" class="js-tag color4">xss</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -475,15 +460,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">google fcm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">guetzli</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tools</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">wekan</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">google fcm</a>
+                <a href="javascript:void(0)" class="js-tag color2">mysql int length</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -499,7 +492,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">tmux</a>
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -507,11 +500,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+                <a href="javascript:void(0)" class="js-tag color5">tmux</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">mysql int length</a>
+                <a href="javascript:void(0)" class="js-tag color1">wekan</a>
               </li>
             
             <div class="clearfix"></div>
