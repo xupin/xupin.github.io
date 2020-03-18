@@ -158,6 +158,101 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-laravel-chunk-upload" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/19/laravel-chunk-upload/">Laravel + Dropzone实现文件分片上传</a>
+    </h1>
+  
+
+        
+        <a href="/2020/03/19/laravel-chunk-upload/" class="archive-article-date">
+  	<time datetime="2020-03-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="1-什么是分片上传？"><a href="#1-什么是分片上传？" class="headerlink" title="1.什么是分片上传？"></a>1.什么是分片上传？</h3><ul>
+<li>如果我们上传的文件是一个很大的文件，那么上传的时间应该会比较久，再加上网络不稳定各种因素的影响，很容易导致传输中断。</li>
+<li>服务端一般都会设置固定大小的接收BUFF，往往上传文件的体积是该值的几何倍数。</li>
+</ul>
+<p>分片上传的原理大致可以描述为，把一个较大文件分成若干份的分片一个一个传输，服务端在接收到最后一个分片后进行合并资源。</p>
+<h3 id="2-前端"><a href="#2-前端" class="headerlink" title="2.前端"></a>2.前端</h3><p>前端使用Dropzone控件，DropzoneJS是一个开源库，提供带有图像预览的拖放文件上传并且有分割文件分片上传的机制，当然该控件不仅仅可以上传图片，经测试视频，Word等文件一样可以。</p>
+<p>Dropzone官网提供了一个<a href="https://gitlab.com/meno/dropzone/raw/master/website/examples/simple.html" target="_blank" rel="noopener">simple.html</a>的上传demo（js、css文件路径有改动过），内容如下：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span>Dropzone simple example<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">  DO NOT SIMPLY COPY THOSE LINES. Download the JS and CSS files from the</span></span><br><span class="line"><span class="comment">  latest release (https://github.com/enyo/dropzone/releases/latest), and</span></span><br><span class="line"><span class="comment">  host them yourself!</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"./dropzone.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"./dropzone.css"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span></span><br><span class="line">  This is the most minimal example of Dropzone. The upload in this example</span><br><span class="line">  doesn't work, because there is no actual server to handle the file upload.</span><br><span class="line"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- Change /upload-target to your upload address --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"api/upload"</span> <span class="attr">class</span>=<span class="string">"dropzone"</span>&gt;</span><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>Dropzone官方提供的demo默认是没有开启分片上传的，需要修改dropzone.js<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Whether you want files to be uploaded in chunks to your server. This can't be</span></span><br><span class="line"><span class="comment"> * used in combination with `uploadMultiple`.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * See [chunksUploaded](#config-chunksUploaded) for the callback to finalise an upload.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">chunking: <span class="literal">false</span>, <span class="comment">// 修改为true,即开启分片</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * If `chunking` is `true`, then this defines the chunk size in bytes.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">chunkSize: <span class="number">2000000</span>, <span class="comment">// 默认分片大小，单位：Byte</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="3-后端"><a href="#3-后端" class="headerlink" title="3.后端"></a>3.后端</h3><blockquote>
+<p>框架：Laravel 6.8<br>扩展：<a href="https://github.com/pionl/laravel-chunk-upload" target="_blank" rel="noopener">laravel-chunk-upload</a><br>代码如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">// create the file receiver</span></span><br><span class="line">$receiver = <span class="keyword">new</span> FileReceiver(<span class="string">"file"</span>, $request, HandlerFactory::classFromRequest($request));</span><br><span class="line"></span><br><span class="line"><span class="comment">// check if the upload is success, throw exception or return response you need</span></span><br><span class="line"><span class="keyword">if</span> ($receiver-&gt;isUploaded() === <span class="keyword">false</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> UploadMissingFileException();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// receive the file</span></span><br><span class="line">$save = $receiver-&gt;receive();</span><br><span class="line"></span><br><span class="line"><span class="comment">// check if the upload has finished (in chunk mode it will send smaller files)</span></span><br><span class="line"><span class="keyword">if</span> ($save-&gt;isFinished()) &#123;</span><br><span class="line">    <span class="comment">// save the file and return any response you need, current example uses `move` function. If you are</span></span><br><span class="line">    <span class="comment">// not using move, you need to manually delete the file by unlink($save-&gt;getFile()-&gt;getPathname())</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;saveFile($save-&gt;getFile());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// we are in chunk mode, lets send the current progress</span></span><br><span class="line"><span class="comment">/** <span class="doctag">@var</span> AbstractHandler $handler */</span></span><br><span class="line">$handler = $save-&gt;handler();</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> response()-&gt;json([</span><br><span class="line">    <span class="string">"done"</span> =&gt; $handler-&gt;getPercentageDone(),</span><br><span class="line">    <span class="string">'status'</span> =&gt; <span class="keyword">true</span></span><br><span class="line">]);</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<h3 id="4-Demo"><a href="#4-Demo" class="headerlink" title="4.Demo"></a>4.Demo</h3><blockquote>
+<p><a href="https://github.com/xupin/chunk-upload-example" target="_blank" rel="noopener">https://github.com/xupin/chunk-upload-example</a></p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">laravel</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">dropzone</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/03/19/laravel-chunk-upload/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-mysql-lru" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -800,96 +895,6 @@
 
 
   
-    <article id="post-nginx-proxy" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/17/nginx-proxy/">Nginx正向代理和反向代理</a>
-    </h1>
-  
-
-        
-        <a href="/2019/12/17/nginx-proxy/" class="archive-article-date">
-  	<time datetime="2019-12-17T04:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-17</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>代理通常用于在几台服务器之间分配负载，无缝显示来自不同网站的内容或通过除HTTP之外的协议将处理请求传递给应用服务器。</p>
-<h3 id="1-代理的常用场景及优点"><a href="#1-代理的常用场景及优点" class="headerlink" title="1.代理的常用场景及优点"></a>1.代理的常用场景及优点</h3><p>正向代理</p>
-<blockquote>
-<p>gfw科学上网。</p>
-<p>客户端访问鉴权。</p>
-</blockquote>
-<p>反向代理</p>
-<blockquote>
-<p>负载均衡。</p>
-<p>保证内网的安全，阻止web攻击。</p>
-</blockquote>
-<h3 id="2-正向代理和反向代理有什么不同"><a href="#2-正向代理和反向代理有什么不同" class="headerlink" title="2.正向代理和反向代理有什么不同"></a>2.正向代理和反向代理有什么不同</h3><p>比较通俗的来解释：正向代理代理的是客户端，服务端不知道实际发起请求的客户端、反向代理代理的是服务端，客户端不知道实际接收请求的服务端。</p>
-<p>一张图表示（来源：<a href="https://zhuanlan.zhihu.com/p/82300486" target="_blank" rel="noopener">知乎wplulala</a>）<br><img src="/assets/nginx-proxy/relation.jpg" alt></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">nginx</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/17/nginx-proxy/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1052,6 +1057,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">wekan</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">laravel</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">dropzone</a>
               </li>
             
             <div class="clearfix"></div>
