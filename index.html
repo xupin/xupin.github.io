@@ -196,7 +196,7 @@
 <li>innodb_log_file_size，日志大小</li>
 <li>innodb_log_files_in_group，日志个数，默认是2个。</li>
 </ul>
-<p>所以redo log的个数等于innodb_log_files_in_group*innodb_log_file_size。</p>
+<p>所以redo log的大小等于innodb_log_files_in_group*innodb_log_file_size。</p>
 <p>既然redo log会产生，那么什么时候会被覆盖呢？redo log被设计成可循环使用，当日志文件写满时那些已经被刷入磁盘中的数据就可以被覆盖啦。</p>
 <blockquote>
 <p>WAL（Write Ahead Log），是关系数据库系统中用于提供原子性和持久性（ACID属性中的两个）的一系列技术，ARIES是WAL系列技术常用的算法，在文件系统中WAL通常称为journaling。WAL的主要思想是将元数据的实时变更操作写入日志文件中，然后在系统负载较小时再把日志刷入磁盘。主要是为了减少磁盘的IO操作，此处就不展开学习了。先Mark一下</p>
