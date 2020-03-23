@@ -158,6 +158,97 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-tmux" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/24/tmux/">10分钟学会使用Tmux</a>
+    </h1>
+  
+
+        
+        <a href="/2019/12/24/tmux/" class="archive-article-date">
+  	<time datetime="2019-12-24T04:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Tmux是一个终端多路复用器：它使从单个屏幕创建，访问和控制多个终端成为可能。Tmux可能会与屏幕分离，并继续在后台运行，然后再重新连接。</p>
+<h3 id="1-Tmux的结构"><a href="#1-Tmux的结构" class="headerlink" title="1.Tmux的结构"></a>1.Tmux的结构</h3><ul>
+<li>Session<ul>
+<li>Window<ul>
+<li>Panel</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>即，Tmux允许访问多个会话，每个会话可以拥有多个窗口，每个窗口还可以进行划分窗格。</p>
+<h3 id="2-安装运行Tmux"><a href="#2-安装运行Tmux" class="headerlink" title="2.安装运行Tmux"></a>2.安装运行Tmux</h3><p>安装<br><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># centos</span></span><br><span class="line">$ yum <span class="keyword">install </span>tmux</span><br><span class="line"></span><br><span class="line"><span class="comment"># ubuntu</span></span><br><span class="line">$ apt <span class="keyword">install </span>tmux</span><br><span class="line"></span><br><span class="line"><span class="comment"># mac</span></span><br><span class="line">$ <span class="keyword">brew </span><span class="keyword">install </span>tmux</span><br></pre></td></tr></table></figure></p>
+<p>运行<br><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$ </span>tmux</span><br></pre></td></tr></table></figure></p>
+<p>效果图，如下：</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tools</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">tmux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/12/24/tmux/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-elasticsearch-group" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -809,104 +900,9 @@
 
 
   
-    <article id="post-wekan" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/09/wekan/">部署像Trello一样的看板工具 - Wekan</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/09/wekan/" class="archive-article-date">
-  	<time datetime="2017-06-09T04:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-09</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Wekan is an completely Open Source and Free software collaborative kanban board application with MIT license.</p>
-<h3 id="1-安装MongoDB"><a href="#1-安装MongoDB" class="headerlink" title="1.安装MongoDB"></a>1.安装MongoDB</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ vi /etc/yum.repos.d/mongodb-org-3.2.repo </span><br><span class="line">$ [mongodb-org-3.2]</span><br><span class="line">$ name=MongoDB Repository</span><br><span class="line">$ baseurl=https://repo.mongodb.org/yum/redhat/<span class="variable">$releasever</span>/mongodb-org/3.2/x86_64/</span><br><span class="line">$ gpgcheck=1</span><br><span class="line">$ enabled=1</span><br><span class="line">$ gpgkey=https://www.mongodb.org/static/pgp/server-3.2.asc</span><br><span class="line">$ yum install mongodb-org</span><br><span class="line">$ service mongod start // 启动MongoDB</span><br></pre></td></tr></table></figure>
-<h3 id="2-安装NodeJS"><a href="#2-安装NodeJS" class="headerlink" title="2.安装NodeJS"></a>2.安装NodeJS</h3><blockquote>
-<p><a href="http://nodejs.org/dist/latest/" target="_blank" rel="noopener">http://nodejs.org/dist/latest/</a> // pkg列表</p>
-</blockquote>
-<p>我下载的是 <a href="http://nodejs.org/dist/latest/node-v8.1.0.tar.xz" target="_blank" rel="noopener">http://nodejs.org/dist/latest/node-v8.1.0.tar.xz</a></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ yum install gcc gcc-c++ wget</span><br><span class="line">$ <span class="built_in">cd</span> /tmp</span><br><span class="line">$ wget http://nodejs.org/dist/latest/node-v8.1.0.tar.xz</span><br><span class="line">$ xz -d node-v8.1.0.tar.xz</span><br><span class="line">$ tar -vxf node-v8.1.0.tar</span><br><span class="line">$ <span class="built_in">cd</span> node-v8.1.0</span><br><span class="line">$ vi README.md // To build 有告诉需要的环境,以及安装步骤</span><br><span class="line">$ ./configure</span><br><span class="line">$ make &amp;&amp; make install</span><br><span class="line">$ node -v</span><br><span class="line">$ v8.1.0</span><br></pre></td></tr></table></figure>
-<h3 id="3-获取Wekan项目"><a href="#3-获取Wekan项目" class="headerlink" title="3.获取Wekan项目"></a>3.获取Wekan项目</h3><blockquote>
-<p><a href="https://github.com/wekan/wekan/releases/" target="_blank" rel="noopener">https://github.com/wekan/wekan/releases/</a> // 版本列表</p>
-</blockquote>
-<p>我下载的是 v0.23</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /tmp</span><br><span class="line">$ wget https://github.com/wekan/wekan/releases/download/v0.23/wekan-0.23.tar.gz</span><br><span class="line">$ tar -zxvf wekan wekan-0.23.tar.gz</span><br><span class="line">$ mkdir wekan</span><br><span class="line">$ mv ./bundle ./wekan </span><br><span class="line">$ <span class="built_in">cd</span> wekan/bundle</span><br><span class="line">$ <span class="built_in">export</span> MONGO_URL=<span class="string">'mongodb://127.0.0.1:27017/wekan'</span> </span><br><span class="line">$ <span class="built_in">export</span> ROOT_URL=<span class="string">'https://example.com'</span> </span><br><span class="line">$ <span class="built_in">export</span> MAIL_URL=<span class="string">'smtp://user:pass@mailserver.example.com:25/'</span> </span><br><span class="line">$ <span class="built_in">export</span> PORT=8080</span><br><span class="line">$ node main.js // 如果没有报错,访问http://host:8080就可以使用Wekan啦</span><br></pre></td></tr></table></figure>
-<h3 id="4-一些错误问题"><a href="#4-一些错误问题" class="headerlink" title="4.一些错误问题"></a>4.一些错误问题</h3><ul>
-<li>##There is an issue with <code>node-fibers</code>##<blockquote>
-<p>npm install fibers</p>
-</blockquote>
-</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tools</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">wekan</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/09/wekan/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 
