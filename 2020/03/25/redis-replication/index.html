@@ -6,20 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
-  <title>通用缩写表 | Mark&#39;s blog</title>
+  <title>Redis学习笔记 - 主从复制 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="1、本缩写表是《编码命名规范》的附录。2、本缩写表中列出的都是通用性缩写，不提供标准缩写，如：Win9x、COM 等。3、使用本缩写表里的缩写时，请对其进行必要的注释说明。4、除少数情况以外，大部分缩写与大小写无关。     缩写 全称     addr Address   adm Administrator   app Application   arg Argument   asm asse">
-<meta name="keywords" content="short names">
+  <meta name="description" content="Redis单点配置的情况下如果服务出现故障宕机，那么服务也就处于不可用状态，假如是生产环境那么带来的后果是很严重，所以出现了集群策略。 1.三种集群策略Redis提供了三种集群策略，它们分别是：  主从复制（Replication） 哨兵（Sentinel） 集群（Cluster）  这三种策略会逐一学习，本篇主要学习策略之一主从复制（Replication）。 2.主从复制的概念在主从复制（Re">
+<meta name="keywords" content="develop,redis">
 <meta property="og:type" content="article">
-<meta property="og:title" content="通用缩写表">
-<meta property="og:url" content="http://xupin.im/2017/02/28/short-names/index.html">
+<meta property="og:title" content="Redis学习笔记 - 主从复制">
+<meta property="og:url" content="http://xupin.im/2020/03/25/redis-replication/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="1、本缩写表是《编码命名规范》的附录。2、本缩写表中列出的都是通用性缩写，不提供标准缩写，如：Win9x、COM 等。3、使用本缩写表里的缩写时，请对其进行必要的注释说明。4、除少数情况以外，大部分缩写与大小写无关。     缩写 全称     addr Address   adm Administrator   app Application   arg Argument   asm asse">
+<meta property="og:description" content="Redis单点配置的情况下如果服务出现故障宕机，那么服务也就处于不可用状态，假如是生产环境那么带来的后果是很严重，所以出现了集群策略。 1.三种集群策略Redis提供了三种集群策略，它们分别是：  主从复制（Replication） 哨兵（Sentinel） 集群（Cluster）  这三种策略会逐一学习，本篇主要学习策略之一主从复制（Replication）。 2.主从复制的概念在主从复制（Re">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-03-18T09:47:42.293Z">
+<meta property="og:updated_time" content="2020-03-24T20:53:01.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="通用缩写表">
-<meta name="twitter:description" content="1、本缩写表是《编码命名规范》的附录。2、本缩写表中列出的都是通用性缩写，不提供标准缩写，如：Win9x、COM 等。3、使用本缩写表里的缩写时，请对其进行必要的注释说明。4、除少数情况以外，大部分缩写与大小写无关。     缩写 全称     addr Address   adm Administrator   app Application   arg Argument   asm asse">
+<meta name="twitter:title" content="Redis学习笔记 - 主从复制">
+<meta name="twitter:description" content="Redis单点配置的情况下如果服务出现故障宕机，那么服务也就处于不可用状态，假如是生产环境那么带来的后果是很严重，所以出现了集群策略。 1.三种集群策略Redis提供了三种集群策略，它们分别是：  主从复制（Replication） 哨兵（Sentinel） 集群（Cluster）  这三种策略会逐一学习，本篇主要学习策略之一主从复制（Replication）。 2.主从复制的概念在主从复制（Re">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -157,539 +157,112 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-short-names" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-redis-replication" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      通用缩写表
+      Redis学习笔记 - 主从复制
     </h1>
   
 
         
-        <a href="/2017/02/28/short-names/" class="archive-article-date">
-  	<time datetime="2017-02-27T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-28</time>
+        <a href="/2020/03/25/redis-replication/" class="archive-article-date">
+  	<time datetime="2020-03-24T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-25</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>1、本缩写表是《编码命名规范》的附录。<br>2、本缩写表中列出的都是通用性缩写，不提供标准缩写，如：Win9x、COM 等。<br>3、使用本缩写表里的缩写时，请对其进行必要的注释说明。<br>4、除少数情况以外，大部分缩写与大小写无关。</p>
+        <p>Redis单点配置的情况下如果服务出现故障宕机，那么服务也就处于不可用状态，假如是生产环境那么带来的后果是很严重，所以出现了集群策略。</p>
+<h3 id="1-三种集群策略"><a href="#1-三种集群策略" class="headerlink" title="1.三种集群策略"></a>1.三种集群策略</h3><p>Redis提供了三种集群策略，它们分别是：</p>
+<ul>
+<li>主从复制（Replication）</li>
+<li>哨兵（Sentinel）</li>
+<li>集群（Cluster）</li>
+</ul>
+<p>这三种策略会逐一学习，本篇主要学习策略之一主从复制（Replication）。</p>
+<h3 id="2-主从复制的概念"><a href="#2-主从复制的概念" class="headerlink" title="2.主从复制的概念"></a>2.主从复制的概念</h3><p>在主从复制（Replication）策略中，服务分为两类：Master节点、Slave节点。</p>
+<ul>
+<li><p>特点</p>
+<ol>
+<li>Master可以拥有多个Slave，但Slave只能服务一个Master。</li>
+<li>数据复制方向只能是Master-&gt;Slave。</li>
+</ol>
+</li>
+<li><p>优点</p>
+<ol>
+<li>实现了多机热数据备份，提高了面对宕机数据恢复的灾备能力。</li>
+<li>在主从复制的基础上实现读写分离提高服务吞吐量，即：Master提供写服务，Slave提供读服务。</li>
+<li>如果Master宕机可以快速切换使用Slave提供服务。</li>
+</ol>
+</li>
+</ul>
+<a id="more"></a>
+<ul>
+<li>缺点<ol>
+<li>节点故障恢复无法自动化切换。</li>
+<li>Master写操作的压力没有得到解决。</li>
+<li>数据存储能力还是受到单节点限制。</li>
+</ol>
+</li>
+</ul>
+<h3 id="3-如何配置（多种方式）"><a href="#3-如何配置（多种方式）" class="headerlink" title="3.如何配置（多种方式）"></a>3.如何配置（多种方式）</h3><ul>
+<li>在Slave服务器redis.conf增加配置行，slaveof {MASTER_IP} {MASTER_PORT}。</li>
+<li>启动redis-server时，./redis-server slaveof {MASTER_IP} {MASTER_PORT}。</li>
+<li>在redis-cli命令行界面输入，slaveof {MASTER_IP} {MASTER_PORT}。</li>
+</ul>
+<h3 id="4-工作机制"><a href="#4-工作机制" class="headerlink" title="4.工作机制"></a>4.工作机制</h3><ol>
+<li>Slave节点执行slaveof命令，保存Master节点信息。</li>
+<li>节点内部的定时任务发现主节点信息，开始尝试Socket连接主节点。</li>
+<li>连接建立成功，Slave发送ping命令，期望得到pong命令响应，否则发起重连。</li>
+<li>如果主节点有设置auth，那么进行auth验证，成功继续，失败终止。（非必须，根据Master是否配置auth决定）</li>
+<li>Slave同步Master全量数据集。（该操作是Master向Slave发送数据哟）</li>
+<li>Master持续把写命令同步Slave。</li>
+</ol>
+<h3 id="5-同步命令"><a href="#5-同步命令" class="headerlink" title="5.同步命令"></a>5.同步命令</h3><p>Redis主从复制数据有两个命令，sync和psync，sync是Redis2.8版本之前的同步方法，psync是Redis2.8版本以后优化sync新设计同步方法。在这会着重学习psync，也会捎带说一下为什么sync会被优化。</p>
+<p>首先，psync需要3个参数支持：</p>
+<ul>
+<li><p>Master和Slave复制数据的偏移量。</p>
+  <figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">Master</span>和<span class="literal">Slave</span>复制数据的偏移量，主要作用是通过对比复制偏移量，来判断<span class="literal">Master</span>和<span class="literal">Slave</span>数据是否一致。</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Master复制积压缓冲区。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">psync的特性之一，用于增量数据复制和补救丢失的复制数据。</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Master的RunID（Replication ID）。</p>
+  <figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Redis服务启动的时，都会生成一个<span class="number">40</span>位的唯一RunID。</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<blockquote>
+<p>Master和Slave复制数据的偏移量：每个参与复制数据的节点都会维护一份复制偏移量，Master在处理完写命令后，会把命令的字节长度进行累加，Slave每秒钟会向Master上报自己的复制偏移量，因此Master也会记录Slave的偏移量。Master持续把写命令同步Slave，Slave成功接收到之后也会累加自身的偏移量。查看偏移量：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;info replication</span><br><span class="line">master_repl_offset:&#123;NUM&#125; <span class="comment"># Master偏移量</span></span><br><span class="line">slave_repl_offset:&#123;NUM&#125; <span class="comment"># Slave偏移量</span></span><br></pre></td></tr></table></figure></p>
+<p>复制积压缓冲区：复制积压缓冲区是一个保存在Master拥有固定长度的队列，该队列先进先出，大小受repl-backlog-size参数控制（默认：1MB），查看缓冲区：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;info replication</span><br><span class="line">repl_backlog_size:&#123;NUM&#125;（byte）</span><br></pre></td></tr></table></figure></p>
+<p>Master的RunID（Replication ID）：该ID主要是用来识别Redis服务节点，因为如果使用IP+PORT方式，假如Master重启之后修改了RDB/AOF备份文件，此时Slave再基于原来的复制偏移量进行复制数据是不可靠的。查看RunID：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;info server</span><br><span class="line">run_id:8d252f66c3ef89bd60a060cf8dc5cfe3d511c5e4</span><br></pre></td></tr></table></figure></p>
+<p>psync命令使用方式<br><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">psync <span class="class">RunID </span>&#123;OFFSET&#125;</span><br></pre></td></tr></table></figure></p>
 </blockquote>
-<table>
-<thead>
-<tr>
-<th>缩写</th>
-<th style="text-align:center">全称</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>addr</td>
-<td style="text-align:center">Address</td>
-</tr>
-<tr>
-<td>adm</td>
-<td style="text-align:center">Administrator</td>
-</tr>
-<tr>
-<td>app</td>
-<td style="text-align:center">Application</td>
-</tr>
-<tr>
-<td>arg</td>
-<td style="text-align:center">Argument</td>
-</tr>
-<tr>
-<td>asm</td>
-<td style="text-align:center">assemble</td>
-</tr>
-<tr>
-<td>asyn</td>
-<td style="text-align:center">asynchronization</td>
-</tr>
-<tr>
-<td>avg</td>
-<td style="text-align:center">average</td>
-</tr>
-<tr>
-<td>DB</td>
-<td style="text-align:center">Database</td>
-</tr>
-<tr>
-<td>bk</td>
-<td style="text-align:center">back</td>
-</tr>
-<tr>
-<td>bmp</td>
-<td style="text-align:center">Bitmap</td>
-</tr>
-<tr>
-<td>btn</td>
-<td style="text-align:center">Button</td>
-</tr>
-<tr>
-<td>buf</td>
-<td style="text-align:center">Buffer</td>
-</tr>
-<tr>
-<td>calc</td>
-<td style="text-align:center">Calculate</td>
-</tr>
-<tr>
-<td>char</td>
-<td style="text-align:center">Character</td>
-</tr>
-<tr>
-<td>chg</td>
-<td style="text-align:center">Change</td>
-</tr>
-<tr>
-<td>clk</td>
-<td style="text-align:center">Click</td>
-</tr>
-<tr>
-<td>clr</td>
-<td style="text-align:center">color</td>
-</tr>
-<tr>
-<td>cmd</td>
-<td style="text-align:center">Command</td>
-</tr>
-<tr>
-<td>cmp</td>
-<td style="text-align:center">Compare</td>
-</tr>
-<tr>
-<td>col</td>
-<td style="text-align:center">Column</td>
-</tr>
-<tr>
-<td>coord</td>
-<td style="text-align:center">coordinates</td>
-</tr>
-<tr>
-<td>cpy</td>
-<td style="text-align:center">copy</td>
-</tr>
-<tr>
-<td>ctl</td>
-<td style="text-align:center">/ctrl    Control</td>
-</tr>
-<tr>
-<td>cur</td>
-<td style="text-align:center">Current</td>
-</tr>
-<tr>
-<td>cyl</td>
-<td style="text-align:center">Cylinder</td>
-</tr>
-<tr>
-<td>dbg</td>
-<td style="text-align:center">Debug</td>
-</tr>
-<tr>
-<td>dbl</td>
-<td style="text-align:center">Double</td>
-</tr>
-<tr>
-<td>dec</td>
-<td style="text-align:center">Decrease</td>
-</tr>
-<tr>
-<td>def</td>
-<td style="text-align:center">default</td>
-</tr>
-<tr>
-<td>del</td>
-<td style="text-align:center">Delete</td>
-</tr>
-<tr>
-<td>dest</td>
-<td style="text-align:center">/dst    Destination</td>
-</tr>
-<tr>
-<td>dev</td>
-<td style="text-align:center">Device</td>
-</tr>
-<tr>
-<td>dict</td>
-<td style="text-align:center">dictionary</td>
-</tr>
-<tr>
-<td>diff</td>
-<td style="text-align:center">different</td>
-</tr>
-<tr>
-<td>dir</td>
-<td style="text-align:center">directory</td>
-</tr>
-<tr>
-<td>disp</td>
-<td style="text-align:center">Display</td>
-</tr>
-<tr>
-<td>div</td>
-<td style="text-align:center">Divide</td>
-</tr>
-<tr>
-<td>缩写</td>
-<td style="text-align:center">全称</td>
-</tr>
-<tr>
-<td>dlg</td>
-<td style="text-align:center">Dialog</td>
-</tr>
-<tr>
-<td>doc</td>
-<td style="text-align:center">Document</td>
-</tr>
-<tr>
-<td>drv</td>
-<td style="text-align:center">Driver</td>
-</tr>
-<tr>
-<td>dyna</td>
-<td style="text-align:center">Dynamic</td>
-</tr>
-<tr>
-<td>env</td>
-<td style="text-align:center">Environment</td>
-</tr>
-<tr>
-<td>err</td>
-<td style="text-align:center">error</td>
-</tr>
-<tr>
-<td>ex/ext</td>
-<td style="text-align:center">Extend</td>
-</tr>
-<tr>
-<td>exec</td>
-<td style="text-align:center">execute</td>
-</tr>
-<tr>
-<td>flg</td>
-<td style="text-align:center">flag</td>
-</tr>
-<tr>
-<td>frm</td>
-<td style="text-align:center">Frame</td>
-</tr>
-<tr>
-<td>func</td>
-<td style="text-align:center">/fn    Function</td>
-</tr>
-<tr>
-<td>grp</td>
-<td style="text-align:center">group</td>
-</tr>
-<tr>
-<td>horz</td>
-<td style="text-align:center">Horizontal</td>
-</tr>
-<tr>
-<td>idx</td>
-<td style="text-align:center">/ndx    Index</td>
-</tr>
-<tr>
-<td>img</td>
-<td style="text-align:center">Image</td>
-</tr>
-<tr>
-<td>impl</td>
-<td style="text-align:center">Implement</td>
-</tr>
-<tr>
-<td>inc</td>
-<td style="text-align:center">Increase</td>
-</tr>
-<tr>
-<td>info</td>
-<td style="text-align:center">Information</td>
-</tr>
-<tr>
-<td>init</td>
-<td style="text-align:center">Initial/Initialize/Initialization</td>
-</tr>
-<tr>
-<td>ins</td>
-<td style="text-align:center">Insert</td>
-</tr>
-<tr>
-<td>inst</td>
-<td style="text-align:center">Instance</td>
-</tr>
-<tr>
-<td>INT</td>
-<td style="text-align:center">/intr    Interrupt</td>
-</tr>
-<tr>
-<td>len</td>
-<td style="text-align:center">Length</td>
-</tr>
-<tr>
-<td>lib</td>
-<td style="text-align:center">Library</td>
-</tr>
-<tr>
-<td>lnk</td>
-<td style="text-align:center">Link</td>
-</tr>
-<tr>
-<td>log</td>
-<td style="text-align:center">logical</td>
-</tr>
-<tr>
-<td>lst</td>
-<td style="text-align:center">List</td>
-</tr>
-<tr>
-<td>max</td>
-<td style="text-align:center">maximum</td>
-</tr>
-<tr>
-<td>mem</td>
-<td style="text-align:center">Memory</td>
-</tr>
-<tr>
-<td>mgr</td>
-<td style="text-align:center">/man    Manage/Manager</td>
-</tr>
-<tr>
-<td>mid</td>
-<td style="text-align:center">middle</td>
-</tr>
-<tr>
-<td>min</td>
-<td style="text-align:center">minimum</td>
-</tr>
-<tr>
-<td>msg</td>
-<td style="text-align:center">Message</td>
-</tr>
-<tr>
-<td>mul</td>
-<td style="text-align:center">Multiply</td>
-</tr>
-<tr>
-<td>num</td>
-<td style="text-align:center">Number</td>
-</tr>
-<tr>
-<td>obj</td>
-<td style="text-align:center">Object</td>
-</tr>
-<tr>
-<td>ofs</td>
-<td style="text-align:center">Offset</td>
-</tr>
-<tr>
-<td>org</td>
-<td style="text-align:center">Origin/Original</td>
-</tr>
-<tr>
-<td>param</td>
-<td style="text-align:center">Parameter</td>
-</tr>
-<tr>
-<td>pic</td>
-<td style="text-align:center">picture</td>
-</tr>
-<tr>
-<td>pkg</td>
-<td style="text-align:center">package</td>
-</tr>
-<tr>
-<td>pnt</td>
-<td style="text-align:center">/pt    Point</td>
-</tr>
-<tr>
-<td>pos</td>
-<td style="text-align:center">Position</td>
-</tr>
-<tr>
-<td>pre</td>
-<td style="text-align:center">/prev    previous</td>
-</tr>
-<tr>
-<td>缩写</td>
-<td style="text-align:center">全称</td>
-</tr>
-<tr>
-<td>prg</td>
-<td style="text-align:center">program</td>
-</tr>
-<tr>
-<td>prn</td>
-<td style="text-align:center">Print</td>
-</tr>
-<tr>
-<td>proc</td>
-<td style="text-align:center">Process/Procedure</td>
-</tr>
-<tr>
-<td>prop</td>
-<td style="text-align:center">Properties</td>
-</tr>
-<tr>
-<td>psw</td>
-<td style="text-align:center">Password</td>
-</tr>
-<tr>
-<td>ptr</td>
-<td style="text-align:center">Pointer</td>
-</tr>
-<tr>
-<td>pub</td>
-<td style="text-align:center">Public</td>
-</tr>
-<tr>
-<td>rc</td>
-<td style="text-align:center">rect</td>
-</tr>
-<tr>
-<td>ref</td>
-<td style="text-align:center">Reference</td>
-</tr>
-<tr>
-<td>reg</td>
-<td style="text-align:center">Register</td>
-</tr>
-<tr>
-<td>req</td>
-<td style="text-align:center">request</td>
-</tr>
-<tr>
-<td>res</td>
-<td style="text-align:center">Resource</td>
-</tr>
-<tr>
-<td>ret</td>
-<td style="text-align:center">return</td>
-</tr>
-<tr>
-<td>rgn</td>
-<td style="text-align:center">region</td>
-</tr>
-<tr>
-<td>scr</td>
-<td style="text-align:center">screen</td>
-</tr>
-<tr>
-<td>sec</td>
-<td style="text-align:center">Second</td>
-</tr>
-<tr>
-<td>seg</td>
-<td style="text-align:center">Segment</td>
-</tr>
-<tr>
-<td>sel</td>
-<td style="text-align:center">Select</td>
-</tr>
-<tr>
-<td>src</td>
-<td style="text-align:center">Source</td>
-</tr>
-<tr>
-<td>std</td>
-<td style="text-align:center">Standard</td>
-</tr>
-<tr>
-<td>stg</td>
-<td style="text-align:center">Storage</td>
-</tr>
-<tr>
-<td>stm</td>
-<td style="text-align:center">Stream</td>
-</tr>
-<tr>
-<td>str</td>
-<td style="text-align:center">String</td>
-</tr>
-<tr>
-<td>sub</td>
-<td style="text-align:center">Subtract</td>
-</tr>
-<tr>
-<td>sum</td>
-<td style="text-align:center">summation</td>
-</tr>
-<tr>
-<td>svr</td>
-<td style="text-align:center">Server</td>
-</tr>
-<tr>
-<td>sync</td>
-<td style="text-align:center">Synchronization</td>
-</tr>
-<tr>
-<td>sys</td>
-<td style="text-align:center">System</td>
-</tr>
-<tr>
-<td>tbl</td>
-<td style="text-align:center">Table</td>
-</tr>
-<tr>
-<td>temp</td>
-<td style="text-align:center">/tmp    Temporary</td>
-</tr>
-<tr>
-<td>tran</td>
-<td style="text-align:center">/trans    translate/transation/transparent</td>
-</tr>
-<tr>
-<td>tst</td>
-<td style="text-align:center">Test</td>
-</tr>
-<tr>
-<td>txt</td>
-<td style="text-align:center">text</td>
-</tr>
-<tr>
-<td>unk</td>
-<td style="text-align:center">Unknown</td>
-</tr>
-<tr>
-<td>upd</td>
-<td style="text-align:center">Update</td>
-</tr>
-<tr>
-<td>upg</td>
-<td style="text-align:center">Upgrade</td>
-</tr>
-<tr>
-<td>util</td>
-<td style="text-align:center">Utility</td>
-</tr>
-<tr>
-<td>var</td>
-<td style="text-align:center">Variable</td>
-</tr>
-<tr>
-<td>ver</td>
-<td style="text-align:center">Version</td>
-</tr>
-<tr>
-<td>vert</td>
-<td style="text-align:center">Vertical</td>
-</tr>
-<tr>
-<td>vir</td>
-<td style="text-align:center">Virus</td>
-</tr>
-<tr>
-<td>wnd</td>
-<td style="text-align:center">Window</td>
-</tr>
-</tbody>
-</table>
+<h3 id="6-增量-全量复制"><a href="#6-增量-全量复制" class="headerlink" title="6.增量/全量复制"></a>6.增量/全量复制</h3><p>知道了命令如何使用，那么当Slave发送psync命令给Master之后会发生什么？流程分为全量复制和增量复制两种。</p>
+<ul>
+<li><p>全量复制，如果Slave发送的命令是：psync ? -1</p>
+<blockquote>
+<p>Master知道Slave要全量复制数据，返回命令则是：+fullresync RunID {OFFSET}，同时Master会执行RDB备份并且使用复制积压缓冲区来记录此后所有的写命令。Master RDB备份完成之后向Slave发送备份文件，同时继续缓冲写命令，在备份文件发送完毕后Master会向Slave发送缓冲的写命令。Slave在收到Master发送的备份文件之后，会丢弃所有的旧数据，开始载入备份文件并且开始执行Master发送缓冲区的写命令。</p>
+<p>值得一提的是，在Slave加载备份文件的时候数据处于不可靠阶段，此时可以通过参数slave-server-stale-data（yes、no）配置是否响应请求，yes响应，no则抛出“SYNC with master in progress”。</p>
+<p>如果备份从创建到传输完毕消耗时间大于repl-timeout参数的值，Slave将会放弃接收备份文件并且清理已经下载的临时文件。</p>
+</blockquote>
+</li>
+<li><p>增量复制，Master会根据RunID和{OFFSET}决定返回结果。</p>
+<blockquote>
+<p>Master首先会检查RunID是否与自身一致，如果不一致将会执行全量数据复制。如果一致会根据{OFFSET}参数在缓冲区查找，如果数据偏移量之后的数据存在缓冲区，返回命令：+continue，表示可以增量复制数据。如果返回命令+err，表示Master版本过低不支持psync命令，将会使用sync进行全量复制数据。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>最后学习一下为什么sync会被优化？</p>
+<blockquote>
+<p>使用sync命令，在网络或者其他不可抗力因素导致Master和Slave断开连接，需要重新进行一次全量数据复制，Slave数据恢复成本极高。</p>
+<p><a href="https://redis.io/topics/replication" target="_blank" rel="noopener">https://redis.io/topics/replication</a></p>
+<p><a href="http://try.redis.io" target="_blank" rel="noopener">http://try.redis.io</a></p>
+</blockquote>
 
       
 
@@ -734,7 +307,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">short names</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
         		</li>
       		
 		</ul>
@@ -790,7 +367,7 @@
   <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
   <p>扫一扫，分享到微信</p>
   <div class="wx-qrcode">
-    <img src="http://qr.topscan.com/api.php?text=http://xupin.im/2017/02/28/short-names/" alt="微信分享二维码">
+    <img src="http://qr.topscan.com/api.php?text=http://xupin.im/2020/03/25/redis-replication/" alt="微信分享二维码">
   </div>
 </div>
 
@@ -804,18 +381,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2017/02/28/google-msg-push/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          PHP + Google(FCM)安卓设备消息推送/群发
-        
-      </div>
-    </a>
   
-  
-    <a href="/2017/02/23/nginx-recv-104/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Nginx recv() failed (104 Connection reset by peer)</div>
+    <a href="/2020/03/23/mysql-sharding-partition/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Mysql学习笔记 - 分片和分区</div>
       <i class="icon-circle-right"></i>
     </a>
   
