@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Redis学习笔记 - 主从复制 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Redis单点配置的情况下如果服务出现故障宕机，那么服务也就处于不可用状态，假如是生产环境那么带来的后果是很严重，所以出现了集群策略。 1.三种集群策略Redis提供了三种集群策略，它们分别是：  主从复制（Replication） 哨兵（Sentinel） 集群（Cluster）  这三种策略会逐一学习，本篇主要学习策略之一主从复制（Replication）。 2.主从复制的概念在主从复制（Re">
+  <meta name="description" content="Redis单点配置的情况下如果服务出现故障宕机，那么服务也就处于不可用状态，假如是生产环境那么带来的后果是很严重，所以出现了高可用方案：集群策略。 1.三种集群策略Redis提供了三种集群策略，它们分别是：  主从复制（Replication） 哨兵（Sentinel） 集群（Cluster）  这三种策略会逐一学习，本篇主要学习策略之一主从复制（Replication）。 2.主从复制的概念在主">
 <meta name="keywords" content="develop,redis">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redis学习笔记 - 主从复制">
 <meta property="og:url" content="http://xupin.im/2020/03/25/redis-replication/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="Redis单点配置的情况下如果服务出现故障宕机，那么服务也就处于不可用状态，假如是生产环境那么带来的后果是很严重，所以出现了集群策略。 1.三种集群策略Redis提供了三种集群策略，它们分别是：  主从复制（Replication） 哨兵（Sentinel） 集群（Cluster）  这三种策略会逐一学习，本篇主要学习策略之一主从复制（Replication）。 2.主从复制的概念在主从复制（Re">
+<meta property="og:description" content="Redis单点配置的情况下如果服务出现故障宕机，那么服务也就处于不可用状态，假如是生产环境那么带来的后果是很严重，所以出现了高可用方案：集群策略。 1.三种集群策略Redis提供了三种集群策略，它们分别是：  主从复制（Replication） 哨兵（Sentinel） 集群（Cluster）  这三种策略会逐一学习，本篇主要学习策略之一主从复制（Replication）。 2.主从复制的概念在主">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-03-24T20:53:01.000Z">
+<meta property="og:updated_time" content="2020-03-25T18:20:24.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis学习笔记 - 主从复制">
-<meta name="twitter:description" content="Redis单点配置的情况下如果服务出现故障宕机，那么服务也就处于不可用状态，假如是生产环境那么带来的后果是很严重，所以出现了集群策略。 1.三种集群策略Redis提供了三种集群策略，它们分别是：  主从复制（Replication） 哨兵（Sentinel） 集群（Cluster）  这三种策略会逐一学习，本篇主要学习策略之一主从复制（Replication）。 2.主从复制的概念在主从复制（Re">
+<meta name="twitter:description" content="Redis单点配置的情况下如果服务出现故障宕机，那么服务也就处于不可用状态，假如是生产环境那么带来的后果是很严重，所以出现了高可用方案：集群策略。 1.三种集群策略Redis提供了三种集群策略，它们分别是：  主从复制（Replication） 哨兵（Sentinel） 集群（Cluster）  这三种策略会逐一学习，本篇主要学习策略之一主从复制（Replication）。 2.主从复制的概念在主">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -177,7 +177,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Redis单点配置的情况下如果服务出现故障宕机，那么服务也就处于不可用状态，假如是生产环境那么带来的后果是很严重，所以出现了集群策略。</p>
+        <p>Redis单点配置的情况下如果服务出现故障宕机，那么服务也就处于不可用状态，假如是生产环境那么带来的后果是很严重，所以出现了高可用方案：集群策略。</p>
 <h3 id="1-三种集群策略"><a href="#1-三种集群策略" class="headerlink" title="1.三种集群策略"></a>1.三种集群策略</h3><p>Redis提供了三种集群策略，它们分别是：</p>
 <ul>
 <li>主从复制（Replication）</li>
@@ -189,77 +189,77 @@
 <ul>
 <li><p>特点</p>
 <ol>
-<li>Master可以拥有多个Slave，但Slave只能服务一个Master。</li>
-<li>数据复制方向只能是Master-&gt;Slave。</li>
+<li>Master节点可以拥有多个Slave节点，但Slave节点只能服务一个Master节点。</li>
+<li>数据复制方向只能是Master节点-&gt;Slave节点。</li>
 </ol>
 </li>
 <li><p>优点</p>
 <ol>
 <li>实现了多机热数据备份，提高了面对宕机数据恢复的灾备能力。</li>
-<li>在主从复制的基础上实现读写分离提高服务吞吐量，即：Master提供写服务，Slave提供读服务。</li>
-<li>如果Master宕机可以快速切换使用Slave提供服务。</li>
+<li>在主从复制的基础上实现读写分离提高服务吞吐量，即：Master节点提供写服务，Slave节点提供读服务。</li>
+<li>如果Master节点宕机可以快速切换使用Slave节点提供服务。</li>
 </ol>
 </li>
 </ul>
 <a id="more"></a>
 <ul>
 <li>缺点<ol>
-<li>节点故障恢复无法自动化切换。</li>
-<li>Master写操作的压力没有得到解决。</li>
+<li>Master节点故障，无法自动切换Slave节点为新Master节点的问题。</li>
+<li>Master节点写操作的压力没有得到解决。</li>
 <li>数据存储能力还是受到单节点限制。</li>
 </ol>
 </li>
 </ul>
 <h3 id="3-如何配置（多种方式）"><a href="#3-如何配置（多种方式）" class="headerlink" title="3.如何配置（多种方式）"></a>3.如何配置（多种方式）</h3><ul>
-<li>在Slave服务器redis.conf增加配置行，slaveof {MASTER_IP} {MASTER_PORT}。</li>
+<li>在Slave节点服务器redis.conf增加配置行，slaveof {MASTER_IP} {MASTER_PORT}。</li>
 <li>启动redis-server时，./redis-server slaveof {MASTER_IP} {MASTER_PORT}。</li>
 <li>在redis-cli命令行界面输入，slaveof {MASTER_IP} {MASTER_PORT}。</li>
 </ul>
 <h3 id="4-工作机制"><a href="#4-工作机制" class="headerlink" title="4.工作机制"></a>4.工作机制</h3><ol>
 <li>Slave节点执行slaveof命令，保存Master节点信息。</li>
 <li>节点内部的定时任务发现主节点信息，开始尝试Socket连接主节点。</li>
-<li>连接建立成功，Slave发送ping命令，期望得到pong命令响应，否则发起重连。</li>
-<li>如果主节点有设置auth，那么进行auth验证，成功继续，失败终止。（非必须，根据Master是否配置auth决定）</li>
-<li>Slave同步Master全量数据集。（该操作是Master向Slave发送数据哟）</li>
-<li>Master持续把写命令同步Slave。</li>
+<li>连接建立成功，Slave节点发送ping命令，期望得到pong命令响应，否则发起重连。</li>
+<li>如果主节点有设置auth，那么进行auth验证，成功继续，失败终止。（非必须，根据Master节点是否配置auth决定）</li>
+<li>Slave节点同步Master节点全量数据集。（该操作是Master节点向Slave节点发送数据哟）</li>
+<li>Master节点持续把写命令同步Slave节点。</li>
 </ol>
 <h3 id="5-同步命令"><a href="#5-同步命令" class="headerlink" title="5.同步命令"></a>5.同步命令</h3><p>Redis主从复制数据有两个命令，sync和psync，sync是Redis2.8版本之前的同步方法，psync是Redis2.8版本以后优化sync新设计同步方法。在这会着重学习psync，也会捎带说一下为什么sync会被优化。</p>
 <p>首先，psync需要3个参数支持：</p>
 <ul>
-<li><p>Master和Slave复制数据的偏移量。</p>
-  <figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">Master</span>和<span class="literal">Slave</span>复制数据的偏移量，主要作用是通过对比复制偏移量，来判断<span class="literal">Master</span>和<span class="literal">Slave</span>数据是否一致。</span><br></pre></td></tr></table></figure>
+<li><p>Master节点和Slave节点复制数据的偏移量。</p>
+  <figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">Master</span>节点和<span class="literal">Slave</span>节点复制数据的偏移量，主要作用是通过对比复制偏移量，来判断<span class="literal">Master</span>节点和<span class="literal">Slave</span>节点数据是否一致。</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>Master复制积压缓冲区。</p>
+<li><p>Master节点复制积压缓冲区。</p>
   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">psync的特性之一，用于增量数据复制和补救丢失的复制数据。</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>Master的RunID（Replication ID）。</p>
+<li><p>Master节点的RunID（Replication ID）。</p>
   <figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Redis服务启动的时，都会生成一个<span class="number">40</span>位的唯一RunID。</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <blockquote>
-<p>Master和Slave复制数据的偏移量：每个参与复制数据的节点都会维护一份复制偏移量，Master在处理完写命令后，会把命令的字节长度进行累加，Slave每秒钟会向Master上报自己的复制偏移量，因此Master也会记录Slave的偏移量。Master持续把写命令同步Slave，Slave成功接收到之后也会累加自身的偏移量。查看偏移量：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;info replication</span><br><span class="line">master_repl_offset:&#123;NUM&#125; <span class="comment"># Master偏移量</span></span><br><span class="line">slave_repl_offset:&#123;NUM&#125; <span class="comment"># Slave偏移量</span></span><br></pre></td></tr></table></figure></p>
-<p>复制积压缓冲区：复制积压缓冲区是一个保存在Master拥有固定长度的队列，该队列先进先出，大小受repl-backlog-size参数控制（默认：1MB），查看缓冲区：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;info replication</span><br><span class="line">repl_backlog_size:&#123;NUM&#125;（byte）</span><br></pre></td></tr></table></figure></p>
-<p>Master的RunID（Replication ID）：该ID主要是用来识别Redis服务节点，因为如果使用IP+PORT方式，假如Master重启之后修改了RDB/AOF备份文件，此时Slave再基于原来的复制偏移量进行复制数据是不可靠的。查看RunID：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;info server</span><br><span class="line">run_id:8d252f66c3ef89bd60a060cf8dc5cfe3d511c5e4</span><br></pre></td></tr></table></figure></p>
-<p>psync命令使用方式<br><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">psync <span class="class">RunID </span>&#123;OFFSET&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Master节点和Slave节点复制数据的偏移量：每个参与复制数据的节点都会维护一份复制偏移量，Master节点在处理完写命令后，会把命令的字节长度进行累加，Slave节点每秒钟会向Master节点上报自己的复制偏移量，因此Master节点也会记录Slave节点的偏移量。Master节点持续把写命令同步Slave节点，Slave节点成功接收到之后也会累加自身的偏移量。查看偏移量：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;info replication</span><br><span class="line">master_repl_offset:&#123;NUM&#125; <span class="comment"># Master节点偏移量</span></span><br><span class="line">slave_repl_offset:&#123;NUM&#125; <span class="comment"># Slave节点偏移量</span></span><br></pre></td></tr></table></figure></p>
+<p>复制积压缓冲区：复制积压缓冲区是一个保存在Master节点拥有固定长度的队列，该队列先进先出，大小受repl-backlog-size参数控制（默认：1MB），查看缓冲区：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;info replication</span><br><span class="line">repl_backlog_size:&#123;NUM&#125;（byte）</span><br></pre></td></tr></table></figure></p>
+<p>Master节点的RunID（Replication ID）：该ID主要是用来识别Redis服务节点，因为如果使用IP+PORT方式，假如Master节点重启之后修改了RDB/AOF备份文件，此时Slave节点再基于原来的复制偏移量进行复制数据是不可靠的。查看RunID：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;info server</span><br><span class="line">run_id:8d252f66c3ef89bd60a060cf8dc5cfe3d511c5e4</span><br></pre></td></tr></table></figure></p>
+<p>psync命令使用方式<br><figure class="highlight dust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml">psync </span><span class="template-variable">&#123;RUNID&#125;</span><span class="xml"> </span><span class="template-variable">&#123;OFFSET&#125;</span></span><br></pre></td></tr></table></figure></p>
 </blockquote>
-<h3 id="6-增量-全量复制"><a href="#6-增量-全量复制" class="headerlink" title="6.增量/全量复制"></a>6.增量/全量复制</h3><p>知道了命令如何使用，那么当Slave发送psync命令给Master之后会发生什么？流程分为全量复制和增量复制两种。</p>
+<h3 id="6-增量-全量复制"><a href="#6-增量-全量复制" class="headerlink" title="6.增量/全量复制"></a>6.增量/全量复制</h3><p>知道了命令如何使用，那么当Slave节点发送psync命令给Master节点之后会发生什么？流程分为全量复制和增量复制两种。</p>
 <ul>
-<li><p>全量复制，如果Slave发送的命令是：psync ? -1</p>
+<li><p>全量复制，如果Slave节点发送的命令是：psync ? -1</p>
 <blockquote>
-<p>Master知道Slave要全量复制数据，返回命令则是：+fullresync RunID {OFFSET}，同时Master会执行RDB备份并且使用复制积压缓冲区来记录此后所有的写命令。Master RDB备份完成之后向Slave发送备份文件，同时继续缓冲写命令，在备份文件发送完毕后Master会向Slave发送缓冲的写命令。Slave在收到Master发送的备份文件之后，会丢弃所有的旧数据，开始载入备份文件并且开始执行Master发送缓冲区的写命令。</p>
-<p>值得一提的是，在Slave加载备份文件的时候数据处于不可靠阶段，此时可以通过参数slave-server-stale-data（yes、no）配置是否响应请求，yes响应，no则抛出“SYNC with master in progress”。</p>
-<p>如果备份从创建到传输完毕消耗时间大于repl-timeout参数的值，Slave将会放弃接收备份文件并且清理已经下载的临时文件。</p>
+<p>Master节点知道Slave节点要全量复制数据，返回命令则是：+fullresync {RUNID} {OFFSET}，同时Master节点会执行RDB备份并且使用复制积压缓冲区来记录此后所有的写命令。Master节点 RDB备份完成之后向Slave节点发送备份文件，同时继续缓冲写命令，在备份文件发送完毕后Master节点会向Slave节点发送缓冲区的写命令。Slave节点在收到Master节点发送的备份文件之后，会丢弃所有的旧数据，开始载入备份文件并且开始执行Master节点发送缓冲区的写命令。</p>
+<p>值得一提的是，在Slave节点加载备份文件的时候数据处于不可靠阶段，此时可以通过参数slave-server-stale-data（yes、no）配置是否响应请求，yes响应，no则抛出“SYNC with master in progress”。</p>
+<p>如果备份从创建到传输完毕消耗时间大于repl-timeout参数的值，Slave节点将会放弃接收备份文件并且清理已经下载的临时文件。</p>
 </blockquote>
 </li>
-<li><p>增量复制，Master会根据RunID和{OFFSET}决定返回结果。</p>
+<li><p>增量复制，Master节点会根据{RUNID}和{OFFSET}决定返回结果。</p>
 <blockquote>
-<p>Master首先会检查RunID是否与自身一致，如果不一致将会执行全量数据复制。如果一致会根据{OFFSET}参数在缓冲区查找，如果数据偏移量之后的数据存在缓冲区，返回命令：+continue，表示可以增量复制数据。如果返回命令+err，表示Master版本过低不支持psync命令，将会使用sync进行全量复制数据。</p>
+<p>Master节点首先会检查{RUNID}是否与自身一致，如果不一致将会执行全量数据复制。如果一致会根据{OFFSET}参数在缓冲区查找，如果数据偏移量之后的数据存在缓冲区，返回命令：+continue，表示可以增量复制数据。如果返回命令+err，表示Master节点版本过低不支持psync命令，将会使用sync进行全量复制数据。</p>
 </blockquote>
 </li>
 </ul>
 <h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>最后学习一下为什么sync会被优化？</p>
 <blockquote>
-<p>使用sync命令，在网络或者其他不可抗力因素导致Master和Slave断开连接，需要重新进行一次全量数据复制，Slave数据恢复成本极高。</p>
+<p>使用sync命令，在网络或者其他不可抗力因素导致Master节点和Slave节点断开连接，需要重新进行一次全量数据复制，Slave节点数据恢复成本极高。</p>
 <p><a href="https://redis.io/topics/replication" target="_blank" rel="noopener">https://redis.io/topics/replication</a></p>
 <p><a href="http://try.redis.io" target="_blank" rel="noopener">http://try.redis.io</a></p>
 </blockquote>
@@ -380,6 +380,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2020/03/26/redis-sentinel/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Redis学习笔记 - 哨兵
+        
+      </div>
+    </a>
   
   
     <a href="/2020/03/23/mysql-sharding-partition/" id="article-nav-older" class="article-nav-link-wrap">

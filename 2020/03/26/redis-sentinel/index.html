@@ -6,19 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
-  <title>Mark&#39;s blog</title>
+  <title>Redis学习笔记 - 哨兵 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="安静的小码农">
-<meta name="keywords" content="nginx,php,golang,memcached,redis,mysql,mariadb,php7,前端,js,jquery,javascript,html5,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Mark&#39;s blog">
-<meta property="og:url" content="http://xupin.im/page/3/index.html">
+  <meta name="description" content="现在这篇来学习一下Redis Sentinel即哨兵策略的相关知识。 1.什么是哨兵？哨兵（Sentinel），是Redis2.6版本（正式版本是2.8，现2.6版本已被废弃）开始提供的一种集群策略，核心思想是解决了主从复制（Replication）在Master节点故障，无法自动切换Slave节点为新Master节点的问题。  特点  哨兵策略是分布式部署，节点间相互协调工作。 哨兵集群至少要3">
+<meta name="keywords" content="develop,redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis学习笔记 - 哨兵">
+<meta property="og:url" content="http://xupin.im/2020/03/26/redis-sentinel/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="安静的小码农">
+<meta property="og:description" content="现在这篇来学习一下Redis Sentinel即哨兵策略的相关知识。 1.什么是哨兵？哨兵（Sentinel），是Redis2.6版本（正式版本是2.8，现2.6版本已被废弃）开始提供的一种集群策略，核心思想是解决了主从复制（Replication）在Master节点故障，无法自动切换Slave节点为新Master节点的问题。  特点  哨兵策略是分布式部署，节点间相互协调工作。 哨兵集群至少要3">
 <meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-03-25T19:59:44.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Mark&#39;s blog">
-<meta name="twitter:description" content="安静的小码农">
+<meta name="twitter:title" content="Redis学习笔记 - 哨兵">
+<meta name="twitter:description" content="现在这篇来学习一下Redis Sentinel即哨兵策略的相关知识。 1.什么是哨兵？哨兵（Sentinel），是Redis2.6版本（正式版本是2.8，现2.6版本已被废弃）开始提供的一种集群策略，核心思想是解决了主从复制（Replication）在Master节点故障，无法自动切换Slave节点为新Master节点的问题。  特点  哨兵策略是分布式部署，节点间相互协调工作。 哨兵集群至少要3">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -156,34 +157,139 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-redis-aof-rdb" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-redis-sentinel" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/03/redis-aof-rdb/">Redis学习笔记 - 持久化方式</a>
+    <h1 class="article-title" itemprop="name">
+      Redis学习笔记 - 哨兵
     </h1>
   
 
         
-        <a href="/2019/12/03/redis-aof-rdb/" class="archive-article-date">
-  	<time datetime="2019-12-03T07:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-03</time>
+        <a href="/2020/03/26/redis-sentinel/" class="archive-article-date">
+  	<time datetime="2020-03-25T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-26</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Redis是一个开放源代码（BSD许可）的内存中数据结构存储，用作数据库，缓存和消息代理。</p>
-<h3 id="一、Redis数据存储的方式有两种"><a href="#一、Redis数据存储的方式有两种" class="headerlink" title="一、Redis数据存储的方式有两种"></a>一、Redis数据存储的方式有两种</h3><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">单纯的缓存模式, 整个数据的生命周期随着Redis <span class="built_in">Server</span>的停止而消失。</span><br><span class="line">persistence模式, 数据会持续备份到磁盘文件。</span><br></pre></td></tr></table></figure>
-<h3 id="二、Redis如何实现持久化存储？Redis提供了两种方式。"><a href="#二、Redis如何实现持久化存储？Redis提供了两种方式。" class="headerlink" title="二、Redis如何实现持久化存储？Redis提供了两种方式。"></a>二、Redis如何实现持久化存储？Redis提供了两种方式。</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">RDB</span><span class="params">(Redis DataBase)</span></span></span><br><span class="line"><span class="function"><span class="title">AOF</span><span class="params">(Append-only file)</span></span></span><br></pre></td></tr></table></figure>
-        
+        <p>现在这篇来学习一下Redis Sentinel即哨兵策略的相关知识。</p>
+<h3 id="1-什么是哨兵？"><a href="#1-什么是哨兵？" class="headerlink" title="1.什么是哨兵？"></a>1.什么是哨兵？</h3><p>哨兵（Sentinel），是Redis2.6版本（正式版本是2.8，现2.6版本已被废弃）开始提供的一种集群策略，核心思想是解决了主从复制（Replication）在Master节点故障，无法自动切换Slave节点为新Master节点的问题。</p>
+<ul>
+<li><p>特点</p>
+<ol>
+<li>哨兵策略是分布式部署，节点间相互协调工作。</li>
+<li>哨兵集群至少要3个节点。</li>
+<li>可以把哨兵看作是一种特殊的Redis服务。</li>
+</ol>
+</li>
+<li><p>优点</p>
+<ol>
+<li>哨兵策略拥有主从复制的优点。</li>
+<li>哨兵策略解决了Master节点故障，无法自动切换Slave节点为新Master节点的问题。</li>
+</ol>
+</li>
+</ul>
+<a id="more"></a>
+<ul>
+<li>缺点<ol>
+<li>Master节点写操作的压力没有得到解决。</li>
+<li>数据存储能力还是受到单节点限制。</li>
+</ol>
+</li>
+</ul>
+<h3 id="2-如何配置（多种方式）"><a href="#2-如何配置（多种方式）" class="headerlink" title="2.如何配置（多种方式）"></a>2.如何配置（多种方式）</h3><ul>
+<li>启动Redis哨兵，./redis-sentinel redis-sentinel.conf</li>
+<li>启动Redis服务时并且启动哨兵，./redis-server redis-sentinel.conf –sentinel</li>
+</ul>
+<p>redis-sentinel.conf示例<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 哨兵监控的节点。</span></span><br><span class="line"><span class="comment"># MASTER_NAME：自定义的Master节点名称。</span></span><br><span class="line"><span class="comment"># IP：Master节点的地址。</span></span><br><span class="line"><span class="comment"># PORT：Master节点的端口。</span></span><br><span class="line"><span class="comment"># QUORUM：当Master节点故障，确认Master节点odown最少的哨兵数量。</span></span><br><span class="line">sentinel monitor &#123;MASTER_NAME&#125; &#123;IP&#125; &#123;PORT&#125; &#123;QUORUM&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 哨兵验证</span></span><br><span class="line"><span class="comment"># PASS：Master节点的auth，需要注意的时哨兵不能同时为Master节点和Slave节点设置密码，所以auth需要保持一致。</span></span><br><span class="line">sentinel auth-pass &#123;MASTER_NAME&#125; &#123;PASS&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 哨兵心跳Ping最大时间，如果哨兵向Master节点发送Ping超过这个时间或者回复err，那么哨兵会主观（sdown）认为该Master节点已经处于不可用状态。</span></span><br><span class="line"><span class="comment"># MS：心跳Ping等待响应的最大时间（单位：Millisecond）。</span></span><br><span class="line">sentinel down-after-milliseconds &#123;MASTER_NAME&#125; &#123;MS&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 同时同步数据的Slave节点数量</span></span><br><span class="line"><span class="comment"># SLAVE_NUM：当Master节点故障，Slave节点通过竞选当选新Master节点，最多允许几个Slave节点开始同步新Master的数据。</span></span><br><span class="line">sentinel parallel-syncs &#123;MASTER_NAME&#125; &#123;SLAVE_NUM&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 主从节点切换所需要的最大时间。</span></span><br><span class="line"><span class="comment"># MS：主从节点切换所需要的最大时间（单位：Millisecond）。</span></span><br><span class="line">sentinel failover-timeout &#123;MASTER_NAME&#125; &#123;MS&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># Master节点故障调用的脚本</span></span><br><span class="line"><span class="comment"># SCRIPT_PATH：脚本路径</span></span><br><span class="line">sentinel notification-script &#123;MASTER_NAME&#125; &#123;SCRIPT_PATH&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="3-工作机制"><a href="#3-工作机制" class="headerlink" title="3.工作机制"></a>3.工作机制</h3><ol>
+<li>哨兵向已知节点和哨兵发送心跳包检测状态。</li>
+<li>Master节点无效回复，哨兵判断Master节点状态：主观宕机，客观宕机。</li>
+<li>Master节点被确定客观宕机，进行领头（Leader）哨兵选举。</li>
+<li>准备进行主从切换的领头哨兵获取其他哨兵的授权。</li>
+<li>授权成功，从Slave节点中选举新Master节点。</li>
+<li>领头哨兵把新Master节点信息同步给其他哨兵，其他哨兵把新Master节点信息同步对应Slave节点。</li>
+</ol>
+<h3 id="4-心跳包"><a href="#4-心跳包" class="headerlink" title="4.心跳包"></a>4.心跳包</h3><p>每个哨兵以每秒钟1次的频率向它已知的Master节点、Slave节点和其他哨兵发送PING命令，希望得到的有效回复如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">PING replied with +PONG.</span><br><span class="line">PING replied with -LOADING error.</span><br><span class="line">PING replied with -MASTERDOWN error.</span><br></pre></td></tr></table></figure></p>
+<p>其它任何回复或者无回复都是无效回复。</p>
+<h3 id="5-哨兵和节点之间的自动发现机制"><a href="#5-哨兵和节点之间的自动发现机制" class="headerlink" title="5.哨兵和节点之间的自动发现机制"></a>5.哨兵和节点之间的自动发现机制</h3><p>通过Redis的pub/sub系统实现，每个哨兵都会向自己监控的节点对应的channel：<strong>sentinel</strong>:hello发送一条消息（消息内容包含自己的{IP}、{PORT}和{RUNID}以及Master节点的完整配置），每个订阅该channel的哨兵都可以消费这条消息并且能发现到其他哨兵的存在，如果某个哨兵发现自己维护的节点配置低于新接收的节点配置，则会用新的节点配置进行覆盖。</p>
+<h3 id="6-主观-客观宕机"><a href="#6-主观-客观宕机" class="headerlink" title="6.主观/客观宕机"></a>6.主观/客观宕机</h3><p>如果一个Master节点在收到PING命令后没有在有效时间内（down-after-milliseconds）进行有效回复，则会被标记为主观宕机（sdown，Subjectively Down）。</p>
+<p>哨兵会获取其他哨兵检测该节点的状态，命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># IP：主观宕机的Master节点地址</span></span><br><span class="line"><span class="comment"># PORT：主观宕机的Master节点端口</span></span><br><span class="line"><span class="comment"># CURRENT_EPOCH：哨兵的配置纪元，用于领头哨兵选举。</span></span><br><span class="line"><span class="comment"># RUNID：可以是*和哨兵的RunID，当值是 * 代表检测节点是否主观宕机，如果是RunID则用于领头哨兵选举。</span></span><br><span class="line">SENTINEL is-master-down-byaddr &#123;IP&#125; &#123;PORT&#125; &#123;CURRENT_EPOCH&#125; &#123;RUNID&#125;</span><br></pre></td></tr></table></figure></p>
+<p>当有足够数量（{QUORUM}）的哨兵都认为该Master节点处于主观宕机状态。则该Master节点会被标记为客观宕机（odown，Objectively Down），若没有足够数量的哨兵都认为该Master节点处于主观宕机状态，则不会被标记为客观宕机，同时如果该Master节点重新返回哨兵有效回复，该Master节点主观宕机状态会被移除。</p>
+<h3 id="7-领头哨兵选举"><a href="#7-领头哨兵选举" class="headerlink" title="7.领头哨兵选举"></a>7.领头哨兵选举</h3><p>因为只需要一个哨兵完成主从切换，所以需要选举一个领头哨兵。</p>
+<ol>
+<li>每个哨兵都会发送<code>SENTINEL is-master-down-byaddr</code>命令希望成为领头哨兵。收到该命令的哨兵如果没有同意过其他哨兵的同样命令，那么同意该请求，否则拒绝。</li>
+<li>如果某一哨兵发现同意自己请求的哨兵数量并且数量大于等于{QUORUM}，那么它将成为领头哨兵。</li>
+<li>如果选举过程中有多个哨兵当选领头哨兵，等待一段时间后选举会重新进行。</li>
+</ol>
+<blockquote>
+<p>该方法基于raft算法领头选举方法实现。</p>
+</blockquote>
+<h3 id="8-主从切换授权"><a href="#8-主从切换授权" class="headerlink" title="8.主从切换授权"></a>8.主从切换授权</h3><p>当选举出领头哨兵之后并未马上进行主从切换，领头哨兵还需要获取{MAJORITY}数量的哨兵授权。<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># MAJORITY：该值不可配置，Redis自行计算。公式：majority = voters / <span class="number">2</span> + <span class="number">1</span></span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>如果{QUORUM} &lt; {MAJORITY}，领头哨兵需要{MAJORITY}数量的哨兵进行授权。</li>
+<li>如果{QUORUM} &gt;= {MAJORITY}，那么领头哨兵需要{QUORUM}数量的哨兵授权才可以。</li>
+</ul>
+<p>当领头哨兵获得授权之后，正式开始主从切换流程。</p>
+<h3 id="9-主从切换"><a href="#9-主从切换" class="headerlink" title="9.主从切换"></a>9.主从切换</h3><p>开始主从切换（failover），首先领头哨兵会选举出一个Slave节点出来作为新Master节点，该Slave节点选举参考参数：</p>
+<ul>
+<li><p>该节点和Master节点断开的时长，如果一个Slave节点与Master节点断开连接时间已经超过<code>down-after-milliseconds</code>参数的<code>10倍</code>，再加上Master宕机的时长，该Slave节点就会被认为不适合选举为新的Master节点。</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(down-after-milliseconds * 10) + milliseconds_since_master_is_in_SDOWN_state</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Slave节点的优先级（slave-priority），slave-priority越低优先级越高。</p>
+</li>
+<li>复制数据偏移量（复制数据最完整）</li>
+<li>RunID（最小的）</li>
+</ul>
+<h3 id="10-配置同步"><a href="#10-配置同步" class="headerlink" title="10.配置同步"></a>10.配置同步</h3><p>在领头哨兵完成主从切换之后，会在本地生成最新的Master配置然后通过pub/sub消息机制同步给其他哨兵，其他哨兵则更新对应的Master节点配置。</p>
+<p>那么其他哨兵怎么知道这份配置是最新的呢？</p>
+<blockquote>
+<p>领头哨兵准备执行主从切换前，会从要切换成新Master节点的Slave节点取得一个configuration epoch，可以理解为配置版本号。如果领头哨兵主从切换失败了，那么其他哨兵会等待<code>failover-timeout</code>时间然后接替继续执行切换，每次接替都会重新获取一个configuration epoch，作为新的配置版本号。如果领头哨兵切换成功，那么其他哨兵会根据自己的配置版本号来更新对应Slave节点的Master节点配置。</p>
+</blockquote>
+<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>为什么说哨兵最少要3个节点，举个例子：</p>
+<blockquote>
+<p>如果是2个节点，{QUORUM}值为1，此时其中一台服务器出现客观宕机。领头哨兵需要进行主从切换，在进行主从切换前需要获取{MAJORITY}数量的哨兵同意，该{MAJORITY}参数最小的值是：2，此时领头哨兵无法进行主从切换。</p>
+<p><a href="https://redis.io/topics/sentinel" target="_blank" rel="noopener">https://redis.io/topics/sentinel</a></p>
+</blockquote>
+
       
 
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>罗马家园1204房间, 洗好等你<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/imgs/avatar.jpg">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/imgs/weixin.jpg">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
       
     </div>
     <div class="article-info article-info-index">
@@ -207,16 +313,75 @@
       
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/03/redis-aof-rdb/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+  <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+  <p>扫一扫，分享到微信</p>
+  <div class="wx-qrcode">
+    <img src="http://qr.topscan.com/api.php?text=http://xupin.im/2020/03/26/redis-sentinel/" alt="微信分享二维码">
+  </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2020/03/25/redis-replication/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Redis学习笔记 - 主从复制</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -236,1134 +401,14 @@
 
 
 
-
-  
-    <article id="post-guetzli" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/12/guetzli/">使用Guetzli压缩图片</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/12/guetzli/" class="archive-article-date">
-  	<time datetime="2017-06-12T03:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Guetzli is a JPEG encoder that aims for excellent compression density at high visual quality. Guetzli-generated images are typically 20-30% smaller than images of equivalent quality generated by libjpeg. Guetzli generates only sequential (nonprogressive) JPEGs due to faster decompression speeds they offer.</p>
-<h3 id="1-安装libpng依赖库"><a href="#1-安装libpng依赖库" class="headerlink" title="1.安装libpng依赖库"></a>1.安装libpng依赖库</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ yum install libpng-devel git</span><br></pre></td></tr></table></figure>
-<h3 id="2-获取Guetzli项目"><a href="#2-获取Guetzli项目" class="headerlink" title="2.获取Guetzli项目"></a>2.获取Guetzli项目</h3><blockquote>
-<p><a href="https://github.com/google/guetzli" target="_blank" rel="noopener">https://github.com/google/guetzli</a></p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /tmp</span><br><span class="line">$ git <span class="built_in">clone</span> https://github.com/google/guetzli</span><br><span class="line">$ <span class="built_in">cd</span> guetzli</span><br><span class="line">$ make</span><br><span class="line">$ ./bin/Release/guetzli // 这里我就不加软连接,为了方便使用你们可以加入软连接</span><br><span class="line">Guetzli JPEG compressor. Usage: </span><br><span class="line">guetzli [flags] input_filename output_filename // 这里是使用方法</span><br><span class="line"></span><br><span class="line">Flags:</span><br><span class="line">  --verbose    - Print a verbose trace of all attempts to standard output.</span><br><span class="line">  --quality Q  - Visual quality to aim <span class="keyword">for</span>, expressed as a JPEG quality value.</span><br><span class="line">                 Default value is 95.</span><br><span class="line">  --memlimit M - Memory <span class="built_in">limit</span> <span class="keyword">in</span> MB. Guetzli will fail <span class="keyword">if</span> unable to stay under</span><br><span class="line">                 the <span class="built_in">limit</span>. Default <span class="built_in">limit</span> is 6000 MB.</span><br><span class="line">  --nomemlimit - Do not <span class="built_in">limit</span> memory usage.</span><br></pre></td></tr></table></figure>
-<h3 id="3-压缩前后对比"><a href="#3-压缩前后对比" class="headerlink" title="3.压缩前后对比"></a>3.压缩前后对比</h3><h6 id="压缩前-920KB"><a href="#压缩前-920KB" class="headerlink" title="压缩前(920KB)"></a>压缩前(920KB)</h6><p><img src="/assets/guetzli/guetzli-res.jpg" alt></p>
-<h6 id="压缩后-748KB-20"><a href="#压缩后-748KB-20" class="headerlink" title="压缩后(748KB),20%"></a>压缩后(748KB),20%</h6><p><img src="/assets/guetzli/guetzli-res.jpg" alt></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">guetzli</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tools</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/12/guetzli/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-wekan" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/09/wekan/">部署像Trello一样的看板工具 - Wekan</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/09/wekan/" class="archive-article-date">
-  	<time datetime="2017-06-09T04:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-09</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Wekan is an completely Open Source and Free software collaborative kanban board application with MIT license.</p>
-<h3 id="1-安装MongoDB"><a href="#1-安装MongoDB" class="headerlink" title="1.安装MongoDB"></a>1.安装MongoDB</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ vi /etc/yum.repos.d/mongodb-org-3.2.repo </span><br><span class="line">$ [mongodb-org-3.2]</span><br><span class="line">$ name=MongoDB Repository</span><br><span class="line">$ baseurl=https://repo.mongodb.org/yum/redhat/<span class="variable">$releasever</span>/mongodb-org/3.2/x86_64/</span><br><span class="line">$ gpgcheck=1</span><br><span class="line">$ enabled=1</span><br><span class="line">$ gpgkey=https://www.mongodb.org/static/pgp/server-3.2.asc</span><br><span class="line">$ yum install mongodb-org</span><br><span class="line">$ service mongod start // 启动MongoDB</span><br></pre></td></tr></table></figure>
-<h3 id="2-安装NodeJS"><a href="#2-安装NodeJS" class="headerlink" title="2.安装NodeJS"></a>2.安装NodeJS</h3><blockquote>
-<p><a href="http://nodejs.org/dist/latest/" target="_blank" rel="noopener">http://nodejs.org/dist/latest/</a> // pkg列表</p>
-</blockquote>
-<p>我下载的是 <a href="http://nodejs.org/dist/latest/node-v8.1.0.tar.xz" target="_blank" rel="noopener">http://nodejs.org/dist/latest/node-v8.1.0.tar.xz</a></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ yum install gcc gcc-c++ wget</span><br><span class="line">$ <span class="built_in">cd</span> /tmp</span><br><span class="line">$ wget http://nodejs.org/dist/latest/node-v8.1.0.tar.xz</span><br><span class="line">$ xz -d node-v8.1.0.tar.xz</span><br><span class="line">$ tar -vxf node-v8.1.0.tar</span><br><span class="line">$ <span class="built_in">cd</span> node-v8.1.0</span><br><span class="line">$ vi README.md // To build 有告诉需要的环境,以及安装步骤</span><br><span class="line">$ ./configure</span><br><span class="line">$ make &amp;&amp; make install</span><br><span class="line">$ node -v</span><br><span class="line">$ v8.1.0</span><br></pre></td></tr></table></figure>
-<h3 id="3-获取Wekan项目"><a href="#3-获取Wekan项目" class="headerlink" title="3.获取Wekan项目"></a>3.获取Wekan项目</h3><blockquote>
-<p><a href="https://github.com/wekan/wekan/releases/" target="_blank" rel="noopener">https://github.com/wekan/wekan/releases/</a> // 版本列表</p>
-</blockquote>
-<p>我下载的是 v0.23</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /tmp</span><br><span class="line">$ wget https://github.com/wekan/wekan/releases/download/v0.23/wekan-0.23.tar.gz</span><br><span class="line">$ tar -zxvf wekan wekan-0.23.tar.gz</span><br><span class="line">$ mkdir wekan</span><br><span class="line">$ mv ./bundle ./wekan </span><br><span class="line">$ <span class="built_in">cd</span> wekan/bundle</span><br><span class="line">$ <span class="built_in">export</span> MONGO_URL=<span class="string">'mongodb://127.0.0.1:27017/wekan'</span> </span><br><span class="line">$ <span class="built_in">export</span> ROOT_URL=<span class="string">'https://example.com'</span> </span><br><span class="line">$ <span class="built_in">export</span> MAIL_URL=<span class="string">'smtp://user:pass@mailserver.example.com:25/'</span> </span><br><span class="line">$ <span class="built_in">export</span> PORT=8080</span><br><span class="line">$ node main.js // 如果没有报错,访问http://host:8080就可以使用Wekan啦</span><br></pre></td></tr></table></figure>
-<h3 id="4-一些错误问题"><a href="#4-一些错误问题" class="headerlink" title="4.一些错误问题"></a>4.一些错误问题</h3><ul>
-<li>##There is an issue with <code>node-fibers</code>##<blockquote>
-<p>npm install fibers</p>
-</blockquote>
-</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tools</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">wekan</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/09/wekan/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-php-webp" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/22/php-webp/">PHP 图片转换Webp格式</a>
-    </h1>
-  
-
-        
-        <a href="/2017/03/22/php-webp/" class="archive-article-date">
-  	<time datetime="2017-03-21T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>WebP是Google推出的一种图片格式，它基于VP8编码，可对图像大幅压缩。与JPEG相同，WebP也是一种有损压缩，但在画质相同的情况下，WebP格式比JPEG图像小40%。</p>
-<h3 id="1-利与弊"><a href="#1-利与弊" class="headerlink" title="1.利与弊"></a>1.利与弊</h3><blockquote>
-<p>WebP 与 JPEG 图像相比，这种格式可对图像大幅压缩。从而显著优化页面加载时间和带宽使用情况。<br>WebP 目前支持桌面上的 Chrome 和 Opera 浏览器。手机支持仅限于原生的 Android 浏览器和 Android 系统上的 Chrome 浏览器,后面会介绍关于如何处理这个限制的方法。</p>
-</blockquote>
-<p><img src="/assets/webp/webp-app.jpg" alt></p>
-<p>（Google 已和正在部署的 WebP 的产品）</p>
-<h3 id="2-后端PHP代码如何转换？"><a href="#2-后端PHP代码如何转换？" class="headerlink" title="2.后端PHP代码如何转换？"></a>2.后端PHP代码如何转换？</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"></span><br><span class="line"><span class="php"><span class="comment">// 文件名</span></span></span><br><span class="line"><span class="php">$fileName = <span class="string">'./res.png'</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="php"><span class="comment">// 图片源</span></span></span><br><span class="line"><span class="php">$res = imagecreatefrompng($fileName); <span class="comment">// 如果是jpg(imagecreatefromjpg),其他格式自行查阅手册</span></span></span><br><span class="line"></span><br><span class="line"><span class="php"><span class="comment">// 输出.webp文件</span></span></span><br><span class="line"><span class="php">imagewebp($res, <span class="string">'./res.webp'</span>);</span></span><br></pre></td></tr></table></figure>
-<p>(非常简单!)</p>
-<h3 id="3-前端JS代码如何判断浏览器支持"><a href="#3-前端JS代码如何判断浏览器支持" class="headerlink" title="3.前端JS代码如何判断浏览器支持?"></a>3.前端JS代码如何判断浏览器支持?</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 代码片段摘自网站,亲测可用</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">checkWebp</span>(<span class="params">callback</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> img = <span class="keyword">new</span> Image();</span><br><span class="line">  img.onload = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> result = (img.width &gt; <span class="number">0</span>) &amp;&amp; (img.height &gt; <span class="number">0</span>);</span><br><span class="line">    callback(result);</span><br><span class="line">  &#125;;</span><br><span class="line">  img.onerror = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    callback(<span class="literal">false</span>);</span><br><span class="line">  &#125;;</span><br><span class="line">  img.src = <span class="string">'data:image/webp;base64,UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEADsD+JaQAA3AAAAAA'</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">showImage</span>(<span class="params">useWebp</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> imgs = <span class="built_in">Array</span>.from(<span class="built_in">document</span>.querySelectorAll(<span class="string">'img'</span>));</span><br><span class="line"></span><br><span class="line">  imgs.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">i</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> src = i.attributes[<span class="string">'data-src'</span>].value;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (useWebp)&#123;</span><br><span class="line">      src = src.replace(<span class="regexp">/\.jpg$/</span>, <span class="string">'.webp'</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    i.src = src;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">checkWebp(showImage);</span><br></pre></td></tr></table></figure>
-<h3 id="4-实例前后对比"><a href="#4-实例前后对比" class="headerlink" title="4.实例前后对比"></a>4.实例前后对比</h3><h6 id="转换前-378KB"><a href="#转换前-378KB" class="headerlink" title="转换前(378KB)"></a>转换前(378KB)</h6><p><img src="/assets/webp/webp-res.png" alt></p>
-<h6 id="转换后-8KB"><a href="#转换后-8KB" class="headerlink" title="转换后(8KB)"></a>转换后(8KB)</h6><p><img src="/assets/webp/webp-after.webp" alt></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">webp</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/03/22/php-webp/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-google-msg-push" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/28/google-msg-push/">PHP + Google(FCM)安卓设备消息推送/群发</a>
-    </h1>
-  
-
-        
-        <a href="/2017/02/28/google-msg-push/" class="archive-article-date">
-  	<time datetime="2017-02-28T09:10:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-28</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Firebase 是一个移动平台，可以帮助您快速开发高品质应用，扩大用户群，并赚取更多收益。Firebase 由多种互补功能组成，您可以自行组合和匹配这些功能以满足自己的需求。</p>
-<h3 id="1-获取Google推送的KEY-Google应用后台"><a href="#1-获取Google推送的KEY-Google应用后台" class="headerlink" title="1.获取Google推送的KEY(Google应用后台)"></a>1.获取Google推送的KEY(Google应用后台)</h3><blockquote>
-<p>AIzaSyCm5Vufc1FAtWE1kupGhVDRb0ThkCoWC7d // 这个是我的</p>
-</blockquote>
-<h3 id="2-PHP推送代码"><a href="#2-PHP推送代码" class="headerlink" title="2.PHP推送代码"></a>2.PHP推送代码</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化环境</span></span><br><span class="line">$url = <span class="string">'https://fcm.googleapis.com/fcm/send'</span>;</span><br><span class="line">$ch = curl_init($url);</span><br><span class="line">curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, <span class="keyword">false</span>);</span><br><span class="line">curl_setopt($ch, CURLOPT_RETURNTRANSFER,<span class="number">1</span>);</span><br><span class="line">curl_setopt($ch, CURLOPT_POST, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">$header = <span class="keyword">array</span>(</span><br><span class="line">	<span class="string">'Content-Type: application/json'</span>,</span><br><span class="line">	<span class="string">'Authorization: key=AIzaSyCm5Vufc1FAtWE1kupGhVDRb0ThkCoWC7d'</span> <span class="comment">// 这里是刚才的KEY</span></span><br><span class="line">);</span><br><span class="line">curl_setopt($ch, CURLOPT_HTTPHEADER, $header);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 构建消息体,json编码</span></span><br><span class="line">$content = json_encode([</span><br><span class="line"><span class="string">'notification'</span>=&gt;[</span><br><span class="line">	<span class="string">'title'</span> =&gt; <span class="string">'这里是标题'</span>, </span><br><span class="line">	<span class="string">'body'</span> =&gt; <span class="string">'这里是内容'</span>, </span><br><span class="line">	<span class="string">'icon'</span> =&gt; <span class="string">'这里是后台设置的iconName'</span></span><br><span class="line">],</span><br><span class="line"><span class="string">'to'</span>=&gt;<span class="string">'设备标识(Google SDK可以获取)'</span>,</span><br><span class="line"><span class="string">'registration_ids'</span>=&gt;[<span class="string">'设备标识'</span>,<span class="string">'设备标识'</span>] <span class="comment">// 如果要推送多台设备,可以使用此字段,最多支持1000台设备</span></span><br><span class="line">]);</span><br><span class="line"></span><br><span class="line">curl_setopt($ch, CURLOPT_POSTFIELDS, $content);</span><br><span class="line"></span><br><span class="line">$ret = json_decode(curl_exec($ch), <span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line">$ret[<span class="string">'success'</span>]; <span class="comment">// 推送成功数</span></span><br><span class="line"></span><br><span class="line">$ret[<span class="string">'failure'</span>]; <span class="comment">// 推送失败数</span></span><br></pre></td></tr></table></figure>
-<h3 id="3-返回值示例"><a href="#3-返回值示例" class="headerlink" title="3.返回值示例"></a>3.返回值示例</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"multicast_id"</span>: <span class="number">7669649331143639654</span>,</span><br><span class="line">    <span class="attr">"success"</span>: <span class="number">3</span>,</span><br><span class="line">    <span class="attr">"failure"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"canonical_ids"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"results"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"message_id"</span>: <span class="string">"0:1488360060090224%6490a2d16490a2d1"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"message_id"</span>: <span class="string">"0:1488360060095871%6490a2d16490a2d1"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"message_id"</span>: <span class="string">"0:1488360060090765%6490a2d16490a2d1"</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="4-Google-FCM-文档"><a href="#4-Google-FCM-文档" class="headerlink" title="4.Google(FCM) 文档"></a>4.Google(FCM) 文档</h3><blockquote>
-<p><a href="https://firebase.google.com/docs" target="_blank" rel="noopener">https://firebase.google.com/docs</a></p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">google fcm</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/02/28/google-msg-push/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-short-names" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/28/short-names/">通用缩写表</a>
-    </h1>
-  
-
-        
-        <a href="/2017/02/28/short-names/" class="archive-article-date">
-  	<time datetime="2017-02-27T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-28</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>1、本缩写表是《编码命名规范》的附录。<br>2、本缩写表中列出的都是通用性缩写，不提供标准缩写，如：Win9x、COM 等。<br>3、使用本缩写表里的缩写时，请对其进行必要的注释说明。<br>4、除少数情况以外，大部分缩写与大小写无关。</p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th>缩写</th>
-<th style="text-align:center">全称</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>addr</td>
-<td style="text-align:center">Address</td>
-</tr>
-<tr>
-<td>adm</td>
-<td style="text-align:center">Administrator</td>
-</tr>
-<tr>
-<td>app</td>
-<td style="text-align:center">Application</td>
-</tr>
-<tr>
-<td>arg</td>
-<td style="text-align:center">Argument</td>
-</tr>
-<tr>
-<td>asm</td>
-<td style="text-align:center">assemble</td>
-</tr>
-<tr>
-<td>asyn</td>
-<td style="text-align:center">asynchronization</td>
-</tr>
-<tr>
-<td>avg</td>
-<td style="text-align:center">average</td>
-</tr>
-<tr>
-<td>DB</td>
-<td style="text-align:center">Database</td>
-</tr>
-<tr>
-<td>bk</td>
-<td style="text-align:center">back</td>
-</tr>
-<tr>
-<td>bmp</td>
-<td style="text-align:center">Bitmap</td>
-</tr>
-<tr>
-<td>btn</td>
-<td style="text-align:center">Button</td>
-</tr>
-<tr>
-<td>buf</td>
-<td style="text-align:center">Buffer</td>
-</tr>
-<tr>
-<td>calc</td>
-<td style="text-align:center">Calculate</td>
-</tr>
-<tr>
-<td>char</td>
-<td style="text-align:center">Character</td>
-</tr>
-<tr>
-<td>chg</td>
-<td style="text-align:center">Change</td>
-</tr>
-<tr>
-<td>clk</td>
-<td style="text-align:center">Click</td>
-</tr>
-<tr>
-<td>clr</td>
-<td style="text-align:center">color</td>
-</tr>
-<tr>
-<td>cmd</td>
-<td style="text-align:center">Command</td>
-</tr>
-<tr>
-<td>cmp</td>
-<td style="text-align:center">Compare</td>
-</tr>
-<tr>
-<td>col</td>
-<td style="text-align:center">Column</td>
-</tr>
-<tr>
-<td>coord</td>
-<td style="text-align:center">coordinates</td>
-</tr>
-<tr>
-<td>cpy</td>
-<td style="text-align:center">copy</td>
-</tr>
-<tr>
-<td>ctl</td>
-<td style="text-align:center">/ctrl    Control</td>
-</tr>
-<tr>
-<td>cur</td>
-<td style="text-align:center">Current</td>
-</tr>
-<tr>
-<td>cyl</td>
-<td style="text-align:center">Cylinder</td>
-</tr>
-<tr>
-<td>dbg</td>
-<td style="text-align:center">Debug</td>
-</tr>
-<tr>
-<td>dbl</td>
-<td style="text-align:center">Double</td>
-</tr>
-<tr>
-<td>dec</td>
-<td style="text-align:center">Decrease</td>
-</tr>
-<tr>
-<td>def</td>
-<td style="text-align:center">default</td>
-</tr>
-<tr>
-<td>del</td>
-<td style="text-align:center">Delete</td>
-</tr>
-<tr>
-<td>dest</td>
-<td style="text-align:center">/dst    Destination</td>
-</tr>
-<tr>
-<td>dev</td>
-<td style="text-align:center">Device</td>
-</tr>
-<tr>
-<td>dict</td>
-<td style="text-align:center">dictionary</td>
-</tr>
-<tr>
-<td>diff</td>
-<td style="text-align:center">different</td>
-</tr>
-<tr>
-<td>dir</td>
-<td style="text-align:center">directory</td>
-</tr>
-<tr>
-<td>disp</td>
-<td style="text-align:center">Display</td>
-</tr>
-<tr>
-<td>div</td>
-<td style="text-align:center">Divide</td>
-</tr>
-<tr>
-<td>缩写</td>
-<td style="text-align:center">全称</td>
-</tr>
-<tr>
-<td>dlg</td>
-<td style="text-align:center">Dialog</td>
-</tr>
-<tr>
-<td>doc</td>
-<td style="text-align:center">Document</td>
-</tr>
-<tr>
-<td>drv</td>
-<td style="text-align:center">Driver</td>
-</tr>
-<tr>
-<td>dyna</td>
-<td style="text-align:center">Dynamic</td>
-</tr>
-<tr>
-<td>env</td>
-<td style="text-align:center">Environment</td>
-</tr>
-<tr>
-<td>err</td>
-<td style="text-align:center">error</td>
-</tr>
-<tr>
-<td>ex/ext</td>
-<td style="text-align:center">Extend</td>
-</tr>
-<tr>
-<td>exec</td>
-<td style="text-align:center">execute</td>
-</tr>
-<tr>
-<td>flg</td>
-<td style="text-align:center">flag</td>
-</tr>
-<tr>
-<td>frm</td>
-<td style="text-align:center">Frame</td>
-</tr>
-<tr>
-<td>func</td>
-<td style="text-align:center">/fn    Function</td>
-</tr>
-<tr>
-<td>grp</td>
-<td style="text-align:center">group</td>
-</tr>
-<tr>
-<td>horz</td>
-<td style="text-align:center">Horizontal</td>
-</tr>
-<tr>
-<td>idx</td>
-<td style="text-align:center">/ndx    Index</td>
-</tr>
-<tr>
-<td>img</td>
-<td style="text-align:center">Image</td>
-</tr>
-<tr>
-<td>impl</td>
-<td style="text-align:center">Implement</td>
-</tr>
-<tr>
-<td>inc</td>
-<td style="text-align:center">Increase</td>
-</tr>
-<tr>
-<td>info</td>
-<td style="text-align:center">Information</td>
-</tr>
-<tr>
-<td>init</td>
-<td style="text-align:center">Initial/Initialize/Initialization</td>
-</tr>
-<tr>
-<td>ins</td>
-<td style="text-align:center">Insert</td>
-</tr>
-<tr>
-<td>inst</td>
-<td style="text-align:center">Instance</td>
-</tr>
-<tr>
-<td>INT</td>
-<td style="text-align:center">/intr    Interrupt</td>
-</tr>
-<tr>
-<td>len</td>
-<td style="text-align:center">Length</td>
-</tr>
-<tr>
-<td>lib</td>
-<td style="text-align:center">Library</td>
-</tr>
-<tr>
-<td>lnk</td>
-<td style="text-align:center">Link</td>
-</tr>
-<tr>
-<td>log</td>
-<td style="text-align:center">logical</td>
-</tr>
-<tr>
-<td>lst</td>
-<td style="text-align:center">List</td>
-</tr>
-<tr>
-<td>max</td>
-<td style="text-align:center">maximum</td>
-</tr>
-<tr>
-<td>mem</td>
-<td style="text-align:center">Memory</td>
-</tr>
-<tr>
-<td>mgr</td>
-<td style="text-align:center">/man    Manage/Manager</td>
-</tr>
-<tr>
-<td>mid</td>
-<td style="text-align:center">middle</td>
-</tr>
-<tr>
-<td>min</td>
-<td style="text-align:center">minimum</td>
-</tr>
-<tr>
-<td>msg</td>
-<td style="text-align:center">Message</td>
-</tr>
-<tr>
-<td>mul</td>
-<td style="text-align:center">Multiply</td>
-</tr>
-<tr>
-<td>num</td>
-<td style="text-align:center">Number</td>
-</tr>
-<tr>
-<td>obj</td>
-<td style="text-align:center">Object</td>
-</tr>
-<tr>
-<td>ofs</td>
-<td style="text-align:center">Offset</td>
-</tr>
-<tr>
-<td>org</td>
-<td style="text-align:center">Origin/Original</td>
-</tr>
-<tr>
-<td>param</td>
-<td style="text-align:center">Parameter</td>
-</tr>
-<tr>
-<td>pic</td>
-<td style="text-align:center">picture</td>
-</tr>
-<tr>
-<td>pkg</td>
-<td style="text-align:center">package</td>
-</tr>
-<tr>
-<td>pnt</td>
-<td style="text-align:center">/pt    Point</td>
-</tr>
-<tr>
-<td>pos</td>
-<td style="text-align:center">Position</td>
-</tr>
-<tr>
-<td>pre</td>
-<td style="text-align:center">/prev    previous</td>
-</tr>
-<tr>
-<td>缩写</td>
-<td style="text-align:center">全称</td>
-</tr>
-<tr>
-<td>prg</td>
-<td style="text-align:center">program</td>
-</tr>
-<tr>
-<td>prn</td>
-<td style="text-align:center">Print</td>
-</tr>
-<tr>
-<td>proc</td>
-<td style="text-align:center">Process/Procedure</td>
-</tr>
-<tr>
-<td>prop</td>
-<td style="text-align:center">Properties</td>
-</tr>
-<tr>
-<td>psw</td>
-<td style="text-align:center">Password</td>
-</tr>
-<tr>
-<td>ptr</td>
-<td style="text-align:center">Pointer</td>
-</tr>
-<tr>
-<td>pub</td>
-<td style="text-align:center">Public</td>
-</tr>
-<tr>
-<td>rc</td>
-<td style="text-align:center">rect</td>
-</tr>
-<tr>
-<td>ref</td>
-<td style="text-align:center">Reference</td>
-</tr>
-<tr>
-<td>reg</td>
-<td style="text-align:center">Register</td>
-</tr>
-<tr>
-<td>req</td>
-<td style="text-align:center">request</td>
-</tr>
-<tr>
-<td>res</td>
-<td style="text-align:center">Resource</td>
-</tr>
-<tr>
-<td>ret</td>
-<td style="text-align:center">return</td>
-</tr>
-<tr>
-<td>rgn</td>
-<td style="text-align:center">region</td>
-</tr>
-<tr>
-<td>scr</td>
-<td style="text-align:center">screen</td>
-</tr>
-<tr>
-<td>sec</td>
-<td style="text-align:center">Second</td>
-</tr>
-<tr>
-<td>seg</td>
-<td style="text-align:center">Segment</td>
-</tr>
-<tr>
-<td>sel</td>
-<td style="text-align:center">Select</td>
-</tr>
-<tr>
-<td>src</td>
-<td style="text-align:center">Source</td>
-</tr>
-<tr>
-<td>std</td>
-<td style="text-align:center">Standard</td>
-</tr>
-<tr>
-<td>stg</td>
-<td style="text-align:center">Storage</td>
-</tr>
-<tr>
-<td>stm</td>
-<td style="text-align:center">Stream</td>
-</tr>
-<tr>
-<td>str</td>
-<td style="text-align:center">String</td>
-</tr>
-<tr>
-<td>sub</td>
-<td style="text-align:center">Subtract</td>
-</tr>
-<tr>
-<td>sum</td>
-<td style="text-align:center">summation</td>
-</tr>
-<tr>
-<td>svr</td>
-<td style="text-align:center">Server</td>
-</tr>
-<tr>
-<td>sync</td>
-<td style="text-align:center">Synchronization</td>
-</tr>
-<tr>
-<td>sys</td>
-<td style="text-align:center">System</td>
-</tr>
-<tr>
-<td>tbl</td>
-<td style="text-align:center">Table</td>
-</tr>
-<tr>
-<td>temp</td>
-<td style="text-align:center">/tmp    Temporary</td>
-</tr>
-<tr>
-<td>tran</td>
-<td style="text-align:center">/trans    translate/transation/transparent</td>
-</tr>
-<tr>
-<td>tst</td>
-<td style="text-align:center">Test</td>
-</tr>
-<tr>
-<td>txt</td>
-<td style="text-align:center">text</td>
-</tr>
-<tr>
-<td>unk</td>
-<td style="text-align:center">Unknown</td>
-</tr>
-<tr>
-<td>upd</td>
-<td style="text-align:center">Update</td>
-</tr>
-<tr>
-<td>upg</td>
-<td style="text-align:center">Upgrade</td>
-</tr>
-<tr>
-<td>util</td>
-<td style="text-align:center">Utility</td>
-</tr>
-<tr>
-<td>var</td>
-<td style="text-align:center">Variable</td>
-</tr>
-<tr>
-<td>ver</td>
-<td style="text-align:center">Version</td>
-</tr>
-<tr>
-<td>vert</td>
-<td style="text-align:center">Vertical</td>
-</tr>
-<tr>
-<td>vir</td>
-<td style="text-align:center">Virus</td>
-</tr>
-<tr>
-<td>wnd</td>
-<td style="text-align:center">Window</td>
-</tr>
-</tbody>
-</table>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">short names</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/02/28/short-names/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-nginx-recv-104" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/23/nginx-recv-104/">Nginx recv() failed (104 Connection reset by peer)</a>
-    </h1>
-  
-
-        
-        <a href="/2017/02/23/nginx-recv-104/" class="archive-article-date">
-  	<time datetime="2017-02-23T10:05:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Error: recv() failed (104: Connection reset by peer) while reading response header from upstream</p>
-<h3 id="1-日志信息"><a href="#1-日志信息" class="headerlink" title="1.日志信息"></a>1.日志信息</h3><figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// www.xxxx.com 公司域名,故此屏蔽</span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">03</span>:<span class="number">58</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">33</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">03</span>:<span class="number">59</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">35</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">00</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">37</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">02</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">39</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">07</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">9</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">GET</span> /Api/GetRegSvrInfo&amp;pid=1&amp;ver=3003 HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201:81"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">08</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">42</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">09</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">44</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">10</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">46</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br></pre></td></tr></table></figure>
-<h3 id="2-异常原因"><a href="#2-异常原因" class="headerlink" title="2.异常原因"></a>2.异常原因</h3><blockquote>
-<p>ups请求9000端口之后重置 // 我遇见的问题</p>
-</blockquote>
-<h3 id="3-解决方案"><a href="#3-解决方案" class="headerlink" title="3.解决方案"></a>3.解决方案</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ iptables -L -n // 检查是否有其他进程占用9000端口</span><br></pre></td></tr></table></figure>
-<p>9000端口没有被占用</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ vi /etc/sysconfig/iptables</span><br><span class="line">-A INPUT -i lo -j ACCEPT // 本地回环(lo一般指127.0.0.1),检查是否有这条配置</span><br></pre></td></tr></table></figure>
-<p>lo防火墙策略未配置</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ iptables -A INPUT -i lo -j ACCEPT // 没有配置,执行这个指令</span><br><span class="line">$ iptables save // 保存</span><br><span class="line">$ iptables restart // 重启生效</span><br></pre></td></tr></table></figure>
-<h3 id="4-依然未解决"><a href="#4-依然未解决" class="headerlink" title="4.依然未解决"></a>4.依然未解决</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ vi /etc/php-fpm.d/www.conf // 这是我的PHP-FPM配置文件</span><br><span class="line">request_terminate_timeout = 0/600; // 这样解决一般是PHP某些脚本执行时间过长超时</span><br></pre></td></tr></table></figure>
-<p>顽固分子,就是不行!!!</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ iptables stop // 关闭防火墙之后(慎用,生产环境谨慎操作),试试是否可以访问</span><br></pre></td></tr></table></figure>
-<p>如果可以访问,麻烦运维哥哥帮忙看一下防火墙策略o(╯□╰)o!!!</p>
-<h3 id="5-其他问题"><a href="#5-其他问题" class="headerlink" title="5.其他问题"></a>5.其他问题</h3><p>欢迎邮箱我一起讨论解决</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">nginx</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/02/23/nginx-recv-104/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-cookie-httponly" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/23/cookie-httponly/">PHP防止XSS攻击、脚本访问Cookie</a>
-    </h1>
-  
-
-        
-        <a href="/2017/02/23/cookie-httponly/" class="archive-article-date">
-  	<time datetime="2017-02-23T08:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>httponly是微软对cookie做的扩展,主要是解决用户的cookie可能被盗用的问题。</p>
-<h3 id="1-Cookie漏洞"><a href="#1-Cookie漏洞" class="headerlink" title="1.Cookie漏洞"></a>1.Cookie漏洞</h3><figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">Missing `httpOnly` Cookie Attribute	<span class="number">105925</span>	http (<span class="number">80</span>/tcp)	High  </span><br><span class="line">Vulnerability Detection <span class="keyword">Result</span>:</span><br><span class="line"></span><br><span class="line">The cookies:</span><br><span class="line"></span><br><span class="line"><span class="keyword">Set</span>-Cookie: PHPSESSID=esjpr7dkb64rgn1kjhr1r45j05; path=/ </span><br><span class="line"></span><br><span class="line">are missing the httpOnly attribute.</span><br><span class="line"></span><br><span class="line">Summary:</span><br><span class="line"></span><br><span class="line">The application <span class="keyword">is</span> missing the <span class="string">'httpOnly'</span> cookie attribute</span><br><span class="line"></span><br><span class="line">Solution:</span><br><span class="line"></span><br><span class="line"><span class="keyword">Set</span> the <span class="string">'httpOnly'</span> attribute <span class="keyword">for</span> any session cookie.</span><br><span class="line"></span><br><span class="line">Vulnerability Detection <span class="function"><span class="keyword">Method</span>:</span></span><br><span class="line"></span><br><span class="line">Check all cookies sent <span class="keyword">by</span> the application <span class="keyword">for</span> a missing <span class="string">'httpOnly'</span> attribute</span><br><span class="line"></span><br><span class="line">Insight:</span><br><span class="line"></span><br><span class="line">The flaw <span class="keyword">is</span> due <span class="keyword">to</span> a cookie <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">using</span> the <span class="string">'httpOnly'</span> attribute. This</span><br><span class="line">allows a cookie <span class="keyword">to</span> be accessed <span class="keyword">by</span> JavaScript which could lead <span class="keyword">to</span> session hijacking attacks.</span><br><span class="line"></span><br><span class="line">CVSS Base Vector:</span><br><span class="line"></span><br><span class="line">AV:N/AC:L/Au:N/C:P/I:N/A:N</span><br><span class="line"></span><br><span class="line">Affected Software/OS:</span><br><span class="line"></span><br><span class="line">Application <span class="keyword">with</span> session handling <span class="keyword">in</span> cookies.</span><br><span class="line"></span><br><span class="line">References:</span><br><span class="line"></span><br><span class="line">https:<span class="comment">//www.owasp.org/index.php/HttpOnly</span></span><br><span class="line">https:<span class="comment">//www.owasp.org/index.php/Testing_for_cookies_attributes_(OTG-SESS-002)</span></span><br></pre></td></tr></table></figure>
-<h3 id="2-漏洞表现"><a href="#2-漏洞表现" class="headerlink" title="2.漏洞表现"></a>2.漏洞表现</h3><blockquote>
-<p>跨站点脚本攻击 // 这种攻击手段具体表现,很多博主都写过,在此不表了</p>
-</blockquote>
-<h3 id="3-解决方案"><a href="#3-解决方案" class="headerlink" title="3.解决方案"></a>3.解决方案</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ vi /etc/php.ini // PHP 5.2版本及以上</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>session.cookie_httponly = true/1</p>
-</blockquote>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">//</span> <span class="string">PHP</span> <span class="number">5.2</span><span class="string">版本及以上</span></span><br><span class="line"><span class="string">ini_set('session.cookie_httponly',</span> <span class="number">1</span><span class="string">);</span> <span class="string">//</span> <span class="string">注册php.ini配置</span></span><br><span class="line"><span class="string">session_set_cookie_params(0,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">TRUE</span><span class="string">);</span></span><br><span class="line"><span class="string">setcookie('cookieName',</span> <span class="string">'cookieValue'</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">TRUE</span><span class="string">);</span></span><br><span class="line"><span class="string">setrawcookie('cookieName',</span> <span class="string">'cookieValue'</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">TRUE</span><span class="string">);</span></span><br><span class="line"><span class="string">//</span> <span class="string">PHP</span> <span class="number">5.1</span><span class="string">版本及以下</span></span><br><span class="line"><span class="string">header('Set-Cookie:</span> <span class="string">hidden=value;</span> <span class="string">httpOnly');</span></span><br></pre></td></tr></table></figure>
-<h3 id="4-网站安全扫描工具"><a href="#4-网站安全扫描工具" class="headerlink" title="4.网站安全扫描工具"></a>4.网站安全扫描工具</h3><blockquote>
-<p>Nikto、WebScarab等</p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">xss</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/02/23/cookie-httponly/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
   
   
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
-    </nav>
+  
+
+  
+
+  
+
   
 
 
@@ -1386,8 +431,8 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
