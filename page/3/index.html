@@ -158,6 +158,88 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-pessimistic-optimistic" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/04/pessimistic-optimistic/">通俗解释什么是悲观锁/乐观锁</a>
+    </h1>
+  
+
+        
+        <a href="/2019/12/04/pessimistic-optimistic/" class="archive-article-date">
+  	<time datetime="2019-12-04T11:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-04</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>什么是锁？在多进程（线程）编程中为了数据的一致性、有效性，如果一资源被某进程（线程）上锁，那么在释放锁之前其他进程（线程）无法进行操作或者等待获取（上）锁。</p>
+<h3 id="一、悲观锁"><a href="#一、悲观锁" class="headerlink" title="一、悲观锁"></a>一、悲观锁</h3><p>悲观锁（Pessimistic locking），顾名思义对待任何事务都持悲观态度，做任何事情都会认为会有竞抢行为~所以在进行任何操作之前都要做好万全准备（上锁）才会继续执行后续的操作。通常是利用系统提供的锁机制来实现。<br>比如：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Mysql中的上锁命令：for <span class="keyword">update</span>、<span class="keyword">lock</span> <span class="keyword">in</span> <span class="keyword">share</span> <span class="keyword">mode</span>等</span><br><span class="line">Redis中的一些操作命令：setnx、getset等（原子操作）</span><br></pre></td></tr></table></figure></p>
+<h3 id="二、乐观锁"><a href="#二、乐观锁" class="headerlink" title="二、乐观锁"></a>二、乐观锁</h3><p>乐观锁（Optimistic locking），和悲观锁相反对待任何事务都持乐观态度，只会在最后即将执行操作的时刻前才会进行验证。通常是通过程序配合来实现。<br>比如：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">update</span> <span class="string">`orders`</span> <span class="keyword">set</span> <span class="keyword">hash</span> = <span class="keyword">md5</span>(<span class="keyword">now</span>()) <span class="keyword">where</span> uid = <span class="number">1</span> <span class="keyword">and</span> <span class="keyword">hash</span> = &#123;lastHash&#125;;</span><br></pre></td></tr></table></figure></p>
+<h3 id="三、优缺点"><a href="#三、优缺点" class="headerlink" title="三、优缺点"></a>三、优缺点</h3><p>悲观锁优点很鲜明，因为每次执行的操作都是独占的，数据的一致性、有效性、安全性较高。但缺点同样突出，每次操作都会产生上锁的开销，在并发请求比较密集的情况下容易阻塞或者驳回请求，甚至是造成死锁，也大大降低了系统的性能。</p>
+<p>乐观锁优点是省去了锁的开销，能较高的提高系统吞吐量，缺点是如果出现在并发高且竟抢（冲突）行为比较多的场景下数据的一致性很难保证。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/12/04/pessimistic-optimistic/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-redis-aof-rdb" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1241,96 +1323,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/02/23/nginx-recv-104/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-cookie-httponly" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/23/cookie-httponly/">PHP防止XSS攻击、脚本访问Cookie</a>
-    </h1>
-  
-
-        
-        <a href="/2017/02/23/cookie-httponly/" class="archive-article-date">
-  	<time datetime="2017-02-23T08:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>httponly是微软对cookie做的扩展,主要是解决用户的cookie可能被盗用的问题。</p>
-<h3 id="1-Cookie漏洞"><a href="#1-Cookie漏洞" class="headerlink" title="1.Cookie漏洞"></a>1.Cookie漏洞</h3><figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">Missing `httpOnly` Cookie Attribute	<span class="number">105925</span>	http (<span class="number">80</span>/tcp)	High  </span><br><span class="line">Vulnerability Detection <span class="keyword">Result</span>:</span><br><span class="line"></span><br><span class="line">The cookies:</span><br><span class="line"></span><br><span class="line"><span class="keyword">Set</span>-Cookie: PHPSESSID=esjpr7dkb64rgn1kjhr1r45j05; path=/ </span><br><span class="line"></span><br><span class="line">are missing the httpOnly attribute.</span><br><span class="line"></span><br><span class="line">Summary:</span><br><span class="line"></span><br><span class="line">The application <span class="keyword">is</span> missing the <span class="string">'httpOnly'</span> cookie attribute</span><br><span class="line"></span><br><span class="line">Solution:</span><br><span class="line"></span><br><span class="line"><span class="keyword">Set</span> the <span class="string">'httpOnly'</span> attribute <span class="keyword">for</span> any session cookie.</span><br><span class="line"></span><br><span class="line">Vulnerability Detection <span class="function"><span class="keyword">Method</span>:</span></span><br><span class="line"></span><br><span class="line">Check all cookies sent <span class="keyword">by</span> the application <span class="keyword">for</span> a missing <span class="string">'httpOnly'</span> attribute</span><br><span class="line"></span><br><span class="line">Insight:</span><br><span class="line"></span><br><span class="line">The flaw <span class="keyword">is</span> due <span class="keyword">to</span> a cookie <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">using</span> the <span class="string">'httpOnly'</span> attribute. This</span><br><span class="line">allows a cookie <span class="keyword">to</span> be accessed <span class="keyword">by</span> JavaScript which could lead <span class="keyword">to</span> session hijacking attacks.</span><br><span class="line"></span><br><span class="line">CVSS Base Vector:</span><br><span class="line"></span><br><span class="line">AV:N/AC:L/Au:N/C:P/I:N/A:N</span><br><span class="line"></span><br><span class="line">Affected Software/OS:</span><br><span class="line"></span><br><span class="line">Application <span class="keyword">with</span> session handling <span class="keyword">in</span> cookies.</span><br><span class="line"></span><br><span class="line">References:</span><br><span class="line"></span><br><span class="line">https:<span class="comment">//www.owasp.org/index.php/HttpOnly</span></span><br><span class="line">https:<span class="comment">//www.owasp.org/index.php/Testing_for_cookies_attributes_(OTG-SESS-002)</span></span><br></pre></td></tr></table></figure>
-<h3 id="2-漏洞表现"><a href="#2-漏洞表现" class="headerlink" title="2.漏洞表现"></a>2.漏洞表现</h3><blockquote>
-<p>跨站点脚本攻击 // 这种攻击手段具体表现,很多博主都写过,在此不表了</p>
-</blockquote>
-<h3 id="3-解决方案"><a href="#3-解决方案" class="headerlink" title="3.解决方案"></a>3.解决方案</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ vi /etc/php.ini // PHP 5.2版本及以上</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>session.cookie_httponly = true/1</p>
-</blockquote>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">//</span> <span class="string">PHP</span> <span class="number">5.2</span><span class="string">版本及以上</span></span><br><span class="line"><span class="string">ini_set('session.cookie_httponly',</span> <span class="number">1</span><span class="string">);</span> <span class="string">//</span> <span class="string">注册php.ini配置</span></span><br><span class="line"><span class="string">session_set_cookie_params(0,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">TRUE</span><span class="string">);</span></span><br><span class="line"><span class="string">setcookie('cookieName',</span> <span class="string">'cookieValue'</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">TRUE</span><span class="string">);</span></span><br><span class="line"><span class="string">setrawcookie('cookieName',</span> <span class="string">'cookieValue'</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">TRUE</span><span class="string">);</span></span><br><span class="line"><span class="string">//</span> <span class="string">PHP</span> <span class="number">5.1</span><span class="string">版本及以下</span></span><br><span class="line"><span class="string">header('Set-Cookie:</span> <span class="string">hidden=value;</span> <span class="string">httpOnly');</span></span><br></pre></td></tr></table></figure>
-<h3 id="4-网站安全扫描工具"><a href="#4-网站安全扫描工具" class="headerlink" title="4.网站安全扫描工具"></a>4.网站安全扫描工具</h3><blockquote>
-<p>Nikto、WebScarab等</p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">xss</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/02/23/cookie-httponly/">展开全文 >></a>
         </p>
       
 

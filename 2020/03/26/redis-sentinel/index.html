@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Redis学习笔记 - 哨兵 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="现在这篇来学习一下Redis Sentinel即哨兵策略的相关知识。 1.什么是哨兵？哨兵（Sentinel），是Redis2.6版本（正式版本是2.8，现2.6版本已被废弃）开始提供的一种集群策略，核心思想是解决了主从复制（Replication）在Master节点故障，无法自动切换Slave节点为新Master节点的问题。  特点  哨兵策略是分布式部署，节点间相互协调工作。 哨兵集群至少要3">
+  <meta name="description" content="现在这篇来学习一下Redis Sentinel即哨兵策略的相关知识。 1.什么是哨兵？哨兵（Sentinel），Redis2.6版本（正式版本是2.8，现2.6版本已被废弃）开始提供的一种集群策略，核心思想是解决了主从复制（Replication）在Master节点故障，无法自动切换Slave节点为新Master节点的问题。  特点  哨兵策略是分布式部署，节点间相互协调工作。 哨兵集群至少要3个">
 <meta name="keywords" content="develop,redis">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redis学习笔记 - 哨兵">
 <meta property="og:url" content="http://xupin.im/2020/03/26/redis-sentinel/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="现在这篇来学习一下Redis Sentinel即哨兵策略的相关知识。 1.什么是哨兵？哨兵（Sentinel），是Redis2.6版本（正式版本是2.8，现2.6版本已被废弃）开始提供的一种集群策略，核心思想是解决了主从复制（Replication）在Master节点故障，无法自动切换Slave节点为新Master节点的问题。  特点  哨兵策略是分布式部署，节点间相互协调工作。 哨兵集群至少要3">
+<meta property="og:description" content="现在这篇来学习一下Redis Sentinel即哨兵策略的相关知识。 1.什么是哨兵？哨兵（Sentinel），Redis2.6版本（正式版本是2.8，现2.6版本已被废弃）开始提供的一种集群策略，核心思想是解决了主从复制（Replication）在Master节点故障，无法自动切换Slave节点为新Master节点的问题。  特点  哨兵策略是分布式部署，节点间相互协调工作。 哨兵集群至少要3个">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-03-25T19:59:44.000Z">
+<meta property="og:updated_time" content="2020-03-27T19:07:45.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis学习笔记 - 哨兵">
-<meta name="twitter:description" content="现在这篇来学习一下Redis Sentinel即哨兵策略的相关知识。 1.什么是哨兵？哨兵（Sentinel），是Redis2.6版本（正式版本是2.8，现2.6版本已被废弃）开始提供的一种集群策略，核心思想是解决了主从复制（Replication）在Master节点故障，无法自动切换Slave节点为新Master节点的问题。  特点  哨兵策略是分布式部署，节点间相互协调工作。 哨兵集群至少要3">
+<meta name="twitter:description" content="现在这篇来学习一下Redis Sentinel即哨兵策略的相关知识。 1.什么是哨兵？哨兵（Sentinel），Redis2.6版本（正式版本是2.8，现2.6版本已被废弃）开始提供的一种集群策略，核心思想是解决了主从复制（Replication）在Master节点故障，无法自动切换Slave节点为新Master节点的问题。  特点  哨兵策略是分布式部署，节点间相互协调工作。 哨兵集群至少要3个">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -178,7 +178,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>现在这篇来学习一下Redis Sentinel即哨兵策略的相关知识。</p>
-<h3 id="1-什么是哨兵？"><a href="#1-什么是哨兵？" class="headerlink" title="1.什么是哨兵？"></a>1.什么是哨兵？</h3><p>哨兵（Sentinel），是Redis2.6版本（正式版本是2.8，现2.6版本已被废弃）开始提供的一种集群策略，核心思想是解决了主从复制（Replication）在Master节点故障，无法自动切换Slave节点为新Master节点的问题。</p>
+<h3 id="1-什么是哨兵？"><a href="#1-什么是哨兵？" class="headerlink" title="1.什么是哨兵？"></a>1.什么是哨兵？</h3><p>哨兵（Sentinel），Redis2.6版本（正式版本是2.8，现2.6版本已被废弃）开始提供的一种集群策略，核心思想是解决了主从复制（Replication）在Master节点故障，无法自动切换Slave节点为新Master节点的问题。</p>
 <ul>
 <li><p>特点</p>
 <ol>
@@ -217,7 +217,7 @@
 </ol>
 <h3 id="4-心跳包"><a href="#4-心跳包" class="headerlink" title="4.心跳包"></a>4.心跳包</h3><p>每个哨兵以每秒钟1次的频率向它已知的Master节点、Slave节点和其他哨兵发送PING命令，希望得到的有效回复如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">PING replied with +PONG.</span><br><span class="line">PING replied with -LOADING error.</span><br><span class="line">PING replied with -MASTERDOWN error.</span><br></pre></td></tr></table></figure></p>
 <p>其它任何回复或者无回复都是无效回复。</p>
-<h3 id="5-哨兵和节点之间的自动发现机制"><a href="#5-哨兵和节点之间的自动发现机制" class="headerlink" title="5.哨兵和节点之间的自动发现机制"></a>5.哨兵和节点之间的自动发现机制</h3><p>通过Redis的pub/sub系统实现，每个哨兵都会向自己监控的节点对应的channel：<strong>sentinel</strong>:hello发送一条消息（消息内容包含自己的{IP}、{PORT}和{RUNID}以及Master节点的完整配置），每个订阅该channel的哨兵都可以消费这条消息并且能发现到其他哨兵的存在，如果某个哨兵发现自己维护的节点配置低于新接收的节点配置，则会用新的节点配置进行覆盖。</p>
+<h3 id="5-哨兵和节点之间的自动发现机制"><a href="#5-哨兵和节点之间的自动发现机制" class="headerlink" title="5.哨兵和节点之间的自动发现机制"></a>5.哨兵和节点之间的自动发现机制</h3><p>通过Redis的pub/sub系统实现，每个哨兵都会向自己监控的节点对应的channel：<strong>sentinel</strong>:hello发送一条消息（消息体包含自己的{IP}、{PORT}和{RUNID}以及Master节点的完整配置），每个订阅该channel的哨兵都可以消费这条消息并且能发现到其他哨兵的存在，如果某个哨兵发现自己维护的节点配置低于新接收的节点配置，则会用新的节点配置进行覆盖。</p>
 <h3 id="6-主观-客观宕机"><a href="#6-主观-客观宕机" class="headerlink" title="6.主观/客观宕机"></a>6.主观/客观宕机</h3><p>如果一个Master节点在收到PING命令后没有在有效时间内（down-after-milliseconds）进行有效回复，则会被标记为主观宕机（sdown，Subjectively Down）。</p>
 <p>哨兵会获取其他哨兵检测该节点的状态，命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># IP：主观宕机的Master节点地址</span></span><br><span class="line"><span class="comment"># PORT：主观宕机的Master节点端口</span></span><br><span class="line"><span class="comment"># CURRENT_EPOCH：哨兵的配置纪元，用于领头哨兵选举。</span></span><br><span class="line"><span class="comment"># RUNID：可以是*和哨兵的RunID，当值是 * 代表检测节点是否主观宕机，如果是RunID则用于领头哨兵选举。</span></span><br><span class="line">SENTINEL is-master-down-byaddr &#123;IP&#125; &#123;PORT&#125; &#123;CURRENT_EPOCH&#125; &#123;RUNID&#125;</span><br></pre></td></tr></table></figure></p>
 <p>当有足够数量（{QUORUM}）的哨兵都认为该Master节点处于主观宕机状态。则该Master节点会被标记为客观宕机（odown，Objectively Down），若没有足够数量的哨兵都认为该Master节点处于主观宕机状态，则不会被标记为客观宕机，同时如果该Master节点重新返回哨兵有效回复，该Master节点主观宕机状态会被移除。</p>
@@ -373,6 +373,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2020/03/27/redis-cluster/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Redis学习笔记 - 集群
+        
+      </div>
+    </a>
   
   
     <a href="/2020/03/25/redis-replication/" id="article-nav-older" class="article-nav-link-wrap">
