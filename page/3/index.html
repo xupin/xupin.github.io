@@ -158,6 +158,118 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-mysql-transaction" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/05/mysql-transaction/">Mysql学习笔记 - 事务隔离级别</a>
+    </h1>
+  
+
+        
+        <a href="/2019/12/05/mysql-transaction/" class="archive-article-date">
+  	<time datetime="2019-12-05T04:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>什么是事务？事务（Transaction）一般是指要做的或所做的事情。在计算机术语中是指访问并可能更新数据库中各种数据项的一个程序执行单元(unit)，具有4个特性：原子性、一致性、隔离性、持久性，简称ACID。</p>
+<p>那么Mysql的事务隔离级别又是什么呢？Mysql的事务隔离级别分别是4种：未提交读（Read Uncommitted）、已提交读（Read Committed）、Repeatable Read（可重复读）、Serializable（可串行化）。可以简单理解为Mysql事务的4种执行标准。</p>
+<h3 id="一、ACID特性"><a href="#一、ACID特性" class="headerlink" title="一、ACID特性"></a>一、ACID特性</h3><blockquote>
+<p>原子性（Atomicity）：一个事务是一个不可分割的工作单位，事务中包括的诸操作要么都做，要么都不做。</p>
+</blockquote>
+<p><br></p>
+<blockquote>
+<p>一致性（Consistency）：事务必须是使数据库从一个一致性状态变到另一个一致性状态。一致性与原子性是密切相关的。</p>
+</blockquote>
+<p><br></p>
+<blockquote>
+<p>隔离性（Isolation）：一个事务的执行不能被其他事务干扰。即一个事务内部的操作及使用的数据对并发的其他事务是隔离的，并发执行的各个事务之间不能互相干扰。</p>
+</blockquote>
+<p><br></p>
+<blockquote>
+<p>持久性（Durability）：指一个事务一旦提交，它对数据库中数据的改变就应该是永久性的。接下来的其他操作或故障不应该对其有任何影响。</p>
+</blockquote>
+<h3 id="二、Mysql事务隔离级别"><a href="#二、Mysql事务隔离级别" class="headerlink" title="二、Mysql事务隔离级别"></a>二、Mysql事务隔离级别</h3><blockquote>
+<p>未提交读（Read Uncommitted），指当前事务可以读取到其他事务还未提交的数据变化，最容易带来的问题是脏读（Dirty Read），很少应用到生产环境。</p>
+</blockquote>
+<p><br></p>
+<blockquote>
+<p>已提交读（Read Committed），大部分数据库默认隔离级别但不包括Mysql，指当前事务可以读取其他事务已提交的数据变化，具有隔离性的基本标准，但是在出现交叉事务的并发操作场景中会发生两次读取的数据结果集不一致的问题，即不可重复读（Nonrepeatable Read）。</p>
+</blockquote>
+<p><br></p>
+<blockquote>
+<p>Repeatable Read（可重复读），Mysql数据库的默认隔离级别，这里顺便解释一下为什么Mysql的隔离级别不是Read Committed，因为在Mysql5.0之前日志格式只有statement这一种，这种格式导致主从复制一致性很难得到保证。这种隔离级别可以解决Nonrepeatable Read的问题，但如果也出现在交叉事务的并发操作场景会出现幻读（Phantom Read）的现象，这一行为状态是当前事务不能及时有效的读取其他事务的数据变化。</p>
+</blockquote>
+<p><br></p>
+<blockquote>
+<p>Serializable（可串行化），Mysql事务隔离最高级别，望文生义大概意思是事务的执行是有序（串行化顺序）的，不存在事务交叉执行的场景从而解决了Phantom Read的问题，但是在高并发的业务场景下请求会出现阻塞、超时、锁竟抢的问题，系统的可用性也随之降低。</p>
+</blockquote>
+<h3 id="收尾"><a href="#收尾" class="headerlink" title="收尾"></a>收尾</h3><blockquote>
+<p><a href="https://dev.mysql.com/doc/refman/5.7/en/innodb-transaction-isolation-levels.html" target="_blank" rel="noopener">https://dev.mysql.com/doc/refman/5.7/en/innodb-transaction-isolation-levels.html</a> // Mysql事务官方文档</p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/12/05/mysql-transaction/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-pessimistic-optimistic" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1231,98 +1343,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/02/28/short-names/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-nginx-recv-104" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/23/nginx-recv-104/">Nginx recv() failed (104 Connection reset by peer)</a>
-    </h1>
-  
-
-        
-        <a href="/2017/02/23/nginx-recv-104/" class="archive-article-date">
-  	<time datetime="2017-02-23T10:05:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Error: recv() failed (104: Connection reset by peer) while reading response header from upstream</p>
-<h3 id="1-日志信息"><a href="#1-日志信息" class="headerlink" title="1.日志信息"></a>1.日志信息</h3><figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// www.xxxx.com 公司域名,故此屏蔽</span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">03</span>:<span class="number">58</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">33</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">03</span>:<span class="number">59</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">35</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">00</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">37</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">02</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">39</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">07</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">9</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">GET</span> /Api/GetRegSvrInfo&amp;pid=1&amp;ver=3003 HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201:81"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">08</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">42</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">09</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">44</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">10</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">46</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br></pre></td></tr></table></figure>
-<h3 id="2-异常原因"><a href="#2-异常原因" class="headerlink" title="2.异常原因"></a>2.异常原因</h3><blockquote>
-<p>ups请求9000端口之后重置 // 我遇见的问题</p>
-</blockquote>
-<h3 id="3-解决方案"><a href="#3-解决方案" class="headerlink" title="3.解决方案"></a>3.解决方案</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ iptables -L -n // 检查是否有其他进程占用9000端口</span><br></pre></td></tr></table></figure>
-<p>9000端口没有被占用</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ vi /etc/sysconfig/iptables</span><br><span class="line">-A INPUT -i lo -j ACCEPT // 本地回环(lo一般指127.0.0.1),检查是否有这条配置</span><br></pre></td></tr></table></figure>
-<p>lo防火墙策略未配置</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ iptables -A INPUT -i lo -j ACCEPT // 没有配置,执行这个指令</span><br><span class="line">$ iptables save // 保存</span><br><span class="line">$ iptables restart // 重启生效</span><br></pre></td></tr></table></figure>
-<h3 id="4-依然未解决"><a href="#4-依然未解决" class="headerlink" title="4.依然未解决"></a>4.依然未解决</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ vi /etc/php-fpm.d/www.conf // 这是我的PHP-FPM配置文件</span><br><span class="line">request_terminate_timeout = 0/600; // 这样解决一般是PHP某些脚本执行时间过长超时</span><br></pre></td></tr></table></figure>
-<p>顽固分子,就是不行!!!</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ iptables stop // 关闭防火墙之后(慎用,生产环境谨慎操作),试试是否可以访问</span><br></pre></td></tr></table></figure>
-<p>如果可以访问,麻烦运维哥哥帮忙看一下防火墙策略o(╯□╰)o!!!</p>
-<h3 id="5-其他问题"><a href="#5-其他问题" class="headerlink" title="5.其他问题"></a>5.其他问题</h3><p>欢迎邮箱我一起讨论解决</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">nginx</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/02/23/nginx-recv-104/">展开全文 >></a>
         </p>
       
 

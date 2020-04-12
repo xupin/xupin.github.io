@@ -6,13 +6,13 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
-  <title>Mark&#39;s blog</title>
+  <title>Tag: develop | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="安静的小码农">
 <meta name="keywords" content="nginx,php,golang,memcached,redis,mysql,mariadb,php7,前端,js,jquery,javascript,html5,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Mark&#39;s blog">
-<meta property="og:url" content="http://xupin.im/page/2/index.html">
+<meta property="og:url" content="http://xupin.im/tags/develop/page/4/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
 <meta property="og:description" content="安静的小码农">
 <meta property="og:locale" content="default">
@@ -158,228 +158,34 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-mysql-int-length" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/03/15/mysql-int-length/">Mysql学习笔记 - Int长度的问题</a>
-    </h1>
-  
-
-        
-        <a href="/2020/03/15/mysql-int-length/" class="archive-article-date">
-  	<time datetime="2020-03-15T11:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-15</time>
-</a>
-        
-      </header>
     
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>创建数据表的时候我们总是要考虑存储数据的字段该用哪种类型、多少长度比较合适，不过在Mysql中如果字段类型是Int，此时长度是不生效的。</p>
-<h3 id="1-Int类型的长度问题"><a href="#1-Int类型的长度问题" class="headerlink" title="1.Int类型的长度问题"></a>1.Int类型的长度问题</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `test` (</span><br><span class="line">  `id` int(3) NOT NULL,</span><br><span class="line">  `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,</span><br><span class="line">  PRIMARY KEY (`id`)</span><br><span class="line">) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci</span><br></pre></td></tr></table></figure>
-<p>有这样一张表，<code>id</code>是Int类型长度3的字段，那么理论上是不能存储长度超过3的值，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO `test`(`id`, `name`) VALUES (1000000, &apos;name&apos;);</span><br></pre></td></tr></table></figure></p>
-<p>不过结果是意外的，这条数据可以正常写入。</p>
-<h3 id="2-Int类型的长度为什么不生效"><a href="#2-Int类型的长度为什么不生效" class="headerlink" title="2.Int类型的长度为什么不生效"></a>2.Int类型的长度为什么不生效</h3><p>翻了一下Mysql的<a href="https://dev.mysql.com/doc/refman/5.6/en/data-types.html" target="_blank" rel="noopener">数据类型文档</a>，发现这么一句话：</p>
-<blockquote>
-<p>对于整数类型，M表示最大显示宽度。 对于浮点和定点类型，M是可以存储的总位数（精度）。 对于字符串类型，M是最大长度。 M的最大允许值取决于数据类型。</p>
-</blockquote>
-<p>所以这个Int类型的“长度”其实叫宽度，也可以理解为显示长度。</p>
-<h3 id="3-如果存储的数据长度低于显示宽度会怎样？"><a href="#3-如果存储的数据长度低于显示宽度会怎样？" class="headerlink" title="3.如果存储的数据长度低于显示宽度会怎样？"></a>3.如果存储的数据长度低于显示宽度会怎样？</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO `test`(`id`, `name`) VALUES (1, &apos;name&apos;);</span><br></pre></td></tr></table></figure>
-<p>当然是可以写入的，但是好像并没有什么特别的不一样，不过我们再执行一条SQL<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE `test` MODIFY COLUMN `id` int(3) UNSIGNED ZEROFILL;</span><br></pre></td></tr></table></figure></p>
-<p>这次数据产生变化了，变成了这样<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">id      |   name</span><br><span class="line">001     |   name</span><br><span class="line">1000000 |   name</span><br></pre></td></tr></table></figure></p>
-<h3 id="4-为什么要设计显示宽度？"><a href="#4-为什么要设计显示宽度？" class="headerlink" title="4.为什么要设计显示宽度？"></a>4.为什么要设计显示宽度？</h3><p>我也没有得出明确的答案，和小伙伴讨论这个问题~ta觉得是为了方便<code>排序</code>，你觉得呢？</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
+    
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">mysql int length</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/03/15/mysql-int-length/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2017" class="archive-year">2017</a>
         </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-go-console" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
+        <div class="archives">
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/01/19/go-console/">Golang 实现定时任务调度</a>
-    </h1>
-  
-
-        
-        <a href="/2020/01/19/go-console/" class="archive-article-date">
-  	<time datetime="2020-01-19T11:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-19</time>
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2017/02/22/php7/" class="archive-article-date">
+  	<time datetime="2017-02-22T07:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-22</time>
 </a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>每一个任务都需要编写一个Crontab命令，这是件很麻烦且很不友好的事情。 任务调度器允许你以代码的形式定义调度命令，并且服务器上只需要一个Crontab命令即可, 任务调度又是我们俗称的 “计划任务”</p>
-<h3 id="1-工欲善其事，必先利其器"><a href="#1-工欲善其事，必先利其器" class="headerlink" title="1.工欲善其事，必先利其器"></a>1.工欲善其事，必先利其器</h3><p>Github一番搜索，发现Golang有个cron包（<a href="https://github.com/robfig/cron" target="_blank" rel="noopener">robfig/cron</a>）大概满足需求，于是学习一下。</p>
-<h3 id="2-介绍"><a href="#2-介绍" class="headerlink" title="2.介绍"></a>2.介绍</h3><p>看了一遍文档，cron包支持的已经很全面了~~~不用自己造轮子了。</p>
-<p>表达式</p>
-<blockquote>
-<p>兼容Linux的crontab表达式（支持分钟级别）。</p>
-</blockquote>
-<p>日志</p>
-<blockquote>
-<p>可以很详细的记录调度的任务状态</p>
-</blockquote>
-<p>时区</p>
-<blockquote>
-<p>支持任务级别的时区配置</p>
-</blockquote>
-<p>预定义计划</p>
-<blockquote>
-<p>支持在未来指定的时间去运行</p>
-</blockquote>
-<p><code>线程安全问题</code></p>
-<blockquote>
-<p>该cron lib管理任务队列的slice没有做并发安全考虑，可能会出现任务竟抢行为。</p>
-</blockquote>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">golang</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/01/19/go-console/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
         </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-php-aliyundb" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+    	 
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/01/07/php-aliyundb/">PHP踩坑小记 - aliyundb SQLSetStatement is NOT supported</a>
+      <a class="archive-article-title" href="/2017/02/22/php7/">Nginx + PHP7 + Mysql(MariaDB) + Memcached + Redis的环境搭建(可选)</a>
     </h1>
   
 
-        
-        <a href="/2020/01/07/php-aliyundb/" class="archive-article-date">
-  	<time datetime="2020-01-07T11:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>PHP项目在数据库迁移使用ADB（aliyundb）时发现这个问题，具体错误描述是：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SQLSTATE[HY000]: General error: 1815 [15022, 2020010711034801025210201503151413416] statement type: class com.alibaba.fastsql.sql.ast.statement.SQLSetStatement is NOT supported! (SQL: <span class="keyword">select</span> * <span class="keyword">from</span> <span class="string">`users`</span>)</span><br></pre></td></tr></table></figure></p>
-<p>在排查该问题的过程中，尝试了各种方式，降版本、使用原生语句等，甚至查找ADB手册和Issue还是无法解决。</p>
-<h3 id="1-原因"><a href="#1-原因" class="headerlink" title="1.原因"></a>1.原因</h3><p>因为ADB兼容Mysql但是有些机制还是略有不同，阅读源码后发现比如：ADB就不能很好的支持本地预处理语句，这也是该异常的原因。</p>
-<h3 id="2-解决方案"><a href="#2-解决方案" class="headerlink" title="2.解决方案"></a>2.解决方案</h3><p>PHP PDO链接的属性值<code>PDO::ATTR_EMULATE_PREPARES</code>需要设置为<code>true</code><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PDO::<span class="function"><span class="params">ATTR_EMULATE_PREPARES</span> =&gt;</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
+        <div class="article-info info-on-right">
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -395,512 +201,21 @@
 		</ul>
 	</div>
 
-      
+          
 
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/01/07/php-aliyundb/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
+        </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
   
-    <article id="post-go-gin" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
+  
+    </div></section>
+  
+
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/31/go-gin/">高性能Golang WEB框架Gin - 初探</a>
-    </h1>
-  
-
-        
-        <a href="/2019/12/31/go-gin/" class="archive-article-date">
-  	<time datetime="2019-12-31T04:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-31</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://github.com/gin-gonic/gin" target="_blank" rel="noopener">Gin</a> 是一个用 Go (Golang) 编写的 HTTP web 框架。 它是一个类似于 martini 但拥有更好性能的 API 框架, 由于 httprouter，速度提高了近 40 倍。</p>
-<h3 id="1-有哪些优点"><a href="#1-有哪些优点" class="headerlink" title="1.有哪些优点"></a>1.有哪些优点</h3><blockquote>
-<p>较高的性能（<a href="https://github.com/julienschmidt/go-http-routing-benchmark" target="_blank" rel="noopener">Golang WEB框架比对数据</a>）</p>
-<p>简单易用的中间件</p>
-<p>使用了性能高可扩展的HTTP路由<a href="https://github.com/julienschmidt/httprouter" target="_blank" rel="noopener">httprouter</a></p>
-<p>社区长期有着很高的活跃度</p>
-<p>Github星星多（Orz）</p>
-</blockquote>
-<p>…等</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">golang</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/31/go-gin/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-tmux" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/24/tmux/">10分钟学会使用Tmux</a>
-    </h1>
-  
-
-        
-        <a href="/2019/12/24/tmux/" class="archive-article-date">
-  	<time datetime="2019-12-24T04:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Tmux是一个终端多路复用器：它使从单个屏幕创建，访问和控制多个终端成为可能。Tmux可能会与屏幕分离，并继续在后台运行，然后再重新连接。</p>
-<h3 id="1-Tmux的结构"><a href="#1-Tmux的结构" class="headerlink" title="1.Tmux的结构"></a>1.Tmux的结构</h3><ul>
-<li>Session<ul>
-<li>Window<ul>
-<li>Panel</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p>即，Tmux允许访问多个会话，每个会话可以拥有多个窗口，每个窗口还可以进行划分窗格。</p>
-<h3 id="2-安装运行Tmux"><a href="#2-安装运行Tmux" class="headerlink" title="2.安装运行Tmux"></a>2.安装运行Tmux</h3><p>安装<br><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># centos</span></span><br><span class="line">$ yum <span class="keyword">install </span>tmux</span><br><span class="line"></span><br><span class="line"><span class="comment"># ubuntu</span></span><br><span class="line">$ apt <span class="keyword">install </span>tmux</span><br><span class="line"></span><br><span class="line"><span class="comment"># mac</span></span><br><span class="line">$ <span class="keyword">brew </span><span class="keyword">install </span>tmux</span><br></pre></td></tr></table></figure></p>
-<p>运行<br><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$ </span>tmux</span><br></pre></td></tr></table></figure></p>
-<p>效果图，如下：</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tools</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">tmux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/24/tmux/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-elasticsearch-group" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/17/elasticsearch-group/">Elasticsearch实现字段分组</a>
-    </h1>
-  
-
-        
-        <a href="/2019/12/17/elasticsearch-group/" class="archive-article-date">
-  	<time datetime="2019-12-17T11:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-17</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Elasticsearch是Elastic Stack核心的分布式搜索和分析引擎。</p>
-<h3 id="1-背景"><a href="#1-背景" class="headerlink" title="1.背景"></a>1.背景</h3><p>因为业务调整采用了ES作为数据库，所以需要了解ES对于这一块的设计如何实现类似Mysql中Group By的查询的效果。</p>
-<h3 id="2-实现方式"><a href="#2-实现方式" class="headerlink" title="2.实现方式"></a>2.实现方式</h3><p>ES实现Group By有两种方式：TermsAgg、CompositeAgg，它们也具有不同程度的优缺点。</p>
-<p>TermsAgg的使用方式非常粗暴，直接进行桶嵌套即可，如下:</p>
-<details><br>  <summary>TermsAgg请求DSL语句</summary><br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="attr">"aggregations"</span>: &#123;</span><br><span class="line">		<span class="attr">"group_app"</span>: &#123;</span><br><span class="line">			<span class="attr">"terms"</span>: &#123;</span><br><span class="line">				<span class="attr">"field"</span>: <span class="string">"app"</span>,</span><br><span class="line">				<span class="attr">"size"</span>: <span class="number">1000000</span></span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="attr">"aggregations"</span>: &#123;</span><br><span class="line">				<span class="attr">"group_campaign_id"</span>: &#123;</span><br><span class="line">					<span class="attr">"terms"</span>: &#123;</span><br><span class="line">						<span class="attr">"field"</span>: <span class="string">"campaign_id"</span>,</span><br><span class="line">						<span class="attr">"size"</span>: <span class="number">1000000</span></span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="attr">"size"</span>: <span class="number">0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><br></details><br><details><br>  <summary>TermsAgg执行结果</summary><br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"took"</span>: <span class="number">142</span>,</span><br><span class="line">    <span class="attr">"timed_out"</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="attr">"_shards"</span>: &#123;</span><br><span class="line">        <span class="attr">"total"</span>: <span class="number">5</span>,</span><br><span class="line">        <span class="attr">"successful"</span>: <span class="number">5</span>,</span><br><span class="line">        <span class="attr">"skipped"</span>: <span class="number">0</span>,</span><br><span class="line">        <span class="attr">"failed"</span>: <span class="number">0</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"hits"</span>: &#123;</span><br><span class="line">        <span class="attr">"total"</span>: <span class="number">175033</span>,</span><br><span class="line">        <span class="attr">"max_score"</span>: <span class="number">0.0</span>,</span><br><span class="line">        <span class="attr">"hits"</span>: []</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"aggregations"</span>: &#123;</span><br><span class="line">        <span class="attr">"group_app"</span>: &#123;</span><br><span class="line">            <span class="attr">"doc_count_error_upper_bound"</span>: <span class="number">0</span>,</span><br><span class="line">            <span class="attr">"sum_other_doc_count"</span>: <span class="number">0</span>,</span><br><span class="line">            <span class="attr">"buckets"</span>: [</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="attr">"key"</span>: <span class="string">"com.aa.bb.cc"</span>,</span><br><span class="line">                    <span class="attr">"doc_count"</span>: <span class="number">59929</span>,</span><br><span class="line">                    <span class="attr">"group_campaign_id"</span>: &#123;</span><br><span class="line">                        <span class="attr">"doc_count_error_upper_bound"</span>: <span class="number">0</span>,</span><br><span class="line">                        <span class="attr">"sum_other_doc_count"</span>: <span class="number">0</span>,</span><br><span class="line">                        <span class="attr">"buckets"</span>: [</span><br><span class="line">                            &#123;</span><br><span class="line">                                <span class="attr">"key"</span>: <span class="string">"Campaign_118"</span>,</span><br><span class="line">                                <span class="attr">"doc_count"</span>: <span class="number">56466</span></span><br><span class="line">                            &#125;,</span><br><span class="line">                            &#123;</span><br><span class="line">                                <span class="attr">"key"</span>: <span class="string">"Campaign_119"</span>,</span><br><span class="line">                                <span class="attr">"doc_count"</span>: <span class="number">1937</span></span><br><span class="line">                            &#125;</span><br><span class="line">                        ]</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="attr">"key"</span>: <span class="string">"com.dd.ee.ff"</span>,</span><br><span class="line">                    <span class="attr">"doc_count"</span>: <span class="number">23231</span>,</span><br><span class="line">                    <span class="attr">"group_campaign_id"</span>: &#123;</span><br><span class="line">                        <span class="attr">"doc_count_error_upper_bound"</span>: <span class="number">0</span>,</span><br><span class="line">                        <span class="attr">"sum_other_doc_count"</span>: <span class="number">0</span>,</span><br><span class="line">                        <span class="attr">"buckets"</span>: [</span><br><span class="line">                            &#123;</span><br><span class="line">                                <span class="attr">"key"</span>: <span class="string">"Campaign_120"</span>,</span><br><span class="line">                                <span class="attr">"doc_count"</span>: <span class="number">16692</span></span><br><span class="line">                            &#125;,</span><br><span class="line">                            &#123;</span><br><span class="line">                                <span class="attr">"key"</span>: <span class="string">"Campaign_121"</span>,</span><br><span class="line">                                <span class="attr">"doc_count"</span>: <span class="number">5336</span></span><br><span class="line">                            &#125;</span><br><span class="line">                        ]</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><br></details>
-
-<p>CompositeAgg的使用方式略微有一些不同，下面：</p>
-<details><br>  <summary>CompositeAgg请求DSL语句</summary><br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="attr">"aggregations"</span>: &#123;</span><br><span class="line">		<span class="attr">"group_by"</span>: &#123;</span><br><span class="line">			<span class="attr">"composite"</span>: &#123;</span><br><span class="line">				<span class="attr">"sources"</span>: [</span><br><span class="line">					&#123;</span><br><span class="line">					    <span class="attr">"app"</span>: &#123;</span><br><span class="line">					        <span class="attr">"terms"</span>: &#123;</span><br><span class="line">					            <span class="attr">"field"</span>: <span class="string">"app"</span></span><br><span class="line">					        &#125;</span><br><span class="line">					    &#125;</span><br><span class="line">					&#125;,</span><br><span class="line">					&#123;</span><br><span class="line">					    <span class="attr">"campaign_id"</span>: &#123;</span><br><span class="line">						    <span class="attr">"terms"</span>: &#123;</span><br><span class="line">						        <span class="attr">"field"</span>: <span class="string">"campaign_id"</span></span><br><span class="line">						    &#125;</span><br><span class="line">					    &#125;</span><br><span class="line">					&#125;</span><br><span class="line">				],</span><br><span class="line">                <span class="attr">"size"</span>: <span class="number">1000</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="attr">"size"</span>: <span class="number">0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><br></details><br><details><br>  <summary>CompositeAgg执行结果</summary><br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"took"</span>: <span class="number">14</span>,</span><br><span class="line">    <span class="attr">"timed_out"</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="attr">"_shards"</span>: &#123;</span><br><span class="line">        <span class="attr">"total"</span>: <span class="number">5</span>,</span><br><span class="line">        <span class="attr">"successful"</span>: <span class="number">5</span>,</span><br><span class="line">        <span class="attr">"skipped"</span>: <span class="number">0</span>,</span><br><span class="line">        <span class="attr">"failed"</span>: <span class="number">0</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"hits"</span>: &#123;</span><br><span class="line">        <span class="attr">"total"</span>: <span class="number">175033</span>,</span><br><span class="line">        <span class="attr">"max_score"</span>: <span class="number">0.0</span>,</span><br><span class="line">        <span class="attr">"hits"</span>: []</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"aggregations"</span>: &#123;</span><br><span class="line">        <span class="attr">"group_by"</span>: &#123;</span><br><span class="line">            <span class="attr">"after_key"</span>: &#123;</span><br><span class="line">                <span class="attr">"app"</span>: <span class="string">"com.dd.ee.ff"</span>,</span><br><span class="line">                <span class="attr">"campaign_id"</span>: <span class="string">"Campaign_120"</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"buckets"</span>: [</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="attr">"key"</span>: &#123;</span><br><span class="line">                        <span class="attr">"app"</span>: <span class="string">"com.aa.bb.cc"</span>,</span><br><span class="line">                        <span class="attr">"campaign_id"</span>: <span class="string">"Campaign_119"</span></span><br><span class="line">                    &#125;,</span><br><span class="line">                    <span class="attr">"doc_count"</span>: <span class="number">182</span></span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="attr">"key"</span>: &#123;</span><br><span class="line">                        <span class="attr">"app"</span>: <span class="string">"com.dd.ee.ff"</span>,</span><br><span class="line">                        <span class="attr">"campaign_id"</span>: <span class="string">"Campaign_120"</span></span><br><span class="line">                    &#125;,</span><br><span class="line">                    <span class="attr">"doc_count"</span>: <span class="number">40</span></span><br><span class="line">                &#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><br></details>
-
-<h3 id="3-优缺点"><a href="#3-优缺点" class="headerlink" title="3.优缺点"></a>3.优缺点</h3><p>TermsAgg</p>
-<blockquote>
-<p>优点：使用简单、没有数据量限制。</p>
-<p>缺点：数据结构层次深、不支持分页。</p>
-</blockquote>
-<p>CompositeAgg</p>
-<blockquote>
-<p>优点：使用简单、数据结构清晰可读，支持分页。</p>
-<p>缺点：有数据量限制。</p>
-</blockquote>
-<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>至于ES这两种分组方式的<code>性能方面还没有研究，后续学习笔记会更新性能上面的差异。</code></p>
-<blockquote>
-<p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-composite-aggregation.html" target="_blank" rel="noopener">https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-composite-aggregation.html</a> // 附上ES官方文档</p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">elasticsearch</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/17/elasticsearch-group/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-nginx-proxy" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/17/nginx-proxy/">Nginx正向代理和反向代理</a>
-    </h1>
-  
-
-        
-        <a href="/2019/12/17/nginx-proxy/" class="archive-article-date">
-  	<time datetime="2019-12-17T04:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-17</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>代理通常用于在几台服务器之间分配负载，无缝显示来自不同网站的内容或通过除HTTP之外的协议将处理请求传递给应用服务器。</p>
-<h3 id="1-代理的常用场景及优点"><a href="#1-代理的常用场景及优点" class="headerlink" title="1.代理的常用场景及优点"></a>1.代理的常用场景及优点</h3><p>正向代理</p>
-<blockquote>
-<p>gfw科学上网。</p>
-<p>客户端访问鉴权。</p>
-</blockquote>
-<p>反向代理</p>
-<blockquote>
-<p>负载均衡。</p>
-<p>保证内网的安全，阻止web攻击。</p>
-</blockquote>
-<h3 id="2-正向代理和反向代理有什么不同"><a href="#2-正向代理和反向代理有什么不同" class="headerlink" title="2.正向代理和反向代理有什么不同"></a>2.正向代理和反向代理有什么不同</h3><p>比较通俗的来解释：正向代理代理的是客户端，服务端不知道实际发起请求的客户端、反向代理代理的是服务端，客户端不知道实际接收请求的服务端。</p>
-<p>一张图表示（来源：<a href="https://zhuanlan.zhihu.com/p/82300486" target="_blank" rel="noopener">知乎wplulala</a>）<br><img src="/assets/nginx-proxy/relation.jpg" alt></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">nginx</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/17/nginx-proxy/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-mysql-index" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/16/mysql-index/">Mysql学习笔记 - 索引</a>
-    </h1>
-  
-
-        
-        <a href="/2019/12/16/mysql-index/" class="archive-article-date">
-  	<time datetime="2019-12-16T11:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-16</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>索引用于快速查找具有特定列值的行。没有索引，MySQL必须从第一行开始，然后通读整个表以找到相关的行。桌子越大，花费越多。如果表中有相关​​列的索引，MySQL可以快速确定要在数据文件中间查找的位置，而不必查看所有数据。这比顺序读取每一行要快得多。<br>InnoDB和MyISAM只支持BTREE，因此默认均是BTree，MEMORY和HEAP支持Hash和Btree，如无明确声明，则默认索引均是Hash（包括主键）。</p>
-<h3 id="1-Mysql有哪些常用的索引"><a href="#1-Mysql有哪些常用的索引" class="headerlink" title="1.Mysql有哪些常用的索引"></a>1.Mysql有哪些常用的索引</h3><blockquote>
-<p>主键索引：数据列不允许重复，不允许为null，一个表只能有一个主键。</p>
-<p>唯一索引：数据列不允许重复，允许为null，一个表允许多个列创建唯一索引。</p>
-<p>普通索引：基本的索引类型，没有唯一性的限制，允许为null。</p>
-<p>全文索引：全文索引是目前实现大数据搜索的关键技术。</p>
-</blockquote>
-<h3 id="2-如何分析SQL语句执行性能"><a href="#2-如何分析SQL语句执行性能" class="headerlink" title="2.如何分析SQL语句执行性能"></a>2.如何分析SQL语句执行性能</h3><p>以下是两种分析SQL性能的常用方式，explain、show profiles/show profile。</p>
-<blockquote>
-<p>explain + SQL语句，获取SQL分析数据</p>
-<ul>
-<li>select_type：对应SQL语句的查询复杂度。</li>
-<li>table：正在访问的表。</li>
-<li>partitions：数据所在的分区。</li>
-<li>type：表示是否用上索引，以及索引是如何使用的，此字段决定索引的性能。<code>ALL&lt;TYPE&lt;RANGE&lt;REF&lt;CONST</code></li>
-<li>possible_keys：查询条件存在的索引。</li>
-<li>key：触发的索引。</li>
-<li>key_len：索引字段的长度。</li>
-<li>ref：索引访问，返回所有匹配某个单值的行。</li>
-<li>rows：执行查询必须检查的行数，在InnoDB中此值不精确。</li>
-<li>filtered：条件过滤出的行数的百分比。</li>
-<li>extra：查询分析结果的额外信息，很重要 e.g. Using index、Using where …</li>
-</ul>
-<p>show profiles 获得当前会话中执行的SQL语句，字段为：Query_ID, Duration, Query，show profile all for query {Query_ID}</p>
-</blockquote>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/16/mysql-index/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-  
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/tags/develop/page/3/">&laquo; Prev</a><a class="page-number" href="/tags/develop/">1</a><a class="page-number" href="/tags/develop/page/2/">2</a><a class="page-number" href="/tags/develop/page/3/">3</a><span class="page-number current">4</span>
     </nav>
   
 
@@ -924,10 +239,10 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
+		isHome: false,
 		isPost: false,
 		isArchive: false,
-		isTag: false,
+		isTag: true,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
