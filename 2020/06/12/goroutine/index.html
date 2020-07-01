@@ -19,7 +19,7 @@
 <meta property="og:image" content="http://xupin.im/assets/goroutine/thread_model.png">
 <meta property="og:image" content="http://xupin.im/assets/goroutine/gmp.png">
 <meta property="og:image" content="http://xupin.im/assets/goroutine/gmp-m.png">
-<meta property="og:updated_time" content="2020-06-11T19:17:06.000Z">
+<meta property="og:updated_time" content="2020-07-01T10:34:54.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Go语言学习笔记 - goroutine">
 <meta name="twitter:description" content="在现在大数据、高并发，到处都充斥着流量的互联网时代，能不能应对高并发俨然已经发展成一个衡量服务端架构是否合格的标准，作为程序媛我们思考如何利用语言在代码层面最优设计能应对并发的程序去并行处理任务。在程序中对于任务并行处理一般趋于使用：进程、线程，以及另外一种：协程。支持协程的语言有很多，比如：C/C++、Ruby、 Python（2.5+）、Golang等等，它们有些是本身语言支持协程，有些则是需">
@@ -186,11 +186,11 @@
 <h4 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h4><p>最早的计算机每次只能运行一个程序，如果还有其他程序需要执行则要排队等待。后来CPU运算能力提高了，这种方式过于原始有些浪费性能，于是尝试让多个程序可以并行执行，但是这样面临一个新的问题：跑在同一个CPU中的程序都会使用计算机资源，那程序的运行状态和数据怎么保障？<code>进程</code>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">进程是内核资源管理分配的最小单位，每个进程都有独立的虚拟地址空间。内核中的每个程序都运行在独立进程的上下文中，上下文是由程序正常运行需要的一系列参数组成，参数包括存储器中的代码和数据，寄存器中的内容以及进程打开的文件描述符（文件句柄）等。可以把上下文通俗理解为：`环境`。</span><br></pre></td></tr></table></figure></p>
 <p>如果程序在运行过程中需要进行IO操作，IO操作阻塞了程序后面的计算，这时候CPU属于空闲状态，那内核会把CPU切换到其他进程去处理。不过当进程数量变高以后，计算机的大部分资源都被进程切换这个操作消耗掉了。为什么说进程切换操作消耗资源代价比较高？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">所谓进程切换其实就是上下文切换，需要切换新的页表并加载新的虚拟地址空间、切换内核栈以及硬件上下文等。只要发生进程切换操作就得反复进入内核，加载切换一系列状态。</span><br></pre></td></tr></table></figure></p>
 <h4 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h4><p>为了减少这种开销，<code>线程</code>应运而生。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">线程是内核调度CPU执行的最小单位，线程是运行在进程上下文的逻辑流，线程是具体执行程序的单位。一个进程至少包含一个主线程（可以拥有多个子线程），但是一个线程只能存在于一个进程中。</span><br></pre></td></tr></table></figure></p>
-<p>线程切换相比进程切换开销就小了很多，线程切换只需要把CPU寄存器刷新即可。</p>
+<p>线程切换相比进程切换开销就小了很多，线程切换只需要把寄存器刷新即可。</p>
 <h4 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h4><p>后面程序媛们发现线程这样还是有性能瓶颈（IO阻塞），无论是进程还是线程因为涉及到大量的计算机资源，所以都是由内核调度管理。能不能开发一种由代码控制的线程呢？这就是<code>协程</code>。</p>
 <a id="more"></a>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">协程是由用户控制的线程（用户态线程），协程在程序中实现自我调度，不需要像进程切换一样进入内核加载切换状态，提高了线程在IO上的性能问题（IO多路复用）。</span><br></pre></td></tr></table></figure>
-<p>但是协程也有个致命的问题，假如进程中的某一程序出现了阻塞操作同时被CPU中断处理（抢占式调度），那么该进程中的所有线程都被阻塞。</p>
+<p>但是协程也有个致命的问题，假如进程中的某一程序出现了阻塞操作同时被CPU中断处理（抢占式调度），那么该进程中的所有线程都会被阻塞。</p>
 <p>后面会专门写一篇关于进程和线程以及协程的特性以及区别。（不够详细，埋坑Orz~）</p>
 <h3 id="二、什么是goroutine？"><a href="#二、什么是goroutine？" class="headerlink" title="二、什么是goroutine？"></a>二、什么是goroutine？</h3><p>上面简单学习了进程和线程以及协程的渊源，虽然不够详细但是我们大概知道其实在进程或者线程甚至于协程存在的性能瓶颈大部分是CPU调度问题。</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span> // <span class="title">Go</span>语言启动协程，只需要使用<span class="title">go</span>关键字即可启动协程运行函数。使用<span class="title">go</span>关键字创建的这个协程就叫做`<span class="title">goroutine</span>`</span></span><br></pre></td></tr></table></figure>
@@ -201,9 +201,9 @@
 </blockquote>
 <p>大部分语言或者第三方库提供的协程就是使用的用户态线程模型，但goroutine使用的不是传统的用户态线程模型。以下主流的线程模型：</p>
 <ul>
-<li>内核级线程模型<br>  内核级别的线程的状态切换需要内核直接处理，所以内核清楚的知道每一个KSE（Kernel Scheduling Entity）线程的存在（即内核线程和KSE是一对一关系），它们可以全系统内进行资源的竞争。</li>
-<li>用户级线程模型（用户态线程，协程）<br>  用户态级别的线程受用户控制，内核并不直接知道用户态线程的存在（为什么这么说？因为用户态线程和KSE存在着多对一的关系，即多个用户态线程对应一个内核调度实体），一般用户态多线程属于同一个进程，所以它们只能在进程内进行资源竞争。</li>
-<li>两级线程模型（混合型线程模型）<br>  两级线程模型吸取了内核级和用户级线程的经验，两级线程模型下的线程和KSE处于多对多的关系。一个进程内的多个线程可以分别绑定KSE，既可以多个线程绑定多个KSE也可以多个线程绑定一个KSE，当某个线程内的程序产生阻塞其绑定的KSE被内核调度CPU中断处理，进程内的其他线程可以重新与其他KSE绑定。</li>
+<li>内核级线程模型<br>  内核级别的线程的状态切换需要内核直接处理，所以内核清楚的知道每一个KSE（Kernel Scheduling Entity）的存在（即内核线程和KSE是一对一关系），它们可以全系统内进行资源的竞争。</li>
+<li>用户级线程模型（用户态线程，协程）<br>  用户态级别的线程受用户控制，内核并不直接知道用户态线程的存在（为什么这么说？因为用户态线程和内核线程存在着多对一的关系，即多个用户态线程对应一个内核线程），一般用户态多线程属于同一个进程，所以它们只能在进程内进行资源竞争。</li>
+<li>两级线程模型（混合型线程模型）<br>  两级线程模型吸取了内核级和用户级线程的经验，两级线程模型下的线程和内核线程处于多对多的关系。一个进程内的多个线程可以分别绑定内核线程，既可以多个线程绑定多个内核线程也可以多个线程绑定一个内核线程，当某个线程内的程序产生阻塞其绑定的内核线程被CPU中断处理，进程内的其他线程可以重新与其他内核线程绑定。</li>
 </ul>
 <p><img src="/assets/goroutine/thread_model.png" alt></p>
 <p>goroutine使用的正是两级线程模型，但是这种多个线程跑在多个内核中，既不是用户级线程模型完全靠自身调度也不是内核级线程模型完全依赖内核调度，而是用户和内核协同调度。因为这种模型复杂性较高，所以Go语言开发了自己的runtime调度器。</p>
@@ -595,11 +595,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
         <ul class="search-ul">
           
             <li class="search-li">
-              <a href="https://baidu.com" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>Baidu</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="https://google.com" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>Google</a>
+              <a href="http://memphis.wang" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>Memphis&#39; Talk</a>
             </li>
           
             <li class="search-li">
