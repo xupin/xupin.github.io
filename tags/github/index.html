@@ -6,20 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
-  <title>Mysql学习笔记 - 分片和分区 | Mark&#39;s blog</title>
+  <title>Tag: github | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="之前在复习Mysql主从知识的同时，小伙伴考了我一个问题，分片和分区有什么差别 … 乍一听可能只是名词上的不同，但其实它们俩的确不是同一个东西。 1.什么是分片（Sharding）？我们举个例子，一张文章表。结构如下：123456789CREATE TABLE `mark`.`article`  (  `id` int NOT NULL AUTO_INCREMENT,  `type` varcha">
-<meta name="keywords" content="develop,mysql">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Mysql学习笔记 - 分片和分区">
-<meta property="og:url" content="http://xupin.im/2020/03/23/mysql-sharding-partition/index.html">
+  <meta name="description" content="安静的小码农">
+<meta name="keywords" content="nginx,php,golang,memcached,redis,mysql,mariadb,php7,前端,js,jquery,javascript,html5,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Mark&#39;s blog">
+<meta property="og:url" content="http://xupin.im/tags/github/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="之前在复习Mysql主从知识的同时，小伙伴考了我一个问题，分片和分区有什么差别 … 乍一听可能只是名词上的不同，但其实它们俩的确不是同一个东西。 1.什么是分片（Sharding）？我们举个例子，一张文章表。结构如下：123456789CREATE TABLE `mark`.`article`  (  `id` int NOT NULL AUTO_INCREMENT,  `type` varcha">
+<meta property="og:description" content="安静的小码农">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-03-23T20:53:01.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Mysql学习笔记 - 分片和分区">
-<meta name="twitter:description" content="之前在复习Mysql主从知识的同时，小伙伴考了我一个问题，分片和分区有什么差别 … 乍一听可能只是名词上的不同，但其实它们俩的确不是同一个东西。 1.什么是分片（Sharding）？我们举个例子，一张文章表。结构如下：123456789CREATE TABLE `mark`.`article`  (  `id` int NOT NULL AUTO_INCREMENT,  `type` varcha">
+<meta name="twitter:title" content="Mark&#39;s blog">
+<meta name="twitter:description" content="安静的小码农">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -157,137 +156,36 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-mysql-sharding-partition" class="article article-type-post " itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+            
   
-    <h1 class="article-title" itemprop="name">
-      Mysql学习笔记 - 分片和分区
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2020" class="archive-year">2020</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2020/07/05/git-cloning-slow/" class="archive-article-date">
+  	<time datetime="2020-07-04T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-05</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2020/07/05/git-cloning-slow/">Github拉项目速度慢的解决小技巧</a>
     </h1>
   
 
-        
-        <a href="/2020/03/23/mysql-sharding-partition/" class="archive-article-date">
-  	<time datetime="2020-03-22T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>之前在复习Mysql主从知识的同时，小伙伴考了我一个问题，分片和分区有什么差别 … 乍一听可能只是名词上的不同，但其实它们俩的确不是同一个东西。</p>
-<h3 id="1-什么是分片（Sharding）？"><a href="#1-什么是分片（Sharding）？" class="headerlink" title="1.什么是分片（Sharding）？"></a>1.什么是分片（Sharding）？</h3><p>我们举个例子，一张文章表。<br>结构如下：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`mark`</span>.<span class="string">`article`</span>  (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`type`</span> <span class="built_in">varchar</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'类型'</span>,</span><br><span class="line">  <span class="string">`title`</span> <span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'标题'</span>,</span><br><span class="line">  <span class="string">`content`</span> longtext <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'内容'</span>,</span><br><span class="line">  <span class="string">`author`</span> <span class="built_in">varchar</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'作者'</span>,</span><br><span class="line">  <span class="string">`date`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'日期'</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure></p>
-<p>需求如下：</p>
-<ol>
-<li>用户打开app会直接展示文章列表（类型，标题，作者，日期）</li>
-<li>点击文章查看详情</li>
-</ol>
-<p>那么这张表在数据量比较小的初期应对访问是没什么问题的。但是随着数据量日益膨胀，查询效率会越来越低，因为里面<code>content</code>字段非常巨大。</p>
-<p>这时候要怎么优化呢？把<code>content</code>字段拆出去，因为访问最多的请求并不需要<code>content</code>，怎么拆呢？结构如下：</p>
-<a id="more"></a>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 文章表</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`mark`</span>.<span class="string">`article`</span>  (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`type`</span> <span class="built_in">varchar</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'类型'</span>,</span><br><span class="line">  <span class="string">`title`</span> <span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'标题'</span>,</span><br><span class="line">  <span class="string">`c_id`</span> <span class="built_in">int</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'文章ID'</span>,</span><br><span class="line">  <span class="string">`author`</span> <span class="built_in">varchar</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'作者'</span>,</span><br><span class="line">  <span class="string">`created_at`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'日期'</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>)</span><br><span class="line">);</span><br><span class="line"><span class="comment"># 文章内容表</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`mark`</span>.<span class="string">`article_content`</span>  (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`content`</span> longtext <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'内容'</span>,</span><br><span class="line">  <span class="string">`created_at`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'日期'</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-<h3 id="2-垂直（纵向）切分"><a href="#2-垂直（纵向）切分" class="headerlink" title="2.垂直（纵向）切分"></a>2.垂直（纵向）切分</h3><p>上述这种情况就是分片的一种，<code>垂直切分</code>也被称为<code>纵向切分</code>，这种分片的方式不仅可以跨表也可以跨库。</p>
-<p>优点</p>
-<ol>
-<li>拆分规则简单。</li>
-<li>数据模块清晰。</li>
-<li>容易维护，容易定位问题。</li>
-</ol>
-<p>缺点</p>
-<ol>
-<li>如果分片表跨库，那么在SQL层无法进行连表查询，只能在程序层处理。</li>
-<li>事务处理复杂度变高。</li>
-<li>后期表结构的扩展性受限。</li>
-</ol>
-<h3 id="3-水平（横向）切分"><a href="#3-水平（横向）切分" class="headerlink" title="3.水平（横向）切分"></a>3.水平（横向）切分</h3><p>说到了垂直切分，那就不得不提一下<code>水平切分</code>也被称之为<code>横向切分</code>。<br>同样举个例子，一张用户日志表。<br>结构如下：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`mark`</span>.<span class="string">`user_log`</span>  (</span><br><span class="line">  <span class="string">`u_id`</span> <span class="built_in">int</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'用户ID'</span>,</span><br><span class="line">  <span class="string">`content`</span> longtext <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'日志内容'</span>,</span><br><span class="line">  <span class="string">`created_at`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'创建日期'</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure></p>
-<p>需求如下：</p>
-<ol>
-<li>根据用户ID快速检索日志信息</li>
-</ol>
-<p>情况一样，在数据量比较小的时候功能响应速度应该还可以，但是随着数据量增长的比较厉害。查询效率会呈断崖式下降。</p>
-<p>那么这时候要怎么优化呢？我们按照用户ID去拆分表，即每个用户存储的日志固定在一张表。结构如下：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`mark`</span>.<span class="string">`user_log_&#123;NUM&#125;`</span>  (</span><br><span class="line">  <span class="string">`u_id`</span> <span class="built_in">int</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'用户ID'</span>,</span><br><span class="line">  <span class="string">`content`</span> longtext <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'日志内容'</span>,</span><br><span class="line">  <span class="string">`created_at`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'创建日期'</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure></p>
-<p>为了省事，后面{NUM}是个数字哈，每个用户进来我们会利用摘要算法（比如：crc32）取个固定数值，然后固定把对应的数据存储到相应的表内。</p>
-<p>优点</p>
-<ol>
-<li>不会出现跨库无法连表查询的情况。</li>
-<li>事务处理相对简单。</li>
-<li>很难出现扩展性受限的问题。</li>
-</ol>
-<p>缺点</p>
-<ol>
-<li>数据分布不平均，可能一张表10W行，另外一张100W行。</li>
-<li>难维护，定位问题需要前置算法查询。</li>
-<li>后期数据迁移比较麻烦。</li>
-</ol>
-<h3 id="4-什么是分区（Partition）？"><a href="#4-什么是分区（Partition）？" class="headerlink" title="4.什么是分区（Partition）？"></a>4.什么是分区（Partition）？</h3><p>分片简单说了说，那么接下来要学习一下分区。分区和分片比较明显的一点是：分片多是利用程序配合来实现，分区则是数据库（不仅仅是Mysql，其它数据库也有）提供的机制。</p>
-<p>首先，分区分为4种模式：</p>
-<ul>
-<li>Range</li>
-<li>List</li>
-<li>Hash</li>
-<li>Key</li>
-</ul>
-<h3 id="5-Range"><a href="#5-Range" class="headerlink" title="5.Range"></a>5.Range</h3><p>Range（范围）大概的思想是将数据进行分段，比如按照日期将内购表进行拆分，分为不同的年份。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> purchase (<span class="keyword">id</span> <span class="built_in">INT</span>, app_id <span class="built_in">INT</span>, <span class="keyword">name</span> <span class="built_in">VARCHAR</span>(<span class="number">50</span>), money <span class="built_in">NUMERIC</span>(<span class="number">20</span>,<span class="number">4</span>),currency <span class="built_in">VARCHAR</span>(<span class="number">10</span>),created_at <span class="built_in">DATE</span>)</span><br><span class="line"><span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span>( <span class="keyword">YEAR</span>(created_at) ) (</span><br><span class="line">    <span class="keyword">PARTITION</span> p0 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">1990</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p1 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">1995</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p2 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2000</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p3 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2005</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p4 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2010</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p5 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2015</span>)</span><br><span class="line">);</span><br><span class="line"><span class="comment"># 也可以按照金额来进行分区。</span></span><br><span class="line"><span class="comment"># PARTITION BY RANGE( money ) ();</span></span><br></pre></td></tr></table></figure>
-<p>写入以下数据<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> purchase(app_id,<span class="keyword">name</span>,money,currency,created_at) <span class="keyword">VALUES</span></span><br><span class="line">(<span class="number">600001</span>,<span class="string">'desk organiser'</span>,<span class="number">6.0000</span>,<span class="string">'CNY'</span>,<span class="string">'2003-10-15'</span>),</span><br><span class="line">(<span class="number">600001</span>,<span class="string">'alarm clock'</span>,<span class="number">12.0000</span>,<span class="string">'CNY'</span>,<span class="string">'1997-11-05'</span>),</span><br><span class="line">(<span class="number">600002</span>,<span class="string">'chair'</span>,<span class="number">30.0000</span>,<span class="string">'CNY'</span>,<span class="string">'2009-03-10'</span>),</span><br><span class="line">(<span class="number">600002</span>,<span class="string">'bookcase'</span>,<span class="number">68.0000</span>,<span class="string">'CNY'</span>,<span class="string">'1989-01-10'</span>),</span><br><span class="line">(<span class="number">600002</span>,<span class="string">'exercise bike'</span>,<span class="number">128.0000</span>,<span class="string">'CNY'</span>,<span class="string">'2014-05-09'</span>),</span><br><span class="line">(<span class="number">600003</span>,<span class="string">'sofa'</span>,<span class="number">258.0000</span>,<span class="string">'CNY'</span>,<span class="string">'1987-06-05'</span>),</span><br><span class="line">(<span class="number">600003</span>,<span class="string">'espresso maker'</span>,<span class="number">648.0000</span>,<span class="string">'CNY'</span>,<span class="string">'2011-11-22'</span>),</span><br><span class="line">(<span class="number">600004</span>,<span class="string">'aquarium'</span>,<span class="number">99.0000</span>,<span class="string">'USD'</span>,<span class="string">'1992-08-04'</span>),</span><br><span class="line">(<span class="number">600005</span>,<span class="string">'study desk'</span>,<span class="number">129.0000</span>,<span class="string">'USD'</span>,<span class="string">'2006-09-16'</span>),</span><br><span class="line">(<span class="number">600006</span>,<span class="string">'lava lamp'</span>,<span class="number">299.0000</span>,<span class="string">'USD'</span>,<span class="string">'1998-12-25'</span>);</span><br></pre></td></tr></table></figure></p>
-<p>然后我们观察一下，可能通过肉眼看没什么变化，执行这条查看分区状态的SQL<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	partition_name part,</span><br><span class="line">	partition_expression expr,</span><br><span class="line">	table_rows </span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	information_schema.PARTITIONS </span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	table_schema = <span class="keyword">SCHEMA</span> () </span><br><span class="line">	<span class="keyword">AND</span> table_name = <span class="string">'&#123;TABLE&#125;'</span>;</span><br><span class="line"><span class="comment"># 结果如下</span></span><br><span class="line">part    |   expr              |   descr |   table_rows</span><br><span class="line">p0      |   YEAR(created_at)  |   1990  |   2</span><br><span class="line">p1      |   YEAR(created_at)  |   1995  |   1</span><br><span class="line">p2      |   YEAR(created_at)  |   2000  |   2</span><br><span class="line">p3      |   YEAR(created_at)  |   2005  |   1</span><br><span class="line">p4      |   YEAR(created_at)  |   2010  |   2</span><br><span class="line">p5      |   YEAR(created_at)  |   2015  |   2</span><br></pre></td></tr></table></figure></p>
-<p>很明显，数据分别按照规则写进了分区表p0 ~ p5。</p>
-<h3 id="6-List"><a href="#6-List" class="headerlink" title="6.List"></a>6.List</h3><p>List（列表）模式，多用于对于指定字段的数值进行明确的数据拆分。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> purchase (<span class="keyword">id</span> <span class="built_in">INT</span>, app_id <span class="built_in">INT</span>, <span class="keyword">name</span> <span class="built_in">VARCHAR</span>(<span class="number">50</span>), money <span class="built_in">NUMERIC</span>(<span class="number">20</span>,<span class="number">4</span>),currency <span class="built_in">VARCHAR</span>(<span class="number">10</span>),created_at <span class="built_in">DATE</span>)</span><br><span class="line"><span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">LIST</span>( app_id ) (</span><br><span class="line">    <span class="keyword">PARTITION</span> p0 <span class="keyword">VALUES</span> <span class="keyword">IN</span> (<span class="number">600001</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p1 <span class="keyword">VALUES</span> <span class="keyword">IN</span> (<span class="number">600002</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p2 <span class="keyword">VALUES</span> <span class="keyword">IN</span> (<span class="number">600003</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p3 <span class="keyword">VALUES</span> <span class="keyword">IN</span> (<span class="number">600004</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p4 <span class="keyword">VALUES</span> <span class="keyword">IN</span> (<span class="number">600005</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p5 <span class="keyword">VALUES</span> <span class="keyword">IN</span> (<span class="number">600006</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-<p>写入同样的数据，之后执行查看分区状态的SQL。<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">part    |   expr    |   descr   |   table_rows</span><br><span class="line">p0      |   app_id  |   600001  |   2</span><br><span class="line">p1      |   app_id  |   600002  |   3</span><br><span class="line">p2      |   app_id  |   600003  |   2</span><br><span class="line">p3      |   app_id  |   600004  |   1</span><br><span class="line">p4      |   app_id  |   600005  |   1</span><br><span class="line">p5      |   app_id  |   600006  |   1</span><br></pre></td></tr></table></figure></p>
-<h3 id="7-Hash"><a href="#7-Hash" class="headerlink" title="7.Hash"></a>7.Hash</h3><p>Hash（哈希）模式通过对一个或多个字段进行Hash计算，通过这个Hash值来进行分区（是不是感觉很像分片，其实分片的思想就是根据分区衍生而来）。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> purchase (<span class="keyword">id</span> <span class="built_in">INT</span>, app_id <span class="built_in">INT</span>, <span class="keyword">name</span> <span class="built_in">VARCHAR</span>(<span class="number">50</span>), money <span class="built_in">NUMERIC</span>(<span class="number">20</span>,<span class="number">4</span>),currency <span class="built_in">VARCHAR</span>(<span class="number">10</span>),created_at <span class="built_in">DATE</span>)</span><br><span class="line"><span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">HASH</span>( <span class="keyword">YEAR</span>(created_at) )</span><br><span class="line"><span class="keyword">PARTITIONS</span> <span class="number">4</span>; <span class="comment"># 为了区别，设4个分区。</span></span><br></pre></td></tr></table></figure>
-<p>然后写入同样的数据，之后执行查看分区状态的SQL。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">part|   expr              |  descr |   table_rows</span><br><span class="line">p0  |   YEAR(created_at)  |  NULL  |   1</span><br><span class="line">p1  |   YEAR(created_at)  |  NULL  |   3</span><br><span class="line">p2  |   YEAR(created_at)  |  NULL  |   3</span><br><span class="line">p3  |   YEAR(created_at)  |  NULL  |   3</span><br></pre></td></tr></table></figure></p>
-<h3 id="8-Key"><a href="#8-Key" class="headerlink" title="8.Key"></a>8.Key</h3><p>Key（键）模式和Hash模式极其相似，可能有一点区别就是，Hash模式下是用户自定义规则进行Hash计算，而Key模式是Mysql使用自己的函数进行Hash计算。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> purchase (<span class="keyword">id</span> <span class="built_in">INT</span>, app_id <span class="built_in">INT</span>, <span class="keyword">name</span> <span class="built_in">VARCHAR</span>(<span class="number">50</span>), money <span class="built_in">NUMERIC</span>(<span class="number">20</span>,<span class="number">4</span>),currency <span class="built_in">VARCHAR</span>(<span class="number">10</span>),created_at <span class="built_in">DATE</span>)</span><br><span class="line"><span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">KEY</span>( created_at )</span><br><span class="line"><span class="keyword">PARTITIONS</span> <span class="number">3</span>; <span class="comment"># 为了区别，设3个分区。</span></span><br></pre></td></tr></table></figure>
-<p>重复步骤，写入同样的数据，之后执行查看分区状态的SQL。<br><figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">part|   <span class="type">expr</span>          |  <span class="type">descr</span> |   <span class="type">table_rows</span></span><br><span class="line">p0  |   <span class="type">`created_at</span>`  |  <span class="type">NULL</span>  |   <span class="type">2</span></span><br><span class="line">p1  |   <span class="type">`created_at</span>`  |  <span class="type">NULL</span>  |   <span class="type">3</span></span><br><span class="line">p2  |   <span class="type">`created_at</span>`  |  <span class="type">NULL</span>  |   <span class="type">5</span></span><br></pre></td></tr></table></figure></p>
-<p>Key模式和Hash模式在<code>expr</code>上面有了直观的不同表现，Hash模式是：YEAR(created_at)，而Key模式是：created_at。这就是我们前面提到的Hash计算方式的区别。</p>
-<h3 id="9-最后"><a href="#9-最后" class="headerlink" title="9.最后"></a>9.最后</h3><p>其实Mysql分区还有第5种模式，叫做Composite（复合）模式，比如：Range - Key<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> purchase (<span class="keyword">id</span> <span class="built_in">INT</span>, app_id <span class="built_in">INT</span>, <span class="keyword">name</span> <span class="built_in">VARCHAR</span>(<span class="number">50</span>), money <span class="built_in">NUMERIC</span>(<span class="number">20</span>,<span class="number">4</span>),currency <span class="built_in">VARCHAR</span>(<span class="number">10</span>),created_at <span class="built_in">DATE</span>)</span><br><span class="line"><span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span>( <span class="keyword">YEAR</span>( created_at ) ) </span><br><span class="line"><span class="keyword">SUBPARTITION</span> <span class="keyword">BY</span> <span class="keyword">KEY</span>( created_at )</span><br><span class="line"><span class="keyword">SUBPARTITIONS</span> <span class="number">3</span></span><br><span class="line">(</span><br><span class="line">    <span class="keyword">PARTITION</span> p0 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">1990</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p1 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">1995</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p2 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2000</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p3 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2005</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p4 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2010</span>),</span><br><span class="line">    <span class="keyword">PARTITION</span> p5 <span class="keyword">VALUES</span> <span class="keyword">LESS</span> <span class="keyword">THAN</span> (<span class="number">2015</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure></p>
-<p>这里就不展开Composite（复合）模式的学习了，最后通过以上的例子，可以看出分区也是有垂直分区和水平分区的说法的。</p>
-<blockquote>
-<p><a href="https://dev.mysql.com/doc/mysql-partitioning-excerpt/5.7/en/partitioning-management.html" target="_blank" rel="noopener">https://dev.mysql.com/doc/mysql-partitioning-excerpt/5.7/en/partitioning-management.html</a></p>
-</blockquote>
-
-      
-
-      
-        <div class="page-reward">
-          <a href="javascript:;" class="page-reward-btn tooltip-top">
-            <div class="tooltip tooltip-east">
-            <span class="tooltip-item">
-              赏
-            </span>
-            <span class="tooltip-content">
-              <span class="tooltip-text">
-                <span class="tooltip-inner">
-                  <p class="reward-p"><i class="icon icon-quo-left"></i>罗马家园1204房间, 洗好等你<i class="icon icon-quo-right"></i></p>
-                  <div class="reward-box">
-                    
-                    <div class="reward-box-item">
-                      <img class="reward-img" src="/assets/imgs/avatar.jpg">
-                      <span class="reward-type">支付宝</span>
-                    </div>
-                    
-                    
-                    <div class="reward-box-item">
-                      <img class="reward-img" src="/assets/imgs/weixin.jpg">
-                      <span class="reward-type">微信</span>
-                    </div>
-                    
-                  </div>
-                </span>
-              </span>
-            </span>
-          </div>
-          </a>
-        </div>
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
+        <div class="article-info info-on-right">
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -297,121 +195,25 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">github</a>
         		</li>
       		
 		</ul>
 	</div>
 
-      
+          
 
-      
-
-      
-        
-<div class="share-btn share-icons tooltip-left">
-  <div class="tooltip tooltip-east">
-    <span class="tooltip-item">
-      <a href="javascript:;" class="share-sns share-outer">
-        <i class="icon icon-share"></i>
-      </a>
-    </span>
-    <span class="tooltip-content">
-      <div class="share-wrap">
-        <div class="share-icons">
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="icon icon-weibo"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="icon icon-weixin"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="icon icon-qq"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="icon icon-douban"></i>
-          </a>
-          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a>
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="icon icon-facebook"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="icon icon-twitter"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="icon icon-google"></i>
-          </a>
         </div>
-      </div>
-    </span>
-  </div>
-</div>
-
-<div class="page-modal wx-share js-wx-box">
-  <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
-  <p>扫一扫，分享到微信</p>
-  <div class="wx-qrcode">
-    <img src="http://qr.topscan.com/api.php?text=http://xupin.im/2020/03/23/mysql-sharding-partition/" alt="微信分享二维码">
-  </div>
-</div>
-
-<div class="mask js-mask"></div>
-      
-      <div class="clearfix"></div>
-    </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-  
-<nav id="article-nav">
-  
-    <a href="/2020/03/25/redis-replication/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          Redis学习笔记 - 主从复制
-        
-      </div>
-    </a>
   
   
-    <a href="/2020/03/21/mysql-checkpoint/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Mysql学习笔记 - 刷脏机制</div>
-      <i class="icon-circle-right"></i>
-    </a>
-  
-</nav>
-
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-  
+    </div></section>
   
 
-  
-
-  
-
-  
+    
 
 
           </div>
@@ -434,9 +236,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: true,
+		isPost: false,
 		isArchive: false,
-		isTag: false,
+		isTag: true,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
