@@ -158,6 +158,106 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-mysql-checkpoint" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/21/mysql-checkpoint/">Mysql学习笔记 - 刷脏机制</a>
+    </h1>
+  
+
+        
+        <a href="/2020/03/21/mysql-checkpoint/" class="archive-article-date">
+  	<time datetime="2020-03-20T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-21</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>之前学习了LRU算法和Mysql缓冲池使用的LRU变体算法，其中有个共同点就是当LRU链表写满以后如果再有新数据进来会淘汰尾部的数据，那么Mysql淘汰这些尾部数据的时候是否会进行什么操作呢？这就是我们在最后提到了一个参数<code>Modified db pages</code>，即脏页。</p>
+<h3 id="1-什么是脏页？"><a href="#1-什么是脏页？" class="headerlink" title="1.什么是脏页？"></a>1.什么是脏页？</h3><ul>
+<li>脏页，这个名词很抽象从字面意思去看可能很不解，脏页是当内存中的数据页和磁盘中的数据页内容不一致时，这个数据页称之为脏页。因为从操作系统的角度来讲，自己读入的数据被外部所修改等于被污染，所以叫脏页。</li>
+<li>当内存中的数据页和磁盘中的数据页数据一致，叫干净页。</li>
+</ul>
+<h3 id="2-脏页什么时候会刷新？"><a href="#2-脏页什么时候会刷新？" class="headerlink" title="2.脏页什么时候会刷新？"></a>2.脏页什么时候会刷新？</h3><ol>
+<li>缓冲池（buffer pool）空间不足，也就是LRU链表写满时，新数据进来时淘汰掉的尾部数据脏页。</li>
+<li>redo log不可用时，需要强制将脏页列表中的一些数据页刷入磁盘。</li>
+<li>Mysql在服务器负载较小时，会主动进行刷脏操作。</li>
+<li>Mysql服务正常关闭，会刷新所有脏页。</li>
+</ol>
+<h3 id="3-什么是redo-log？"><a href="#3-什么是redo-log？" class="headerlink" title="3.什么是redo log？"></a>3.什么是redo log？</h3><p>InnoDB中两块非常重要的日志，一个是undo log，另外一个就是我们接下来要学习的redo log。前者用来保证事务的原子性以及InnoDB的MVCC（Mutil-Version Concurrency Control），后者用来保证事务的持久性。</p>
+<p>那么什么时候写redo log呢？当数据库对数据做修改的时候，需要把数据页从磁盘读到缓冲池中，然后在缓冲池中进行修改。但是InnoDB采用的是WAL（Write Ahead Log）策略来防止数据丢失，也就是事务提交时，先写redo log才会再去修改内存数据页。</p>
+<p>redo log的文件名默认以ib_logfile{NUM}，存储在my.cnf中datadir目录下面，受以下两个参数控制</p>
+<ul>
+<li>innodb_log_file_size，日志大小</li>
+<li>innodb_log_files_in_group，日志个数，默认是2个。</li>
+</ul>
+<p>所以redo log的大小等于innodb_log_files_in_group*innodb_log_file_size。</p>
+<p>既然redo log会产生，那么什么时候会被覆盖呢？redo log被设计成可循环使用，当日志文件写满时那些已经被刷入磁盘中的数据就可以被覆盖啦。</p>
+<blockquote>
+<p>WAL（Write Ahead Log），是关系数据库系统中用于提供原子性和持久性（ACID属性中的两个）的一系列技术，ARIES是WAL系列技术常用的算法，在文件系统中WAL通常称为journaling。WAL的主要思想是将元数据的实时变更操作写入日志文件中，然后在系统负载较小时再把日志刷入磁盘。主要是为了减少磁盘的IO操作，此处就不展开学习了。先Mark一下</p>
+</blockquote>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/03/21/mysql-checkpoint/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-laravel-chunk-upload" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -766,106 +866,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/12/24/tmux/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-elasticsearch-group" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/17/elasticsearch-group/">Elasticsearch实现字段分组</a>
-    </h1>
-  
-
-        
-        <a href="/2019/12/17/elasticsearch-group/" class="archive-article-date">
-  	<time datetime="2019-12-17T11:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-17</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Elasticsearch是Elastic Stack核心的分布式搜索和分析引擎。</p>
-<h3 id="1-背景"><a href="#1-背景" class="headerlink" title="1.背景"></a>1.背景</h3><p>因为业务调整采用了ES作为数据库，所以需要了解ES对于这一块的设计如何实现类似Mysql中Group By的查询的效果。</p>
-<h3 id="2-实现方式"><a href="#2-实现方式" class="headerlink" title="2.实现方式"></a>2.实现方式</h3><p>ES实现Group By有两种方式：TermsAgg、CompositeAgg，它们也具有不同程度的优缺点。</p>
-<p>TermsAgg的使用方式非常粗暴，直接进行桶嵌套即可，如下:</p>
-<details><br>  <summary>TermsAgg请求DSL语句</summary><br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="attr">"aggregations"</span>: &#123;</span><br><span class="line">		<span class="attr">"group_app"</span>: &#123;</span><br><span class="line">			<span class="attr">"terms"</span>: &#123;</span><br><span class="line">				<span class="attr">"field"</span>: <span class="string">"app"</span>,</span><br><span class="line">				<span class="attr">"size"</span>: <span class="number">1000000</span></span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="attr">"aggregations"</span>: &#123;</span><br><span class="line">				<span class="attr">"group_campaign_id"</span>: &#123;</span><br><span class="line">					<span class="attr">"terms"</span>: &#123;</span><br><span class="line">						<span class="attr">"field"</span>: <span class="string">"campaign_id"</span>,</span><br><span class="line">						<span class="attr">"size"</span>: <span class="number">1000000</span></span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="attr">"size"</span>: <span class="number">0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><br></details><br><details><br>  <summary>TermsAgg执行结果</summary><br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"took"</span>: <span class="number">142</span>,</span><br><span class="line">    <span class="attr">"timed_out"</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="attr">"_shards"</span>: &#123;</span><br><span class="line">        <span class="attr">"total"</span>: <span class="number">5</span>,</span><br><span class="line">        <span class="attr">"successful"</span>: <span class="number">5</span>,</span><br><span class="line">        <span class="attr">"skipped"</span>: <span class="number">0</span>,</span><br><span class="line">        <span class="attr">"failed"</span>: <span class="number">0</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"hits"</span>: &#123;</span><br><span class="line">        <span class="attr">"total"</span>: <span class="number">175033</span>,</span><br><span class="line">        <span class="attr">"max_score"</span>: <span class="number">0.0</span>,</span><br><span class="line">        <span class="attr">"hits"</span>: []</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"aggregations"</span>: &#123;</span><br><span class="line">        <span class="attr">"group_app"</span>: &#123;</span><br><span class="line">            <span class="attr">"doc_count_error_upper_bound"</span>: <span class="number">0</span>,</span><br><span class="line">            <span class="attr">"sum_other_doc_count"</span>: <span class="number">0</span>,</span><br><span class="line">            <span class="attr">"buckets"</span>: [</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="attr">"key"</span>: <span class="string">"com.aa.bb.cc"</span>,</span><br><span class="line">                    <span class="attr">"doc_count"</span>: <span class="number">59929</span>,</span><br><span class="line">                    <span class="attr">"group_campaign_id"</span>: &#123;</span><br><span class="line">                        <span class="attr">"doc_count_error_upper_bound"</span>: <span class="number">0</span>,</span><br><span class="line">                        <span class="attr">"sum_other_doc_count"</span>: <span class="number">0</span>,</span><br><span class="line">                        <span class="attr">"buckets"</span>: [</span><br><span class="line">                            &#123;</span><br><span class="line">                                <span class="attr">"key"</span>: <span class="string">"Campaign_118"</span>,</span><br><span class="line">                                <span class="attr">"doc_count"</span>: <span class="number">56466</span></span><br><span class="line">                            &#125;,</span><br><span class="line">                            &#123;</span><br><span class="line">                                <span class="attr">"key"</span>: <span class="string">"Campaign_119"</span>,</span><br><span class="line">                                <span class="attr">"doc_count"</span>: <span class="number">1937</span></span><br><span class="line">                            &#125;</span><br><span class="line">                        ]</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="attr">"key"</span>: <span class="string">"com.dd.ee.ff"</span>,</span><br><span class="line">                    <span class="attr">"doc_count"</span>: <span class="number">23231</span>,</span><br><span class="line">                    <span class="attr">"group_campaign_id"</span>: &#123;</span><br><span class="line">                        <span class="attr">"doc_count_error_upper_bound"</span>: <span class="number">0</span>,</span><br><span class="line">                        <span class="attr">"sum_other_doc_count"</span>: <span class="number">0</span>,</span><br><span class="line">                        <span class="attr">"buckets"</span>: [</span><br><span class="line">                            &#123;</span><br><span class="line">                                <span class="attr">"key"</span>: <span class="string">"Campaign_120"</span>,</span><br><span class="line">                                <span class="attr">"doc_count"</span>: <span class="number">16692</span></span><br><span class="line">                            &#125;,</span><br><span class="line">                            &#123;</span><br><span class="line">                                <span class="attr">"key"</span>: <span class="string">"Campaign_121"</span>,</span><br><span class="line">                                <span class="attr">"doc_count"</span>: <span class="number">5336</span></span><br><span class="line">                            &#125;</span><br><span class="line">                        ]</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><br></details>
-
-<p>CompositeAgg的使用方式略微有一些不同，下面：</p>
-<details><br>  <summary>CompositeAgg请求DSL语句</summary><br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="attr">"aggregations"</span>: &#123;</span><br><span class="line">		<span class="attr">"group_by"</span>: &#123;</span><br><span class="line">			<span class="attr">"composite"</span>: &#123;</span><br><span class="line">				<span class="attr">"sources"</span>: [</span><br><span class="line">					&#123;</span><br><span class="line">					    <span class="attr">"app"</span>: &#123;</span><br><span class="line">					        <span class="attr">"terms"</span>: &#123;</span><br><span class="line">					            <span class="attr">"field"</span>: <span class="string">"app"</span></span><br><span class="line">					        &#125;</span><br><span class="line">					    &#125;</span><br><span class="line">					&#125;,</span><br><span class="line">					&#123;</span><br><span class="line">					    <span class="attr">"campaign_id"</span>: &#123;</span><br><span class="line">						    <span class="attr">"terms"</span>: &#123;</span><br><span class="line">						        <span class="attr">"field"</span>: <span class="string">"campaign_id"</span></span><br><span class="line">						    &#125;</span><br><span class="line">					    &#125;</span><br><span class="line">					&#125;</span><br><span class="line">				],</span><br><span class="line">                <span class="attr">"size"</span>: <span class="number">1000</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="attr">"size"</span>: <span class="number">0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><br></details><br><details><br>  <summary>CompositeAgg执行结果</summary><br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"took"</span>: <span class="number">14</span>,</span><br><span class="line">    <span class="attr">"timed_out"</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="attr">"_shards"</span>: &#123;</span><br><span class="line">        <span class="attr">"total"</span>: <span class="number">5</span>,</span><br><span class="line">        <span class="attr">"successful"</span>: <span class="number">5</span>,</span><br><span class="line">        <span class="attr">"skipped"</span>: <span class="number">0</span>,</span><br><span class="line">        <span class="attr">"failed"</span>: <span class="number">0</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"hits"</span>: &#123;</span><br><span class="line">        <span class="attr">"total"</span>: <span class="number">175033</span>,</span><br><span class="line">        <span class="attr">"max_score"</span>: <span class="number">0.0</span>,</span><br><span class="line">        <span class="attr">"hits"</span>: []</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"aggregations"</span>: &#123;</span><br><span class="line">        <span class="attr">"group_by"</span>: &#123;</span><br><span class="line">            <span class="attr">"after_key"</span>: &#123;</span><br><span class="line">                <span class="attr">"app"</span>: <span class="string">"com.dd.ee.ff"</span>,</span><br><span class="line">                <span class="attr">"campaign_id"</span>: <span class="string">"Campaign_120"</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"buckets"</span>: [</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="attr">"key"</span>: &#123;</span><br><span class="line">                        <span class="attr">"app"</span>: <span class="string">"com.aa.bb.cc"</span>,</span><br><span class="line">                        <span class="attr">"campaign_id"</span>: <span class="string">"Campaign_119"</span></span><br><span class="line">                    &#125;,</span><br><span class="line">                    <span class="attr">"doc_count"</span>: <span class="number">182</span></span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="attr">"key"</span>: &#123;</span><br><span class="line">                        <span class="attr">"app"</span>: <span class="string">"com.dd.ee.ff"</span>,</span><br><span class="line">                        <span class="attr">"campaign_id"</span>: <span class="string">"Campaign_120"</span></span><br><span class="line">                    &#125;,</span><br><span class="line">                    <span class="attr">"doc_count"</span>: <span class="number">40</span></span><br><span class="line">                &#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><br></details>
-
-<h3 id="3-优缺点"><a href="#3-优缺点" class="headerlink" title="3.优缺点"></a>3.优缺点</h3><p>TermsAgg</p>
-<blockquote>
-<p>优点：使用简单、没有数据量限制。</p>
-<p>缺点：数据结构层次深、不支持分页。</p>
-</blockquote>
-<p>CompositeAgg</p>
-<blockquote>
-<p>优点：使用简单、数据结构清晰可读，支持分页。</p>
-<p>缺点：有数据量限制。</p>
-</blockquote>
-<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>至于ES这两种分组方式的<code>性能方面还没有研究，后续学习笔记会更新性能上面的差异。</code></p>
-<blockquote>
-<p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-composite-aggregation.html" target="_blank" rel="noopener">https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-composite-aggregation.html</a> // 附上ES官方文档</p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">elasticsearch</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/17/elasticsearch-group/">展开全文 >></a>
         </p>
       
 

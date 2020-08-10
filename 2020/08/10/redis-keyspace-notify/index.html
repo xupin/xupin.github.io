@@ -6,19 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
-  <title>Mark&#39;s blog</title>
+  <title>Redis学习笔记 - Key事件通知 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="安静的小码农">
-<meta name="keywords" content="nginx,php,golang,memcached,redis,mysql,mariadb,php7,前端,js,jquery,javascript,html5,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Mark&#39;s blog">
-<meta property="og:url" content="http://xupin.im/index.html">
+  <meta name="description" content="网上购物看到自己喜欢的东西加入购物车然后付款，但是在付款的突然不想要了 … 往往这个订单会给一个30分钟的支付时间，时间一到就自动关闭了 所以这是怎么做到的呢？ 1.实现方式 轮询   1脚本每隔一定时间就去数据表检查一下状态，是否过期需要关闭。  数据库事件+存储过程   1数据库建立检查事件，每隔一定时间去执行一次存储过程。  Key事件通知   1对于更改任何Redis Key的每个操作，都">
+<meta name="keywords" content="develop,redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis学习笔记 - Key事件通知">
+<meta property="og:url" content="http://xupin.im/2020/08/10/redis-keyspace-notify/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="安静的小码农">
+<meta property="og:description" content="网上购物看到自己喜欢的东西加入购物车然后付款，但是在付款的突然不想要了 … 往往这个订单会给一个30分钟的支付时间，时间一到就自动关闭了 所以这是怎么做到的呢？ 1.实现方式 轮询   1脚本每隔一定时间就去数据表检查一下状态，是否过期需要关闭。  数据库事件+存储过程   1数据库建立检查事件，每隔一定时间去执行一次存储过程。  Key事件通知   1对于更改任何Redis Key的每个操作，都">
 <meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-08-10T15:42:20.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Mark&#39;s blog">
-<meta name="twitter:description" content="安静的小码农">
+<meta name="twitter:title" content="Redis学习笔记 - Key事件通知">
+<meta name="twitter:description" content="网上购物看到自己喜欢的东西加入购物车然后付款，但是在付款的突然不想要了 … 往往这个订单会给一个30分钟的支付时间，时间一到就自动关闭了 所以这是怎么做到的呢？ 1.实现方式 轮询   1脚本每隔一定时间就去数据表检查一下状态，是否过期需要关闭。  数据库事件+存储过程   1数据库建立检查事件，每隔一定时间去执行一次存储过程。  Key事件通知   1对于更改任何Redis Key的每个操作，都">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -156,16 +157,14 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-redis-keyspace-notify" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-redis-keyspace-notify" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/08/10/redis-keyspace-notify/">Redis学习笔记 - Key事件通知</a>
+    <h1 class="article-title" itemprop="name">
+      Redis学习笔记 - Key事件通知
     </h1>
   
 
@@ -191,9 +190,57 @@
 </li>
 </ul>
 <h3 id="2-数据库事件-存储过程"><a href="#2-数据库事件-存储过程" class="headerlink" title="2.数据库事件+存储过程"></a>2.数据库事件+存储过程</h3><p>不多说，直接上SQL</p>
-        
+<a id="more"></a>
+<ol>
+<li><p>创建存储过程，关闭订单。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">PROCEDURE</span> job_proce()</span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line">	 <span class="keyword">update</span> orders <span class="keyword">set</span> <span class="keyword">status</span> = <span class="number">-1</span> <span class="keyword">where</span> time_to_sec(<span class="keyword">timediff</span>(<span class="keyword">now</span>(), created_at)) &gt; <span class="number">1800</span> <span class="keyword">and</span> <span class="keyword">status</span>=<span class="number">0</span>;</span><br><span class="line"><span class="keyword">END</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建事件，调用存储过程。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> <span class="keyword">GLOBAL</span> event_scheduler = <span class="number">1</span>; </span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">EVENT</span> <span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> job_event</span><br><span class="line"><span class="keyword">ON</span> SCHEDULE EVERY <span class="number">1</span> <span class="keyword">SECOND</span> <span class="comment"># 1秒检查一次</span></span><br><span class="line"><span class="keyword">ON</span> COMPLETION <span class="keyword">PRESERVE</span>  </span><br><span class="line"><span class="keyword">DO</span> <span class="keyword">CALL</span> job_proce();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>开启事件。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">EVENT</span> job_event <span class="keyword">ON</span>  COMPLETION <span class="keyword">PRESERVE</span> <span class="keyword">ENABLE</span>;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>这样<code>job_event</code>事件就会以每隔1秒/次的频率去执行<code>job_proce</code>存储过程执行数据检查。</p>
+<h3 id="3-Key事件通知"><a href="#3-Key事件通知" class="headerlink" title="3. Key事件通知"></a>3. Key事件通知</h3><p>Key事件通知（Redis Keyspace Notifications）机制自2.8版本以后出现，该机制默认是关闭的。可通过配置<code>redis.conf</code>进行开启<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">notify-keyspace-events Ex # E表示Key事件通知，x代表Key过期行为。</span><br><span class="line"></span><br><span class="line"># notify-keyspace-events可配置参数</span><br><span class="line"># K 键空间事件，以__keyspace@&lt;db&gt;__前缀发布。</span><br><span class="line"># E 键事件事件，以__keyevent@&lt;db&gt;__前缀发布。</span><br><span class="line"># g 通用命令（非类型特定），如DEL，EXPIRE，RENAME等等</span><br><span class="line"># $ 字符串命令</span><br><span class="line"># l 列表命令</span><br><span class="line"># s 集合命令</span><br><span class="line"># h 哈希命令</span><br><span class="line"># z 有序集合命令</span><br><span class="line"># x 过期事件（每次键到期时生成的事件）</span><br><span class="line"># e 被驱逐的事件（当一个键由于达到最大内存而被驱逐时产生的事件）</span><br><span class="line"># A g$lshzxe的别名，因此字符串AKE表示所有的事件。</span><br></pre></td></tr></table></figure></p>
+<p>修改配置开启Key事件通知以后，当Redis在删除过期Key的时候会向指定channel（过期行为的channel：<code>__keyevent@0__:expired</code>） publish消息，该消息可以使用subscribe/psubscribe进行订阅。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; PSUBSCRIBE __keyevent@<span class="number">0</span>__:expired</span><br><span class="line">Reading messages... (press Ctrl-C to quit)</span><br><span class="line"><span class="number">1</span>) <span class="string">"psubscribe"</span></span><br><span class="line"><span class="number">2</span>) <span class="string">"__keyevent@0__:expired"</span></span><br><span class="line"><span class="number">3</span>) (integer) <span class="number">1</span></span><br></pre></td></tr></table></figure></p>
+<p>所以我们只需要写个程序执行redis-&gt;psubscribe()进行监听即可。</p>
+<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>emmmm…</p>
+
       
 
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>罗马家园1204房间, 洗好等你<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/imgs/avatar.jpg">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/imgs/weixin.jpg">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
       
     </div>
     <div class="article-info article-info-index">
@@ -217,16 +264,75 @@
       
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/08/10/redis-keyspace-notify/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+  <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+  <p>扫一扫，分享到微信</p>
+  <div class="wx-qrcode">
+    <img src="http://qr.topscan.com/api.php?text=http://xupin.im/2020/08/10/redis-keyspace-notify/" alt="微信分享二维码">
+  </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2020/07/05/git-cloning-slow/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Github拉项目速度慢的解决小技巧</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -246,648 +352,14 @@
 
 
 
-
-  
-    <article id="post-git-cloning-slow" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/07/05/git-cloning-slow/">Github拉项目速度慢的解决小技巧</a>
-    </h1>
-  
-
-        
-        <a href="/2020/07/05/git-cloning-slow/" class="archive-article-date">
-  	<time datetime="2020-07-04T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-07-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>碰上github网络抽风的时候，恰巧你又需要拉取github上托管的项目，这个时候看着2kb/s的下载速度是不是很抓狂？</p>
-<h3 id="粗暴的解决方式"><a href="#粗暴的解决方式" class="headerlink" title="粗暴的解决方式"></a>粗暴的解决方式</h3><p>打开<a href="https://www.ipaddress.com" target="_blank" rel="noopener">ipaddress</a>查询以下三个域名的ip，写到hosts文件中。</p>
-<ul>
-<li>github.com</li>
-<li>github.global.ssl.fastly.net</li>
-<li>codeload.github.com</li>
-</ul>
-<h3 id="进阶的方式"><a href="#进阶的方式" class="headerlink" title="进阶的方式"></a>进阶的方式</h3>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">github</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/07/05/git-cloning-slow/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-goroutine" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/06/12/goroutine/">Go语言学习笔记 - goroutine</a>
-    </h1>
-  
-
-        
-        <a href="/2020/06/12/goroutine/" class="archive-article-date">
-  	<time datetime="2020-06-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>在现在大数据、高并发，到处都充斥着流量的互联网时代，能不能应对高并发俨然已经发展成一个衡量服务端架构是否合格的标准，作为程序媛我们思考如何利用语言在代码层面最优设计能应对并发的程序去并行处理任务。在程序中对于任务并行处理一般趋于使用：进程、线程，以及另外一种：<code>协程</code>。支持协程的语言有很多，比如：C/C++、Ruby、 Python（2.5+）、Golang等等，它们有些是本身语言支持协程，有些则是需要引入第三方包来使用。不过，我们主要来学习一下Golang这门语言（简称Go），它是如何理解以及实现协程的。</p>
-<h3 id="一、进程、线程和协程的前世今生"><a href="#一、进程、线程和协程的前世今生" class="headerlink" title="一、进程、线程和协程的前世今生"></a>一、进程、线程和协程的前世今生</h3><p>都知道一台计算机的核心是CPU，它承担着所有的运算。而计算机承载的操作系统（内核）则是负责所有任务的处理和调度CPU以及资源的分配。如果用人类来比喻，大脑是CPU，思维则是操作系统（内核）。</p>
-<h4 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h4><p>最早的计算机每次只能运行一个程序，如果还有其他程序需要执行则要排队等待。后来CPU运算能力提高了，这种方式过于原始有些浪费性能，于是尝试让多个程序可以并行执行，但是这样面临一个新的问题：跑在同一个CPU中的程序都会使用计算机资源，那程序的运行状态和数据怎么保障？<code>进程</code>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">进程是内核资源管理分配的最小单位，每个进程都有独立的虚拟地址空间。内核中的每个程序都运行在独立进程的上下文中，上下文是由程序正常运行需要的一系列参数组成，参数包括存储器中的代码和数据，寄存器中的内容以及进程打开的文件描述符（文件句柄）等。可以把上下文通俗理解为：`环境`。</span><br></pre></td></tr></table></figure></p>
-<p>如果程序在运行过程中需要进行IO操作，IO操作阻塞了程序后面的计算，这时候CPU属于空闲状态，那内核会把CPU切换到其他进程去处理。不过当进程数量变高以后，计算机的大部分资源都被进程切换这个操作消耗掉了。为什么说进程切换操作消耗资源代价比较高？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">所谓进程切换其实就是上下文切换，需要切换新的页表并加载新的虚拟地址空间、切换内核栈以及硬件上下文等。只要发生进程切换操作就得反复进入内核，加载切换一系列状态。</span><br></pre></td></tr></table></figure></p>
-<h4 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h4><p>为了减少这种开销，<code>线程</code>应运而生。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">线程是内核调度CPU执行的最小单位，线程是运行在进程上下文的逻辑流，线程是具体执行程序的单位。一个进程至少包含一个主线程（可以拥有多个子线程），但是一个线程只能存在于一个进程中。</span><br></pre></td></tr></table></figure></p>
-<p>线程切换相比进程切换开销就小了很多，线程切换只需要把寄存器刷新即可。</p>
-<h4 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h4><p>后面程序媛们发现线程这样还是有性能瓶颈（IO阻塞），无论是进程还是线程因为涉及到大量的计算机资源，所以都是由内核调度管理。能不能开发一种由代码控制的线程呢？这就是<code>协程</code>。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">goroutine</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/06/12/goroutine/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-mysql-trick" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/04/13/mysql-trick/">Mysql小技巧 - 查找连续编号中的缺失编号</a>
-    </h1>
-  
-
-        
-        <a href="/2020/04/13/mysql-trick/" class="archive-article-date">
-  	<time datetime="2020-04-12T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-13</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>在和小伙伴讨论问题的时候，小伙伴突然问了我这样一个小问题，数据库中如何查找连续编号中的缺失编号？</p>
-<h3 id="1-描述"><a href="#1-描述" class="headerlink" title="1.描述"></a>1.描述</h3><p>场景大概是这样，有一份连续数据ID：1 … 27，其中ID：6，7，14的数据丢了。结构如下：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`letter`</span>  (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`name`</span> <span class="built_in">varchar</span>(<span class="number">50</span>) <span class="built_in">CHARACTER</span> <span class="keyword">SET</span> utf8mb4 <span class="keyword">COLLATE</span> utf8mb4_unicode_ci <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>) <span class="keyword">USING</span> BTREE</span><br><span class="line">) <span class="keyword">ENGINE</span> = <span class="keyword">InnoDB</span> AUTO_INCREMENT = <span class="number">27</span> <span class="built_in">CHARACTER</span> <span class="keyword">SET</span> = utf8mb4 <span class="keyword">COLLATE</span> = utf8mb4_unicode_ci ROW_FORMAT = <span class="keyword">Compact</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`letter`</span> <span class="keyword">VALUES</span> (<span class="number">1</span>, <span class="string">'A'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`letter`</span> <span class="keyword">VALUES</span> (<span class="number">2</span>, <span class="string">'B'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`letter`</span> <span class="keyword">VALUES</span> (<span class="number">3</span>, <span class="string">'C'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`letter`</span> <span class="keyword">VALUES</span> (<span class="number">4</span>, <span class="string">'D'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`letter`</span> <span class="keyword">VALUES</span> (<span class="number">5</span>, <span class="string">'E'</span>);</span><br><span class="line"><span class="comment"># INSERT INTO `letter` VALUES (6, 'F');</span></span><br><span class="line"><span class="comment"># INSERT INTO `letter` VALUES (7, 'J');</span></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`letter`</span> <span class="keyword">VALUES</span> (<span class="number">8</span>, <span class="string">'H'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`letter`</span> <span class="keyword">VALUES</span> (<span class="number">9</span>, <span class="string">'I'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`letter`</span> <span class="keyword">VALUES</span> (<span class="number">10</span>, <span class="string">'J'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`letter`</span> <span class="keyword">VALUES</span> (<span class="number">11</span>, <span class="string">'K'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`letter`</span> <span class="keyword">VALUES</span> (<span class="number">12</span>, <span class="string">'L'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`letter`</span> <span class="keyword">VALUES</span> (<span class="number">13</span>, <span class="string">'M'</span>);</span><br><span class="line"><span class="comment"># INSERT INTO `letter` VALUES (14, 'N');</span></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`letter`</span> <span class="keyword">VALUES</span> (<span class="number">15</span>, <span class="string">'O'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`letter`</span> <span class="keyword">VALUES</span> (<span class="number">16</span>, <span class="string">'P'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`letter`</span> <span class="keyword">VALUES</span> (<span class="number">17</span>, <span class="string">'Q'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`letter`</span> <span class="keyword">VALUES</span> (<span class="number">18</span>, <span class="string">'R'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`letter`</span> <span class="keyword">VALUES</span> (<span class="number">19</span>, <span class="string">'S'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`letter`</span> <span class="keyword">VALUES</span> (<span class="number">20</span>, <span class="string">'T'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`letter`</span> <span class="keyword">VALUES</span> (<span class="number">21</span>, <span class="string">'U'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`letter`</span> <span class="keyword">VALUES</span> (<span class="number">22</span>, <span class="string">'V'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`letter`</span> <span class="keyword">VALUES</span> (<span class="number">23</span>, <span class="string">'W'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`letter`</span> <span class="keyword">VALUES</span> (<span class="number">24</span>, <span class="string">'X'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`letter`</span> <span class="keyword">VALUES</span> (<span class="number">25</span>, <span class="string">'Y'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`letter`</span> <span class="keyword">VALUES</span> (<span class="number">26</span>, <span class="string">'Z'</span>);</span><br></pre></td></tr></table></figure></p>
-<p>怎么把6，7，14这三条数据找出来？方法有很多种哈，今天我们说一下如何利用SQL快速查询出来。大概思路是把ID+1，然后查询ID+1这个值是否存在ID列表中，如果不存在那肯定就是缺失的。SQL如下：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	<span class="keyword">id</span> + <span class="number">1</span> <span class="keyword">AS</span> <span class="keyword">id</span> </span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	<span class="string">`letter`</span> </span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	<span class="keyword">id</span> + <span class="number">1</span> <span class="keyword">NOT</span> <span class="keyword">IN</span> ( <span class="keyword">SELECT</span> <span class="keyword">id</span> <span class="keyword">FROM</span> <span class="string">`letter`</span> )</span><br></pre></td></tr></table></figure></p>
-<p>但是这样会有一个小问题，就是MAX(id)+1（27）也会被查询出来，所以：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	<span class="keyword">id</span> + <span class="number">1</span> <span class="keyword">AS</span> <span class="keyword">id</span> </span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	<span class="string">`letter`</span> </span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	<span class="keyword">id</span> + <span class="number">1</span> <span class="keyword">NOT</span> <span class="keyword">IN</span> ( <span class="keyword">SELECT</span> <span class="keyword">id</span> <span class="keyword">FROM</span> <span class="string">`letter`</span> ) </span><br><span class="line">	<span class="keyword">AND</span> <span class="keyword">id</span> &lt;(</span><br><span class="line">	<span class="keyword">SELECT</span></span><br><span class="line">		<span class="keyword">max</span>( <span class="keyword">id</span> ) </span><br><span class="line">	<span class="keyword">FROM</span></span><br><span class="line">	<span class="string">`letter`</span> </span><br><span class="line">	)</span><br></pre></td></tr></table></figure></p>
-<h3 id="2-优化"><a href="#2-优化" class="headerlink" title="2.优化"></a>2.优化</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	start_id,</span><br><span class="line">	( <span class="keyword">SELECT</span> <span class="keyword">MIN</span>(<span class="keyword">id</span>)- <span class="number">1</span> <span class="keyword">FROM</span> <span class="string">`letter`</span> <span class="keyword">WHERE</span> <span class="keyword">id</span> &gt; start_id ) <span class="keyword">AS</span> end_id </span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	(</span><br><span class="line">	<span class="keyword">SELECT</span></span><br><span class="line">		<span class="keyword">id</span> + <span class="number">1</span> <span class="keyword">AS</span> start_id </span><br><span class="line">	<span class="keyword">FROM</span></span><br><span class="line">		<span class="string">`letter`</span> </span><br><span class="line">	<span class="keyword">WHERE</span></span><br><span class="line">		<span class="keyword">id</span> + <span class="number">1</span> <span class="keyword">NOT</span> <span class="keyword">IN</span> ( <span class="keyword">SELECT</span> <span class="keyword">id</span> <span class="keyword">FROM</span> <span class="string">`letter`</span> ) </span><br><span class="line">		<span class="keyword">AND</span> <span class="keyword">id</span> &lt;(</span><br><span class="line">		<span class="keyword">SELECT</span></span><br><span class="line">			<span class="keyword">max</span>(<span class="keyword">id</span>) </span><br><span class="line">		<span class="keyword">FROM</span></span><br><span class="line">			<span class="string">`letter`</span> </span><br><span class="line">		) </span><br><span class="line">	) <span class="keyword">AS</span> max_id </span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span></span><br><span class="line">	start_id</span><br></pre></td></tr></table></figure>
-<p>这种情况适用于查找整数类型的连续编号，那么如果编号是string类型的呢？后面有机会再补充进来=,=。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/04/13/mysql-trick/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-redis-cluster" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/03/27/redis-cluster/">Redis学习笔记 - 集群</a>
-    </h1>
-  
-
-        
-        <a href="/2020/03/27/redis-cluster/" class="archive-article-date">
-  	<time datetime="2020-03-26T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-27</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>之前粗浅的学习了Redis三种集群策略的主从复制和哨兵策略，现在最后这篇来学习一下Redis Cluster也就是最后一个集群策略。</p>
-<h3 id="1-什么是集群？"><a href="#1-什么是集群？" class="headerlink" title="1.什么是集群？"></a>1.什么是集群？</h3><p>集群（Cluster），Redis2.6版本（正式版本是3.0）推出的分布式解决方案，有效解决了单Master节点写操作的压力并且分布式存储数据，大大提高了负载能力。</p>
-<blockquote>
-<p>在Redis发布3.0正式版本前，一般使用代理中间件来实现分布式集群策略。这里不展开学习了，有兴趣的小伙伴自行研究。</p>
-</blockquote>
-<ul>
-<li><p>特点</p>
-<ol>
-<li>Cluster策略是分布式部署，节点间相互协调工作。<blockquote>
-<p>因为对主从复制和哨兵策略都称为集群策略，所以为了防止误解在下文中提及的集群（Cluster）策略，直接用Cluster称呼。</p>
-</blockquote>
-</li>
-<li>Cluster至少要3个Master节点，并且是无中心化设计。</li>
-<li>客户端使用Cluster，不需要连接所有节点，只需要连接Cluster中任意一个可用节点即可。</li>
-<li>数据的分布式存储不需要指定，Cluster会自动完成。</li>
-</ol>
-</li>
-<li><p>优点</p>
-<ol>
-<li>Cluster策略拥有主从复制和哨兵策略的优点。</li>
-<li>解决了单Master节点写操作的压力。</li>
-<li>分布式存储数据，提高了负载能力。</li>
-<li>支持线性扩容。</li>
-</ol>
-</li>
-</ul>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/03/27/redis-cluster/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-redis-sentinel" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/03/26/redis-sentinel/">Redis学习笔记 - 哨兵</a>
-    </h1>
-  
-
-        
-        <a href="/2020/03/26/redis-sentinel/" class="archive-article-date">
-  	<time datetime="2020-03-25T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-26</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>现在这篇来学习一下Redis Sentinel即哨兵策略的相关知识。</p>
-<h3 id="1-什么是哨兵？"><a href="#1-什么是哨兵？" class="headerlink" title="1.什么是哨兵？"></a>1.什么是哨兵？</h3><p>哨兵（Sentinel），Redis2.6版本（正式版本是2.8，现2.6版本已被废弃）开始提供的一种集群策略，核心思想是解决了主从复制（Replication）在Master节点故障，无法自动切换Slave节点为新Master节点的问题。</p>
-<ul>
-<li><p>特点</p>
-<ol>
-<li>哨兵策略是分布式部署，节点间相互协调工作。</li>
-<li>哨兵集群至少要3个节点。</li>
-<li>可以把哨兵看作是一种特殊的Redis服务。</li>
-</ol>
-</li>
-<li><p>优点</p>
-<ol>
-<li>哨兵策略拥有主从复制的优点。</li>
-<li>哨兵策略解决了Master节点故障，无法自动切换Slave节点为新Master节点的问题。</li>
-</ol>
-</li>
-</ul>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/03/26/redis-sentinel/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-redis-replication" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/03/25/redis-replication/">Redis学习笔记 - 主从复制</a>
-    </h1>
-  
-
-        
-        <a href="/2020/03/25/redis-replication/" class="archive-article-date">
-  	<time datetime="2020-03-24T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Redis单点配置的情况下如果服务出现故障宕机，那么服务也就处于不可用状态，假如是生产环境那么带来的后果会有很严重，所以出现了高可用方案：集群策略。</p>
-<h3 id="1-三种集群策略"><a href="#1-三种集群策略" class="headerlink" title="1.三种集群策略"></a>1.三种集群策略</h3><p>Redis提供了三种集群策略，它们分别是：</p>
-<ul>
-<li>主从复制（Replication）</li>
-<li>哨兵（Sentinel）</li>
-<li>集群（Cluster）</li>
-</ul>
-<p>这三种策略会逐一学习，本篇主要学习策略之一主从复制（Replication）。</p>
-<h3 id="2-主从复制的概念"><a href="#2-主从复制的概念" class="headerlink" title="2.主从复制的概念"></a>2.主从复制的概念</h3><p>在主从复制（Replication）策略中，服务分为两类：Master节点、Slave节点。</p>
-<ul>
-<li><p>特点</p>
-<ol>
-<li>Master节点可以拥有多个Slave节点，但Slave节点只能服务一个Master节点。</li>
-<li>数据复制方向只能是Master节点-&gt;Slave节点。</li>
-</ol>
-</li>
-<li><p>优点</p>
-<ol>
-<li>实现了多机热数据备份，提高了面对宕机数据恢复的灾备能力。</li>
-<li>在主从复制的基础上实现读写分离提高服务吞吐量，即：Master节点提供写服务，Slave节点提供读服务。</li>
-<li>如果Master节点宕机可以快速切换使用Slave节点提供服务。</li>
-</ol>
-</li>
-</ul>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/03/25/redis-replication/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-mysql-sharding-partition" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/03/23/mysql-sharding-partition/">Mysql学习笔记 - 分片和分区</a>
-    </h1>
-  
-
-        
-        <a href="/2020/03/23/mysql-sharding-partition/" class="archive-article-date">
-  	<time datetime="2020-03-22T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>之前在复习Mysql主从知识的同时，小伙伴考了我一个问题，分片和分区有什么差别 … 乍一听可能只是名词上的不同，但其实它们俩的确不是同一个东西。</p>
-<h3 id="1-什么是分片（Sharding）？"><a href="#1-什么是分片（Sharding）？" class="headerlink" title="1.什么是分片（Sharding）？"></a>1.什么是分片（Sharding）？</h3><p>我们举个例子，一张文章表。<br>结构如下：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`mark`</span>.<span class="string">`article`</span>  (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`type`</span> <span class="built_in">varchar</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'类型'</span>,</span><br><span class="line">  <span class="string">`title`</span> <span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'标题'</span>,</span><br><span class="line">  <span class="string">`content`</span> longtext <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'内容'</span>,</span><br><span class="line">  <span class="string">`author`</span> <span class="built_in">varchar</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'作者'</span>,</span><br><span class="line">  <span class="string">`date`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'日期'</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure></p>
-<p>需求如下：</p>
-<ol>
-<li>用户打开app会直接展示文章列表（类型，标题，作者，日期）</li>
-<li>点击文章查看详情</li>
-</ol>
-<p>那么这张表在数据量比较小的初期应对访问是没什么问题的。但是随着数据量日益膨胀，查询效率会越来越低，因为里面<code>content</code>字段非常巨大。</p>
-<p>这时候要怎么优化呢？把<code>content</code>字段拆出去，因为访问最多的请求并不需要<code>content</code>，怎么拆呢？结构如下：</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/03/23/mysql-sharding-partition/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
   
   
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
-    </nav>
+  
+
+  
+
+  
+
   
 
 
@@ -910,8 +382,8 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
