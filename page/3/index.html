@@ -158,6 +158,97 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-tmux" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/24/tmux/">10分钟学会使用Tmux</a>
+    </h1>
+  
+
+        
+        <a href="/2019/12/24/tmux/" class="archive-article-date">
+  	<time datetime="2019-12-24T04:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Tmux是一个终端多路复用器：它使从单个屏幕创建，访问和控制多个终端成为可能。Tmux可能会与屏幕分离，并继续在后台运行，然后再重新连接。</p>
+<h3 id="1-Tmux的结构"><a href="#1-Tmux的结构" class="headerlink" title="1.Tmux的结构"></a>1.Tmux的结构</h3><ul>
+<li>Session<ul>
+<li>Window<ul>
+<li>Panel</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>即，Tmux允许访问多个会话，每个会话可以拥有多个窗口，每个窗口还可以进行划分窗格。</p>
+<h3 id="2-安装运行Tmux"><a href="#2-安装运行Tmux" class="headerlink" title="2.安装运行Tmux"></a>2.安装运行Tmux</h3><p>安装<br><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># centos</span></span><br><span class="line">$ yum <span class="keyword">install </span>tmux</span><br><span class="line"></span><br><span class="line"><span class="comment"># ubuntu</span></span><br><span class="line">$ apt <span class="keyword">install </span>tmux</span><br><span class="line"></span><br><span class="line"><span class="comment"># mac</span></span><br><span class="line">$ <span class="keyword">brew </span><span class="keyword">install </span>tmux</span><br></pre></td></tr></table></figure></p>
+<p>运行<br><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$ </span>tmux</span><br></pre></td></tr></table></figure></p>
+<p>效果图，如下：</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tools</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">tmux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/12/24/tmux/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-elasticsearch-group" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -368,31 +459,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>索引用于快速查找具有特定列值的行。没有索引，MySQL必须从第一行开始，然后通读整个表以找到相关的行。桌子越大，花费越多。如果表中有相关​​列的索引，MySQL可以快速确定要在数据文件中间查找的位置，而不必查看所有数据。这比顺序读取每一行要快得多。<br>InnoDB和MyISAM只支持BTREE，因此默认均是BTree，MEMORY和HEAP支持Hash和Btree，如无明确声明，则默认索引均是Hash（包括主键）。</p>
+        <p>索引用于快速查找具有特定列值的行。没有索引，MySQL必须从第一行开始，然后通读整个表以找到相关的行。如果表中有相关​​列的索引，MySQL可以快速确定要在数据文件中间查找的位置，而不必查看所有数据。这比顺序读取每一行要快得多。<br>InnoDB和MyIsam只支持Btree，因此默认均是Btree，Memory和Heap支持Hash和Btree，如无明确声明，则默认索引均是Hash（包括主键）。</p>
 <h3 id="1-Mysql有哪些常用的索引"><a href="#1-Mysql有哪些常用的索引" class="headerlink" title="1.Mysql有哪些常用的索引"></a>1.Mysql有哪些常用的索引</h3><blockquote>
 <p>主键索引：数据列不允许重复，不允许为null，一个表只能有一个主键。</p>
 <p>唯一索引：数据列不允许重复，允许为null，一个表允许多个列创建唯一索引。</p>
 <p>普通索引：基本的索引类型，没有唯一性的限制，允许为null。</p>
 <p>全文索引：全文索引是目前实现大数据搜索的关键技术。</p>
 </blockquote>
-<h3 id="2-如何分析SQL语句执行性能"><a href="#2-如何分析SQL语句执行性能" class="headerlink" title="2.如何分析SQL语句执行性能"></a>2.如何分析SQL语句执行性能</h3><p>以下是两种分析SQL性能的常用方式，explain、show profiles/show profile。</p>
-<blockquote>
-<p>explain + SQL语句，获取SQL分析数据</p>
-<ul>
-<li>select_type：对应SQL语句的查询复杂度。</li>
-<li>table：正在访问的表。</li>
-<li>partitions：数据所在的分区。</li>
-<li>type：表示是否用上索引，以及索引是如何使用的，此字段决定索引的性能。<code>ALL&lt;TYPE&lt;RANGE&lt;REF&lt;CONST</code></li>
-<li>possible_keys：查询条件存在的索引。</li>
-<li>key：触发的索引。</li>
-<li>key_len：索引字段的长度。</li>
-<li>ref：索引访问，返回所有匹配某个单值的行。</li>
-<li>rows：执行查询必须检查的行数，在InnoDB中此值不精确。</li>
-<li>filtered：条件过滤出的行数的百分比。</li>
-<li>extra：查询分析结果的额外信息，很重要 e.g. Using index、Using where …</li>
-</ul>
-<p>show profiles 获得当前会话中执行的SQL语句，字段为：Query_ID, Duration, Query，show profile all for query {Query_ID}</p>
-</blockquote>
+<h3 id="2-Mysql索引的建立原则"><a href="#2-Mysql索引的建立原则" class="headerlink" title="2.Mysql索引的建立原则"></a>2.Mysql索引的建立原则</h3><p>Mysql的索引遵循最左原则，在创建多列索引时，要根据业务需求，where条件中使用最频繁的一列放在最左边。</p>
         
       
 
@@ -809,104 +883,9 @@
 
 
   
-    <article id="post-wekan" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/09/wekan/">部署像Trello一样的看板工具 - Wekan</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/09/wekan/" class="archive-article-date">
-  	<time datetime="2017-06-09T04:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-09</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Wekan is an completely Open Source and Free software collaborative kanban board application with MIT license.</p>
-<h3 id="1-安装MongoDB"><a href="#1-安装MongoDB" class="headerlink" title="1.安装MongoDB"></a>1.安装MongoDB</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ vi /etc/yum.repos.d/mongodb-org-3.2.repo </span><br><span class="line">$ [mongodb-org-3.2]</span><br><span class="line">$ name=MongoDB Repository</span><br><span class="line">$ baseurl=https://repo.mongodb.org/yum/redhat/<span class="variable">$releasever</span>/mongodb-org/3.2/x86_64/</span><br><span class="line">$ gpgcheck=1</span><br><span class="line">$ enabled=1</span><br><span class="line">$ gpgkey=https://www.mongodb.org/static/pgp/server-3.2.asc</span><br><span class="line">$ yum install mongodb-org</span><br><span class="line">$ service mongod start // 启动MongoDB</span><br></pre></td></tr></table></figure>
-<h3 id="2-安装NodeJS"><a href="#2-安装NodeJS" class="headerlink" title="2.安装NodeJS"></a>2.安装NodeJS</h3><blockquote>
-<p><a href="http://nodejs.org/dist/latest/" target="_blank" rel="noopener">http://nodejs.org/dist/latest/</a> // pkg列表</p>
-</blockquote>
-<p>我下载的是 <a href="http://nodejs.org/dist/latest/node-v8.1.0.tar.xz" target="_blank" rel="noopener">http://nodejs.org/dist/latest/node-v8.1.0.tar.xz</a></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ yum install gcc gcc-c++ wget</span><br><span class="line">$ <span class="built_in">cd</span> /tmp</span><br><span class="line">$ wget http://nodejs.org/dist/latest/node-v8.1.0.tar.xz</span><br><span class="line">$ xz -d node-v8.1.0.tar.xz</span><br><span class="line">$ tar -vxf node-v8.1.0.tar</span><br><span class="line">$ <span class="built_in">cd</span> node-v8.1.0</span><br><span class="line">$ vi README.md // To build 有告诉需要的环境,以及安装步骤</span><br><span class="line">$ ./configure</span><br><span class="line">$ make &amp;&amp; make install</span><br><span class="line">$ node -v</span><br><span class="line">$ v8.1.0</span><br></pre></td></tr></table></figure>
-<h3 id="3-获取Wekan项目"><a href="#3-获取Wekan项目" class="headerlink" title="3.获取Wekan项目"></a>3.获取Wekan项目</h3><blockquote>
-<p><a href="https://github.com/wekan/wekan/releases/" target="_blank" rel="noopener">https://github.com/wekan/wekan/releases/</a> // 版本列表</p>
-</blockquote>
-<p>我下载的是 v0.23</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /tmp</span><br><span class="line">$ wget https://github.com/wekan/wekan/releases/download/v0.23/wekan-0.23.tar.gz</span><br><span class="line">$ tar -zxvf wekan wekan-0.23.tar.gz</span><br><span class="line">$ mkdir wekan</span><br><span class="line">$ mv ./bundle ./wekan </span><br><span class="line">$ <span class="built_in">cd</span> wekan/bundle</span><br><span class="line">$ <span class="built_in">export</span> MONGO_URL=<span class="string">'mongodb://127.0.0.1:27017/wekan'</span> </span><br><span class="line">$ <span class="built_in">export</span> ROOT_URL=<span class="string">'https://example.com'</span> </span><br><span class="line">$ <span class="built_in">export</span> MAIL_URL=<span class="string">'smtp://user:pass@mailserver.example.com:25/'</span> </span><br><span class="line">$ <span class="built_in">export</span> PORT=8080</span><br><span class="line">$ node main.js // 如果没有报错,访问http://host:8080就可以使用Wekan啦</span><br></pre></td></tr></table></figure>
-<h3 id="4-一些错误问题"><a href="#4-一些错误问题" class="headerlink" title="4.一些错误问题"></a>4.一些错误问题</h3><ul>
-<li>##There is an issue with <code>node-fibers</code>##<blockquote>
-<p>npm install fibers</p>
-</blockquote>
-</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tools</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">wekan</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/09/wekan/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
     </nav>
   
 
@@ -1138,6 +1117,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           
             <li class="search-li">
               <a href="https://www.91the.top" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>IT玩客</a>
+            </li>
+          
+            <li class="search-li">
+              <a href="http://www.guanxingke.com" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>观行、客</a>
             </li>
           
         </ul>
