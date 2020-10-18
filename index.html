@@ -158,6 +158,87 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-design-ioc-di" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/10/18/design-ioc-di/">控制反转和依赖注入</a>
+    </h1>
+  
+
+        
+        <a href="/2020/10/18/design-ioc-di/" class="archive-article-date">
+  	<time datetime="2020-10-17T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-10-18</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近有小伙伴问Laravel框架中控制反转和依赖注入功能是怎么实现的？<br>其实控制反转和依赖注入是一种设计思想，它最早源于Java Spring框架设计中的机制，所以身边如果有做Java开发的小伙伴~简单聊聊就能明白许多。</p>
+<h3 id="1-依赖注入"><a href="#1-依赖注入" class="headerlink" title="1.依赖注入"></a>1.依赖注入</h3><p>依赖注入（Dependency Injection），通俗的解释是当我们构建对象时需要的参数，只要不是手动创建而是以实例对象的形式注入都可以称为依赖注入。</p>
+<p>举个例子，一个小游戏中玩家可以创建不同的职业。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 职业接口</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Role</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 获取职业名</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getName</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dh</span> <span class="keyword">implements</span> <span class="title">Role</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 职业名</span></span><br><span class="line">    <span class="keyword">protected</span> $name = <span class="string">'猎魔人'</span>;</span><br><span class="line">    <span class="comment">// 攻击成长</span></span><br><span class="line">    <span class="keyword">protected</span> $attack;</span><br><span class="line">    <span class="comment">// 速度成长</span></span><br><span class="line">    <span class="keyword">protected</span> $speed;</span><br><span class="line">    <span class="comment">// 气血成长</span></span><br><span class="line">    <span class="keyword">protected</span> $hp;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($attack,$speed,$hp)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;attack = $attack;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;speed = $speed;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;hp = $hp;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 玩家类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Player</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 职业</span></span><br><span class="line">    <span class="keyword">protected</span> $role;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($role)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;role = $role;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 猎魔人</span></span><br><span class="line">$dh = <span class="keyword">new</span> Dh(<span class="number">100</span>, <span class="number">100</span>, <span class="number">60</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 玩家1-&gt;猎魔人</span></span><br><span class="line">$player1 = <span class="keyword">new</span> Player($dh);</span><br></pre></td></tr></table></figure>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">design</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/10/18/design-ioc-di/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-mysql-clustered-index" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -781,107 +862,6 @@
 
 
   
-    <article id="post-redis-replication" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/03/25/redis-replication/">Redis学习笔记 - 主从复制</a>
-    </h1>
-  
-
-        
-        <a href="/2020/03/25/redis-replication/" class="archive-article-date">
-  	<time datetime="2020-03-24T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Redis单点配置的情况下如果服务出现故障宕机，那么服务也就处于不可用状态，假如是生产环境那么带来的后果会有很严重，所以出现了高可用方案：集群策略。</p>
-<h3 id="1-三种集群策略"><a href="#1-三种集群策略" class="headerlink" title="1.三种集群策略"></a>1.三种集群策略</h3><p>Redis提供了三种集群策略，它们分别是：</p>
-<ul>
-<li>主从复制（Replication）</li>
-<li>哨兵（Sentinel）</li>
-<li>集群（Cluster）</li>
-</ul>
-<p>这三种策略会逐一学习，本篇主要学习策略之一主从复制（Replication）。</p>
-<h3 id="2-主从复制的概念"><a href="#2-主从复制的概念" class="headerlink" title="2.主从复制的概念"></a>2.主从复制的概念</h3><p>在主从复制（Replication）策略中，服务分为两类：Master节点、Slave节点。</p>
-<ul>
-<li><p>特点</p>
-<ol>
-<li>Master节点可以拥有多个Slave节点，但Slave节点只能服务一个Master节点。</li>
-<li>数据复制方向只能是Master节点-&gt;Slave节点。</li>
-</ol>
-</li>
-<li><p>优点</p>
-<ol>
-<li>实现了多机热数据备份，提高了面对宕机数据恢复的灾备能力。</li>
-<li>在主从复制的基础上实现读写分离提高服务吞吐量，即：Master节点提供写服务，Slave节点提供读服务。</li>
-<li>如果Master节点宕机可以快速切换使用Slave节点提供服务。</li>
-</ol>
-</li>
-</ul>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/03/25/redis-replication/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1060,6 +1040,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">github</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
             
             <div class="clearfix"></div>
