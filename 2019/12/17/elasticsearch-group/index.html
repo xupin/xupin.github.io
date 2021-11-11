@@ -9,14 +9,14 @@
   <title>Elasticsearch实现字段分组 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="Elasticsearch是Elastic Stack核心的分布式搜索和分析引擎。 1.背景因为业务调整采用了ES作为数据库，所以需要了解ES对于这一块的设计如何实现类似Mysql中Group By的查询的效果。 2.实现方式ES实现Group By有两种方式：TermsAgg、CompositeAgg，它们也具有不同程度的优缺点。 TermsAgg的使用方式非常粗暴，直接进行桶嵌套即可，如下:">
-<meta name="keywords" content="elasticsearch,develop">
+<meta name="keywords" content="develop,elasticsearch">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Elasticsearch实现字段分组">
 <meta property="og:url" content="http://xupin.im/2019/12/17/elasticsearch-group/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
 <meta property="og:description" content="Elasticsearch是Elastic Stack核心的分布式搜索和分析引擎。 1.背景因为业务调整采用了ES作为数据库，所以需要了解ES对于这一块的设计如何实现类似Mysql中Group By的查询的效果。 2.实现方式ES实现Group By有两种方式：TermsAgg、CompositeAgg，它们也具有不同程度的优缺点。 TermsAgg的使用方式非常粗暴，直接进行桶嵌套即可，如下:">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-11-09T03:41:17.369Z">
+<meta property="og:updated_time" content="2021-11-11T08:56:41.608Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Elasticsearch实现字段分组">
 <meta name="twitter:description" content="Elasticsearch是Elastic Stack核心的分布式搜索和分析引擎。 1.背景因为业务调整采用了ES作为数据库，所以需要了解ES对于这一块的设计如何实现类似Mysql中Group By的查询的效果。 2.实现方式ES实现Group By有两种方式：TermsAgg、CompositeAgg，它们也具有不同程度的优缺点。 TermsAgg的使用方式非常粗暴，直接进行桶嵌套即可，如下:">
@@ -244,11 +244,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">elasticsearch</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">elasticsearch</a>
         		</li>
       		
 		</ul>
@@ -372,7 +372,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2020 Mark
+    		&copy; 2021 Mark
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -455,7 +455,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">elasticsearch</a>
+                <a href="javascript:void(0)" class="js-tag color5">apns</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -463,19 +463,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">apns</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">design</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">golang</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -483,7 +471,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">elasticsearch</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">golang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">google fcm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">goroutine</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -536,10 +544,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">wekan</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">goroutine</a>
               </li>
             
             <div class="clearfix"></div>
