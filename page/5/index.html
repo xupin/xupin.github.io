@@ -8,17 +8,17 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="安静的小码农">
+  <meta name="description" content="安静的小屁屁">
 <meta name="keywords" content="nginx,php,golang,memcached,redis,mysql,mariadb,php7,前端,js,jquery,javascript,html5,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Mark&#39;s blog">
 <meta property="og:url" content="http://xupin.im/page/5/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="安静的小码农">
+<meta property="og:description" content="安静的小屁屁">
 <meta property="og:locale" content="default">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mark&#39;s blog">
-<meta name="twitter:description" content="安静的小码农">
+<meta name="twitter:description" content="安静的小屁屁">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -65,6 +65,8 @@
 	        
 				<li><a href="/tags/tools">Tools</a></li>
 	        
+				<li><a href="/2000/01/01/game-source-code">Game</a></li>
+	        
 			</ul>
 		</nav>
 		<nav class="header-smart-menu">
@@ -87,7 +89,11 @@
 				
 					<a class="github" target="_blank" href="https://github.com/xupin" title="github"><i class="icon-github"></i></a>
 		        
+					<a class="qq" target="_blank" href="/assets/imgs/qq.jpg" title="qq"><i class="icon-qq"></i></a>
+		        
 					<a class="weixin" target="_blank" href="/assets/imgs/weixin.jpg" title="weixin"><i class="icon-weixin"></i></a>
+		        
+					<a class="mail" target="_blank" href="mailto:xupinbest@163.com" title="mail"><i class="icon-mail"></i></a>
 		        
 			</div>
 		</nav>
@@ -121,6 +127,8 @@
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -128,7 +136,11 @@
 					
 						<a class="github" target="_blank" href="https://github.com/xupin" title="github"><i class="icon-github"></i></a>
 			        
+						<a class="qq" target="_blank" href="/assets/imgs/qq.jpg" title="qq"><i class="icon-qq"></i></a>
+			        
 						<a class="weixin" target="_blank" href="/assets/imgs/weixin.jpg" title="weixin"><i class="icon-weixin"></i></a>
+			        
+						<a class="mail" target="_blank" href="mailto:xupinbest@163.com" title="mail"><i class="icon-mail"></i></a>
 			        
 				</div>
 			</nav>
@@ -137,11 +149,13 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 33.333333333333336%"><a href="/">Main</a></li>
+					<li style="width: 25%"><a href="/">Main</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/develop">Develop</a></li>
+					<li style="width: 25%"><a href="/tags/develop">Develop</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/tools">Tools</a></li>
+					<li style="width: 25%"><a href="/tags/tools">Tools</a></li>
+		        
+					<li style="width: 25%"><a href="/2000/01/01/game-source-code">Game</a></li>
 		        
 				</ul>
 			</nav>
@@ -157,6 +171,188 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-nginx-recv-104" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/23/nginx-recv-104/">Nginx recv() failed (104 Connection reset by peer)</a>
+    </h1>
+  
+
+        
+        <a href="/2017/02/23/nginx-recv-104/" class="archive-article-date">
+  	<time datetime="2017-02-23T10:05:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-23</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Error: recv() failed (104: Connection reset by peer) while reading response header from upstream</p>
+<h3 id="1-日志信息"><a href="#1-日志信息" class="headerlink" title="1.日志信息"></a>1.日志信息</h3><figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// www.xxxx.com 公司域名,故此屏蔽</span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">03</span>:<span class="number">58</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">33</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">03</span>:<span class="number">59</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">35</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">00</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">37</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">02</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">39</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">07</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">9</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">GET</span> /Api/GetRegSvrInfo&amp;pid=1&amp;ver=3003 HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201:81"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">08</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">42</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">09</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">44</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br><span class="line"><span class="number">2017</span>/<span class="number">02</span>/<span class="number">18</span> <span class="number">12</span>:<span class="number">04</span>:<span class="number">10</span> <span class="string">[error]</span> <span class="number">7519</span>#<span class="number">7519</span>: *<span class="number">46</span> recv() failed (<span class="number">104</span>: Connection reset by peer) while reading response header from upstream, client: <span class="number">192</span>.<span class="number">168</span>.<span class="number">1</span>.<span class="number">207</span>, server: www.xxxx.com, request: <span class="string">"<span class="keyword">POST</span> /Api/GetRegSvrInfo HTTP/1.1"</span>, upstream: <span class="string">"fastcgi://127.0.0.1:9000"</span>, host: <span class="string">"192.168.1.201"</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-异常原因"><a href="#2-异常原因" class="headerlink" title="2.异常原因"></a>2.异常原因</h3><blockquote>
+<p>ups请求9000端口之后重置 // 我遇见的问题</p>
+</blockquote>
+<h3 id="3-解决方案"><a href="#3-解决方案" class="headerlink" title="3.解决方案"></a>3.解决方案</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ iptables -L -n // 检查是否有其他进程占用9000端口</span><br></pre></td></tr></table></figure>
+<p>9000端口没有被占用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ vi /etc/sysconfig/iptables</span><br><span class="line">-A INPUT -i lo -j ACCEPT // 本地回环(lo一般指127.0.0.1),检查是否有这条配置</span><br></pre></td></tr></table></figure>
+<p>lo防火墙策略未配置</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ iptables -A INPUT -i lo -j ACCEPT // 没有配置,执行这个指令</span><br><span class="line">$ iptables save // 保存</span><br><span class="line">$ iptables restart // 重启生效</span><br></pre></td></tr></table></figure>
+<h3 id="4-依然未解决"><a href="#4-依然未解决" class="headerlink" title="4.依然未解决"></a>4.依然未解决</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ vi /etc/php-fpm.d/www.conf // 这是我的PHP-FPM配置文件</span><br><span class="line">request_terminate_timeout = 0/600; // 这样解决一般是PHP某些脚本执行时间过长超时</span><br></pre></td></tr></table></figure>
+<p>顽固分子,就是不行!!!</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ iptables stop // 关闭防火墙之后(慎用,生产环境谨慎操作),试试是否可以访问</span><br></pre></td></tr></table></figure>
+<p>如果可以访问,麻烦运维哥哥帮忙看一下防火墙策略o(╯□╰)o!!!</p>
+<h3 id="5-其他问题"><a href="#5-其他问题" class="headerlink" title="5.其他问题"></a>5.其他问题</h3><p>欢迎邮箱我一起讨论解决</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">nginx</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/02/23/nginx-recv-104/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-cookie-httponly" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/23/cookie-httponly/">PHP防止XSS攻击、脚本访问Cookie</a>
+    </h1>
+  
+
+        
+        <a href="/2017/02/23/cookie-httponly/" class="archive-article-date">
+  	<time datetime="2017-02-23T08:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-23</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>httponly是微软对cookie做的扩展,主要是解决用户的cookie可能被盗用的问题。</p>
+<h3 id="1-Cookie漏洞"><a href="#1-Cookie漏洞" class="headerlink" title="1.Cookie漏洞"></a>1.Cookie漏洞</h3><figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">Missing `httpOnly` Cookie Attribute	<span class="number">105925</span>	http (<span class="number">80</span>/tcp)	High  </span><br><span class="line">Vulnerability Detection <span class="keyword">Result</span>:</span><br><span class="line"></span><br><span class="line">The cookies:</span><br><span class="line"></span><br><span class="line"><span class="keyword">Set</span>-Cookie: PHPSESSID=esjpr7dkb64rgn1kjhr1r45j05; path=/ </span><br><span class="line"></span><br><span class="line">are missing the httpOnly attribute.</span><br><span class="line"></span><br><span class="line">Summary:</span><br><span class="line"></span><br><span class="line">The application <span class="keyword">is</span> missing the <span class="string">'httpOnly'</span> cookie attribute</span><br><span class="line"></span><br><span class="line">Solution:</span><br><span class="line"></span><br><span class="line"><span class="keyword">Set</span> the <span class="string">'httpOnly'</span> attribute <span class="keyword">for</span> any session cookie.</span><br><span class="line"></span><br><span class="line">Vulnerability Detection <span class="function"><span class="keyword">Method</span>:</span></span><br><span class="line"></span><br><span class="line">Check all cookies sent <span class="keyword">by</span> the application <span class="keyword">for</span> a missing <span class="string">'httpOnly'</span> attribute</span><br><span class="line"></span><br><span class="line">Insight:</span><br><span class="line"></span><br><span class="line">The flaw <span class="keyword">is</span> due <span class="keyword">to</span> a cookie <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">using</span> the <span class="string">'httpOnly'</span> attribute. This</span><br><span class="line">allows a cookie <span class="keyword">to</span> be accessed <span class="keyword">by</span> JavaScript which could lead <span class="keyword">to</span> session hijacking attacks.</span><br><span class="line"></span><br><span class="line">CVSS Base Vector:</span><br><span class="line"></span><br><span class="line">AV:N/AC:L/Au:N/C:P/I:N/A:N</span><br><span class="line"></span><br><span class="line">Affected Software/OS:</span><br><span class="line"></span><br><span class="line">Application <span class="keyword">with</span> session handling <span class="keyword">in</span> cookies.</span><br><span class="line"></span><br><span class="line">References:</span><br><span class="line"></span><br><span class="line">https:<span class="comment">//www.owasp.org/index.php/HttpOnly</span></span><br><span class="line">https:<span class="comment">//www.owasp.org/index.php/Testing_for_cookies_attributes_(OTG-SESS-002)</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-漏洞表现"><a href="#2-漏洞表现" class="headerlink" title="2.漏洞表现"></a>2.漏洞表现</h3><blockquote>
+<p>跨站点脚本攻击 // 这种攻击手段具体表现,很多博主都写过,在此不表了</p>
+</blockquote>
+<h3 id="3-解决方案"><a href="#3-解决方案" class="headerlink" title="3.解决方案"></a>3.解决方案</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ vi /etc/php.ini // PHP 5.2版本及以上</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>session.cookie_httponly = true/1</p>
+</blockquote>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">//</span> <span class="string">PHP</span> <span class="number">5.2</span><span class="string">版本及以上</span></span><br><span class="line"><span class="string">ini_set('session.cookie_httponly',</span> <span class="number">1</span><span class="string">);</span> <span class="string">//</span> <span class="string">注册php.ini配置</span></span><br><span class="line"><span class="string">session_set_cookie_params(0,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">TRUE</span><span class="string">);</span></span><br><span class="line"><span class="string">setcookie('cookieName',</span> <span class="string">'cookieValue'</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">TRUE</span><span class="string">);</span></span><br><span class="line"><span class="string">setrawcookie('cookieName',</span> <span class="string">'cookieValue'</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">NULL</span><span class="string">,</span> <span class="literal">TRUE</span><span class="string">);</span></span><br><span class="line"><span class="string">//</span> <span class="string">PHP</span> <span class="number">5.1</span><span class="string">版本及以下</span></span><br><span class="line"><span class="string">header('Set-Cookie:</span> <span class="string">hidden=value;</span> <span class="string">httpOnly');</span></span><br></pre></td></tr></table></figure>
+<h3 id="4-网站安全扫描工具"><a href="#4-网站安全扫描工具" class="headerlink" title="4.网站安全扫描工具"></a>4.网站安全扫描工具</h3><blockquote>
+<p>Nikto、WebScarab等</p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">xss</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/02/23/cookie-httponly/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-nginx-ups" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -426,6 +622,81 @@
 
 
   
+    <article id="post-game-source-code" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2000/01/01/game-source-code/">游戏 - 源码学习</a>
+    </h1>
+  
+
+        
+        <a href="/2000/01/01/game-source-code/" class="archive-article-date">
+  	<time datetime="1999-12-31T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2000-01-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>长期分享和交换各种手游源码，欢迎来撩～</p>
+<p><img src="https://img.wenhairu.com/images/2021/11/15/1zzIq.png"></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">game</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2000/01/01/game-source-code/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span>
@@ -613,6 +884,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">wekan</a>
               </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">game</a>
+              </li>
             
             <div class="clearfix"></div>
           </ul>
@@ -667,11 +942,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
             </li>
           
             <li class="search-li">
-              <a href="https://www.91the.top" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>IT玩客</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="http://www.guanxingke.com" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>观行、客</a>
+              <a href="https://github.com/YangYmimi" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>Superman</a>
             </li>
           
         </ul>

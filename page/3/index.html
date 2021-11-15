@@ -8,17 +8,17 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="安静的小码农">
+  <meta name="description" content="安静的小屁屁">
 <meta name="keywords" content="nginx,php,golang,memcached,redis,mysql,mariadb,php7,前端,js,jquery,javascript,html5,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Mark&#39;s blog">
 <meta property="og:url" content="http://xupin.im/page/3/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="安静的小码农">
+<meta property="og:description" content="安静的小屁屁">
 <meta property="og:locale" content="default">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mark&#39;s blog">
-<meta name="twitter:description" content="安静的小码农">
+<meta name="twitter:description" content="安静的小屁屁">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -65,6 +65,8 @@
 	        
 				<li><a href="/tags/tools">Tools</a></li>
 	        
+				<li><a href="/2000/01/01/game-source-code">Game</a></li>
+	        
 			</ul>
 		</nav>
 		<nav class="header-smart-menu">
@@ -87,7 +89,11 @@
 				
 					<a class="github" target="_blank" href="https://github.com/xupin" title="github"><i class="icon-github"></i></a>
 		        
+					<a class="qq" target="_blank" href="/assets/imgs/qq.jpg" title="qq"><i class="icon-qq"></i></a>
+		        
 					<a class="weixin" target="_blank" href="/assets/imgs/weixin.jpg" title="weixin"><i class="icon-weixin"></i></a>
+		        
+					<a class="mail" target="_blank" href="mailto:xupinbest@163.com" title="mail"><i class="icon-mail"></i></a>
 		        
 			</div>
 		</nav>
@@ -121,6 +127,8 @@
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -128,7 +136,11 @@
 					
 						<a class="github" target="_blank" href="https://github.com/xupin" title="github"><i class="icon-github"></i></a>
 			        
+						<a class="qq" target="_blank" href="/assets/imgs/qq.jpg" title="qq"><i class="icon-qq"></i></a>
+			        
 						<a class="weixin" target="_blank" href="/assets/imgs/weixin.jpg" title="weixin"><i class="icon-weixin"></i></a>
+			        
+						<a class="mail" target="_blank" href="mailto:xupinbest@163.com" title="mail"><i class="icon-mail"></i></a>
 			        
 				</div>
 			</nav>
@@ -137,11 +149,13 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 33.333333333333336%"><a href="/">Main</a></li>
+					<li style="width: 25%"><a href="/">Main</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/develop">Develop</a></li>
+					<li style="width: 25%"><a href="/tags/develop">Develop</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/tools">Tools</a></li>
+					<li style="width: 25%"><a href="/tags/tools">Tools</a></li>
+		        
+					<li style="width: 25%"><a href="/2000/01/01/game-source-code">Game</a></li>
 		        
 				</ul>
 			</nav>
@@ -157,6 +171,196 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-mysql-int-length" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/15/mysql-int-length/">Mysql学习笔记 - Int长度的问题</a>
+    </h1>
+  
+
+        
+        <a href="/2020/03/15/mysql-int-length/" class="archive-article-date">
+  	<time datetime="2020-03-15T11:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-15</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>创建数据表的时候我们总是要考虑存储数据的字段该用哪种类型、多少长度比较合适，不过在Mysql中如果字段类型是Int，此时长度是不生效的。</p>
+<h3 id="1-Int类型的长度问题"><a href="#1-Int类型的长度问题" class="headerlink" title="1.Int类型的长度问题"></a>1.Int类型的长度问题</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `test` (</span><br><span class="line">  `id` int(3) NOT NULL,</span><br><span class="line">  `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,</span><br><span class="line">  PRIMARY KEY (`id`)</span><br><span class="line">) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci</span><br></pre></td></tr></table></figure>
+<p>有这样一张表，<code>id</code>是Int类型长度3的字段，那么理论上是不能存储长度超过3的值，比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO `test`(`id`, `name`) VALUES (1000000, &apos;name&apos;);</span><br></pre></td></tr></table></figure></p>
+<p>不过结果是意外的，这条数据可以正常写入。</p>
+<h3 id="2-Int类型的长度为什么不生效"><a href="#2-Int类型的长度为什么不生效" class="headerlink" title="2.Int类型的长度为什么不生效"></a>2.Int类型的长度为什么不生效</h3><p>翻了一下Mysql的<a href="https://dev.mysql.com/doc/refman/5.6/en/data-types.html" target="_blank" rel="noopener">数据类型文档</a>，发现这么一句话：</p>
+<blockquote>
+<p>对于整数类型，M表示最大显示宽度。 对于浮点和定点类型，M是可以存储的总位数（精度）。 对于字符串类型，M是最大长度。 M的最大允许值取决于数据类型。</p>
+</blockquote>
+<p>所以这个Int类型的“长度”其实叫宽度，也可以理解为显示长度。</p>
+<h3 id="3-如果存储的数据长度低于显示宽度会怎样？"><a href="#3-如果存储的数据长度低于显示宽度会怎样？" class="headerlink" title="3.如果存储的数据长度低于显示宽度会怎样？"></a>3.如果存储的数据长度低于显示宽度会怎样？</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO `test`(`id`, `name`) VALUES (1, &apos;name&apos;);</span><br></pre></td></tr></table></figure>
+<p>当然是可以写入的，但是好像并没有什么特别的不一样，不过我们再执行一条SQL<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE `test` MODIFY COLUMN `id` int(3) UNSIGNED ZEROFILL;</span><br></pre></td></tr></table></figure></p>
+<p>这次数据产生变化了，变成了这样<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">id      |   name</span><br><span class="line">001     |   name</span><br><span class="line">1000000 |   name</span><br></pre></td></tr></table></figure></p>
+<h3 id="4-为什么要设计显示宽度？"><a href="#4-为什么要设计显示宽度？" class="headerlink" title="4.为什么要设计显示宽度？"></a>4.为什么要设计显示宽度？</h3><p>我也没有得出明确的答案，和小伙伴讨论这个问题~ta觉得是为了方便<code>排序</code>，你觉得呢？</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">mysql int length</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/03/15/mysql-int-length/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-go-console" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/01/19/go-console/">Golang 实现定时任务调度</a>
+    </h1>
+  
+
+        
+        <a href="/2020/01/19/go-console/" class="archive-article-date">
+  	<time datetime="2020-01-19T11:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>每一个任务都需要编写一个Crontab命令，这是件很麻烦且很不友好的事情。 任务调度器允许你以代码的形式定义调度命令，并且服务器上只需要一个Crontab命令即可, 任务调度又是我们俗称的 “计划任务”</p>
+<h3 id="1-工欲善其事，必先利其器"><a href="#1-工欲善其事，必先利其器" class="headerlink" title="1.工欲善其事，必先利其器"></a>1.工欲善其事，必先利其器</h3><p>Github一番搜索，发现Golang有个cron包（<a href="https://github.com/robfig/cron" target="_blank" rel="noopener">robfig/cron</a>）大概满足需求，于是学习一下。</p>
+<h3 id="2-介绍"><a href="#2-介绍" class="headerlink" title="2.介绍"></a>2.介绍</h3><p>看了一遍文档，cron包支持的已经很全面了~~~不用自己造轮子了。</p>
+<p>表达式</p>
+<blockquote>
+<p>兼容Linux的crontab表达式（支持分钟级别）。</p>
+</blockquote>
+<p>日志</p>
+<blockquote>
+<p>可以很详细的记录调度的任务状态</p>
+</blockquote>
+<p>时区</p>
+<blockquote>
+<p>支持任务级别的时区配置</p>
+</blockquote>
+<p>预定义计划</p>
+<blockquote>
+<p>支持在未来指定的时间去运行</p>
+</blockquote>
+<p><code>线程安全问题</code></p>
+<blockquote>
+<p>该cron lib管理任务队列的slice没有做并发安全考虑，可能会出现任务竟抢行为。</p>
+</blockquote>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">golang</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/01/19/go-console/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-php-aliyundb" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -691,200 +895,6 @@
 
 
   
-    <article id="post-mysql-transaction" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/05/mysql-transaction/">Mysql学习笔记 - 事务隔离级别</a>
-    </h1>
-  
-
-        
-        <a href="/2019/12/05/mysql-transaction/" class="archive-article-date">
-  	<time datetime="2019-12-05T04:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>什么是事务？事务（Transaction）一般是指要做的或所做的事情。在计算机术语中是指访问并可能更新数据库中各种数据项的一个程序执行单元(unit)，具有4个特性：原子性、一致性、隔离性、持久性，简称ACID。</p>
-<p>那么Mysql的事务隔离级别又是什么呢？Mysql的事务隔离级别分别是4种：未提交读（Read Uncommitted）、已提交读（Read Committed）、Repeatable Read（可重复读）、Serializable（可串行化）。可以简单理解为Mysql事务的4种执行标准。</p>
-<h3 id="一、ACID特性"><a href="#一、ACID特性" class="headerlink" title="一、ACID特性"></a>一、ACID特性</h3><blockquote>
-<p>原子性（Atomicity）：一个事务是一个不可分割的工作单位，事务中包括的诸操作要么都做，要么都不做。</p>
-</blockquote>
-<p><br></p>
-<blockquote>
-<p>一致性（Consistency）：事务必须是使数据库从一个一致性状态变到另一个一致性状态。一致性与原子性是密切相关的。</p>
-</blockquote>
-<p><br></p>
-<blockquote>
-<p>隔离性（Isolation）：一个事务的执行不能被其他事务干扰。即一个事务内部的操作及使用的数据对并发的其他事务是隔离的，并发执行的各个事务之间不能互相干扰。</p>
-</blockquote>
-<p><br></p>
-<blockquote>
-<p>持久性（Durability）：指一个事务一旦提交，它对数据库中数据的改变就应该是永久性的。接下来的其他操作或故障不应该对其有任何影响。</p>
-</blockquote>
-<h3 id="二、Mysql事务隔离级别"><a href="#二、Mysql事务隔离级别" class="headerlink" title="二、Mysql事务隔离级别"></a>二、Mysql事务隔离级别</h3><blockquote>
-<p>未提交读（Read Uncommitted），指当前事务可以读取到其他事务还未提交的数据变化，最容易带来的问题是脏读（Dirty Read），很少应用到生产环境。</p>
-</blockquote>
-<p><br></p>
-<blockquote>
-<p>已提交读（Read Committed），大部分数据库默认隔离级别但不包括Mysql，指当前事务可以读取其他事务已提交的数据变化，具有隔离性的基本标准，但是在出现交叉事务的并发操作场景中会发生两次读取的数据结果集不一致的问题，即不可重复读（Nonrepeatable Read）。</p>
-</blockquote>
-<p><br></p>
-<blockquote>
-<p>Repeatable Read（可重复读），Mysql数据库的默认隔离级别，这里顺便解释一下为什么Mysql的隔离级别不是Read Committed，因为在Mysql5.0之前日志格式只有statement这一种，这种格式导致主从复制一致性很难得到保证。这种隔离级别可以解决Nonrepeatable Read的问题，但如果也出现在交叉事务的并发操作场景会出现幻读（Phantom Read）的现象，这一行为状态是当前事务不能及时有效的读取其他事务的数据变化。</p>
-</blockquote>
-<p><br></p>
-<blockquote>
-<p>Serializable（可串行化），Mysql事务隔离最高级别，望文生义大概意思是事务的执行是有序（串行化顺序）的，不存在事务交叉执行的场景从而解决了Phantom Read的问题，但是在高并发的业务场景下请求会出现阻塞、超时、锁竟抢的问题，系统的可用性也随之降低。</p>
-</blockquote>
-<h3 id="收尾"><a href="#收尾" class="headerlink" title="收尾"></a>收尾</h3><blockquote>
-<p><a href="https://dev.mysql.com/doc/refman/5.7/en/innodb-transaction-isolation-levels.html" target="_blank" rel="noopener">https://dev.mysql.com/doc/refman/5.7/en/innodb-transaction-isolation-levels.html</a> // Mysql事务官方文档</p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/05/mysql-transaction/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-pessimistic-optimistic" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/04/pessimistic-optimistic/">通俗解释什么是悲观锁/乐观锁</a>
-    </h1>
-  
-
-        
-        <a href="/2019/12/04/pessimistic-optimistic/" class="archive-article-date">
-  	<time datetime="2019-12-04T11:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>什么是锁？在多进程（线程）编程中为了数据的一致性、有效性，如果一资源被某进程（线程）上锁，那么在释放锁之前其他进程（线程）无法进行操作或者等待获取（上）锁。</p>
-<h3 id="一、悲观锁"><a href="#一、悲观锁" class="headerlink" title="一、悲观锁"></a>一、悲观锁</h3><p>悲观锁（Pessimistic locking），顾名思义对待任何事务都持悲观态度，做任何事情都会认为会有竞抢行为~所以在进行任何操作之前都要做好万全准备（上锁）才会继续执行后续的操作。通常是利用系统提供的锁机制来实现。<br>比如：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Mysql中的上锁命令：for <span class="keyword">update</span>、<span class="keyword">lock</span> <span class="keyword">in</span> <span class="keyword">share</span> <span class="keyword">mode</span>等</span><br><span class="line">Redis中的一些操作命令：setnx、getset等（原子操作）</span><br></pre></td></tr></table></figure></p>
-<h3 id="二、乐观锁"><a href="#二、乐观锁" class="headerlink" title="二、乐观锁"></a>二、乐观锁</h3><p>乐观锁（Optimistic locking），和悲观锁相反对待任何事务都持乐观态度，只会在最后即将执行操作的时刻前才会进行验证。通常是通过程序配合来实现。<br>比如：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">update</span> <span class="string">`orders`</span> <span class="keyword">set</span> <span class="keyword">hash</span> = <span class="keyword">md5</span>(<span class="keyword">now</span>()) <span class="keyword">where</span> uid = <span class="number">1</span> <span class="keyword">and</span> <span class="keyword">hash</span> = &#123;lastHash&#125;;</span><br></pre></td></tr></table></figure></p>
-<h3 id="三、优缺点"><a href="#三、优缺点" class="headerlink" title="三、优缺点"></a>三、优缺点</h3><p>悲观锁优点很鲜明，因为每次执行的操作都是独占的，数据的一致性、有效性、安全性较高。但缺点同样突出，每次操作都会产生上锁的开销，在并发请求比较密集的情况下容易阻塞或者驳回请求，甚至是造成死锁，也大大降低了系统的性能。</p>
-<p>乐观锁优点是省去了锁的开销，能较高的提高系统吞吐量，缺点是如果出现在并发高且竟抢（冲突）行为比较多的场景下数据的一致性很难保证。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/04/pessimistic-optimistic/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
@@ -1072,6 +1082,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">wekan</a>
               </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">game</a>
+              </li>
             
             <div class="clearfix"></div>
           </ul>
@@ -1126,11 +1140,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
             </li>
           
             <li class="search-li">
-              <a href="https://www.91the.top" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>IT玩客</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="http://www.guanxingke.com" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>观行、客</a>
+              <a href="https://github.com/YangYmimi" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>Superman</a>
             </li>
           
         </ul>
