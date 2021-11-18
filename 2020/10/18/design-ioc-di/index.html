@@ -6,20 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
-  <title>控制反转和依赖注入 | Mark&#39;s blog</title>
+  <title>设计模式 - 控制反转/依赖注入 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="最近有小伙伴问Laravel框架中控制反转和依赖注入功能是怎么实现的？其实控制反转和依赖注入是一种设计思想，它最早源于Java Spring框架设计中的机制，所以身边如果有做Java开发的小伙伴~简单聊聊就能明白许多。 1.依赖注入依赖注入（Dependency Injection），通俗的解释是当我们构建对象时需要的参数，只要不是手动创建而是以实例对象的形式注入都可以称为依赖注入。 举个例子，一">
+  <meta name="description" content="Laravel框架中控制反转和依赖注入功能是怎么实现的？其实控制反转和依赖注入是一种设计思想，它最早源于Java Spring框架设计中的机制，所以身边如果有做Java开发的小伙伴~简单聊聊就能明白许多。 1.依赖注入依赖注入（Dependency Injection），通俗的解释是当我们构建对象时需要的参数，只要不是手动创建而是以实例对象的形式注入都可以称为依赖注入。 举个例子，一个小游戏中玩家">
 <meta name="keywords" content="develop,design">
 <meta property="og:type" content="article">
-<meta property="og:title" content="控制反转和依赖注入">
+<meta property="og:title" content="设计模式 - 控制反转&#x2F;依赖注入">
 <meta property="og:url" content="http://xupin.im/2020/10/18/design-ioc-di/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="最近有小伙伴问Laravel框架中控制反转和依赖注入功能是怎么实现的？其实控制反转和依赖注入是一种设计思想，它最早源于Java Spring框架设计中的机制，所以身边如果有做Java开发的小伙伴~简单聊聊就能明白许多。 1.依赖注入依赖注入（Dependency Injection），通俗的解释是当我们构建对象时需要的参数，只要不是手动创建而是以实例对象的形式注入都可以称为依赖注入。 举个例子，一">
+<meta property="og:description" content="Laravel框架中控制反转和依赖注入功能是怎么实现的？其实控制反转和依赖注入是一种设计思想，它最早源于Java Spring框架设计中的机制，所以身边如果有做Java开发的小伙伴~简单聊聊就能明白许多。 1.依赖注入依赖注入（Dependency Injection），通俗的解释是当我们构建对象时需要的参数，只要不是手动创建而是以实例对象的形式注入都可以称为依赖注入。 举个例子，一个小游戏中玩家">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2021-11-11T08:56:41.608Z">
+<meta property="og:updated_time" content="2021-11-18T07:21:26.248Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="控制反转和依赖注入">
-<meta name="twitter:description" content="最近有小伙伴问Laravel框架中控制反转和依赖注入功能是怎么实现的？其实控制反转和依赖注入是一种设计思想，它最早源于Java Spring框架设计中的机制，所以身边如果有做Java开发的小伙伴~简单聊聊就能明白许多。 1.依赖注入依赖注入（Dependency Injection），通俗的解释是当我们构建对象时需要的参数，只要不是手动创建而是以实例对象的形式注入都可以称为依赖注入。 举个例子，一">
+<meta name="twitter:title" content="设计模式 - 控制反转&#x2F;依赖注入">
+<meta name="twitter:description" content="Laravel框架中控制反转和依赖注入功能是怎么实现的？其实控制反转和依赖注入是一种设计思想，它最早源于Java Spring框架设计中的机制，所以身边如果有做Java开发的小伙伴~简单聊聊就能明白许多。 1.依赖注入依赖注入（Dependency Injection），通俗的解释是当我们构建对象时需要的参数，只要不是手动创建而是以实例对象的形式注入都可以称为依赖注入。 举个例子，一个小游戏中玩家">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -178,7 +178,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      控制反转和依赖注入
+      设计模式 - 控制反转/依赖注入
     </h1>
   
 
@@ -191,7 +191,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>最近有小伙伴问Laravel框架中控制反转和依赖注入功能是怎么实现的？<br>其实控制反转和依赖注入是一种设计思想，它最早源于Java Spring框架设计中的机制，所以身边如果有做Java开发的小伙伴~简单聊聊就能明白许多。</p>
+        <p>Laravel框架中控制反转和依赖注入功能是怎么实现的？<br>其实控制反转和依赖注入是一种设计思想，它最早源于Java Spring框架设计中的机制，所以身边如果有做Java开发的小伙伴~简单聊聊就能明白许多。</p>
 <h3 id="1-依赖注入"><a href="#1-依赖注入" class="headerlink" title="1.依赖注入"></a>1.依赖注入</h3><p>依赖注入（Dependency Injection），通俗的解释是当我们构建对象时需要的参数，只要不是手动创建而是以实例对象的形式注入都可以称为依赖注入。</p>
 <p>举个例子，一个小游戏中玩家可以创建不同的职业。</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 职业接口</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Role</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 获取职业名</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getName</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dh</span> <span class="keyword">implements</span> <span class="title">Role</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 职业名</span></span><br><span class="line">    <span class="keyword">protected</span> $name = <span class="string">'猎魔人'</span>;</span><br><span class="line">    <span class="comment">// 攻击成长</span></span><br><span class="line">    <span class="keyword">protected</span> $attack;</span><br><span class="line">    <span class="comment">// 速度成长</span></span><br><span class="line">    <span class="keyword">protected</span> $speed;</span><br><span class="line">    <span class="comment">// 气血成长</span></span><br><span class="line">    <span class="keyword">protected</span> $hp;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($attack,$speed,$hp)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;attack = $attack;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;speed = $speed;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;hp = $hp;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 玩家类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Player</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 职业</span></span><br><span class="line">    <span class="keyword">protected</span> $role;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($role)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;role = $role;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 猎魔人</span></span><br><span class="line">$dh = <span class="keyword">new</span> Dh(<span class="number">100</span>, <span class="number">100</span>, <span class="number">60</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 玩家1-&gt;猎魔人</span></span><br><span class="line">$player1 = <span class="keyword">new</span> Player($dh);</span><br></pre></td></tr></table></figure>
@@ -319,7 +319,7 @@
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          Git随手记 - depth
+          Git小知识 - depth
         
       </div>
     </a>
@@ -464,11 +464,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">xss</a>
+                <a href="javascript:void(0)" class="js-tag color4">elasticsearch</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">elasticsearch</a>
+                <a href="javascript:void(0)" class="js-tag color5">game</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -492,23 +492,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">guetzli</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">tools</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">laravel</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">dropzone</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -524,15 +516,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">webp</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">redis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">short names</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -540,11 +524,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">wekan</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">game</a>
+                <a href="javascript:void(0)" class="js-tag color1">tools</a>
               </li>
             
             <div class="clearfix"></div>
