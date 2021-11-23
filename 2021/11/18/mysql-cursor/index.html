@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Mysql学习笔记 - cursor | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="游标（cursor）是可以从数据库检索结果集中每次提取一行记录的机制，游标的作用就是对数据库检索结果集进行遍历，方便对记录进行操作。 特性三种特性：  只读 不能更新它   非滚动 根据SQL语句确定顺序，不能向后获取记录和跳过记录   敏感/不敏感 敏感游标指向的是数据表，不敏感游标指向的则是临时数据表。（Mysql使用的是敏感游标）    声明游标游标使用的变量必须在声明游标之前声明">
+  <meta name="description" content="游标（cursor）是可以从数据库检索结果集中每次提取一行记录的机制，游标的作用就是对结果集进行遍历，方便对记录进行操作。 特性三种特性：  只读 不能更新它   非滚动 根据SQL语句确定顺序，不能向后获取记录和跳过记录   敏感/不敏感 敏感游标指向的是数据表，不敏感游标指向的则是临时数据表。（Mysql使用的是敏感游标）    声明游标游标使用的变量必须在声明游标之前声明">
 <meta name="keywords" content="develop,mysql">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Mysql学习笔记 - cursor">
 <meta property="og:url" content="http://xupin.im/2021/11/18/mysql-cursor/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="游标（cursor）是可以从数据库检索结果集中每次提取一行记录的机制，游标的作用就是对数据库检索结果集进行遍历，方便对记录进行操作。 特性三种特性：  只读 不能更新它   非滚动 根据SQL语句确定顺序，不能向后获取记录和跳过记录   敏感/不敏感 敏感游标指向的是数据表，不敏感游标指向的则是临时数据表。（Mysql使用的是敏感游标）    声明游标游标使用的变量必须在声明游标之前声明">
+<meta property="og:description" content="游标（cursor）是可以从数据库检索结果集中每次提取一行记录的机制，游标的作用就是对结果集进行遍历，方便对记录进行操作。 特性三种特性：  只读 不能更新它   非滚动 根据SQL语句确定顺序，不能向后获取记录和跳过记录   敏感/不敏感 敏感游标指向的是数据表，不敏感游标指向的则是临时数据表。（Mysql使用的是敏感游标）    声明游标游标使用的变量必须在声明游标之前声明">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2021-11-18T11:30:52.424Z">
+<meta property="og:updated_time" content="2021-11-22T09:48:01.840Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mysql学习笔记 - cursor">
-<meta name="twitter:description" content="游标（cursor）是可以从数据库检索结果集中每次提取一行记录的机制，游标的作用就是对数据库检索结果集进行遍历，方便对记录进行操作。 特性三种特性：  只读 不能更新它   非滚动 根据SQL语句确定顺序，不能向后获取记录和跳过记录   敏感/不敏感 敏感游标指向的是数据表，不敏感游标指向的则是临时数据表。（Mysql使用的是敏感游标）    声明游标游标使用的变量必须在声明游标之前声明">
+<meta name="twitter:description" content="游标（cursor）是可以从数据库检索结果集中每次提取一行记录的机制，游标的作用就是对结果集进行遍历，方便对记录进行操作。 特性三种特性：  只读 不能更新它   非滚动 根据SQL语句确定顺序，不能向后获取记录和跳过记录   敏感/不敏感 敏感游标指向的是数据表，不敏感游标指向的则是临时数据表。（Mysql使用的是敏感游标）    声明游标游标使用的变量必须在声明游标之前声明">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -54,7 +54,7 @@
 		  <h1 class="header-author"><a href="/">Mark</a></h1>
 		</hgroup>
 		
-		<p class="header-subtitle">至信如山,山耸千秋之未改</p>
+		<p class="header-subtitle">Keep it simple, stupid</p>
 		
 
 		<nav class="header-menu">
@@ -118,7 +118,7 @@
 			  <h1 class="header-author js-header-author">Mark</h1>
 			</hgroup>
 			
-			<p class="header-subtitle"><i class="icon icon-quo-left"></i>至信如山,山耸千秋之未改<i class="icon icon-quo-right"></i></p>
+			<p class="header-subtitle"><i class="icon icon-quo-left"></i>Keep it simple, stupid<i class="icon icon-quo-right"></i></p>
 			
 			
 			
@@ -191,7 +191,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>游标（cursor）是可以从数据库检索结果集中每次提取一行记录的机制，游标的作用就是对数据库检索结果集进行遍历，方便对记录进行操作。</p>
+        <p>游标（cursor）是可以从数据库检索结果集中每次提取一行记录的机制，游标的作用就是对结果集进行遍历，方便对记录进行操作。</p>
 <h3 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h3><p>三种特性：</p>
 <ul>
 <li>只读<blockquote>
@@ -326,6 +326,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2021/11/22/python-yield/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Python学习笔记 - yield
+        
+      </div>
+    </a>
   
   
     <a href="/2021/11/15/mysql-deadlock/" id="article-nav-older" class="article-nav-link-wrap">
@@ -487,11 +496,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">google fcm</a>
+                <a href="javascript:void(0)" class="js-tag color5">goroutine</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">goroutine</a>
+                <a href="javascript:void(0)" class="js-tag color1">google fcm</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -516,6 +525,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">php</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
              
               <li class="article-tag-list-item">
