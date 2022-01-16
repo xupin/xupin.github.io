@@ -6,19 +6,23 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
-  <title>Mark&#39;s blog</title>
+  <title>Clickhouse学习笔记 - 数据引擎 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="安静的小屁屁">
-<meta name="keywords" content="nginx,php,golang,memcached,redis,mysql,mariadb,php7,前端,js,jquery,javascript,html5,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Mark&#39;s blog">
-<meta property="og:url" content="http://xupin.im/page/5/index.html">
+  <meta name="description" content="Clickhouse是个由老毛子国内市场使用率第一的搜索引擎Yandex开源的OLAP型列式数据库。 背景之前因为业务接触到Clickhouse，但因为没有系统的了解过导致遇见个很小的问题花了大量的时间、用了很挫的方式来解决问题，痛定思痛的情况下决心系统的逐步学习一下。CH无论是存储还是使用方式都不同程度的异于我们常用的Mysql，PostgreSql，Mssql等行式数据库，但它支持绝大部分的S">
+<meta name="keywords" content="develop,clickhouse">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Clickhouse学习笔记 - 数据引擎">
+<meta property="og:url" content="http://xupin.im/2022/01/16/clickhouse-engines/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="安静的小屁屁">
+<meta property="og:description" content="Clickhouse是个由老毛子国内市场使用率第一的搜索引擎Yandex开源的OLAP型列式数据库。 背景之前因为业务接触到Clickhouse，但因为没有系统的了解过导致遇见个很小的问题花了大量的时间、用了很挫的方式来解决问题，痛定思痛的情况下决心系统的逐步学习一下。CH无论是存储还是使用方式都不同程度的异于我们常用的Mysql，PostgreSql，Mssql等行式数据库，但它支持绝大部分的S">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="https://clickhouse.com/docs/en/images/row-oriented.gif">
+<meta property="og:image" content="https://clickhouse.com/docs/en/images/column-oriented.gif">
+<meta property="og:updated_time" content="2022-01-16T13:42:21.181Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Mark&#39;s blog">
-<meta name="twitter:description" content="安静的小屁屁">
+<meta name="twitter:title" content="Clickhouse学习笔记 - 数据引擎">
+<meta name="twitter:description" content="Clickhouse是个由老毛子国内市场使用率第一的搜索引擎Yandex开源的OLAP型列式数据库。 背景之前因为业务接触到Clickhouse，但因为没有系统的了解过导致遇见个很小的问题花了大量的时间、用了很挫的方式来解决问题，痛定思痛的情况下决心系统的逐步学习一下。CH无论是存储还是使用方式都不同程度的异于我们常用的Mysql，PostgreSql，Mssql等行式数据库，但它支持绝大部分的S">
+<meta name="twitter:image" content="https://clickhouse.com/docs/en/images/row-oriented.gif">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -194,34 +198,218 @@ var _hmt = _hmt || [];
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-redis-aof-rdb" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-clickhouse-engines" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/03/redis-aof-rdb/">Redis学习笔记 - 持久化方式</a>
+    <h1 class="article-title" itemprop="name">
+      Clickhouse学习笔记 - 数据引擎
     </h1>
   
 
         
-        <a href="/2019/12/03/redis-aof-rdb/" class="archive-article-date">
-  	<time datetime="2019-12-03T07:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-03</time>
+        <a href="/2022/01/16/clickhouse-engines/" class="archive-article-date">
+  	<time datetime="2022-01-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-01-16</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Redis是一个开放源代码（BSD许可）的内存中数据结构存储，用作数据库，缓存和消息代理。</p>
-<h3 id="一、Redis数据存储的方式有两种"><a href="#一、Redis数据存储的方式有两种" class="headerlink" title="一、Redis数据存储的方式有两种"></a>一、Redis数据存储的方式有两种</h3><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">单纯的缓存模式, 整个数据的生命周期随着Redis <span class="built_in">Server</span>的停止而消失。</span><br><span class="line">persistence模式, 数据会持续备份到磁盘文件。</span><br></pre></td></tr></table></figure>
-<h3 id="二、Redis如何实现持久化存储？Redis提供了两种方式。"><a href="#二、Redis如何实现持久化存储？Redis提供了两种方式。" class="headerlink" title="二、Redis如何实现持久化存储？Redis提供了两种方式。"></a>二、Redis如何实现持久化存储？Redis提供了两种方式。</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">RDB</span><span class="params">(Redis DataBase)</span></span></span><br><span class="line"><span class="function"><span class="title">AOF</span><span class="params">(Append-only file)</span></span></span><br></pre></td></tr></table></figure>
-        
+        <p>Clickhouse是个由老毛子国内市场使用率第一的搜索引擎Yandex开源的OLAP型列式数据库。</p>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>之前因为业务接触到Clickhouse，但因为没有系统的了解过导致遇见个很小的问题花了大量的时间、用了很挫的方式来解决问题，痛定思痛的情况下决心系统的逐步学习一下。CH无论是存储还是使用方式都不同程度的异于我们常用的Mysql，PostgreSql，Mssql等行式数据库，但它支持绝大部分的SQL语法。</p>
+<p>通过两张图，先感受一下列式数据库的查询速度。</p>
+<ul>
+<li>行式：<br><img src="https://clickhouse.com/docs/en/images/row-oriented.gif" alt></li>
+</ul>
+<a id="more"></a>
+<ul>
+<li>列式：<br><img src="https://clickhouse.com/docs/en/images/column-oriented.gif" alt></li>
+</ul>
+<h3 id="数据引擎"><a href="#数据引擎" class="headerlink" title="数据引擎"></a>数据引擎</h3><p>Clickhouse（基于v21.7）的引擎分为数据库引擎和表引擎。</p>
+<ul>
+<li><p>数据库引擎</p>
+<ol>
+<li>MySQL<blockquote>
+<p>顾名思义，和Mysql数据库有关系。该引擎允许连接远程Mysql数据库并且执行Sql交换数据。但是仅支持部分操作（读写）。</p>
+</blockquote>
+</li>
+<li>MaterializeMySQL<blockquote>
+<p>v20.8新增的引擎，这是一个处在<code>实验阶段的引擎</code>，通过名称可以看出来也是和Mysql相关的引擎，该引擎通过binlog日志进行全量（第一次）和增量实时物化（可以理解为同步？）Mysql数据，原本Mysql的DDL和DML操作都可以通过CH执行。</p>
+</blockquote>
+</li>
+<li>Lazy<blockquote>
+<p>在最后一次操作该表之后，仅在固定秒数内将表保留在运存中，该秒数通过<code>expiration_time_in_seconds</code>参数控制。</p>
+</blockquote>
+</li>
+<li>Atomic<blockquote>
+<p>新版本默认的数据库引擎，支持对表非阻塞的<code>drop</code>、<code>rename</code>操作以及原子操作交换两张表。</p>
+</blockquote>
+</li>
+<li>PostgreSQL<blockquote>
+<p>该引擎的特性和<code>MySQL</code>引擎大致相同，只不过是对PostgreSql的支持。</p>
+</blockquote>
+</li>
+<li>MaterializedPostgreSQL<blockquote>
+<p>与<code>MaterializeMySQL</code>一样，是<code>实验阶段的引擎</code>。作为PostgreSql数据表的副本进行后台同步。</p>
+</blockquote>
+</li>
+<li>Replicated<blockquote>
+<p>基于<code>Atomic</code>引擎，通过将DDL操作日志写入ZK并在数据库的所有副本上执行的元数据复制（复制数据库）。可以同时运行和更新多个复制的数据库。但是同一个复制的数据库不能有多个副本。</p>
+</blockquote>
+</li>
+</ol>
+</li>
+<li><p>表引擎（表引擎比数据库引擎稍微复杂一些，表引擎又分为四大系列）</p>
+<ol>
+<li>MergeTree系列</li>
+<li>Log系列</li>
+<li>Integrations系列</li>
+<li>Special类</li>
+</ol>
+</li>
+</ul>
+<h3 id="MergeTree系列"><a href="#MergeTree系列" class="headerlink" title="MergeTree系列"></a>MergeTree系列</h3><p>MergeTree系列的表引擎比较常用，它支持主键、数据分区、数据副本和数据采样等特性，同时支持重要的<code>alter</code>操作语句。</p>
+<ul>
+<li>ReplacingMergeTree<blockquote>
+<p>清洗数据，去除重复数据。当数据重复时数据去重策略有两种：通过<code>ReplacingMergeTree({version})</code>建立version字段则保留version字段最大值，否则则保留最后一行。</p>
+</blockquote>
+</li>
+<li>SummingMergeTree<blockquote>
+<p>按照预先定义的聚合条件汇总数据</p>
+</blockquote>
+</li>
+<li>AggregatingMergeTree<blockquote>
+<p><code>SummingMergeTree</code>引擎的进阶版。能够在合并分区时，按照预先定义的聚合条件汇总数据。</p>
+</blockquote>
+</li>
+<li>CollapsingMergeTree<blockquote>
+<p>支持行级数据的更新和删除，通过指定字段<code>CollapsingMergeTree({sign})</code>标记数据行的状态（状态值：1，-1）。分区合并时，同一个数据分区内sign值为1的数据行会和下一行sign值为-1的抵消删除。如果并发写入时则会导致乱序问题，即sign值1和-1的数据行并不相临的问题。</p>
+</blockquote>
+</li>
+<li>VersionedCollapsingMergeTree<blockquote>
+<p><code>CollapsingMergeTree</code>引擎的进阶版。通过<code>VersionedCollapsingMergeTree({sign},{version})</code>新增version字段解决乱序问题。</p>
+</blockquote>
+</li>
+<li>GraphiteMergeTree<blockquote>
+<p>存储时序数据库Graphite的数据。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="Log系列"><a href="#Log系列" class="headerlink" title="Log系列"></a>Log系列</h3><p>Log引擎面向的应用场景一般是：小数据量、多写少查、单次查询数据较大。</p>
+<ul>
+<li>StripLog<blockquote>
+<p>支持多线程并发读取文件（data.bin），数据写入时会将所有数据列存储在同一个文件中。</p>
+</blockquote>
+</li>
+<li>TinyLog<blockquote>
+<p>数据写入时每个数据列存储在不同的文件（{column}.bin），但不支持多线程并发读取文件。</p>
+</blockquote>
+</li>
+<li>Log<blockquote>
+<p>支持多线程并发读取文件，写入时每个数据列单独存储文件。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="Integrations系列"><a href="#Integrations系列" class="headerlink" title="Integrations系列"></a>Integrations系列</h3><p>该类引擎提供多种方式与外部系统集成（外部表），支持包括但不仅限于：</p>
+<ol>
+<li>ODBC</li>
+<li>JDBC</li>
+<li>Mysql</li>
+<li>MongoDB</li>
+<li>HDFS</li>
+<li>S3</li>
+<li>Kafka</li>
+<li>EmbeddedRocksDB</li>
+<li>RabbitMQ</li>
+<li>PostgreSQL</li>
+<li>SQLite</li>
+<li>Hive</li>
+</ol>
+<h3 id="Special类"><a href="#Special类" class="headerlink" title="Special类"></a>Special类</h3><p>这个分类下的引擎适用于定制化的业务场景。</p>
+<ul>
+<li>内存类<ol>
+<li>Memory<blockquote>
+<p>将数据存储在内存中，但不提供持久化操作，重启数据就跑丢了。</p>
+</blockquote>
+</li>
+<li>Set<blockquote>
+<p>适用于集合类型的查询操作，比如：in。</p>
+</blockquote>
+</li>
+<li>Join<blockquote>
+<p>望文生义，为了连表查询。</p>
+</blockquote>
+</li>
+<li>Buffer<blockquote>
+<p>通俗的说像是数据脏页设置一个刷新阈值，达到即刷新到磁盘中。</p>
+</blockquote>
+</li>
+</ol>
+</li>
+<li>中间件类<ol>
+<li>Distributed<blockquote>
+<p>自动分片、自动写入和查询数据。</p>
+</blockquote>
+</li>
+<li>Dictionary<blockquote>
+<p>自动为数据字典创建数据表。</p>
+</blockquote>
+</li>
+<li>Merge<blockquote>
+<p>合并多个相同表结构的查询结果。</p>
+</blockquote>
+</li>
+</ol>
+</li>
+<li>其他<ol>
+<li>Null<blockquote>
+<p>写入的数据会被丢弃 … 暂时不懂什么用途，官方的描述是适用于视图展示。</p>
+</blockquote>
+</li>
+<li>Url<blockquote>
+<p>配合RESTful接口，操作会转化为：insert =&gt; post、select =&gt; get。</p>
+</blockquote>
+</li>
+<li>Live View<blockquote>
+<p><code>实验阶段的引擎</code>，对事件监听进行实时数据计算。适用场景比如：证券网站。</p>
+</blockquote>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>简单的浏览了CH不同的数据引擎，接下来会学习MergeTree系列的引擎的存储结构和索引方式（搞清楚为什么查询这么快）。</p>
+
       
 
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>罗马家园1204房间, 洗好等你<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/imgs/weixin.jpg">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
       
     </div>
     <div class="article-info article-info-index">
@@ -236,7 +424,7 @@ var _hmt = _hmt || [];
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">clickhouse</a>
         		</li>
       		
 		</ul>
@@ -245,16 +433,87 @@ var _hmt = _hmt || [];
       
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/03/redis-aof-rdb/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+  <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+  <p>扫一扫，分享到微信</p>
+  <div class="wx-qrcode">
+    <img src="https://api.pwmqr.com/qrcode/create/?url=http://xupin.im/2022/01/16/clickhouse-engines/" alt="微信分享二维码">
+  </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2022/01/14/clickhouse-array-split-group/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Clickhouse学习笔记 - 数组拆分再分组</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3201242774373382"
+     crossorigin="anonymous"></script>
+  <!-- 文章广告 -->
+  <ins class="adsbygoogle"
+      style="display:block"
+      data-ad-client="ca-pub-3201242774373382"
+      data-ad-slot="3704842143"
+      data-ad-format="auto"
+      data-full-width-responsive="true"></ins>
+  <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -269,185 +528,51 @@ var _hmt = _hmt || [];
         </div>
         
         
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-google-msg-push" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/28/google-msg-push/">设备通知推送 - Google FCM</a>
-    </h1>
-  
-
-        
-        <a href="/2017/02/28/google-msg-push/" class="archive-article-date">
-  	<time datetime="2017-02-27T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-28</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Firebase 是一个移动平台，可以帮助您快速开发高品质应用，扩大用户群，并赚取更多收益。Firebase 由多种互补功能组成，您可以自行组合和匹配这些功能以满足自己的需求。</p>
-<h3 id="1-获取Google推送的KEY-Google应用后台"><a href="#1-获取Google推送的KEY-Google应用后台" class="headerlink" title="1.获取Google推送的KEY(Google应用后台)"></a>1.获取Google推送的KEY(Google应用后台)</h3><blockquote>
-<p>AIzaSyCm5Vufc1FAtWE1kupGhVDRb0ThkCoWC7d // 这个是我的</p>
-</blockquote>
-<h3 id="2-PHP推送代码"><a href="#2-PHP推送代码" class="headerlink" title="2.PHP推送代码"></a>2.PHP推送代码</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化环境</span></span><br><span class="line">$url = <span class="string">'https://fcm.googleapis.com/fcm/send'</span>;</span><br><span class="line">$ch = curl_init($url);</span><br><span class="line">curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, <span class="keyword">false</span>);</span><br><span class="line">curl_setopt($ch, CURLOPT_RETURNTRANSFER,<span class="number">1</span>);</span><br><span class="line">curl_setopt($ch, CURLOPT_POST, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">$header = <span class="keyword">array</span>(</span><br><span class="line">	<span class="string">'Content-Type: application/json'</span>,</span><br><span class="line">	<span class="string">'Authorization: key=AIzaSyCm5Vufc1FAtWE1kupGhVDRb0ThkCoWC7d'</span> <span class="comment">// 这里是刚才的KEY</span></span><br><span class="line">);</span><br><span class="line">curl_setopt($ch, CURLOPT_HTTPHEADER, $header);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 构建消息体,json编码</span></span><br><span class="line">$content = json_encode([</span><br><span class="line"><span class="string">'notification'</span>=&gt;[</span><br><span class="line">	<span class="string">'title'</span> =&gt; <span class="string">'这里是标题'</span>, </span><br><span class="line">	<span class="string">'body'</span> =&gt; <span class="string">'这里是内容'</span>, </span><br><span class="line">	<span class="string">'icon'</span> =&gt; <span class="string">'这里是后台设置的iconName'</span></span><br><span class="line">],</span><br><span class="line"><span class="string">'to'</span>=&gt;<span class="string">'设备标识(Google SDK可以获取)'</span>,</span><br><span class="line"><span class="string">'registration_ids'</span>=&gt;[<span class="string">'设备标识'</span>,<span class="string">'设备标识'</span>] <span class="comment">// 如果要推送多台设备,可以使用此字段,最多支持1000台设备</span></span><br><span class="line">]);</span><br><span class="line"></span><br><span class="line">curl_setopt($ch, CURLOPT_POSTFIELDS, $content);</span><br><span class="line"></span><br><span class="line">$ret = json_decode(curl_exec($ch), <span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line">$ret[<span class="string">'success'</span>]; <span class="comment">// 推送成功数</span></span><br><span class="line"></span><br><span class="line">$ret[<span class="string">'failure'</span>]; <span class="comment">// 推送失败数</span></span><br></pre></td></tr></table></figure>
-<h3 id="3-返回值示例"><a href="#3-返回值示例" class="headerlink" title="3.返回值示例"></a>3.返回值示例</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"multicast_id"</span>: <span class="number">7669649331143639654</span>,</span><br><span class="line">    <span class="attr">"success"</span>: <span class="number">3</span>,</span><br><span class="line">    <span class="attr">"failure"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"canonical_ids"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"results"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"message_id"</span>: <span class="string">"0:1488360060090224%6490a2d16490a2d1"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"message_id"</span>: <span class="string">"0:1488360060095871%6490a2d16490a2d1"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"message_id"</span>: <span class="string">"0:1488360060090765%6490a2d16490a2d1"</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="4-Google-FCM-文档"><a href="#4-Google-FCM-文档" class="headerlink" title="4.Google(FCM) 文档"></a>4.Google(FCM) 文档</h3><blockquote>
-<p><a href="https://firebase.google.com/docs" target="_blank" rel="noopener">https://firebase.google.com/docs</a></p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">google fcm</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/02/28/google-msg-push/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#背景"><span class="toc-number">1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据引擎"><span class="toc-number">2.</span> <span class="toc-text">数据引擎</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MergeTree系列"><span class="toc-number">3.</span> <span class="toc-text">MergeTree系列</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Log系列"><span class="toc-number">4.</span> <span class="toc-text">Log系列</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Integrations系列"><span class="toc-number">5.</span> <span class="toc-text">Integrations系列</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Special类"><span class="toc-number">6.</span> <span class="toc-text">Special类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#总结"><span class="toc-number">7.</span> <span class="toc-text">总结</span></a></li></ol>
+                    </div>
+                </span>
             </div>
         </div>
         
-        
     </div>
 </aside>
 
 
-
-  
-    <article id="post-apple-msg-push" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/22/apple-msg-push/">设备通知推送 - Apple APNS</a>
-    </h1>
-  
-
-        
-        <a href="/2017/02/22/apple-msg-push/" class="archive-article-date">
-  	<time datetime="2017-02-21T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="1-合成证书-需要两个文件-cer-p12-苹果开发者后台获取"><a href="#1-合成证书-需要两个文件-cer-p12-苹果开发者后台获取" class="headerlink" title="1.合成证书(需要两个文件.cer,.p12,苹果开发者后台获取)"></a>1.合成证书(需要两个文件<em>.cer,</em>.p12,苹果开发者后台获取)</h3><blockquote>
-<p>ios.cer,ios.p12 // 我这里的文件名</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ openssl x509 -<span class="keyword">in</span> ios.cer -inform der -out ios_cer.pem</span><br><span class="line">$ openssl pkcs12 -nocerts -out ios_p12.pem -<span class="keyword">in</span> ios.p12</span><br><span class="line">Enter Import Password: // 这里输入Apple后台文件导出时的密码</span><br><span class="line">MAC verified OK</span><br><span class="line">Enter PEM pass phrase: // 这里输入新的pem密码(用于代码中),我输入的是123456789</span><br><span class="line">$ cat ios_cer.pem ios_p12.pem &gt; key.pem</span><br></pre></td></tr></table></figure>
-<h3 id="2-PHP推送代码"><a href="#2-PHP推送代码" class="headerlink" title="2.PHP推送代码"></a>2.PHP推送代码</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化环境</span></span><br><span class="line">$ctx = stream_context_create();</span><br><span class="line"></span><br><span class="line">stream_context_set_option($ctx, <span class="string">'ssl'</span>, <span class="string">'local_cert'</span>, <span class="string">'assets/key/key.pem'</span>); <span class="comment">// key文件的路径</span></span><br><span class="line">stream_context_set_option($ctx, <span class="string">'ssl'</span>, <span class="string">'passphrase'</span>, <span class="string">'123456789'</span>); <span class="comment">// 生成pem输入的密码</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 建立APNS连接</span></span><br><span class="line">$fp = stream_socket_client( <span class="string">'ssl://gateway.push.apple.com:2195'</span>, $err, $errstr, <span class="number">60</span>, STREAM_CLIENT_CONNECT|STREAM_CLIENT_PERSISTENT, $ctx);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 构建消息体,json编码</span></span><br><span class="line">$payload = json_encode( <span class="keyword">array</span>( <span class="string">'aps'</span>=&gt;<span class="keyword">array</span>(<span class="string">'alert'</span> =&gt; <span class="string">'这里是内容'</span>, <span class="string">'sound'</span> =&gt; <span class="string">'这里是提示声音'</span>)));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 转换二进制</span></span><br><span class="line">$msg = chr(<span class="number">0</span>) . pack(<span class="string">'n'</span>, <span class="number">32</span>) . pack(<span class="string">'H*'</span>, <span class="string">'设备标识(Apple SDK可以获取)'</span>) . pack(<span class="string">'n'</span>, strlen($payload)) . $payload;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 发送消息</span></span><br><span class="line">$result = fwrite($fp, $msg, strlen($msg));</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!$result)&#123;</span><br><span class="line">	<span class="comment">// 推送失败</span></span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	<span class="comment">// 推送成功</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fclose($fp);</span><br></pre></td></tr></table></figure>
-<h3 id="3-APNS文档"><a href="#3-APNS文档" class="headerlink" title="3.APNS文档"></a>3.APNS文档</h3><blockquote>
-<p><a href="https://developer.apple.com/notifications/" target="_blank" rel="noopener">https://developer.apple.com/notifications/</a></p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">apns</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/02/22/apple-msg-push/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
   
   
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span>
-    </nav>
+  
+
+  
+
+  
+  <div id="gitalk-container" style="padding: 0px 30px 0px 30px;"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    if (true) {
+        var gitalk = new Gitalk({
+            clientID: 'e3e84fb1a50e16e66f89',
+            clientSecret: '5690def96adce57dd5993ec671c2413afd60aa41',
+            repo: 'xupin.github.io',
+            owner: 'xupin',
+            admin: ['xupin'],
+            id: 'Clickhouse学习笔记 - 数据引擎',
+            distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')
+    }
+</script>
+  
+
+  
+
   
 
 
@@ -470,8 +595,8 @@ var _hmt = _hmt || [];
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,

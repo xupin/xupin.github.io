@@ -196,6 +196,99 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-redis-sentinel" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/26/redis-sentinel/">Redis学习笔记 - 哨兵</a>
+    </h1>
+  
+
+        
+        <a href="/2020/03/26/redis-sentinel/" class="archive-article-date">
+  	<time datetime="2020-03-25T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>现在这篇来学习一下Redis Sentinel即哨兵策略的相关知识。</p>
+<h3 id="1-什么是哨兵？"><a href="#1-什么是哨兵？" class="headerlink" title="1.什么是哨兵？"></a>1.什么是哨兵？</h3><p>哨兵（Sentinel），Redis2.6版本（正式版本是2.8，现2.6版本已被废弃）开始提供的一种集群策略，核心思想是解决了主从复制（Replication）在Master节点故障，无法自动切换Slave节点为新Master节点的问题。</p>
+<ul>
+<li><p>特点</p>
+<ol>
+<li>哨兵策略是分布式部署，节点间相互协调工作。</li>
+<li>哨兵集群至少要3个节点。</li>
+<li>可以把哨兵看作是一种特殊的Redis服务。</li>
+</ol>
+</li>
+<li><p>优点</p>
+<ol>
+<li>哨兵策略拥有主从复制的优点。</li>
+<li>哨兵策略解决了Master节点故障，无法自动切换Slave节点为新Master节点的问题。</li>
+</ol>
+</li>
+</ul>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/03/26/redis-sentinel/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-redis-replication" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -827,86 +920,6 @@ var _hmt = _hmt || [];
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2020/01/19/go-console/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-php-aliyundb" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/01/07/php-aliyundb/">PHP小知识 - aliyundb SQLSetStatement is NOT supported</a>
-    </h1>
-  
-
-        
-        <a href="/2020/01/07/php-aliyundb/" class="archive-article-date">
-  	<time datetime="2020-01-06T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>PHP项目在数据库迁移使用ADB（aliyundb）时发现这个问题，具体错误描述是：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SQLSTATE[HY000]: General error: 1815 [15022, 2020010711034801025210201503151413416] statement type: class com.alibaba.fastsql.sql.ast.statement.SQLSetStatement is NOT supported! (SQL: <span class="keyword">select</span> * <span class="keyword">from</span> <span class="string">`users`</span>)</span><br></pre></td></tr></table></figure></p>
-<p>在排查该问题的过程中，尝试了各种方式，降版本、使用原生语句等，甚至查找ADB手册和Issue还是无法解决。</p>
-<h3 id="1-原因"><a href="#1-原因" class="headerlink" title="1.原因"></a>1.原因</h3><p>因为ADB兼容Mysql但是有些机制还是略有不同，阅读源码后发现比如：ADB就不能很好的支持本地预处理语句，这也是该异常的原因。</p>
-<h3 id="2-解决方案"><a href="#2-解决方案" class="headerlink" title="2.解决方案"></a>2.解决方案</h3><p>PHP PDO链接的属性值<code>PDO::ATTR_EMULATE_PREPARES</code>需要设置为<code>true</code><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PDO::<span class="function"><span class="params">ATTR_EMULATE_PREPARES</span> =&gt;</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">php</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/01/07/php-aliyundb/">展开全文 >></a>
         </p>
       
 
