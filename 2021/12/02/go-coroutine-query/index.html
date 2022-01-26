@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Go学习笔记 - 并发查询单表 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="最近接触一个项目，需要每天定时把PgSql一张数据量超大的数据表同步到Clickhouse 思考这种场景下怎么提高同步速度。 按主键分页思路  按照主键排序分区间查询">
+  <meta name="description" content="最近接触一个项目，需要每天定时把PgSql一张数据量超大的数据表同步到ClickHouse 思考这种场景下怎么提高同步速度。 按主键分页思路  按照主键排序分区间查询">
 <meta name="keywords" content="develop,golang">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Go学习笔记 - 并发查询单表">
 <meta property="og:url" content="http://xupin.im/2021/12/02/go-coroutine-query/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="最近接触一个项目，需要每天定时把PgSql一张数据量超大的数据表同步到Clickhouse 思考这种场景下怎么提高同步速度。 按主键分页思路  按照主键排序分区间查询">
+<meta property="og:description" content="最近接触一个项目，需要每天定时把PgSql一张数据量超大的数据表同步到ClickHouse 思考这种场景下怎么提高同步速度。 按主键分页思路  按照主键排序分区间查询">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2021-12-03T10:55:55.121Z">
+<meta property="og:updated_time" content="2022-01-22T13:44:54.161Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Go学习笔记 - 并发查询单表">
-<meta name="twitter:description" content="最近接触一个项目，需要每天定时把PgSql一张数据量超大的数据表同步到Clickhouse 思考这种场景下怎么提高同步速度。 按主键分页思路  按照主键排序分区间查询">
+<meta name="twitter:description" content="最近接触一个项目，需要每天定时把PgSql一张数据量超大的数据表同步到ClickHouse 思考这种场景下怎么提高同步速度。 按主键分页思路  按照主键排序分区间查询">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -209,7 +209,7 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>最近接触一个项目，需要每天定时把PgSql一张数据量超大的数据表同步到Clickhouse 思考这种场景下怎么提高同步速度。</p>
+        <p>最近接触一个项目，需要每天定时把PgSql一张数据量超大的数据表同步到ClickHouse 思考这种场景下怎么提高同步速度。</p>
 <h3 id="按主键分页"><a href="#按主键分页" class="headerlink" title="按主键分页"></a>按主键分页</h3><p>思路</p>
 <blockquote>
 <p>按照主键排序分区间查询</p>

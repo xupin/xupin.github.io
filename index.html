@@ -190,6 +190,85 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-clickhouse-mergetree" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/01/26/clickhouse-mergetree/">ClickHouse学习笔记 - MergeTree存储结构</a>
+    </h1>
+  
+
+        
+        <a href="/2022/01/26/clickhouse-mergetree/" class="archive-article-date">
+  	<time datetime="2022-01-25T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-01-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>ClickHouse是这两年备受瞩目的开源列式数据库，主要应用场景是OLAP（在线数据分析处理）场景。</p>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>之前因为遇见一些小问题，所以想通过存储结构和索引方式两个方面搞清楚它为什么可以这么快。</p>
+<p>ClickHouse是OLAP型的列式数据库，官方称比较行式数据库查询效率提升至少100倍，<a href="https://clickhouse.com/benchmark/dbms/#[%22100000000%22,[%22ClickHouse%22,%22Vertica%22,%22MySQL%22,%22PostgreSQL%22],[%221%22,%222%22]]" target="_blank" rel="noopener">DB Benchmark</a>显示ClickHouse比Mysql快800倍！</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">clickhouse</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/01/26/clickhouse-mergetree/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-func-closure-lambda-diff" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -283,7 +362,7 @@ var _hmt = _hmt || [];
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2022/01/16/clickhouse-engines/">Clickhouse学习笔记 - 数据引擎</a>
+      <a class="article-title" href="/2022/01/16/clickhouse-engines/">ClickHouse学习笔记 - 数据引擎</a>
     </h1>
   
 
@@ -296,12 +375,8 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Clickhouse是个由老毛子国内市场使用率第一的搜索引擎Yandex开源的OLAP型列式数据库。</p>
-<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>之前因为业务接触到Clickhouse，但因为没有系统的了解过导致遇见个很小的问题花了大量的时间、用了很挫的方式来解决问题，痛定思痛的情况下决心系统的逐步学习一下。CH无论是存储还是使用方式都不同程度的异于我们常用的Mysql，PostgreSql，Mssql等行式数据库，但它支持绝大部分的SQL语法。</p>
-<p>通过两张图，先感受一下列式数据库的查询速度。</p>
-<ul>
-<li>行式：<br><img src="https://clickhouse.com/docs/en/images/row-oriented.gif" alt></li>
-</ul>
+        <p>ClickHouse是个由老毛子国内市场使用率第一的搜索引擎Yandex开源的OLAP型列式数据库。</p>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>之前因为业务接触到ClickHouse，但因为没有系统的了解过导致遇见个很小的问题、花了大量的时间、用了很挫的方式来解决问题，痛定思痛的情况下决心系统的逐步学习一下。ClickHouse无论是存储还是使用方式都不同程度的异于我们常用的Mysql，PostgreSql，Mssql等行式数据库，但它支持绝大部分的SQL语法。</p>
         
       
 
@@ -365,7 +440,7 @@ var _hmt = _hmt || [];
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2022/01/14/clickhouse-array-split-group/">Clickhouse学习笔记 - 数组拆分再分组</a>
+      <a class="article-title" href="/2022/01/14/clickhouse-array-split-group/">ClickHouse学习笔记 - 数组拆分再分组</a>
     </h1>
   
 
@@ -378,9 +453,9 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Clickhouse是个由老毛子国内市场使用率第一的搜索引擎Yandex开源的OLAP型列式数据库。</p>
+        <p>ClickHouse是个由老毛子国内市场使用率第一的搜索引擎Yandex开源的OLAP型列式数据库。</p>
 <h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>最近，数据分析项目要做一个广告素材推广成效分析功能。需求评审下来大概是通过给广告素材打标签进行分类，然后按标签纬度进行分析数据。</p>
-<h3 id="数据库选型"><a href="#数据库选型" class="headerlink" title="数据库选型"></a>数据库选型</h3><p>该项目之前的数据是存放在Elasticsearch，但总是感觉ES的DSL语句过于繁琐不利于阅读且学习成本较高，内部针对该问题讨论之后选用了在大数据处理上同样出色的Clickhouse作为新功能的数据仓库（试点功能233）。</p>
+<h3 id="数据库选型"><a href="#数据库选型" class="headerlink" title="数据库选型"></a>数据库选型</h3><p>该项目之前的数据是存放在Elasticsearch，但总是感觉ES的DSL语句过于繁琐不利于阅读且学习成本较高，内部针对该问题讨论之后选用了在大数据处理上同样出色的ClickHouse作为新功能的数据仓库（试点功能233）。</p>
 <h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><p>因为是列式数据库，所以不需要遵守<code>数据库三大范式</code>。</p>
         
       
@@ -536,7 +611,7 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>最近接触一个项目，需要每天定时把PgSql一张数据量超大的数据表同步到Clickhouse 思考这种场景下怎么提高同步速度。</p>
+        <p>最近接触一个项目，需要每天定时把PgSql一张数据量超大的数据表同步到ClickHouse 思考这种场景下怎么提高同步速度。</p>
 <h3 id="按主键分页"><a href="#按主键分页" class="headerlink" title="按主键分页"></a>按主键分页</h3><p>思路</p>
 <blockquote>
 <p>按照主键排序分区间查询</p>
@@ -744,84 +819,6 @@ var _hmt = _hmt || [];
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2021/11/18/mysql-cursor/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-mysql-deadlock" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/11/15/mysql-deadlock/">Mysql学习笔记 - InnoDB并发死锁问题</a>
-    </h1>
-  
-
-        
-        <a href="/2021/11/15/mysql-deadlock/" class="archive-article-date">
-  	<time datetime="2021-11-14T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>项目中某个定时任务执行过程中出现死锁问题，具体错误如下:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Error 1213: Deadlock found when trying to get lock; try restarting transaction</span><br></pre></td></tr></table></figure></p>
-<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>检查一下表引擎 &amp; 事务隔离级别<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show variables like <span class="string">'%storage_engine%'</span>;</span><br><span class="line">+---------------------------------+-----------+</span><br><span class="line">| Variable_name                   | Value     |</span><br><span class="line">+---------------------------------+-----------+</span><br><span class="line">| default_storage_engine          | InnoDB    |</span><br><span class="line">| default_tmp_storage_engine      | InnoDB    |</span><br><span class="line">| disabled_storage_engines        |           |</span><br><span class="line">| internal_tmp_mem_storage_engine | TempTable |</span><br><span class="line">+---------------------------------+-----------+</span><br><span class="line">4 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select @@global.tx_isolation;</span><br><span class="line">ERROR 1193 (HY000): Unknown system variable <span class="string">'tx_isolation'</span> // Mysql8.0以后取消了该变量</span><br><span class="line"></span><br><span class="line">mysql&gt; select @@transaction_isolation;</span><br><span class="line">+-------------------------+</span><br><span class="line">| @@transaction_isolation |</span><br><span class="line">+-------------------------+</span><br><span class="line">| REPEATABLE-READ         |</span><br><span class="line">+-------------------------+</span><br><span class="line">1 row <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</span><br></pre></td></tr></table></figure></p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/11/15/mysql-deadlock/">展开全文 >></a>
         </p>
       
 

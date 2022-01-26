@@ -6,23 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
-  <title>Clickhouse学习笔记 - 数据引擎 | Mark&#39;s blog</title>
+  <title>ClickHouse学习笔记 - 数据引擎 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Clickhouse是个由老毛子国内市场使用率第一的搜索引擎Yandex开源的OLAP型列式数据库。 背景之前因为业务接触到Clickhouse，但因为没有系统的了解过导致遇见个很小的问题花了大量的时间、用了很挫的方式来解决问题，痛定思痛的情况下决心系统的逐步学习一下。CH无论是存储还是使用方式都不同程度的异于我们常用的Mysql，PostgreSql，Mssql等行式数据库，但它支持绝大部分的S">
+  <meta name="description" content="ClickHouse是个由老毛子国内市场使用率第一的搜索引擎Yandex开源的OLAP型列式数据库。 背景之前因为业务接触到ClickHouse，但因为没有系统的了解过导致遇见个很小的问题、花了大量的时间、用了很挫的方式来解决问题，痛定思痛的情况下决心系统的逐步学习一下。ClickHouse无论是存储还是使用方式都不同程度的异于我们常用的Mysql，PostgreSql，Mssql等行式数据库，但">
 <meta name="keywords" content="develop,clickhouse">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Clickhouse学习笔记 - 数据引擎">
+<meta property="og:title" content="ClickHouse学习笔记 - 数据引擎">
 <meta property="og:url" content="http://xupin.im/2022/01/16/clickhouse-engines/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="Clickhouse是个由老毛子国内市场使用率第一的搜索引擎Yandex开源的OLAP型列式数据库。 背景之前因为业务接触到Clickhouse，但因为没有系统的了解过导致遇见个很小的问题花了大量的时间、用了很挫的方式来解决问题，痛定思痛的情况下决心系统的逐步学习一下。CH无论是存储还是使用方式都不同程度的异于我们常用的Mysql，PostgreSql，Mssql等行式数据库，但它支持绝大部分的S">
+<meta property="og:description" content="ClickHouse是个由老毛子国内市场使用率第一的搜索引擎Yandex开源的OLAP型列式数据库。 背景之前因为业务接触到ClickHouse，但因为没有系统的了解过导致遇见个很小的问题、花了大量的时间、用了很挫的方式来解决问题，痛定思痛的情况下决心系统的逐步学习一下。ClickHouse无论是存储还是使用方式都不同程度的异于我们常用的Mysql，PostgreSql，Mssql等行式数据库，但">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="https://clickhouse.com/docs/en/images/row-oriented.gif">
-<meta property="og:image" content="https://clickhouse.com/docs/en/images/column-oriented.gif">
-<meta property="og:updated_time" content="2022-01-16T13:42:21.181Z">
+<meta property="og:updated_time" content="2022-01-22T13:44:54.161Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Clickhouse学习笔记 - 数据引擎">
-<meta name="twitter:description" content="Clickhouse是个由老毛子国内市场使用率第一的搜索引擎Yandex开源的OLAP型列式数据库。 背景之前因为业务接触到Clickhouse，但因为没有系统的了解过导致遇见个很小的问题花了大量的时间、用了很挫的方式来解决问题，痛定思痛的情况下决心系统的逐步学习一下。CH无论是存储还是使用方式都不同程度的异于我们常用的Mysql，PostgreSql，Mssql等行式数据库，但它支持绝大部分的S">
-<meta name="twitter:image" content="https://clickhouse.com/docs/en/images/row-oriented.gif">
+<meta name="twitter:title" content="ClickHouse学习笔记 - 数据引擎">
+<meta name="twitter:description" content="ClickHouse是个由老毛子国内市场使用率第一的搜索引擎Yandex开源的OLAP型列式数据库。 背景之前因为业务接触到ClickHouse，但因为没有系统的了解过导致遇见个很小的问题、花了大量的时间、用了很挫的方式来解决问题，痛定思痛的情况下决心系统的逐步学习一下。ClickHouse无论是存储还是使用方式都不同程度的异于我们常用的Mysql，PostgreSql，Mssql等行式数据库，但">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -199,7 +196,7 @@ var _hmt = _hmt || [];
         
   
     <h1 class="article-title" itemprop="name">
-      Clickhouse学习笔记 - 数据引擎
+      ClickHouse学习笔记 - 数据引擎
     </h1>
   
 
@@ -212,17 +209,10 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Clickhouse是个由老毛子国内市场使用率第一的搜索引擎Yandex开源的OLAP型列式数据库。</p>
-<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>之前因为业务接触到Clickhouse，但因为没有系统的了解过导致遇见个很小的问题花了大量的时间、用了很挫的方式来解决问题，痛定思痛的情况下决心系统的逐步学习一下。CH无论是存储还是使用方式都不同程度的异于我们常用的Mysql，PostgreSql，Mssql等行式数据库，但它支持绝大部分的SQL语法。</p>
-<p>通过两张图，先感受一下列式数据库的查询速度。</p>
-<ul>
-<li>行式：<br><img src="https://clickhouse.com/docs/en/images/row-oriented.gif" alt></li>
-</ul>
+        <p>ClickHouse是个由老毛子国内市场使用率第一的搜索引擎Yandex开源的OLAP型列式数据库。</p>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>之前因为业务接触到ClickHouse，但因为没有系统的了解过导致遇见个很小的问题、花了大量的时间、用了很挫的方式来解决问题，痛定思痛的情况下决心系统的逐步学习一下。ClickHouse无论是存储还是使用方式都不同程度的异于我们常用的Mysql，PostgreSql，Mssql等行式数据库，但它支持绝大部分的SQL语法。</p>
 <a id="more"></a>
-<ul>
-<li>列式：<br><img src="https://clickhouse.com/docs/en/images/column-oriented.gif" alt></li>
-</ul>
-<h3 id="数据引擎"><a href="#数据引擎" class="headerlink" title="数据引擎"></a>数据引擎</h3><p>Clickhouse（基于v21.7）的引擎分为数据库引擎和表引擎。</p>
+<h3 id="数据引擎"><a href="#数据引擎" class="headerlink" title="数据引擎"></a>数据引擎</h3><p>ClickHouse（基于v21.7）的引擎分为数据库引擎和表引擎。</p>
 <ul>
 <li><p>数据库引擎</p>
 <ol>
@@ -231,7 +221,7 @@ var _hmt = _hmt || [];
 </blockquote>
 </li>
 <li>MaterializeMySQL<blockquote>
-<p>v20.8新增的引擎，这是一个处在<code>实验阶段的引擎</code>，通过名称可以看出来也是和Mysql相关的引擎，该引擎通过binlog日志进行全量（第一次）和增量实时物化（可以理解为同步？）Mysql数据，原本Mysql的DDL和DML操作都可以通过CH执行。</p>
+<p>v20.8新增的引擎，这是一个处在<code>实验阶段的引擎</code>，通过名称可以看出来也是和Mysql相关的引擎，该引擎通过binlog日志进行全量（第一次）和增量实时物化（可以理解为同步？）Mysql数据，原本Mysql的DDL和DML操作都可以通过ClickHouse执行。</p>
 </blockquote>
 </li>
 <li>Lazy<blockquote>
@@ -374,7 +364,7 @@ var _hmt = _hmt || [];
 </ol>
 </li>
 </ul>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>简单的浏览了CH不同的数据引擎，接下来会学习MergeTree系列的引擎的存储结构和索引方式（搞清楚为什么查询这么快）。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>简单的浏览了ClickHouse不同的数据引擎，接下来会学习存储结构和索引方式（搞清楚为什么查询这么快）。</p>
 
       
 
@@ -499,7 +489,7 @@ var _hmt = _hmt || [];
   
   
     <a href="/2022/01/14/clickhouse-array-split-group/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Clickhouse学习笔记 - 数组拆分再分组</div>
+      <div class="article-nav-title">ClickHouse学习笔记 - 数组拆分再分组</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -566,7 +556,7 @@ var _hmt = _hmt || [];
             repo: 'xupin.github.io',
             owner: 'xupin',
             admin: ['xupin'],
-            id: 'Clickhouse学习笔记 - 数据引擎',
+            id: 'ClickHouse学习笔记 - 数据引擎',
             distractionFreeMode: 'true'
         })
         gitalk.render('gitalk-container')
