@@ -6,24 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
-  <title>Go学习笔记 - goroutine | Mark&#39;s blog</title>
+  <title>Go学习笔记 - 泛型 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="在现在大数据、高并发，到处都充斥着流量的互联网时代，能不能应对高并发俨然已经发展成一个衡量服务端架构是否合格的标准，作为程序媛我们思考如何利用语言在代码层面最优设计能应对并发的程序去并行处理任务。在程序中对于任务并行处理一般趋于使用：进程、线程，以及另外一种：协程。支持协程的语言有很多，比如：C/C++、Ruby、 Python（2.5+）、Golang等等，它们有些是本身语言支持协程，有些则是需">
-<meta name="keywords" content="develop,goroutine">
+  <meta name="description" content="2009年Go语言首次发布后，支持泛型一直以来呼声最高的功能之一。十年磨一剑！Go官方终于在2022年03月15日发布go1.18 stable正式支持泛型 什么是泛型泛型的核心是把类型参数化，通俗的来说就是允许使用时才指定类型的一种设计。 假设有个两变量相加的需求，且这俩变量可能是int或者string，简单粗暴就直接定义两个函数分别支持int、string123456789// 传统写法fun">
+<meta name="keywords" content="develop,golang">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Go学习笔记 - goroutine">
-<meta property="og:url" content="http://xupin.im/2020/06/12/goroutine/index.html">
+<meta property="og:title" content="Go学习笔记 - 泛型">
+<meta property="og:url" content="http://xupin.im/2022/07/14/go-generic/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="在现在大数据、高并发，到处都充斥着流量的互联网时代，能不能应对高并发俨然已经发展成一个衡量服务端架构是否合格的标准，作为程序媛我们思考如何利用语言在代码层面最优设计能应对并发的程序去并行处理任务。在程序中对于任务并行处理一般趋于使用：进程、线程，以及另外一种：协程。支持协程的语言有很多，比如：C/C++、Ruby、 Python（2.5+）、Golang等等，它们有些是本身语言支持协程，有些则是需">
+<meta property="og:description" content="2009年Go语言首次发布后，支持泛型一直以来呼声最高的功能之一。十年磨一剑！Go官方终于在2022年03月15日发布go1.18 stable正式支持泛型 什么是泛型泛型的核心是把类型参数化，通俗的来说就是允许使用时才指定类型的一种设计。 假设有个两变量相加的需求，且这俩变量可能是int或者string，简单粗暴就直接定义两个函数分别支持int、string123456789// 传统写法fun">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://xupin.im/assets/goroutine/thread_model.png">
-<meta property="og:image" content="http://xupin.im/assets/goroutine/gmp.png">
-<meta property="og:image" content="http://xupin.im/assets/goroutine/gmp-m.png">
-<meta property="og:updated_time" content="2022-07-15T02:59:17.751Z">
+<meta property="og:image" content="http://xupin.im/assets/go-generic/reflect-slow.png">
+<meta property="og:updated_time" content="2022-07-15T02:30:58.145Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Go学习笔记 - goroutine">
-<meta name="twitter:description" content="在现在大数据、高并发，到处都充斥着流量的互联网时代，能不能应对高并发俨然已经发展成一个衡量服务端架构是否合格的标准，作为程序媛我们思考如何利用语言在代码层面最优设计能应对并发的程序去并行处理任务。在程序中对于任务并行处理一般趋于使用：进程、线程，以及另外一种：协程。支持协程的语言有很多，比如：C/C++、Ruby、 Python（2.5+）、Golang等等，它们有些是本身语言支持协程，有些则是需">
-<meta name="twitter:image" content="http://xupin.im/assets/goroutine/thread_model.png">
+<meta name="twitter:title" content="Go学习笔记 - 泛型">
+<meta name="twitter:description" content="2009年Go语言首次发布后，支持泛型一直以来呼声最高的功能之一。十年磨一剑！Go官方终于在2022年03月15日发布go1.18 stable正式支持泛型 什么是泛型泛型的核心是把类型参数化，通俗的来说就是允许使用时才指定类型的一种设计。 假设有个两变量相加的需求，且这俩变量可能是int或者string，简单粗暴就直接定义两个函数分别支持int、string123456789// 传统写法fun">
+<meta name="twitter:image" content="http://xupin.im/assets/go-generic/reflect-slow.png">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -193,66 +191,72 @@ var _hmt = _hmt || [];
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-goroutine" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-go-generic" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      Go学习笔记 - goroutine
+      Go学习笔记 - 泛型
     </h1>
   
 
         
-        <a href="/2020/06/12/goroutine/" class="archive-article-date">
-  	<time datetime="2020-06-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-12</time>
+        <a href="/2022/07/14/go-generic/" class="archive-article-date">
+  	<time datetime="2022-07-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-07-14</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>在现在大数据、高并发，到处都充斥着流量的互联网时代，能不能应对高并发俨然已经发展成一个衡量服务端架构是否合格的标准，作为程序媛我们思考如何利用语言在代码层面最优设计能应对并发的程序去并行处理任务。在程序中对于任务并行处理一般趋于使用：进程、线程，以及另外一种：<code>协程</code>。支持协程的语言有很多，比如：C/C++、Ruby、 Python（2.5+）、Golang等等，它们有些是本身语言支持协程，有些则是需要引入第三方包来使用。不过，我们主要来学习一下Golang这门语言（简称Go），它是如何理解以及实现协程的。</p>
-<h3 id="一、进程、线程和协程的前世今生"><a href="#一、进程、线程和协程的前世今生" class="headerlink" title="一、进程、线程和协程的前世今生"></a>一、进程、线程和协程的前世今生</h3><p>都知道一台计算机的核心是CPU，它承担着所有的运算。而计算机承载的操作系统（内核）则是负责所有任务的处理和调度CPU以及资源的分配。如果用人类来比喻，大脑是CPU，思维则是操作系统（内核）。</p>
-<h4 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h4><p>最早的计算机每次只能运行一个程序，如果还有其他程序需要执行则要排队等待。后来CPU运算能力提高了，这种方式过于原始有些浪费性能，于是尝试让多个程序可以并行执行，但是这样面临一个新的问题：跑在同一个CPU中的程序都会使用计算机资源，那程序的运行状态和数据怎么保障？<code>进程</code>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">进程是内核资源管理分配的最小单位，每个进程都有独立的虚拟地址空间。内核中的每个程序都运行在独立进程的上下文中，上下文是由程序正常运行需要的一系列参数组成，参数包括存储器中的代码和数据，寄存器中的内容以及进程打开的文件描述符（文件句柄）等。可以把上下文通俗理解为：`环境`。</span><br></pre></td></tr></table></figure></p>
-<p>如果程序在运行过程中需要进行IO操作，IO操作阻塞了程序后面的计算，这时候CPU属于空闲状态，那内核会把CPU切换到其他进程去处理。不过当进程数量变高以后，计算机的大部分资源都被进程切换这个操作消耗掉了。为什么说进程切换操作消耗资源代价比较高？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">所谓进程切换其实就是上下文切换，需要切换新的页表并加载新的虚拟地址空间、切换内核栈以及硬件上下文等。只要发生进程切换操作就得反复进入内核，加载切换一系列状态。</span><br></pre></td></tr></table></figure></p>
-<h4 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h4><p>为了减少这种开销，<code>线程</code>应运而生。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">线程是内核调度CPU执行的最小单位，线程是运行在进程上下文的逻辑流，线程是具体执行程序的单位。一个进程至少包含一个主线程（可以拥有多个子线程），但是一个线程只能存在于一个进程中。</span><br></pre></td></tr></table></figure></p>
-<p>线程切换相比进程切换开销就小了很多，线程切换只需要把寄存器刷新即可。</p>
-<h4 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h4><p>后面程序媛们发现线程这样还是有性能瓶颈（IO阻塞），无论是进程还是线程因为涉及到大量的计算机资源，所以都是由内核调度管理。能不能开发一种由代码控制的线程呢？这就是<code>协程</code>。</p>
+        <p>2009年Go语言首次发布后，支持泛型一直以来呼声最高的功能之一。十年磨一剑！Go官方终于在2022年03月15日发布go1.18 stable正式支持<code>泛型</code></p>
+<h3 id="什么是泛型"><a href="#什么是泛型" class="headerlink" title="什么是泛型"></a>什么是泛型</h3><p>泛型的核心是把<code>类型参数化</code>，通俗的来说就是允许使用时才指定类型的一种设计。</p>
+<p>假设有个两变量相加的需求，且这俩变量可能是int或者string，简单粗暴就直接定义两个函数分别支持int、string<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 传统写法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">AddInt</span><span class="params">(arg1, arg2 <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> arg1 + arg2</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">AddString</span><span class="params">(arg1, arg2 <span class="keyword">string</span>)</span> <span class="title">string</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> arg1 + arg2</span><br><span class="line">&#125;</span><br><span class="line">AddInt(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">AddString(<span class="string">"a"</span>, <span class="string">"b"</span>)</span><br></pre></td></tr></table></figure></p>
+<p>那如果使用泛型来定义呢，它的写法大概是这样的</p>
 <a id="more"></a>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">协程是由用户控制的线程（用户态线程），协程在程序中实现自我调度，不需要像进程切换一样进入内核加载切换状态，提高了线程在IO上的性能问题（IO多路复用）。</span><br></pre></td></tr></table></figure>
-<p>但是协程也有个致命的问题，假如进程中的某一程序出现了阻塞操作同时被CPU中断处理（抢占式调度），那么该进程中的所有线程都会被阻塞。</p>
-<p>后面会专门写一篇关于进程和线程以及协程的特性以及区别。（不够详细，埋坑Orz~）</p>
-<h3 id="二、什么是goroutine？"><a href="#二、什么是goroutine？" class="headerlink" title="二、什么是goroutine？"></a>二、什么是goroutine？</h3><p>上面简单学习了进程和线程以及协程的渊源，虽然不够详细但是我们大概知道其实在进程或者线程甚至于协程存在的性能瓶颈大部分是CPU调度问题。</p>
-<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span> // <span class="title">Go</span>语言启动协程，只需要使用<span class="title">go</span>关键字即可启动协程运行函数。使用<span class="title">go</span>关键字创建的这个协程就叫做`<span class="title">goroutine</span>`</span></span><br></pre></td></tr></table></figure>
-<p>之前说了goroutine是Go语言的协程，其实这么理解是可以的但goroutine比协程更强大。它们使用的线程模型有着本质的区别，如下：</p>
-<blockquote>
-<p>goroutine通过通道来通信，而协程通过让出执行和恢复操作来通信。</p>
-<p>goroutine通过Go语言的调度器进行调度，而协程通过程序本身调度。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 泛型写法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Add</span>[<span class="title">type</span>] <span class="params">(var1, var2)</span> <span class="title">type</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> var1 + var2</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 使用时再指定数据类型</span></span><br><span class="line">Add[<span class="keyword">int</span>](<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">Add[<span class="keyword">string</span>](<span class="string">"a"</span>,<span class="string">"b"</span>)</span><br></pre></td></tr></table></figure>
+<p>好处显而易见，至少可以少拷贝一个函数。当然这不足以体现出泛型的优点，毕竟这种通用函数通过<code>interface</code>一样可以实现。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Add</span><span class="params">(var1, var2 <span class="keyword">interface</span>&#123;&#125;)</span> <span class="title">interface</span></span>&#123;&#125; &#123;</span><br><span class="line">	r := reflect.TypeOf(var1)</span><br><span class="line">	<span class="keyword">switch</span> r.Kind() &#123;</span><br><span class="line">	<span class="keyword">case</span> reflect.Int:</span><br><span class="line">		<span class="keyword">return</span> var1.(<span class="keyword">int</span>) + var2.(<span class="keyword">int</span>)</span><br><span class="line">	<span class="keyword">case</span> reflect.String:</span><br><span class="line">		<span class="keyword">return</span> var1.(<span class="keyword">string</span>) + var2.(<span class="keyword">string</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line">Add(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">Add(<span class="string">"a"</span>,<span class="string">"b"</span>)</span><br></pre></td></tr></table></figure>
+<p>既然通过<code>interface</code>也可以实现，那么为什么泛型还备受推崇呢？</p>
+<ol>
+<li>便利性 &amp; 效率<blockquote>
+<p>使用interface实现则需要使用断言或者反射来处理类型问题，同时Go语言中反射性能十分低下（见下图）。</p>
 </blockquote>
-<p>大部分语言或者第三方库提供的协程就是使用的用户态线程模型，但goroutine使用的不是传统的用户态线程模型。以下主流的线程模型：</p>
-<ul>
-<li>内核级线程模型<br>  内核级别的线程的状态切换需要内核直接处理，所以内核清楚的知道每一个KSE（Kernel Scheduling Entity）的存在（即内核线程和KSE是一对一关系），它们可以全系统内进行资源的竞争。</li>
-<li>用户级线程模型（用户态线程，协程）<br>  用户态级别的线程受用户控制，内核并不直接知道用户态线程的存在（为什么这么说？因为用户态线程和内核线程存在着多对一的关系，即多个用户态线程对应一个内核线程），一般用户态多线程属于同一个进程，所以它们只能在进程内进行资源竞争。</li>
-<li>两级线程模型（混合型线程模型）<br>  两级线程模型吸取了内核级和用户级线程的经验，两级线程模型下的线程和内核线程处于多对多的关系。一个进程内的多个线程可以分别绑定内核线程，既可以多个线程绑定多个内核线程也可以多个线程绑定一个内核线程，当某个线程内的程序产生阻塞其绑定的内核线程被CPU中断处理，进程内的其他线程可以重新与其他内核线程绑定。</li>
-</ul>
-<p><img src="/assets/goroutine/thread_model.png" alt></p>
-<p>goroutine使用的正是两级线程模型，但是这种多个线程跑在多个内核中，既不是用户级线程模型完全靠自身调度也不是内核级线程模型完全依赖内核调度，而是用户和内核协同调度。因为这种模型复杂性较高，所以Go语言开发了自己的runtime调度器。</p>
-<h3 id="三、Go-runtime调度器"><a href="#三、Go-runtime调度器" class="headerlink" title="三、Go runtime调度器"></a>三、Go runtime调度器</h3><p>Go runtime调度器的结构由三部分组成:</p>
-<ul>
-<li>G<br>  Goroutine，每个goroutine有对应的G结构体，G结构体储存goroutine的上下文信息。G并不能直接被调度，需要绑定对应的P才能被调度执行。</li>
-<li><p>P<br>  Processor，为G和M进行调度的逻辑处理器，对于G来说P像是内核，而在M看来P相当于上下文。P的数量可以在程序中代码控制，如下:</p>
-<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">runtime.GOMAXPROCS(runtime.NumCPU()) <span class="comment">// 该值最大为256。</span></span><br></pre></td></tr></table></figure>
 </li>
-<li><p>M<br>  Machine，负责调度任务（可以理解为内核线程的抽象），代表着操作系统内核，是真正处理任务的服务。M的数量不是固定的，受Go runtime调度器控制。（不过该值最大为10000，可以参考：<a href="https://github.com/golang/go/blob/master/src/runtime/proc.go#L540" target="_blank" rel="noopener">src/runtime/proc.go</a>）</p>
+<li>安全性<blockquote>
+<p>interface极易引发类型异常问题，编译器在编译过程中不能发现类型问题。</p>
+</blockquote>
+</li>
+</ol>
+<p><img src="/assets/go-generic/reflect-slow.png" alt="drawing" width="400" height="300"></p>
+<h3 id="Go的泛型"><a href="#Go的泛型" class="headerlink" title="Go的泛型"></a>Go的泛型</h3><p>在Go语言中如何使用泛型，先了解一下泛型的3个概念：</p>
+<ol>
+<li>泛型参数</li>
+<li>泛型参数类型约束</li>
+<li>泛型参数列表</li>
+</ol>
+<p>Go泛型的代码风格和其他语言基本类似，比如定义一个只支持int和string两值相加的泛型函数：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Add</span>[<span class="title">T</span> <span class="title">int</span> | <span class="title">string</span>]<span class="params">(var1, var2 T)</span> <span class="title">T</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> var1 + var2</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>以上函数，</p>
+<ul>
+<li><p>T 泛型参数，可以是任意字母且不区分大小写（但通常使用大写字母）。</p>
+</li>
+<li><p>int | string 泛型参数类型约束，用于声明和约束泛型参数T支持的数据类型。比如</p>
 </li>
 </ul>
-<p>值得一提的是Go语言在最初的版本中Go runtime调度器的结构是GM模型（并非GMP模型），P服务是因为GM模型在并发上出现很大的性能损耗。有兴趣的小伙伴可以看一下Go runtime的核心开发者Dmitry Vyukov发现的问题<a href="https://docs.google.com/document/d/1TTj4T2JO42uD5ID9e89oa0sLKhJYD0Y_kqxDv3I3XMw/edit#heading=h.mmq8lm48qfcw" target="_blank" rel="noopener">Scalable Go Scheduler Design Doc</a>。</p>
-<p>简单说了一下Go runtime调度器中的GPM模型的概念，那么GPM究竟是怎么调度的呢？<br>首先当通过<code>go func()</code>创建一个G对象的时候，G会被优先放入P的本地队列。为了执行G M需要绑定一个P，然后M启动内核线程并循环从P的本地队列取出G并执行。<br><img src="/assets/goroutine/gmp.png" alt></p>
-<p>当P发现当前绑定的M被阻塞时会转入绑定其他M（新的M可能是被创建或者从内核线程缓存中取出）。<br><img src="/assets/goroutine/gmp-m.png" alt></p>
-<p>如果M处理完了当前P的本地队列里的G后，P会尝试从全局队列里取G来执行（同样P也会周期性的检查全局队列是否有G可以执行）。如果全局队列没有可以执行的G，P会随机挑选另外一个P并从它的本地队列中取出一半G到自己的本地队列中执行。这个动作使用调度算法<code>work-stealing</code>（工作窃取算法）实现。</p>
-<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>以上就是Go runtime调度器的运行原理（大概），后面有更深入的理解会补充进来。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Add[T <span class="keyword">float64</span>] <span class="comment">// 只支持float64类型</span></span><br><span class="line">Add[T any] <span class="comment">// 支持任何类型，any等价于interface&#123;&#125;</span></span><br><span class="line">Add[T comparable] <span class="comment">// golang新增的内置接口，任何可进行比较的类型（!=、==、&amp;&amp;、||）</span></span><br><span class="line">Add[T ~<span class="keyword">int</span>] <span class="comment">// 任何底层类型为int的类型，~是新增的操作符。</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>[] 中括号内是泛型参数列表，支持任意个泛型参数，使用逗号分隔。</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Add[T <span class="keyword">int64</span>, T2 <span class="keyword">float64</span>](var1, var2 T, var3 T2)</span><br></pre></td></tr></table></figure>
+<p>如果泛型仅仅能在函数上使用好像有点“鸡肋”。它还可以这样去使用，<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 泛型结构体</span></span><br><span class="line"><span class="keyword">type</span> Resp[T any] <span class="keyword">struct</span> &#123;</span><br><span class="line">	Code <span class="keyword">int</span></span><br><span class="line">	Msg  <span class="keyword">string</span></span><br><span class="line">	Data T</span><br><span class="line">&#125;</span><br><span class="line">resp := &amp;Resp[<span class="keyword">string</span>]&#123;</span><br><span class="line">    Code: <span class="number">200</span>,</span><br><span class="line">    Msg:  <span class="string">"OK"</span>,</span><br><span class="line">    Data: <span class="string">""</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 泛型管道</span></span><br><span class="line"><span class="keyword">type</span> MyChan[T <span class="keyword">int</span> | <span class="keyword">bool</span>] <span class="keyword">chan</span> T</span><br><span class="line">ch := <span class="built_in">make</span>(MyChan[<span class="keyword">bool</span>], <span class="number">1</span>)</span><br><span class="line">ch &lt;- <span class="literal">true</span></span><br><span class="line">&lt;-ch</span><br><span class="line"></span><br><span class="line"><span class="comment">// 泛型Map</span></span><br><span class="line"><span class="keyword">type</span> MyMap[T <span class="keyword">int</span> | <span class="keyword">string</span>, T1 any] <span class="keyword">map</span>[T]T1</span><br><span class="line">m := MyMap[<span class="keyword">string</span>, <span class="keyword">string</span>]&#123;</span><br><span class="line">    <span class="string">"key"</span>: <span class="string">"val"</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 泛型接口</span></span><br><span class="line"><span class="keyword">type</span> Personer[T any] <span class="keyword">interface</span> &#123;</span><br><span class="line">	Say(age T)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Male <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(g *Male)</span> <span class="title">Say</span><span class="params">(age <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	fmt.Println(age)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> m Personer[<span class="keyword">int</span>] = &amp;Male&#123;&#125;</span><br><span class="line">m.Say(<span class="number">12</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Female <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(f *Female)</span> <span class="title">Say</span><span class="params">(age <span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">	fmt.Println(age)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> f Personer[<span class="keyword">string</span>] = &amp;Female&#123;&#125;</span><br><span class="line">f.Say(<span class="string">"secret"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 泛型类型</span></span><br><span class="line"><span class="keyword">type</span> MyType <span class="keyword">interface</span> &#123;</span><br><span class="line">	<span class="keyword">int</span> | <span class="keyword">string</span> | <span class="keyword">float64</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Add</span>[<span class="title">T</span> <span class="title">MyType</span>]<span class="params">(var1, var2 T)</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> var1 + var2   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>以上只是简单列举，还支持一些列“套娃”行为。值的注意的是，Go新增的操作符<code>~</code>。<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> MyType <span class="keyword">interface</span> &#123;</span><br><span class="line">	~<span class="keyword">int</span> | <span class="keyword">string</span> | <span class="keyword">float64</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">type</span> MyInt <span class="keyword">int</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Add</span>[<span class="title">T</span> <span class="title">MyType</span>]<span class="params">(var1, var2 T)</span> <span class="title">T</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> var1 + var2</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> a, b MyInt = <span class="number">1</span>, <span class="number">2</span></span><br><span class="line">Add(a, b)</span><br></pre></td></tr></table></figure></p>
+<p>使用操作符~，意味不仅支持该操作符后的基本类型，同时还支持任意底层类型是该类型的数据。</p>
+<blockquote>
+<p>以上内容参考来源：<a href="https://tip.golang.org/doc/go1.18" target="_blank" rel="noopener">https://tip.golang.org/doc/go1.18</a></p>
+</blockquote>
+<h3 id="什么时候使用泛型"><a href="#什么时候使用泛型" class="headerlink" title="什么时候使用泛型"></a>什么时候使用泛型</h3><p>当你要为不同数据类型做着同样的处理逻辑时，可以考虑使用泛型。泛型是把双刃剑，既可以提高编码效率、提升代码美学，同样也可以让代码可读性变的很差。</p>
 
       
 
@@ -296,7 +300,7 @@ var _hmt = _hmt || [];
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">goroutine</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">golang</a>
         		</li>
       		
 		</ul>
@@ -352,7 +356,7 @@ var _hmt = _hmt || [];
   <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
   <p>扫一扫，分享到微信</p>
   <div class="wx-qrcode">
-    <img src="https://api.pwmqr.com/qrcode/create/?url=http://xupin.im/2020/06/12/goroutine/" alt="微信分享二维码">
+    <img src="https://api.pwmqr.com/qrcode/create/?url=http://xupin.im/2022/07/14/go-generic/" alt="微信分享二维码">
   </div>
 </div>
 
@@ -366,18 +370,9 @@ var _hmt = _hmt || [];
   
 <nav id="article-nav">
   
-    <a href="/2020/07/05/git-cloning-slow/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          Git小知识 - Clone项目速度慢的小技巧
-        
-      </div>
-    </a>
   
-  
-    <a href="/2020/04/13/mysql-trick/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Mysql小知识 - 查找连续编号中的缺失编号</div>
+    <a href="/2022/03/08/go-init/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Go学习笔记 - init函数</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -416,7 +411,7 @@ var _hmt = _hmt || [];
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、进程、线程和协程的前世今生"><span class="toc-number">1.</span> <span class="toc-text">一、进程、线程和协程的前世今生</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#进程"><span class="toc-number">1.1.</span> <span class="toc-text">进程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#线程"><span class="toc-number">1.2.</span> <span class="toc-text">线程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#协程"><span class="toc-number">1.3.</span> <span class="toc-text">协程</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、什么是goroutine？"><span class="toc-number">2.</span> <span class="toc-text">二、什么是goroutine？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、Go-runtime调度器"><span class="toc-number">3.</span> <span class="toc-text">三、Go runtime调度器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#最后"><span class="toc-number">4.</span> <span class="toc-text">最后</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是泛型"><span class="toc-number">1.</span> <span class="toc-text">什么是泛型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Go的泛型"><span class="toc-number">2.</span> <span class="toc-text">Go的泛型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#什么时候使用泛型"><span class="toc-number">3.</span> <span class="toc-text">什么时候使用泛型</span></a></li></ol>
                     </div>
                 </span>
             </div>
@@ -444,7 +439,7 @@ var _hmt = _hmt || [];
             repo: 'xupin.github.io',
             owner: 'xupin',
             admin: ['xupin'],
-            id: 'Go学习笔记 - goroutine',
+            id: 'Go学习笔记 - 泛型',
             distractionFreeMode: 'true'
         })
         gitalk.render('gitalk-container')
