@@ -6,19 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
-  <title>Tag: apns | Mark&#39;s blog</title>
+  <title>数据结构 - 链表 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="安静的小屁屁">
-<meta name="keywords" content="nginx,php,golang,memcached,redis,mysql,mariadb,php7,前端,js,jquery,javascript,html5,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Mark&#39;s blog">
-<meta property="og:url" content="http://xupin.im/tags/apns/index.html">
+  <meta name="description" content="链表是一种不需要连续空间存储的线性数据结构，通过指针把数据节点链接起来。数据节点的逻辑顺序取决于链表指针链接的先后顺序，同时，链表也有：单链表、双链表、循环链表等多类。 定义链表是由一系列节点组成，除此之外链表还有几个基本概念：  数据节点 一般由两块组成：数据域、指针域。   首元节点 链表的第一个数据节点。   头节点 非必要节点，放在第一个数据节点前。一般用于存储链表的信息（比如说链表长度等">
+<meta name="keywords" content="develop,data structure">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据结构 - 链表">
+<meta property="og:url" content="http://xupin.im/2022/07/19/data-structure-linked-list/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="安静的小屁屁">
+<meta property="og:description" content="链表是一种不需要连续空间存储的线性数据结构，通过指针把数据节点链接起来。数据节点的逻辑顺序取决于链表指针链接的先后顺序，同时，链表也有：单链表、双链表、循环链表等多类。 定义链表是由一系列节点组成，除此之外链表还有几个基本概念：  数据节点 一般由两块组成：数据域、指针域。   首元节点 链表的第一个数据节点。   头节点 非必要节点，放在第一个数据节点前。一般用于存储链表的信息（比如说链表长度等">
 <meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2022-07-20T12:32:23.876Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Mark&#39;s blog">
-<meta name="twitter:description" content="安静的小屁屁">
+<meta name="twitter:title" content="数据结构 - 链表">
+<meta name="twitter:description" content="链表是一种不需要连续空间存储的线性数据结构，通过指针把数据节点链接起来。数据节点的逻辑顺序取决于链表指针链接的先后顺序，同时，链表也有：单链表、双链表、循环链表等多类。 定义链表是由一系列节点组成，除此之外链表还有几个基本概念：  数据节点 一般由两块组成：数据域、指针域。   首元节点 链表的第一个数据节点。   头节点 非必要节点，放在第一个数据节点前。一般用于存储链表的信息（比如说链表长度等">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -188,64 +189,256 @@ var _hmt = _hmt || [];
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-data-structure-linked-list" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/02/22/apple-msg-push/" class="archive-article-date">
-  	<time datetime="2017-02-21T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-22</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/02/22/apple-msg-push/">设备通知推送 - Apple APNS</a>
+    <h1 class="article-title" itemprop="name">
+      数据结构 - 链表
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2022/07/19/data-structure-linked-list/" class="archive-article-date">
+  	<time datetime="2022-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-07-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>链表是一种不需要连续空间存储的线性数据结构，通过指针把数据节点链接起来。数据节点的逻辑顺序取决于链表指针链接的先后顺序，同时，链表也有：单链表、双链表、循环链表等多类。</p>
+<h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>链表是由一系列节点组成，除此之外链表还有几个基本概念：</p>
+<ul>
+<li>数据节点<blockquote>
+<p>一般由两块组成：数据域、指针域。</p>
+</blockquote>
+</li>
+<li>首元节点<blockquote>
+<p>链表的第一个数据节点。</p>
+</blockquote>
+</li>
+<li>头节点<blockquote>
+<p>非必要节点，放在第一个数据节点前。一般用于存储链表的信息（比如说链表长度等）和保证数据节点操作的统一性。</p>
+</blockquote>
+</li>
+<li>头指针<blockquote>
+<p>指向第一个节点的指针，如果有头节点则指向头节点，否则指向首元节点。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="单链表"><a href="#单链表" class="headerlink" title="单链表"></a>单链表</h3><p>最简单的一种链表，只支持一个遍历方向：链头 -&gt; 链尾。两部分组成：当前节点的数据、指向后置节点的指针（尾节点指针指向nil）。</p>
+<a id="more"></a>
+<p>例子：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Node <span class="keyword">struct</span> &#123;</span><br><span class="line">	V    <span class="keyword">string</span></span><br><span class="line">	Next *Node</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 头节点</span></span><br><span class="line">	head := &amp;Node&#123;</span><br><span class="line">		V: <span class="string">"head node"</span>,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 节点1</span></span><br><span class="line">	node := &amp;Node&#123;</span><br><span class="line">		V: <span class="string">"node1"</span>,</span><br><span class="line">	&#125;</span><br><span class="line">	head.Next = node</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 节点2</span></span><br><span class="line">	node2 := &amp;Node&#123;</span><br><span class="line">		V: <span class="string">"node2"</span>,</span><br><span class="line">	&#125;</span><br><span class="line">	node.Next = node2</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 节点3</span></span><br><span class="line">	node3 := &amp;Node&#123;</span><br><span class="line">		V: <span class="string">"node3"</span>,</span><br><span class="line">	&#125;</span><br><span class="line">	node2.Next = node3</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 头指针 -&gt; 头节点</span></span><br><span class="line">	linkedList := head</span><br><span class="line">	<span class="keyword">for</span> linkedList.Next != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="comment">// 打印下一个节点值（这块就体现出头节点的好处，首元节点和其他数据节点的操作一致）</span></span><br><span class="line">		fmt.Println(linkedList.Next.V)</span><br><span class="line">		linkedList = linkedList.Next</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>以上是单链表的简单实现，其中添加节点的操作也被称为：<code>尾插法</code>，封装一下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Node <span class="keyword">struct</span> &#123;</span><br><span class="line">	V    <span class="keyword">string</span></span><br><span class="line">	Next *Node</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> List <span class="keyword">struct</span> &#123;</span><br><span class="line">	Head *Node</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	list := &amp;List&#123;&#125;</span><br><span class="line">	n1 := &amp;Node&#123;V: <span class="string">"node1"</span>&#125;</span><br><span class="line">	n2 := &amp;Node&#123;V: <span class="string">"node2"</span>&#125;</span><br><span class="line">	n3 := &amp;Node&#123;V: <span class="string">"node3"</span>&#125;</span><br><span class="line">	list.Append(n1)</span><br><span class="line">	list.Append(n2)</span><br><span class="line">	list.Append(n3)</span><br><span class="line">	list.Traverse() <span class="comment">// 输出结果：node1-&gt;node2-&gt;node3-&gt;nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 尾插法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">Append</span><span class="params">(node *Node)</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> l.Head == <span class="literal">nil</span> &#123;</span><br><span class="line">		l.Head = node</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		now := l.Head</span><br><span class="line">		<span class="keyword">for</span> now.Next != <span class="literal">nil</span> &#123;</span><br><span class="line">			now = now.Next</span><br><span class="line">		&#125;</span><br><span class="line">		now.Next = node</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 遍历</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">Traverse</span><span class="params">()</span></span> &#123;</span><br><span class="line">	now := l.Head</span><br><span class="line">	<span class="keyword">for</span> now != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> now.Next == <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="built_in">print</span>(now.V, <span class="string">"-&gt;"</span>, <span class="string">"nil"</span>)</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="built_in">print</span>(now.V, <span class="string">"-&gt;"</span>)</span><br><span class="line">		&#125;</span><br><span class="line">		now = now.Next</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果有数据节点想要插队，怎么办？<code>头插法</code>，思路就是：把头节点作为新增节点的后置节点，新增节点作为新的头节点。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">Insert</span><span class="params">(node *Node)</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> l.Head == <span class="literal">nil</span> &#123;</span><br><span class="line">		l.Head = node</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		node.Next = l.Head</span><br><span class="line">		l.Head = node</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>还想把链表反转，数据节点逆序呢？有很多种方式，比如：利用双指针迭代、递归等等</p>
+<p>迭代，思路和头插法一致。<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">Reverse</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> l.Head == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 声明一个头节点</span></span><br><span class="line">	<span class="keyword">var</span> head *Node</span><br><span class="line">	<span class="comment">// 开始遍历链表，</span></span><br><span class="line">	<span class="comment">// 第一次，head：node1 -&gt; nil</span></span><br><span class="line">	<span class="comment">// 第一次，now：node2 -&gt; node3 -&gt; nil</span></span><br><span class="line">	<span class="comment">// 第二次，head：node2 -&gt; node1 -&gt; nil</span></span><br><span class="line">	<span class="comment">// 第二次，now：node3 -&gt; nil</span></span><br><span class="line">	<span class="comment">// 第三次，head：node3 -&gt; node2 -&gt; node1 -&gt; nil</span></span><br><span class="line">	<span class="comment">// 第三次，now：nil</span></span><br><span class="line">	now := l.Head</span><br><span class="line">	<span class="keyword">for</span> now != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="comment">// 记录当前节点的后置节点</span></span><br><span class="line">		next := now.Next</span><br><span class="line">		<span class="comment">// 当前节点的后置节点变为头节点，当前节点变为新的头节点。这个操作和插入节点的逻辑一致，把头节点作为当前节点的后置节点，当前节点作为新的头节点。</span></span><br><span class="line">		<span class="keyword">if</span> head == <span class="literal">nil</span> &#123;</span><br><span class="line">			now.Next = <span class="literal">nil</span></span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			now.Next = head</span><br><span class="line">		&#125;</span><br><span class="line">		head = now</span><br><span class="line">		<span class="comment">// 指针后移</span></span><br><span class="line">		now = next</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 语法糖版本</span></span><br><span class="line">		<span class="comment">// now, now.Next, head = now.Next, head, now // 语法糖版本，拆解如下</span></span><br><span class="line">		<span class="comment">// now = now.Next</span></span><br><span class="line">		<span class="comment">// now.Next = head</span></span><br><span class="line">		<span class="comment">// head = now</span></span><br><span class="line"></span><br><span class="line">		<span class="comment">// printNode(head)</span></span><br><span class="line">		<span class="comment">// printNode(now)</span></span><br><span class="line">	&#125;</span><br><span class="line">	l.Head = head</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">printNode</span><span class="params">(node *Node)</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> node == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">print</span>(<span class="string">"nil"</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	now := node</span><br><span class="line">	<span class="keyword">for</span> now != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> now.Next == <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="built_in">print</span>(now.V, <span class="string">"-&gt;"</span>, <span class="string">"nil"</span>)</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="built_in">print</span>(now.V, <span class="string">"-&gt;"</span>)</span><br><span class="line">		&#125;</span><br><span class="line">		now = now.Next</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">"\n"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>删除操作:<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">Delete</span><span class="params">(node *Node)</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> l.Head == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 如果是尾节点，则需要找出删除节点的前置节点</span></span><br><span class="line">	<span class="keyword">if</span> node.Next == <span class="literal">nil</span> &#123;</span><br><span class="line">		prev := l.Head</span><br><span class="line">		<span class="keyword">for</span> prev.Next != node &#123;</span><br><span class="line">			prev = prev.Next</span><br><span class="line">		&#125;</span><br><span class="line">		prev.Next = <span class="literal">nil</span></span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="comment">// 如果不是尾节点，把删除节点的后置节点数据直接覆盖删除节点。</span></span><br><span class="line">		*node = *node.Next</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>单链表的实现比较简单，可以很轻松的查询到指定节点的后置节点，但如果想要查询前置节点则需要遍历一遍才可以，所以这就需要<code>双链表</code>了</p>
+<h3 id="双链表"><a href="#双链表" class="headerlink" title="双链表"></a>双链表</h3><p>双链表通俗的讲，就是每个数据节点既可以找到它前一个节点也找的到它后一个节点。三部分组成：前值节点的指针，节点数据，后置节点的指针（尾节点指针指向nil）。</p>
+<p>直接上代码:<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Node <span class="keyword">struct</span> &#123;</span><br><span class="line">	V    <span class="keyword">string</span></span><br><span class="line">	Prev *Node</span><br><span class="line">	Next *Node</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> List <span class="keyword">struct</span> &#123;</span><br><span class="line">	Head *Node</span><br><span class="line">	Tail *Node</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	list := &amp;List&#123;&#125;</span><br><span class="line">	n1 := &amp;Node&#123;V: <span class="string">"node1"</span>&#125;</span><br><span class="line">	n2 := &amp;Node&#123;V: <span class="string">"node2"</span>&#125;</span><br><span class="line">	n3 := &amp;Node&#123;V: <span class="string">"node3"</span>&#125;</span><br><span class="line">	list.Append(n1)</span><br><span class="line">	list.Append(n2)</span><br><span class="line">	list.Append(n3)</span><br><span class="line">	list.Traverse() <span class="comment">// 输出结果：node1&lt;-&gt;node2&lt;-&gt;node3-&gt;nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">Append</span><span class="params">(node *Node)</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> l.Head == <span class="literal">nil</span> &#123;</span><br><span class="line">		l.Head = node</span><br><span class="line">		l.Tail = node</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="comment">// 尾节点</span></span><br><span class="line">		prev := l.Tail</span><br><span class="line">		<span class="comment">// 尾节点设为当前节点的前置节点</span></span><br><span class="line">		node.Prev = prev</span><br><span class="line">		<span class="comment">// 当前节点设为尾节点的后置节点</span></span><br><span class="line">		prev.Next = node</span><br><span class="line">		<span class="comment">// 当前节点变为尾节点</span></span><br><span class="line">		l.Tail = node</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">Delete</span><span class="params">(node *Node)</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> l.Head == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 删除节点的前置节点</span></span><br><span class="line">	prev := node.Prev</span><br><span class="line">	<span class="comment">// 删除节点的后置节点设为前置节点的后置节点</span></span><br><span class="line">	prev.Next = node.Next</span><br><span class="line">	<span class="comment">// 删除节点的前置节点设为后置节点的前置节点</span></span><br><span class="line">	node.Next.Prev = node.Prev</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">Traverse</span><span class="params">()</span></span> &#123;</span><br><span class="line">	now := l.Head</span><br><span class="line">	<span class="keyword">for</span> now != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> now.Next == <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="built_in">print</span>(now.V, <span class="string">"-&gt;"</span>, <span class="string">"nil"</span>)</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="built_in">print</span>(now.V, <span class="string">"&lt;-&gt;"</span>)</span><br><span class="line">		&#125;</span><br><span class="line">		now = now.Next</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>双链表较单链表的不同比较明显，双链表可以很轻松的查找到指定节点的前置和后置节点，遍历方向也可以是从头到尾或者从尾到头。同时，双链表节点操作比较复杂，占用空间也更大。</p>
+<h3 id="循环链表"><a href="#循环链表" class="headerlink" title="循环链表"></a>循环链表</h3><p>顾名思义，循环链表是一个环状的链表。循环链表又分为：单向循环链表、双向循环链表，实现上就是把尾节点和头节点进行链接。</p>
+<p>单向循环链表：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Node <span class="keyword">struct</span> &#123;</span><br><span class="line">	V    <span class="keyword">string</span></span><br><span class="line">	Next *Node</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> List <span class="keyword">struct</span> &#123;</span><br><span class="line">	Head *Node</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	list := &amp;List&#123;&#125;</span><br><span class="line">	n1 := &amp;Node&#123;V: <span class="string">"node1"</span>&#125;</span><br><span class="line">	n2 := &amp;Node&#123;V: <span class="string">"node2"</span>&#125;</span><br><span class="line">	n3 := &amp;Node&#123;V: <span class="string">"node3"</span>&#125;</span><br><span class="line">	list.Append(n1)</span><br><span class="line">	list.Append(n2)</span><br><span class="line">	list.Append(n3)</span><br><span class="line">	list.Traverse() <span class="comment">// 输出结果：node1-&gt;node2-&gt;node3-&gt;node1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">Append</span><span class="params">(node *Node)</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> l.Head == <span class="literal">nil</span> &#123;</span><br><span class="line">		l.Head = node</span><br><span class="line">		node.Next = l.Head</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		now := l.Head</span><br><span class="line">		<span class="keyword">for</span> now.Next != l.Head &#123;</span><br><span class="line">			now = now.Next</span><br><span class="line">		&#125;</span><br><span class="line">		now.Next = node</span><br><span class="line">		node.Next = l.Head</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(l *List)</span> <span class="title">Traverse</span><span class="params">()</span></span> &#123;</span><br><span class="line">	now := l.Head</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> now.Next == l.Head &#123;</span><br><span class="line">			<span class="built_in">print</span>(now.V, <span class="string">"-&gt;"</span>, l.Head.V)</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="built_in">print</span>(now.V, <span class="string">"-&gt;"</span>)</span><br><span class="line">		&#125;</span><br><span class="line">		now = now.Next</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h3><p>链表是最基础且很常用的一种数据结构，可以解决很多算法问题，也可以用于构建其他的数据结构。比如说解决<code>约瑟夫环问题</code>和实现堆栈、队列等。</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>罗马家园1204房间, 洗好等你<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/imgs/weixin.jpg">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">apns</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">data structure</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+  <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+  <p>扫一扫，分享到微信</p>
+  <div class="wx-qrcode">
+    <img src="https://api.pwmqr.com/qrcode/create/?url=http://xupin.im/2022/07/19/data-structure-linked-list/" alt="微信分享二维码">
+  </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
   
   
-    </div></section>
+    <a href="/2022/07/14/go-generic/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Go学习笔记 - 泛型</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3201242774373382"
+     crossorigin="anonymous"></script>
+  <!-- 文章广告 -->
+  <ins class="adsbygoogle"
+      style="display:block"
+      data-ad-client="ca-pub-3201242774373382"
+      data-ad-slot="3704842143"
+      data-ad-format="auto"
+      data-full-width-responsive="true"></ins>
+  <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#定义"><span class="toc-number">1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#单链表"><span class="toc-number">2.</span> <span class="toc-text">单链表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#双链表"><span class="toc-number">3.</span> <span class="toc-text">双链表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#循环链表"><span class="toc-number">4.</span> <span class="toc-text">循环链表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用场景"><span class="toc-number">5.</span> <span class="toc-text">使用场景</span></a></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
+        
+    </div>
+</aside>
+
+
+  
+  
   
 
-    
+  
+
+  
+  <div id="gitalk-container" style="padding: 0px 30px 0px 30px;"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    if (true) {
+        var gitalk = new Gitalk({
+            clientID: 'e3e84fb1a50e16e66f89',
+            clientSecret: '5690def96adce57dd5993ec671c2413afd60aa41',
+            repo: 'xupin.github.io',
+            owner: 'xupin',
+            admin: ['xupin'],
+            id: '数据结构 - 链表',
+            distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')
+    }
+</script>
+  
+
+  
+
+  
 
 
           </div>
@@ -268,9 +461,9 @@ var _hmt = _hmt || [];
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
