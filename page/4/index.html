@@ -190,6 +190,91 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-mysql-sharding-partition" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/23/mysql-sharding-partition/">Mysql学习笔记 - 分片和分区</a>
+    </h1>
+  
+
+        
+        <a href="/2020/03/23/mysql-sharding-partition/" class="archive-article-date">
+  	<time datetime="2020-03-22T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-23</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>之前在复习Mysql主从知识的同时，小伙伴考了我一个问题，分片和分区有什么差别 … 乍一听可能只是名词上的不同，但其实它们俩的确不是同一个东西。</p>
+<h3 id="1-什么是分片（Sharding）？"><a href="#1-什么是分片（Sharding）？" class="headerlink" title="1.什么是分片（Sharding）？"></a>1.什么是分片（Sharding）？</h3><p>我们举个例子，一张文章表。<br>结构如下：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`mark`</span>.<span class="string">`article`</span>  (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`type`</span> <span class="built_in">varchar</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'类型'</span>,</span><br><span class="line">  <span class="string">`title`</span> <span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'标题'</span>,</span><br><span class="line">  <span class="string">`content`</span> longtext <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'内容'</span>,</span><br><span class="line">  <span class="string">`author`</span> <span class="built_in">varchar</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'作者'</span>,</span><br><span class="line">  <span class="string">`date`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'日期'</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure></p>
+<p>需求如下：</p>
+<ol>
+<li>用户打开app会直接展示文章列表（类型，标题，作者，日期）</li>
+<li>点击文章查看详情</li>
+</ol>
+<p>那么这张表在数据量比较小的初期应对访问是没什么问题的。但是随着数据量日益膨胀，查询效率会越来越低，因为里面<code>content</code>字段非常巨大。</p>
+<p>这时候要怎么优化呢？把<code>content</code>字段拆出去，因为访问最多的请求并不需要<code>content</code>，怎么拆呢？结构如下：</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/03/23/mysql-sharding-partition/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-mysql-checkpoint" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -829,99 +914,9 @@ var _hmt = _hmt || [];
 
 
   
-    <article id="post-tmux" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/24/tmux/">分屏工具 - Tmux</a>
-    </h1>
-  
-
-        
-        <a href="/2019/12/24/tmux/" class="archive-article-date">
-  	<time datetime="2019-12-23T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Tmux是一个终端多路复用器：它使从单个屏幕创建，访问和控制多个终端成为可能。Tmux可能会与屏幕分离，并继续在后台运行，然后再重新连接。</p>
-<h3 id="1-Tmux的结构"><a href="#1-Tmux的结构" class="headerlink" title="1.Tmux的结构"></a>1.Tmux的结构</h3><ul>
-<li>Session<ul>
-<li>Window<ul>
-<li>Panel</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p>即，Tmux允许访问多个会话，每个会话可以拥有多个窗口，每个窗口还可以进行划分窗格。</p>
-<h3 id="2-安装运行Tmux"><a href="#2-安装运行Tmux" class="headerlink" title="2.安装运行Tmux"></a>2.安装运行Tmux</h3><p>安装<br><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># centos</span></span><br><span class="line">$ yum <span class="keyword">install </span>tmux</span><br><span class="line"></span><br><span class="line"><span class="comment"># ubuntu</span></span><br><span class="line">$ apt <span class="keyword">install </span>tmux</span><br><span class="line"></span><br><span class="line"><span class="comment"># mac</span></span><br><span class="line">$ <span class="keyword">brew </span><span class="keyword">install </span>tmux</span><br></pre></td></tr></table></figure></p>
-<p>运行<br><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$ </span>tmux</span><br></pre></td></tr></table></figure></p>
-<p>效果图，如下：</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">tmux</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tools</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/24/tmux/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
     </nav>
   
 
@@ -1109,6 +1104,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">data structure</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">data structures</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
               </li>
             
             <div class="clearfix"></div>
