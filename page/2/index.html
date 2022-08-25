@@ -190,6 +190,84 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-clickhouse-engines" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/01/16/clickhouse-engines/">ClickHouse学习笔记 - 数据引擎</a>
+    </h1>
+  
+
+        
+        <a href="/2022/01/16/clickhouse-engines/" class="archive-article-date">
+  	<time datetime="2022-01-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-01-16</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>ClickHouse是个由老毛子国内市场使用率第一的搜索引擎Yandex开源的OLAP型列式数据库。</p>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>之前因为业务接触到ClickHouse，但因为没有系统的了解过导致遇见个很小的问题、花了大量的时间、用了很挫的方式来解决问题，痛定思痛的情况下决心系统的逐步学习一下。ClickHouse无论是存储还是使用方式都不同程度的异于我们常用的Mysql，PostgreSql，Mssql等行式数据库，但它支持绝大部分的SQL语法。</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">clickhouse</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/01/16/clickhouse-engines/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-clickhouse-array-split-group" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -740,92 +818,6 @@ var _hmt = _hmt || [];
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2021/11/12/mysql-migrate/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-git-depth" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/11/01/git-depth/">Git小知识 - depth</a>
-    </h1>
-  
-
-        
-        <a href="/2021/11/01/git-depth/" class="archive-article-date">
-  	<time datetime="2021-10-31T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>有时候git项目比较大，git clone会因为各种原因中断，但是Git并不会断点续“传”再次clone又是重新来过,类似这种问题…让人很是苦恼<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ error: RPC failed; HTTP 504 curl 22 The requested URL returned error: 504 Gateway Time-out</span><br><span class="line">$ ...</span><br><span class="line">$ error: RPC failed; curl 18 transfer closed with outstanding <span class="built_in">read</span> data remaining</span><br></pre></td></tr></table></figure></p>
-<h3 id="解决方式"><a href="#解决方式" class="headerlink" title="解决方式"></a>解决方式</h3><ul>
-<li><p>git配置流</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ git config --global http.lowSpeedLimit 0 // 最小速度</span><br><span class="line">$ git config --global http.lowSpeedTime 999999 // 最大速度</span><br><span class="line">$ git config --global http.postBuffer 524288000 // 文件大小</span><br><span class="line">$ git config --global compression 0 // 关闭压缩</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>分块拉取</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> --depth=1 &#123;repo&#125; // 拉取最新的代码（最后一次commit）</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>但这样会带来其他的小问题，就是拉下来的代码默认分支既不是master也不是其他分支 … 需要拉取完整的项目<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git fetch --unshallow // 拉取深层代码</span><br><span class="line">$ git config remote.origin.fetch <span class="string">"+refs/heads/*:refs/remotes/origin/*"</span> // 修正remote关系（修改之前: <span class="string">"fetch = +refs/heads/master:refs/remotes/origin/master"</span>）</span><br><span class="line">$ git fetch -pv // 拉取所有分支</span><br></pre></td></tr></table></figure></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/11/01/git-depth/">展开全文 >></a>
         </p>
       
 
