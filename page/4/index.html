@@ -89,6 +89,8 @@ var _hmt = _hmt || [];
 	        
 				<li><a href="/tags/tools">Tools</a></li>
 	        
+				<li><a href="/tags/gamedev">Game Dev</a></li>
+	        
 			</ul>
 		</nav>
 		<nav class="header-smart-menu">
@@ -112,10 +114,6 @@ var _hmt = _hmt || [];
 					<a class="github" target="_blank" href="https://github.com/xupin" title="github"><i class="icon-github"></i></a>
 		        
 					<a class="rss" target="_blank" href="/atom.xml" title="rss"><i class="icon-rss"></i></a>
-		        
-					<a class="weixin" target="_blank" href="/assets/imgs/weixin.jpg" title="weixin"><i class="icon-weixin"></i></a>
-		        
-					<a class="mail" target="_blank" href="mailto:xupinbest@163.com" title="mail"><i class="icon-mail"></i></a>
 		        
 			</div>
 		</nav>
@@ -149,6 +147,8 @@ var _hmt = _hmt || [];
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -158,10 +158,6 @@ var _hmt = _hmt || [];
 			        
 						<a class="rss" target="_blank" href="/atom.xml" title="rss"><i class="icon-rss"></i></a>
 			        
-						<a class="weixin" target="_blank" href="/assets/imgs/weixin.jpg" title="weixin"><i class="icon-weixin"></i></a>
-			        
-						<a class="mail" target="_blank" href="mailto:xupinbest@163.com" title="mail"><i class="icon-mail"></i></a>
-			        
 				</div>
 			</nav>
 
@@ -169,11 +165,13 @@ var _hmt = _hmt || [];
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 33.333333333333336%"><a href="/">Main</a></li>
+					<li style="width: 25%"><a href="/">Main</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/develop">Develop</a></li>
+					<li style="width: 25%"><a href="/tags/develop">Develop</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/tools">Tools</a></li>
+					<li style="width: 25%"><a href="/tags/tools">Tools</a></li>
+		        
+					<li style="width: 25%"><a href="/tags/gamedev">Game Dev</a></li>
 		        
 				</ul>
 			</nav>
@@ -189,6 +187,108 @@ var _hmt = _hmt || [];
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-redis-cluster" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/27/redis-cluster/">Redis学习笔记 - 集群</a>
+    </h1>
+  
+
+        
+        <a href="/2020/03/27/redis-cluster/" class="archive-article-date">
+  	<time datetime="2020-03-26T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>之前粗浅的学习了Redis三种集群策略的主从复制和哨兵策略，现在最后这篇来学习一下Redis Cluster也就是最后一个集群策略。</p>
+<h3 id="1-什么是集群？"><a href="#1-什么是集群？" class="headerlink" title="1.什么是集群？"></a>1.什么是集群？</h3><p>集群（Cluster），Redis2.6版本（正式版本是3.0）推出的分布式解决方案，有效解决了单Master节点写操作的压力并且分布式存储数据，大大提高了负载能力。</p>
+<blockquote>
+<p>在Redis发布3.0正式版本前，一般使用代理中间件来实现分布式集群策略。这里不展开学习了，有兴趣的小伙伴自行研究。</p>
+</blockquote>
+<ul>
+<li><p>特点</p>
+<ol>
+<li>Cluster策略是分布式部署，节点间相互协调工作。<blockquote>
+<p>因为对主从复制和哨兵策略都称为集群策略，所以为了防止误解在下文中提及的集群（Cluster）策略，直接用Cluster称呼。</p>
+</blockquote>
+</li>
+<li>Cluster至少要3个Master节点，并且是无中心化设计。</li>
+<li>客户端使用Cluster，不需要连接所有节点，只需要连接Cluster中任意一个可用节点即可。</li>
+<li>数据的分布式存储不需要指定，Cluster会自动完成。</li>
+</ol>
+</li>
+<li><p>优点</p>
+<ol>
+<li>Cluster策略拥有主从复制和哨兵策略的优点。</li>
+<li>解决了单Master节点写操作的压力。</li>
+<li>分布式存储数据，提高了负载能力。</li>
+<li>支持线性扩容。</li>
+</ol>
+</li>
+</ul>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/03/27/redis-cluster/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
   
     <article id="post-redis-sentinel" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -843,105 +943,6 @@ var _hmt = _hmt || [];
 
 
   
-    <article id="post-go-console" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/01/19/go-console/">Go学习笔记 - 定时任务调度</a>
-    </h1>
-  
-
-        
-        <a href="/2020/01/19/go-console/" class="archive-article-date">
-  	<time datetime="2020-01-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>每一个任务都需要编写一个Crontab命令，这是件很麻烦且很不友好的事情。 任务调度器允许你以代码的形式定义调度命令，并且服务器上只需要一个Crontab命令即可, 任务调度又是我们俗称的 “计划任务”</p>
-<h3 id="1-工欲善其事，必先利其器"><a href="#1-工欲善其事，必先利其器" class="headerlink" title="1.工欲善其事，必先利其器"></a>1.工欲善其事，必先利其器</h3><p>Github一番搜索，发现Golang有个cron包（<a href="https://github.com/robfig/cron" target="_blank" rel="noopener">robfig/cron</a>）大概满足需求，于是学习一下。</p>
-<h3 id="2-介绍"><a href="#2-介绍" class="headerlink" title="2.介绍"></a>2.介绍</h3><p>看了一遍文档，cron包支持的已经很全面了~~~不用自己造轮子了。</p>
-<p>表达式</p>
-<blockquote>
-<p>兼容Linux的crontab表达式（支持分钟级别）。</p>
-</blockquote>
-<p>日志</p>
-<blockquote>
-<p>可以很详细的记录调度的任务状态</p>
-</blockquote>
-<p>时区</p>
-<blockquote>
-<p>支持任务级别的时区配置</p>
-</blockquote>
-<p>预定义计划</p>
-<blockquote>
-<p>支持在未来指定的时间去运行</p>
-</blockquote>
-<p><code>线程安全问题</code></p>
-<blockquote>
-<p>该cron lib管理任务队列的slice没有做并发安全考虑，可能会出现任务竟抢行为。</p>
-</blockquote>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">golang</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/01/19/go-console/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
@@ -1056,6 +1057,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">gamedev</a>
               </li>
              
               <li class="article-tag-list-item">

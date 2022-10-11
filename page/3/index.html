@@ -89,6 +89,8 @@ var _hmt = _hmt || [];
 	        
 				<li><a href="/tags/tools">Tools</a></li>
 	        
+				<li><a href="/tags/gamedev">Game Dev</a></li>
+	        
 			</ul>
 		</nav>
 		<nav class="header-smart-menu">
@@ -112,10 +114,6 @@ var _hmt = _hmt || [];
 					<a class="github" target="_blank" href="https://github.com/xupin" title="github"><i class="icon-github"></i></a>
 		        
 					<a class="rss" target="_blank" href="/atom.xml" title="rss"><i class="icon-rss"></i></a>
-		        
-					<a class="weixin" target="_blank" href="/assets/imgs/weixin.jpg" title="weixin"><i class="icon-weixin"></i></a>
-		        
-					<a class="mail" target="_blank" href="mailto:xupinbest@163.com" title="mail"><i class="icon-mail"></i></a>
 		        
 			</div>
 		</nav>
@@ -149,6 +147,8 @@ var _hmt = _hmt || [];
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -158,10 +158,6 @@ var _hmt = _hmt || [];
 			        
 						<a class="rss" target="_blank" href="/atom.xml" title="rss"><i class="icon-rss"></i></a>
 			        
-						<a class="weixin" target="_blank" href="/assets/imgs/weixin.jpg" title="weixin"><i class="icon-weixin"></i></a>
-			        
-						<a class="mail" target="_blank" href="mailto:xupinbest@163.com" title="mail"><i class="icon-mail"></i></a>
-			        
 				</div>
 			</nav>
 
@@ -169,11 +165,13 @@ var _hmt = _hmt || [];
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 33.333333333333336%"><a href="/">Main</a></li>
+					<li style="width: 25%"><a href="/">Main</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/develop">Develop</a></li>
+					<li style="width: 25%"><a href="/tags/develop">Develop</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/tools">Tools</a></li>
+					<li style="width: 25%"><a href="/tags/tools">Tools</a></li>
+		        
+					<li style="width: 25%"><a href="/tags/gamedev">Game Dev</a></li>
 		        
 				</ul>
 			</nav>
@@ -189,6 +187,92 @@ var _hmt = _hmt || [];
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-mysql-migrate" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/11/12/mysql-migrate/">Mysql学习笔记 - 数据迁移</a>
+    </h1>
+  
+
+        
+        <a href="/2021/11/12/mysql-migrate/" class="archive-article-date">
+  	<time datetime="2021-11-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>之前项目数据表有分表设计，现在因为业务量增长数据表数据量膨胀数倍导致单表性能不理想 … 所以希望在不影响用户使用的情况下扩展数据表（迁移）</p>
+<h3 id="数据迁移方案"><a href="#数据迁移方案" class="headerlink" title="数据迁移方案"></a>数据迁移方案</h3><p>基本分为<code>热迁移</code>和<code>冷迁移</code>两种方式</p>
+<ul>
+<li>冷迁移</li>
+</ul>
+<p>通俗的来说就是停机迁移，比如某些游戏合服维护等</p>
+<blockquote>
+<p>优点: 操作可靠性高、数据一致性有保证、数据回滚方便</p>
+<p>缺点: 用户体验差</p>
+</blockquote>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2021/11/12/mysql-migrate/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
   
     <article id="post-git-depth" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -777,108 +861,6 @@ var _hmt = _hmt || [];
 
 
   
-    <article id="post-redis-cluster" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/03/27/redis-cluster/">Redis学习笔记 - 集群</a>
-    </h1>
-  
-
-        
-        <a href="/2020/03/27/redis-cluster/" class="archive-article-date">
-  	<time datetime="2020-03-26T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-27</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>之前粗浅的学习了Redis三种集群策略的主从复制和哨兵策略，现在最后这篇来学习一下Redis Cluster也就是最后一个集群策略。</p>
-<h3 id="1-什么是集群？"><a href="#1-什么是集群？" class="headerlink" title="1.什么是集群？"></a>1.什么是集群？</h3><p>集群（Cluster），Redis2.6版本（正式版本是3.0）推出的分布式解决方案，有效解决了单Master节点写操作的压力并且分布式存储数据，大大提高了负载能力。</p>
-<blockquote>
-<p>在Redis发布3.0正式版本前，一般使用代理中间件来实现分布式集群策略。这里不展开学习了，有兴趣的小伙伴自行研究。</p>
-</blockquote>
-<ul>
-<li><p>特点</p>
-<ol>
-<li>Cluster策略是分布式部署，节点间相互协调工作。<blockquote>
-<p>因为对主从复制和哨兵策略都称为集群策略，所以为了防止误解在下文中提及的集群（Cluster）策略，直接用Cluster称呼。</p>
-</blockquote>
-</li>
-<li>Cluster至少要3个Master节点，并且是无中心化设计。</li>
-<li>客户端使用Cluster，不需要连接所有节点，只需要连接Cluster中任意一个可用节点即可。</li>
-<li>数据的分布式存储不需要指定，Cluster会自动完成。</li>
-</ol>
-</li>
-<li><p>优点</p>
-<ol>
-<li>Cluster策略拥有主从复制和哨兵策略的优点。</li>
-<li>解决了单Master节点写操作的压力。</li>
-<li>分布式存储数据，提高了负载能力。</li>
-<li>支持线性扩容。</li>
-</ol>
-</li>
-</ul>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/03/27/redis-cluster/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
@@ -993,6 +975,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">gamedev</a>
               </li>
              
               <li class="article-tag-list-item">

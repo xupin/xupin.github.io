@@ -9,7 +9,7 @@
   <title>数据结构与算法 - AStar(A*) | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="寻路算法是游戏比较重要的组成部分之一，尤其在国内游戏很常见的自动寻路系统，比如操纵角色从A点到B点的移动。计算最短路径有很多不同的算法，比如：Dijkstra、AStar（A*）、NavMesh（多边形算法）、RVO动态避障等等 A*寻路算法寻路算法的移动路径核心有2点：最短、可移动。 所以首先需要确定起点坐标的相邻节点（4方向、8方向），然后通过计算最靠近终点坐标的相邻坐标（不考虑障碍物）确认检">
-<meta name="keywords" content="develop,data structures,algorithms">
+<meta name="keywords" content="develop,data structures,algorithms,gamedev">
 <meta property="og:type" content="article">
 <meta property="og:title" content="数据结构与算法 - AStar(A*)">
 <meta property="og:url" content="http://xupin.im/2022/08/01/data-structures-algorithms-astar/index.html">
@@ -18,7 +18,7 @@
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://xupin.im/assets/astar/grid.png">
 <meta property="og:image" content="http://xupin.im/assets/astar/3x3.png">
-<meta property="og:updated_time" content="2022-08-12T08:42:54.540Z">
+<meta property="og:updated_time" content="2022-10-08T11:35:48.195Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据结构与算法 - AStar(A*)">
 <meta name="twitter:description" content="寻路算法是游戏比较重要的组成部分之一，尤其在国内游戏很常见的自动寻路系统，比如操纵角色从A点到B点的移动。计算最短路径有很多不同的算法，比如：Dijkstra、AStar（A*）、NavMesh（多边形算法）、RVO动态避障等等 A*寻路算法寻路算法的移动路径核心有2点：最短、可移动。 所以首先需要确定起点坐标的相邻节点（4方向、8方向），然后通过计算最靠近终点坐标的相邻坐标（不考虑障碍物）确认检">
@@ -93,6 +93,8 @@ var _hmt = _hmt || [];
 	        
 				<li><a href="/tags/tools">Tools</a></li>
 	        
+				<li><a href="/tags/gamedev">Game Dev</a></li>
+	        
 			</ul>
 		</nav>
 		<nav class="header-smart-menu">
@@ -116,10 +118,6 @@ var _hmt = _hmt || [];
 					<a class="github" target="_blank" href="https://github.com/xupin" title="github"><i class="icon-github"></i></a>
 		        
 					<a class="rss" target="_blank" href="/atom.xml" title="rss"><i class="icon-rss"></i></a>
-		        
-					<a class="weixin" target="_blank" href="/assets/imgs/weixin.jpg" title="weixin"><i class="icon-weixin"></i></a>
-		        
-					<a class="mail" target="_blank" href="mailto:xupinbest@163.com" title="mail"><i class="icon-mail"></i></a>
 		        
 			</div>
 		</nav>
@@ -153,6 +151,8 @@ var _hmt = _hmt || [];
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -162,10 +162,6 @@ var _hmt = _hmt || [];
 			        
 						<a class="rss" target="_blank" href="/atom.xml" title="rss"><i class="icon-rss"></i></a>
 			        
-						<a class="weixin" target="_blank" href="/assets/imgs/weixin.jpg" title="weixin"><i class="icon-weixin"></i></a>
-			        
-						<a class="mail" target="_blank" href="mailto:xupinbest@163.com" title="mail"><i class="icon-mail"></i></a>
-			        
 				</div>
 			</nav>
 
@@ -173,11 +169,13 @@ var _hmt = _hmt || [];
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 33.333333333333336%"><a href="/">Main</a></li>
+					<li style="width: 25%"><a href="/">Main</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/develop">Develop</a></li>
+					<li style="width: 25%"><a href="/tags/develop">Develop</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/tools">Tools</a></li>
+					<li style="width: 25%"><a href="/tags/tools">Tools</a></li>
+		        
+					<li style="width: 25%"><a href="/tags/gamedev">Game Dev</a></li>
 		        
 				</ul>
 			</nav>
@@ -304,32 +302,6 @@ var _hmt = _hmt || [];
       
 
       
-        <div class="page-reward">
-          <a href="javascript:;" class="page-reward-btn tooltip-top">
-            <div class="tooltip tooltip-east">
-            <span class="tooltip-item">
-              赏
-            </span>
-            <span class="tooltip-content">
-              <span class="tooltip-text">
-                <span class="tooltip-inner">
-                  <p class="reward-p"><i class="icon icon-quo-left"></i>罗马家园1204房间, 洗好等你<i class="icon icon-quo-right"></i></p>
-                  <div class="reward-box">
-                    
-                    
-                    <div class="reward-box-item">
-                      <img class="reward-img" src="/assets/imgs/weixin.jpg">
-                      <span class="reward-type">微信</span>
-                    </div>
-                    
-                  </div>
-                </span>
-              </span>
-            </span>
-          </div>
-          </a>
-        </div>
-      
     </div>
     <div class="article-info article-info-index">
       
@@ -348,6 +320,10 @@ var _hmt = _hmt || [];
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">gamedev</a>
         		</li>
       		
 		</ul>
@@ -615,6 +591,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">gamedev</a>
               </li>
              
               <li class="article-tag-list-item">

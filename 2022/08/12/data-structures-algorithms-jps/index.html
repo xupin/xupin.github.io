@@ -9,7 +9,7 @@
   <title>数据结构与算法 - JPS | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="JPS寻路算法是基于A*计算过程中查找节点冗余、效率较低等问题优化的一种算法。 背景A*是比较常见的寻路算法，但存在一个较为明显的问题，当移动到新的节点总是会把相邻节点（4、8）加入到待查找列表。这样带来两个问题  在多条移动路径成本相同时，冗余查找。  待查找节点过多，内存使用率过高。">
-<meta name="keywords" content="develop,data structures,algorithms">
+<meta name="keywords" content="develop,data structures,algorithms,gamedev">
 <meta property="og:type" content="article">
 <meta property="og:title" content="数据结构与算法 - JPS">
 <meta property="og:url" content="http://xupin.im/2022/08/12/data-structures-algorithms-jps/index.html">
@@ -21,7 +21,7 @@
 <meta property="og:image" content="http://xupin.im/assets/jps/forced-neighbour/horizontal.jpg">
 <meta property="og:image" content="http://xupin.im/assets/jps/jump-point.jpg">
 <meta property="og:image" content="http://xupin.im/assets/jps/full.jpg">
-<meta property="og:updated_time" content="2022-08-12T03:31:33.360Z">
+<meta property="og:updated_time" content="2022-10-08T11:35:50.340Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据结构与算法 - JPS">
 <meta name="twitter:description" content="JPS寻路算法是基于A*计算过程中查找节点冗余、效率较低等问题优化的一种算法。 背景A*是比较常见的寻路算法，但存在一个较为明显的问题，当移动到新的节点总是会把相邻节点（4、8）加入到待查找列表。这样带来两个问题  在多条移动路径成本相同时，冗余查找。  待查找节点过多，内存使用率过高。">
@@ -96,6 +96,8 @@ var _hmt = _hmt || [];
 	        
 				<li><a href="/tags/tools">Tools</a></li>
 	        
+				<li><a href="/tags/gamedev">Game Dev</a></li>
+	        
 			</ul>
 		</nav>
 		<nav class="header-smart-menu">
@@ -119,10 +121,6 @@ var _hmt = _hmt || [];
 					<a class="github" target="_blank" href="https://github.com/xupin" title="github"><i class="icon-github"></i></a>
 		        
 					<a class="rss" target="_blank" href="/atom.xml" title="rss"><i class="icon-rss"></i></a>
-		        
-					<a class="weixin" target="_blank" href="/assets/imgs/weixin.jpg" title="weixin"><i class="icon-weixin"></i></a>
-		        
-					<a class="mail" target="_blank" href="mailto:xupinbest@163.com" title="mail"><i class="icon-mail"></i></a>
 		        
 			</div>
 		</nav>
@@ -156,6 +154,8 @@ var _hmt = _hmt || [];
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -165,10 +165,6 @@ var _hmt = _hmt || [];
 			        
 						<a class="rss" target="_blank" href="/atom.xml" title="rss"><i class="icon-rss"></i></a>
 			        
-						<a class="weixin" target="_blank" href="/assets/imgs/weixin.jpg" title="weixin"><i class="icon-weixin"></i></a>
-			        
-						<a class="mail" target="_blank" href="mailto:xupinbest@163.com" title="mail"><i class="icon-mail"></i></a>
-			        
 				</div>
 			</nav>
 
@@ -176,11 +172,13 @@ var _hmt = _hmt || [];
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 33.333333333333336%"><a href="/">Main</a></li>
+					<li style="width: 25%"><a href="/">Main</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/develop">Develop</a></li>
+					<li style="width: 25%"><a href="/tags/develop">Develop</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/tools">Tools</a></li>
+					<li style="width: 25%"><a href="/tags/tools">Tools</a></li>
+		        
+					<li style="width: 25%"><a href="/tags/gamedev">Game Dev</a></li>
 		        
 				</ul>
 			</nav>
@@ -292,32 +290,6 @@ var _hmt = _hmt || [];
       
 
       
-        <div class="page-reward">
-          <a href="javascript:;" class="page-reward-btn tooltip-top">
-            <div class="tooltip tooltip-east">
-            <span class="tooltip-item">
-              赏
-            </span>
-            <span class="tooltip-content">
-              <span class="tooltip-text">
-                <span class="tooltip-inner">
-                  <p class="reward-p"><i class="icon icon-quo-left"></i>罗马家园1204房间, 洗好等你<i class="icon icon-quo-right"></i></p>
-                  <div class="reward-box">
-                    
-                    
-                    <div class="reward-box-item">
-                      <img class="reward-img" src="/assets/imgs/weixin.jpg">
-                      <span class="reward-type">微信</span>
-                    </div>
-                    
-                  </div>
-                </span>
-              </span>
-            </span>
-          </div>
-          </a>
-        </div>
-      
     </div>
     <div class="article-info article-info-index">
       
@@ -336,6 +308,10 @@ var _hmt = _hmt || [];
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">gamedev</a>
         		</li>
       		
 		</ul>
@@ -603,6 +579,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">gamedev</a>
               </li>
              
               <li class="article-tag-list-item">
