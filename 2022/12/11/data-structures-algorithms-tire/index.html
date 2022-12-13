@@ -6,20 +6,23 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
-  <title>Python学习笔记 - yield | Mark&#39;s blog</title>
+  <title>数据结构与算法 - 前缀树 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="在程序中除了迭代器还有生成器均是可迭代对象，迭代器是通过移动游标来遍历数据，那生成器呢 生成器生成器创建方式（python）  (表达式)123456generator = (i for i in [1, 2, 3]) // 这里有区别于 [i for i in [1, 2, 3]]print(generator)  # &amp;lt;generator object &amp;lt;genexpr&amp;gt; a">
-<meta name="keywords" content="develop,python">
+  <meta name="description" content="前缀树又称单词查找树、Trie树、字典树，是一种哈希树变种的树形结构。核心思想是空间换时间，利用字符串的公共前缀来提高查询效率，常常被应用字符统计、检索等场景，比如搜索引擎的词频统计和提示等  原理前缀树的存储原理很简单，即合并字符串相同的字符前缀进行存储。 比如，存储dog、cat、doing三个字符串的树结构：">
+<meta name="keywords" content="develop,data structures,algorithms">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Python学习笔记 - yield">
-<meta property="og:url" content="http://xupin.im/2021/11/22/python-yield/index.html">
+<meta property="og:title" content="数据结构与算法 - 前缀树">
+<meta property="og:url" content="http://xupin.im/2022/12/11/data-structures-algorithms-tire/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="在程序中除了迭代器还有生成器均是可迭代对象，迭代器是通过移动游标来遍历数据，那生成器呢 生成器生成器创建方式（python）  (表达式)123456generator = (i for i in [1, 2, 3]) // 这里有区别于 [i for i in [1, 2, 3]]print(generator)  # &amp;lt;generator object &amp;lt;genexpr&amp;gt; a">
+<meta property="og:description" content="前缀树又称单词查找树、Trie树、字典树，是一种哈希树变种的树形结构。核心思想是空间换时间，利用字符串的公共前缀来提高查询效率，常常被应用字符统计、检索等场景，比如搜索引擎的词频统计和提示等  原理前缀树的存储原理很简单，即合并字符串相同的字符前缀进行存储。 比如，存储dog、cat、doing三个字符串的树结构：">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2022-07-15T02:59:17.755Z">
+<meta property="og:image" content="http://xupin.im/assets/tire/suggestion.jpeg">
+<meta property="og:image" content="http://xupin.im/assets/tire/tire.png">
+<meta property="og:updated_time" content="2022-12-13T03:06:45.294Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Python学习笔记 - yield">
-<meta name="twitter:description" content="在程序中除了迭代器还有生成器均是可迭代对象，迭代器是通过移动游标来遍历数据，那生成器呢 生成器生成器创建方式（python）  (表达式)123456generator = (i for i in [1, 2, 3]) // 这里有区别于 [i for i in [1, 2, 3]]print(generator)  # &amp;lt;generator object &amp;lt;genexpr&amp;gt; a">
+<meta name="twitter:title" content="数据结构与算法 - 前缀树">
+<meta name="twitter:description" content="前缀树又称单词查找树、Trie树、字典树，是一种哈希树变种的树形结构。核心思想是空间换时间，利用字符串的公共前缀来提高查询效率，常常被应用字符统计、检索等场景，比如搜索引擎的词频统计和提示等  原理前缀树的存储原理很简单，即合并字符串相同的字符前缀进行存储。 比如，存储dog、cat、doing三个字符串的树结构：">
+<meta name="twitter:image" content="http://xupin.im/assets/tire/suggestion.jpeg">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -187,53 +190,62 @@ var _hmt = _hmt || [];
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-python-yield" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-data-structures-algorithms-tire" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      Python学习笔记 - yield
+      数据结构与算法 - 前缀树
     </h1>
   
 
         
-        <a href="/2021/11/22/python-yield/" class="archive-article-date">
-  	<time datetime="2021-11-21T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-22</time>
+        <a href="/2022/12/11/data-structures-algorithms-tire/" class="archive-article-date">
+  	<time datetime="2022-12-10T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-12-11</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>在程序中除了迭代器还有生成器均是可迭代对象，迭代器是通过移动游标来遍历数据，那生成器呢</p>
-<h3 id="生成器"><a href="#生成器" class="headerlink" title="生成器"></a>生成器</h3><p>生成器创建方式（python）</p>
-<ul>
-<li>(表达式)<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">generator = (i <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]) // 这里有区别于 [i <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]]</span><br><span class="line">print(generator)  <span class="comment"># &lt;generator object &lt;genexpr&gt; at 0x10c312870&gt;</span></span><br><span class="line">print(next(generator))  <span class="comment"># 1</span></span><br><span class="line">print(next(generator))  <span class="comment"># 2</span></span><br><span class="line">print(next(generator))  <span class="comment"># 3</span></span><br><span class="line">print(next(generator))  <span class="comment"># raise StopIteration</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
+        <p>前缀树又称单词查找树、Trie树、字典树，是一种哈希树变种的树形结构。核心思想是空间换时间，利用字符串的公共前缀来提高查询效率，常常被应用字符统计、检索等场景，比如搜索引擎的词频统计和提示等</p>
+<p><img src="/assets/tire/suggestion.jpeg" alt="drawing" width="400" height="200"></p>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>前缀树的存储原理很简单，即合并字符串相同的字符前缀进行存储。</p>
+<p>比如，存储<code>dog</code>、<code>cat</code>、<code>doing</code>三个字符串的树结构：</p>
 <a id="more"></a>
+<p><img src="/assets/tire/tire.png" width="150" height="250"></p>
+<p>需要注意：<code>前缀树不是二叉树，而是多叉树</code>。</p>
+<p>前缀树的特征：</p>
+<ol>
+<li>根结点不存储任何内容。</li>
+<li>每个节点只存储1个字符。</li>
+<li>根节点到任意子节点是为存储的字符串。</li>
+<li>写入和查询操作的时间复杂度均为O(N)。</li>
+</ol>
+<h3 id="如何实现"><a href="#如何实现" class="headerlink" title="如何实现"></a>如何实现</h3><p>一般可以通过以下两种方式来实现，</p>
+<ol>
+<li>单向链表（本文采用方式）</li>
+<li>二维数组</li>
+</ol>
 <ul>
-<li>yield<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getGenerator</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]: </span><br><span class="line">        <span class="keyword">yield</span> i</span><br><span class="line">    print(<span class="string">"done"</span>)</span><br><span class="line"></span><br><span class="line">generator = getGenerator()</span><br><span class="line">print(generator)  <span class="comment"># &lt;generator object getGenerator at 0x10c3128c0&gt;</span></span><br><span class="line">print(next(generator))  <span class="comment"># 1</span></span><br><span class="line">print(next(generator))  <span class="comment"># 2</span></span><br><span class="line">print(next(generator))  <span class="comment"># 3</span></span><br><span class="line">print(next(generator))  <span class="comment"># done &amp; raise StopIteration</span></span><br></pre></td></tr></table></figure>
-</li>
+<li>存储</li>
 </ul>
-<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>当<code>yield</code>出现在函数中（yield只能定义在函数中），那么调用时不会直接运行函数而是返回一个生成器对象，生成器也是一个特殊的迭代器（实现了迭代器协议的对象）。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义根结点</span></span><br><span class="line"><span class="keyword">type</span> Tire <span class="keyword">struct</span> &#123;</span><br><span class="line">	Root *Node</span><br><span class="line">	Size <span class="keyword">int</span> <span class="comment">// 总共存储多少个字符</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义存储字符的节点</span></span><br><span class="line"><span class="keyword">type</span> Node <span class="keyword">struct</span> &#123;</span><br><span class="line">	Char   <span class="keyword">string</span>         <span class="comment">// 当前节点存储的字符</span></span><br><span class="line">	Count  <span class="keyword">int</span>            <span class="comment">// 出现过多少次</span></span><br><span class="line">	IsWord <span class="keyword">bool</span>           <span class="comment">// 是否是完整的单词（字符串结尾）</span></span><br><span class="line">	Next   <span class="keyword">map</span>[<span class="keyword">rune</span>]*Node <span class="comment">// 存储下一个字符的节点</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从结构可以看出，其实前缀树就是把字符串按字符顺序存储。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Tire)</span> <span class="title">Append</span><span class="params">(s <span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> r.Find(s, <span class="literal">true</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	node := r.Root</span><br><span class="line">	<span class="keyword">for</span> _, c := <span class="keyword">range</span> s &#123;</span><br><span class="line">		v, ok := node.Next[c] <span class="comment">// 是否存在该字符，如果不存在则进行存储，反之取下一个字符</span></span><br><span class="line">		<span class="keyword">if</span> !ok &#123;</span><br><span class="line">			v = &amp;Node&#123;</span><br><span class="line">				Char:   <span class="keyword">string</span>(c),</span><br><span class="line">				IsWord: <span class="literal">false</span>,</span><br><span class="line">				Count:  <span class="number">1</span>,</span><br><span class="line">				Next:   <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">rune</span>]*Node, <span class="number">0</span>),</span><br><span class="line">			&#125;</span><br><span class="line">			node.Next[c] = v</span><br><span class="line">			r.Size += <span class="number">1</span></span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			v.Count += <span class="number">1</span></span><br><span class="line">		&#125;</span><br><span class="line">		node = v</span><br><span class="line">	&#125;</span><br><span class="line">	node.IsWord = <span class="literal">true</span> <span class="comment">// 最后一个字符把IsWord标记为true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ul>
-<li>第一次调用<code>next()</code>函数，遇见<code>yield</code>停下返回yield后面的内容</li>
-<li>再次调用<code>next()</code>函数，从上次yield语句处恢复，如果还存在<code>yield</code>则正常执行，否则函数体执行完毕抛出<code>StopIteration</code>异常<blockquote>
-<p>通俗的来说：yield相当于return，但yield会记住这个返回位置，再次执行会从这个位置开始。</p>
-</blockquote>
-</li>
+<li>查找</li>
 </ul>
-<p>生成器中<code>send()</code>是和<code>next()</code>一样能让生成器恢复执行的函数，不同的是<code>send(arg)</code>函数可以传递参数<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getGenerator</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]:</span><br><span class="line">        print(<span class="string">"before: "</span>, i)</span><br><span class="line">        t = <span class="keyword">yield</span> i</span><br><span class="line">        print(<span class="string">"after: "</span>, i, t)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">generator = getGenerator()</span><br><span class="line">print(generator)  <span class="comment"># &lt;generator object getGenerator at 0x10c3128c0&gt;</span></span><br><span class="line">generator.send(<span class="literal">None</span>)  <span class="comment"># before:  1</span></span><br><span class="line">next(generator)  <span class="comment"># after:  1 None &amp; before:  2</span></span><br><span class="line">generator.send(<span class="number">22</span>)  <span class="comment"># after:  2 22 &amp; before:  3</span></span><br><span class="line">generator.send(<span class="number">33</span>)  <span class="comment"># after:  3 33 &amp; raise StopIteration</span></span><br></pre></td></tr></table></figure></p>
-<p>注意第一次调用生成器不可以直接传递非None参数，因为yield还未准备好（无返回值），可以<code>generator.send(None)</code>或<code>next(generator)</code>。具体可以参考python源码:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">const char *msg = <span class="string">"can't send non-None value to a "</span></span><br><span class="line">                              <span class="string">"just-started generator"</span>;</span><br></pre></td></tr></table></figure></p>
-<p><a href="https://github.com/python/cpython/blob/3.9/Objects/genobject.c#L181" target="_blank" rel="noopener">https://github.com/python/cpython/blob/3.9/Objects/genobject.c#L181</a></p>
-<h3 id="迭代协议"><a href="#迭代协议" class="headerlink" title="迭代协议"></a>迭代协议</h3><p>什么是可迭代协议？</p>
-<blockquote>
-<p>当处理迭代时首先调用<code>可迭代对象.__iter__()</code>，返回迭代器。然后通过<code>迭代器.__next__()</code>获取迭代器的元素，直至抛出<code>StopIteration</code>。</p>
-</blockquote>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CustomGenerator</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, data)</span>:</span></span><br><span class="line">        self.data = data</span><br><span class="line">        self.index = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__iter__</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">"look at me"</span>)</span><br><span class="line">        <span class="keyword">return</span> self</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__next__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.index &lt; len(self.data):</span><br><span class="line">            val = self.data[self.index]</span><br><span class="line">            self.index += <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> val</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">raise</span> StopIteration</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">generator = CustomGenerator([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])</span><br><span class="line">print(generator)  <span class="comment"># &lt;__main__.CustomGenerator object at 0x1047161f0&gt;</span></span><br><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> generator:</span><br><span class="line">    print(x)</span><br><span class="line"><span class="comment"># look at me</span></span><br><span class="line"><span class="comment"># 1</span></span><br><span class="line"><span class="comment"># 2</span></span><br><span class="line"><span class="comment"># 3</span></span><br><span class="line">print(next(generator))  <span class="comment"># raise StopIteration</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Tire)</span> <span class="title">Find</span><span class="params">(s <span class="keyword">string</span>, isFullMatch <span class="keyword">bool</span>)</span> <span class="title">bool</span></span> &#123;</span><br><span class="line">	node := r.Root</span><br><span class="line">	<span class="keyword">for</span> _, c := <span class="keyword">range</span> s &#123;</span><br><span class="line">		v, ok := node.Next[c] <span class="comment">// 是否存在该字符，如果不存在则直接返回false，反之继续查找下一个字符</span></span><br><span class="line">		<span class="keyword">if</span> !ok &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">		&#125;</span><br><span class="line">		node = v</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> (!isFullMatch &amp;&amp; !node.IsWord) || node.IsWord</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>删除</li>
+</ul>
+<p>删除是前缀树中稍复杂一点的操作，如果字符被其他字符串使用，不能直接删除。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Tire)</span> <span class="title">Remove</span><span class="params">(s <span class="keyword">string</span>)</span> <span class="title">bool</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> !r.Find(s, <span class="literal">true</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">	&#125;</span><br><span class="line">	node := r.Root</span><br><span class="line">	prev := r.Root</span><br><span class="line">	<span class="keyword">for</span> i, c := <span class="keyword">range</span> s &#123;</span><br><span class="line">		node = node.Next[c]</span><br><span class="line">		node.Count -= <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> node.Count == <span class="number">0</span> &#123;</span><br><span class="line">			r.Size -= (<span class="built_in">len</span>(s) - i)</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		prev = node</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> node.Count == <span class="number">0</span> &#123;</span><br><span class="line">		<span class="built_in">delete</span>(prev.Next, <span class="keyword">rune</span>(node.Char[<span class="number">0</span>]))</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		node.IsWord = <span class="literal">false</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>附上完整代码：<a href="https://github.com/xupin/example/blob/main/tire/main.go" target="_blank" rel="noopener">tire/main.go</a></p>
+
       
 
       
@@ -250,7 +262,11 @@ var _hmt = _hmt || [];
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">python</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">data structures</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
         		</li>
       		
 		</ul>
@@ -306,7 +322,7 @@ var _hmt = _hmt || [];
   <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
   <p>扫一扫，分享到微信</p>
   <div class="wx-qrcode">
-    <img src="https://api.pwmqr.com/qrcode/create/?url=http://xupin.im/2021/11/22/python-yield/" alt="微信分享二维码">
+    <img src="https://api.pwmqr.com/qrcode/create/?url=http://xupin.im/2022/12/11/data-structures-algorithms-tire/" alt="微信分享二维码">
   </div>
 </div>
 
@@ -320,18 +336,9 @@ var _hmt = _hmt || [];
   
 <nav id="article-nav">
   
-    <a href="/2021/12/02/go-coroutine-query/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          Go学习笔记 - 并发查询单表
-        
-      </div>
-    </a>
   
-  
-    <a href="/2021/11/18/mysql-cursor/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Mysql学习笔记 - cursor</div>
+    <a href="/2022/10/08/data-structures-algorithms-aoi/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">数据结构与算法 - AOI</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -370,7 +377,7 @@ var _hmt = _hmt || [];
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#生成器"><span class="toc-number">1.</span> <span class="toc-text">生成器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#原理"><span class="toc-number">2.</span> <span class="toc-text">原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#迭代协议"><span class="toc-number">3.</span> <span class="toc-text">迭代协议</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#原理"><span class="toc-number">1.</span> <span class="toc-text">原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#如何实现"><span class="toc-number">2.</span> <span class="toc-text">如何实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#最后"><span class="toc-number">3.</span> <span class="toc-text">最后</span></a></li></ol>
                     </div>
                 </span>
             </div>
@@ -398,7 +405,7 @@ var _hmt = _hmt || [];
             repo: 'xupin.github.io',
             owner: 'xupin',
             admin: ['xupin'],
-            id: 'Python学习笔记 - yield',
+            id: '数据结构与算法 - 前缀树',
             distractionFreeMode: 'true'
         })
         gitalk.render('gitalk-container')

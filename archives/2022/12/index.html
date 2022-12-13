@@ -6,20 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
-  <title>Python学习笔记 - yield | Mark&#39;s blog</title>
+  <title>Archives: 2022/12 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="在程序中除了迭代器还有生成器均是可迭代对象，迭代器是通过移动游标来遍历数据，那生成器呢 生成器生成器创建方式（python）  (表达式)123456generator = (i for i in [1, 2, 3]) // 这里有区别于 [i for i in [1, 2, 3]]print(generator)  # &amp;lt;generator object &amp;lt;genexpr&amp;gt; a">
-<meta name="keywords" content="develop,python">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Python学习笔记 - yield">
-<meta property="og:url" content="http://xupin.im/2021/11/22/python-yield/index.html">
+  <meta name="description" content="安静的小屁屁">
+<meta name="keywords" content="nginx,php,golang,memcached,redis,mysql,mariadb,php7,前端,js,jquery,javascript,html5,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Mark&#39;s blog">
+<meta property="og:url" content="http://xupin.im/archives/2022/12/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="在程序中除了迭代器还有生成器均是可迭代对象，迭代器是通过移动游标来遍历数据，那生成器呢 生成器生成器创建方式（python）  (表达式)123456generator = (i for i in [1, 2, 3]) // 这里有区别于 [i for i in [1, 2, 3]]print(generator)  # &amp;lt;generator object &amp;lt;genexpr&amp;gt; a">
+<meta property="og:description" content="安静的小屁屁">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2022-07-15T02:59:17.755Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Python学习笔记 - yield">
-<meta name="twitter:description" content="在程序中除了迭代器还有生成器均是可迭代对象，迭代器是通过移动游标来遍历数据，那生成器呢 生成器生成器创建方式（python）  (表达式)123456generator = (i for i in [1, 2, 3]) // 这里有区别于 [i for i in [1, 2, 3]]print(generator)  # &amp;lt;generator object &amp;lt;genexpr&amp;gt; a">
+<meta name="twitter:title" content="Mark&#39;s blog">
+<meta name="twitter:description" content="安静的小屁屁">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -187,60 +186,36 @@ var _hmt = _hmt || [];
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-python-yield" class="article article-type-post " itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+            
   
-    <h1 class="article-title" itemprop="name">
-      Python学习笔记 - yield
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2022" class="archive-year">2022</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2022/12/11/data-structures-algorithms-tire/" class="archive-article-date">
+  	<time datetime="2022-12-10T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-12-11</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2022/12/11/data-structures-algorithms-tire/">数据结构与算法 - 前缀树</a>
     </h1>
   
 
-        
-        <a href="/2021/11/22/python-yield/" class="archive-article-date">
-  	<time datetime="2021-11-21T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>在程序中除了迭代器还有生成器均是可迭代对象，迭代器是通过移动游标来遍历数据，那生成器呢</p>
-<h3 id="生成器"><a href="#生成器" class="headerlink" title="生成器"></a>生成器</h3><p>生成器创建方式（python）</p>
-<ul>
-<li>(表达式)<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">generator = (i <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]) // 这里有区别于 [i <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]]</span><br><span class="line">print(generator)  <span class="comment"># &lt;generator object &lt;genexpr&gt; at 0x10c312870&gt;</span></span><br><span class="line">print(next(generator))  <span class="comment"># 1</span></span><br><span class="line">print(next(generator))  <span class="comment"># 2</span></span><br><span class="line">print(next(generator))  <span class="comment"># 3</span></span><br><span class="line">print(next(generator))  <span class="comment"># raise StopIteration</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<a id="more"></a>
-<ul>
-<li>yield<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getGenerator</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]: </span><br><span class="line">        <span class="keyword">yield</span> i</span><br><span class="line">    print(<span class="string">"done"</span>)</span><br><span class="line"></span><br><span class="line">generator = getGenerator()</span><br><span class="line">print(generator)  <span class="comment"># &lt;generator object getGenerator at 0x10c3128c0&gt;</span></span><br><span class="line">print(next(generator))  <span class="comment"># 1</span></span><br><span class="line">print(next(generator))  <span class="comment"># 2</span></span><br><span class="line">print(next(generator))  <span class="comment"># 3</span></span><br><span class="line">print(next(generator))  <span class="comment"># done &amp; raise StopIteration</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>当<code>yield</code>出现在函数中（yield只能定义在函数中），那么调用时不会直接运行函数而是返回一个生成器对象，生成器也是一个特殊的迭代器（实现了迭代器协议的对象）。</p>
-<ul>
-<li>第一次调用<code>next()</code>函数，遇见<code>yield</code>停下返回yield后面的内容</li>
-<li>再次调用<code>next()</code>函数，从上次yield语句处恢复，如果还存在<code>yield</code>则正常执行，否则函数体执行完毕抛出<code>StopIteration</code>异常<blockquote>
-<p>通俗的来说：yield相当于return，但yield会记住这个返回位置，再次执行会从这个位置开始。</p>
-</blockquote>
-</li>
-</ul>
-<p>生成器中<code>send()</code>是和<code>next()</code>一样能让生成器恢复执行的函数，不同的是<code>send(arg)</code>函数可以传递参数<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getGenerator</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]:</span><br><span class="line">        print(<span class="string">"before: "</span>, i)</span><br><span class="line">        t = <span class="keyword">yield</span> i</span><br><span class="line">        print(<span class="string">"after: "</span>, i, t)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">generator = getGenerator()</span><br><span class="line">print(generator)  <span class="comment"># &lt;generator object getGenerator at 0x10c3128c0&gt;</span></span><br><span class="line">generator.send(<span class="literal">None</span>)  <span class="comment"># before:  1</span></span><br><span class="line">next(generator)  <span class="comment"># after:  1 None &amp; before:  2</span></span><br><span class="line">generator.send(<span class="number">22</span>)  <span class="comment"># after:  2 22 &amp; before:  3</span></span><br><span class="line">generator.send(<span class="number">33</span>)  <span class="comment"># after:  3 33 &amp; raise StopIteration</span></span><br></pre></td></tr></table></figure></p>
-<p>注意第一次调用生成器不可以直接传递非None参数，因为yield还未准备好（无返回值），可以<code>generator.send(None)</code>或<code>next(generator)</code>。具体可以参考python源码:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">const char *msg = <span class="string">"can't send non-None value to a "</span></span><br><span class="line">                              <span class="string">"just-started generator"</span>;</span><br></pre></td></tr></table></figure></p>
-<p><a href="https://github.com/python/cpython/blob/3.9/Objects/genobject.c#L181" target="_blank" rel="noopener">https://github.com/python/cpython/blob/3.9/Objects/genobject.c#L181</a></p>
-<h3 id="迭代协议"><a href="#迭代协议" class="headerlink" title="迭代协议"></a>迭代协议</h3><p>什么是可迭代协议？</p>
-<blockquote>
-<p>当处理迭代时首先调用<code>可迭代对象.__iter__()</code>，返回迭代器。然后通过<code>迭代器.__next__()</code>获取迭代器的元素，直至抛出<code>StopIteration</code>。</p>
-</blockquote>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CustomGenerator</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, data)</span>:</span></span><br><span class="line">        self.data = data</span><br><span class="line">        self.index = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__iter__</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">"look at me"</span>)</span><br><span class="line">        <span class="keyword">return</span> self</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__next__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.index &lt; len(self.data):</span><br><span class="line">            val = self.data[self.index]</span><br><span class="line">            self.index += <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> val</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">raise</span> StopIteration</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">generator = CustomGenerator([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])</span><br><span class="line">print(generator)  <span class="comment"># &lt;__main__.CustomGenerator object at 0x1047161f0&gt;</span></span><br><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> generator:</span><br><span class="line">    print(x)</span><br><span class="line"><span class="comment"># look at me</span></span><br><span class="line"><span class="comment"># 1</span></span><br><span class="line"><span class="comment"># 2</span></span><br><span class="line"><span class="comment"># 3</span></span><br><span class="line">print(next(generator))  <span class="comment"># raise StopIteration</span></span><br></pre></td></tr></table></figure>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
+        <div class="article-info info-on-right">
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -250,165 +225,29 @@ var _hmt = _hmt || [];
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">python</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">data structures</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
         		</li>
       		
 		</ul>
 	</div>
 
-      
+          
 
-      
-
-      
-        
-<div class="share-btn share-icons tooltip-left">
-  <div class="tooltip tooltip-east">
-    <span class="tooltip-item">
-      <a href="javascript:;" class="share-sns share-outer">
-        <i class="icon icon-share"></i>
-      </a>
-    </span>
-    <span class="tooltip-content">
-      <div class="share-wrap">
-        <div class="share-icons">
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="icon icon-weibo"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="icon icon-weixin"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="icon icon-qq"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="icon icon-douban"></i>
-          </a>
-          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a>
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="icon icon-facebook"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="icon icon-twitter"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="icon icon-google"></i>
-          </a>
         </div>
-      </div>
-    </span>
-  </div>
-</div>
-
-<div class="page-modal wx-share js-wx-box">
-  <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
-  <p>扫一扫，分享到微信</p>
-  <div class="wx-qrcode">
-    <img src="https://api.pwmqr.com/qrcode/create/?url=http://xupin.im/2021/11/22/python-yield/" alt="微信分享二维码">
-  </div>
-</div>
-
-<div class="mask js-mask"></div>
-      
-      <div class="clearfix"></div>
-    </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-  
-<nav id="article-nav">
-  
-    <a href="/2021/12/02/go-coroutine-query/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          Go学习笔记 - 并发查询单表
-        
-      </div>
-    </a>
   
   
-    <a href="/2021/11/18/mysql-cursor/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Mysql学习笔记 - cursor</div>
-      <i class="icon-circle-right"></i>
-    </a>
-  
-</nav>
-
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3201242774373382"
-     crossorigin="anonymous"></script>
-  <!-- 文章广告 -->
-  <ins class="adsbygoogle"
-      style="display:block"
-      data-ad-client="ca-pub-3201242774373382"
-      data-ad-slot="3704842143"
-      data-ad-format="auto"
-      data-full-width-responsive="true"></ins>
-  <script>
-      (adsbygoogle = window.adsbygoogle || []).push({});
-  </script>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-        <div class="toc-container tooltip-left">
-            <i class="icon-font icon-category"></i>
-            <div class="tooltip tooltip-east">
-                <span class="tooltip-item">
-                </span>
-                <span class="tooltip-content">
-                    <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#生成器"><span class="toc-number">1.</span> <span class="toc-text">生成器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#原理"><span class="toc-number">2.</span> <span class="toc-text">原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#迭代协议"><span class="toc-number">3.</span> <span class="toc-text">迭代协议</span></a></li></ol>
-                    </div>
-                </span>
-            </div>
-        </div>
-        
-    </div>
-</aside>
-
-
-  
-  
+    </div></section>
   
 
-  
-
-  
-  <div id="gitalk-container" style="padding: 0px 30px 0px 30px;"></div>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
-<script type="text/javascript">
-    if (true) {
-        var gitalk = new Gitalk({
-            clientID: 'e3e84fb1a50e16e66f89',
-            clientSecret: '5690def96adce57dd5993ec671c2413afd60aa41',
-            repo: 'xupin.github.io',
-            owner: 'xupin',
-            admin: ['xupin'],
-            id: 'Python学习笔记 - yield',
-            distractionFreeMode: 'true'
-        })
-        gitalk.render('gitalk-container')
-    }
-</script>
-  
-
-  
-
-  
+    
 
 
           </div>
@@ -431,8 +270,8 @@ var _hmt = _hmt || [];
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: true,
-		isArchive: false,
+		isPost: false,
+		isArchive: true,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
