@@ -188,6 +188,100 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-data-structures-algorithms-ast" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/12/13/data-structures-algorithms-ast/">数据结构与算法 - AST</a>
+    </h1>
+  
+
+        
+        <a href="/2022/12/13/data-structures-algorithms-ast/" class="archive-article-date">
+  	<time datetime="2022-12-12T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-12-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>AST（Abstract syntax tree）抽象语法树，用于表示编程语言源代码的一种抽象语法的结构，树的每个节点都对应源代码中的一个结构。</p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>计算机如何生成AST结构？一般来说顺序如下：</p>
+<ol>
+<li>词法分析</li>
+</ol>
+<blockquote>
+<p>扫描源代码，生成标记（token）</p>
+</blockquote>
+<ol>
+<li>语法分析</li>
+</ol>
+<blockquote>
+<p>解析tokens，构造AST结构</p>
+</blockquote>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">data structures</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/12/13/data-structures-algorithms-ast/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-data-structures-algorithms-tire" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -195,7 +289,7 @@ var _hmt = _hmt || [];
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2022/12/11/data-structures-algorithms-tire/">数据结构与算法 - 前缀树</a>
+      <a class="article-title" href="/2022/12/11/data-structures-algorithms-tire/">数据结构与算法 - Tire树</a>
     </h1>
   
 
@@ -208,7 +302,7 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>前缀树又称单词查找树、Trie树、字典树，是一种哈希树变种的树形结构。核心思想是空间换时间，利用字符串的公共前缀来提高查询效率，常常被应用字符统计、检索等场景，比如搜索引擎的词频统计和提示等</p>
+        <p>Tire树又称单词查找树、前缀树，是一种哈希树变种的树形结构。核心思想是空间换时间，利用字符串的公共前缀来提高查询效率，常常被应用字符统计、检索等场景，比如搜索引擎的词频统计和提示等</p>
 <p><img src="/assets/tire/suggestion.jpeg" alt="drawing" width="400" height="200"></p>
 <h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>前缀树的存储原理很简单，即合并字符串相同的字符前缀进行存储。</p>
 <p>比如，存储<code>dog</code>、<code>cat</code>、<code>doing</code>三个字符串的树结构：</p>
@@ -782,83 +876,6 @@ var _hmt = _hmt || [];
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2022/07/14/go-generic/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-go-init" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/08/go-init/">Go学习笔记 - init函数</a>
-    </h1>
-  
-
-        
-        <a href="/2022/03/08/go-init/" class="archive-article-date">
-  	<time datetime="2022-03-07T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-08</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>Golang中的特殊函数，会先于main函数执行且不能被调用。该函数无入参、返回值，同时支持选择性定义。也可以选择定义多个init函数，但建议只定义一个。<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">init</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">"init1"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">init</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">"init2"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">"main"</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// init1</span></span><br><span class="line"><span class="comment">// init3</span></span><br><span class="line"><span class="comment">// main</span></span><br></pre></td></tr></table></figure></p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">golang</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/03/08/go-init/">展开全文 >></a>
         </p>
       
 

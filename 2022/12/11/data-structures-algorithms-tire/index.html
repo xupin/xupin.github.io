@@ -6,22 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
-  <title>数据结构与算法 - 前缀树 | Mark&#39;s blog</title>
+  <title>数据结构与算法 - Tire树 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="前缀树又称单词查找树、Trie树、字典树，是一种哈希树变种的树形结构。核心思想是空间换时间，利用字符串的公共前缀来提高查询效率，常常被应用字符统计、检索等场景，比如搜索引擎的词频统计和提示等  原理前缀树的存储原理很简单，即合并字符串相同的字符前缀进行存储。 比如，存储dog、cat、doing三个字符串的树结构：">
+  <meta name="description" content="Tire树又称单词查找树、前缀树，是一种哈希树变种的树形结构。核心思想是空间换时间，利用字符串的公共前缀来提高查询效率，常常被应用字符统计、检索等场景，比如搜索引擎的词频统计和提示等  原理前缀树的存储原理很简单，即合并字符串相同的字符前缀进行存储。 比如，存储dog、cat、doing三个字符串的树结构：">
 <meta name="keywords" content="develop,data structures,algorithms">
 <meta property="og:type" content="article">
-<meta property="og:title" content="数据结构与算法 - 前缀树">
+<meta property="og:title" content="数据结构与算法 - Tire树">
 <meta property="og:url" content="http://xupin.im/2022/12/11/data-structures-algorithms-tire/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="前缀树又称单词查找树、Trie树、字典树，是一种哈希树变种的树形结构。核心思想是空间换时间，利用字符串的公共前缀来提高查询效率，常常被应用字符统计、检索等场景，比如搜索引擎的词频统计和提示等  原理前缀树的存储原理很简单，即合并字符串相同的字符前缀进行存储。 比如，存储dog、cat、doing三个字符串的树结构：">
+<meta property="og:description" content="Tire树又称单词查找树、前缀树，是一种哈希树变种的树形结构。核心思想是空间换时间，利用字符串的公共前缀来提高查询效率，常常被应用字符统计、检索等场景，比如搜索引擎的词频统计和提示等  原理前缀树的存储原理很简单，即合并字符串相同的字符前缀进行存储。 比如，存储dog、cat、doing三个字符串的树结构：">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://xupin.im/assets/tire/suggestion.jpeg">
 <meta property="og:image" content="http://xupin.im/assets/tire/tire.png">
-<meta property="og:updated_time" content="2022-12-13T03:06:45.294Z">
+<meta property="og:updated_time" content="2022-12-13T06:45:11.120Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="数据结构与算法 - 前缀树">
-<meta name="twitter:description" content="前缀树又称单词查找树、Trie树、字典树，是一种哈希树变种的树形结构。核心思想是空间换时间，利用字符串的公共前缀来提高查询效率，常常被应用字符统计、检索等场景，比如搜索引擎的词频统计和提示等  原理前缀树的存储原理很简单，即合并字符串相同的字符前缀进行存储。 比如，存储dog、cat、doing三个字符串的树结构：">
+<meta name="twitter:title" content="数据结构与算法 - Tire树">
+<meta name="twitter:description" content="Tire树又称单词查找树、前缀树，是一种哈希树变种的树形结构。核心思想是空间换时间，利用字符串的公共前缀来提高查询效率，常常被应用字符统计、检索等场景，比如搜索引擎的词频统计和提示等  原理前缀树的存储原理很简单，即合并字符串相同的字符前缀进行存储。 比如，存储dog、cat、doing三个字符串的树结构：">
 <meta name="twitter:image" content="http://xupin.im/assets/tire/suggestion.jpeg">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
@@ -197,7 +197,7 @@ var _hmt = _hmt || [];
         
   
     <h1 class="article-title" itemprop="name">
-      数据结构与算法 - 前缀树
+      数据结构与算法 - Tire树
     </h1>
   
 
@@ -210,7 +210,7 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>前缀树又称单词查找树、Trie树、字典树，是一种哈希树变种的树形结构。核心思想是空间换时间，利用字符串的公共前缀来提高查询效率，常常被应用字符统计、检索等场景，比如搜索引擎的词频统计和提示等</p>
+        <p>Tire树又称单词查找树、前缀树，是一种哈希树变种的树形结构。核心思想是空间换时间，利用字符串的公共前缀来提高查询效率，常常被应用字符统计、检索等场景，比如搜索引擎的词频统计和提示等</p>
 <p><img src="/assets/tire/suggestion.jpeg" alt="drawing" width="400" height="200"></p>
 <h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>前缀树的存储原理很简单，即合并字符串相同的字符前缀进行存储。</p>
 <p>比如，存储<code>dog</code>、<code>cat</code>、<code>doing</code>三个字符串的树结构：</p>
@@ -336,6 +336,15 @@ var _hmt = _hmt || [];
   
 <nav id="article-nav">
   
+    <a href="/2022/12/13/data-structures-algorithms-ast/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          数据结构与算法 - AST
+        
+      </div>
+    </a>
+  
   
     <a href="/2022/10/08/data-structures-algorithms-aoi/" id="article-nav-older" class="article-nav-link-wrap">
       <div class="article-nav-title">数据结构与算法 - AOI</div>
@@ -405,7 +414,7 @@ var _hmt = _hmt || [];
             repo: 'xupin.github.io',
             owner: 'xupin',
             admin: ['xupin'],
-            id: '数据结构与算法 - 前缀树',
+            id: '数据结构与算法 - Tire树',
             distractionFreeMode: 'true'
         })
         gitalk.render('gitalk-container')
