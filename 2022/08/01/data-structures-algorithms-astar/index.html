@@ -9,7 +9,7 @@
   <title>数据结构与算法 - AStar(A*) | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="寻路算法是游戏比较重要的组成部分之一，尤其在国内游戏很常见的自动寻路系统，比如操纵角色从A点到B点的移动。计算最短路径有很多不同的算法，比如：Dijkstra、AStar（A*）、NavMesh（多边形算法）、RVO动态避障等等 A*寻路算法寻路算法的移动路径核心有2点：最短、可移动。 所以首先需要确定起点坐标的相邻节点（4方向、8方向），然后通过计算最靠近终点坐标的相邻坐标（不考虑障碍物）确认检">
-<meta name="keywords" content="develop,data structures,algorithms,gamedev">
+<meta name="keywords" content="develop,data structures,algorithms">
 <meta property="og:type" content="article">
 <meta property="og:title" content="数据结构与算法 - AStar(A*)">
 <meta property="og:url" content="http://xupin.im/2022/08/01/data-structures-algorithms-astar/index.html">
@@ -18,7 +18,7 @@
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://xupin.im/assets/astar/grid.png">
 <meta property="og:image" content="http://xupin.im/assets/astar/3x3.png">
-<meta property="og:updated_time" content="2022-10-08T11:35:48.195Z">
+<meta property="og:updated_time" content="2022-12-15T04:13:50.907Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据结构与算法 - AStar(A*)">
 <meta name="twitter:description" content="寻路算法是游戏比较重要的组成部分之一，尤其在国内游戏很常见的自动寻路系统，比如操纵角色从A点到B点的移动。计算最短路径有很多不同的算法，比如：Dijkstra、AStar（A*）、NavMesh（多边形算法）、RVO动态避障等等 A*寻路算法寻路算法的移动路径核心有2点：最短、可移动。 所以首先需要确定起点坐标的相邻节点（4方向、8方向），然后通过计算最靠近终点坐标的相邻坐标（不考虑障碍物）确认检">
@@ -75,7 +75,7 @@ var _hmt = _hmt || [];
 <div class="intrude-less">
 	<header id="header" class="inner">
 		<a href="/" class="profilepic">
-			<img src="/assets/imgs/avatar.jpg" class="js-avatar">
+			<img src="/assets/imgs/avatar.png" class="js-avatar">
 		</a>
 		<hgroup>
 		  <h1 class="header-author"><a href="/">Mark</a></h1>
@@ -91,24 +91,22 @@ var _hmt = _hmt || [];
 	        
 				<li><a href="/tags/develop">Develop</a></li>
 	        
-				<li><a href="/tags/tools">Tools</a></li>
+				<li><a href="/tags/algorithms">Algorithm</a></li>
 	        
-				<li><a href="/tags/gamedev">Game Dev</a></li>
+				<li><a href="/tags/biscuits">Biscuit</a></li>
 	        
 			</ul>
 		</nav>
 		<nav class="header-smart-menu">
     		
     			
-    			<a q-on="click: openSlider(e, 'innerArchive')" href="javascript:void(0)">所有文章</a>
+    			<a q-on="click: openSlider(e, 'innerArchive')" href="javascript:void(0)">Search</a>
     			
             
     			
-    			<a q-on="click: openSlider(e, 'friends')" href="javascript:void(0)">友链</a>
-    			
             
     			
-    			<a q-on="click: openSlider(e, 'aboutme')" href="javascript:void(0)">关于我</a>
+    			<a q-on="click: openSlider(e, 'aboutme')" href="javascript:void(0)">About</a>
     			
             
 		</nav>
@@ -135,7 +133,7 @@ var _hmt = _hmt || [];
 	<div class="intrude-less">
 		<header id="header" class="inner">
 			<div class="profilepic">
-				<img src="/assets/imgs/avatar.jpg" class="js-avatar">
+				<img src="/assets/imgs/avatar.png" class="js-avatar">
 			</div>
 			<hgroup>
 			  <h1 class="header-author js-header-author">Mark</h1>
@@ -173,9 +171,9 @@ var _hmt = _hmt || [];
 		        
 					<li style="width: 25%"><a href="/tags/develop">Develop</a></li>
 		        
-					<li style="width: 25%"><a href="/tags/tools">Tools</a></li>
+					<li style="width: 25%"><a href="/tags/algorithms">Algorithm</a></li>
 		        
-					<li style="width: 25%"><a href="/tags/gamedev">Game Dev</a></li>
+					<li style="width: 25%"><a href="/tags/biscuits">Biscuit</a></li>
 		        
 				</ul>
 			</nav>
@@ -321,10 +319,6 @@ var _hmt = _hmt || [];
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
         		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">gamedev</a>
-        		</li>
       		
 		</ul>
 	</div>
@@ -404,7 +398,7 @@ var _hmt = _hmt || [];
   
   
     <a href="/2022/07/19/data-structures-algorithms-linked-list/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">数据结构与算法 - 链表</div>
+      <div class="article-nav-title">数据结构与算法 - Linked list</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -532,8 +526,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
       
     
       
-      
-      
     
       
       
@@ -545,15 +537,13 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
     
     
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'innerArchive')"><a href="javascript:void(0)" q-class="active:innerArchive">所有文章</a></li>
+      <li style="width: 50%" q-on="click: openSlider(e, 'innerArchive')"><a href="javascript:void(0)" q-class="active:innerArchive">Search</a></li>
       
         
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'friends')"><a href="javascript:void(0)" q-class="active:friends">友链</a></li>
-      
         
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'aboutme')"><a href="javascript:void(0)" q-class="active:aboutme">关于我</a></li>
+      <li style="width: 50%" q-on="click: openSlider(e, 'aboutme')"><a href="javascript:void(0)" q-class="active:aboutme">About</a></li>
       
         
     </ul>
@@ -676,6 +666,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">tools</a>
               </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
             
             <div class="clearfix"></div>
           </ul>
@@ -720,22 +714,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
     	</section>
     
 
-    
-    	<section class="tools-section tools-section-friends" q-show="friends">
-  		
-        <ul class="search-ul">
-          
-            <li class="search-li">
-              <a href="http://memphis.wang" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>Memphis&#39; Talk</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="https://github.com/YangYmimi" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>Superman</a>
-            </li>
-          
-        </ul>
-  		
-    	</section>
     
 
     

@@ -9,14 +9,14 @@
   <title>PHP小知识 - aliyundb SQLSetStatement is NOT supported | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="PHP项目在数据库迁移使用ADB（aliyundb）时发现这个问题，具体错误描述是：1SQLSTATE[HY000]: General error: 1815 [15022, 2020010711034801025210201503151413416] statement type: class com.alibaba.fastsql.sql.ast.statement.SQLSetStateme">
-<meta name="keywords" content="develop,php">
+<meta name="keywords" content="develop,php,biscuits">
 <meta property="og:type" content="article">
 <meta property="og:title" content="PHP小知识 - aliyundb SQLSetStatement is NOT supported">
 <meta property="og:url" content="http://xupin.im/2020/01/07/php-aliyundb/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
 <meta property="og:description" content="PHP项目在数据库迁移使用ADB（aliyundb）时发现这个问题，具体错误描述是：1SQLSTATE[HY000]: General error: 1815 [15022, 2020010711034801025210201503151413416] statement type: class com.alibaba.fastsql.sql.ast.statement.SQLSetStateme">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2022-07-15T02:59:17.755Z">
+<meta property="og:updated_time" content="2022-12-15T04:31:18.371Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PHP小知识 - aliyundb SQLSetStatement is NOT supported">
 <meta name="twitter:description" content="PHP项目在数据库迁移使用ADB（aliyundb）时发现这个问题，具体错误描述是：1SQLSTATE[HY000]: General error: 1815 [15022, 2020010711034801025210201503151413416] statement type: class com.alibaba.fastsql.sql.ast.statement.SQLSetStateme">
@@ -72,7 +72,7 @@ var _hmt = _hmt || [];
 <div class="intrude-less">
 	<header id="header" class="inner">
 		<a href="/" class="profilepic">
-			<img src="/assets/imgs/avatar.jpg" class="js-avatar">
+			<img src="/assets/imgs/avatar.png" class="js-avatar">
 		</a>
 		<hgroup>
 		  <h1 class="header-author"><a href="/">Mark</a></h1>
@@ -88,24 +88,22 @@ var _hmt = _hmt || [];
 	        
 				<li><a href="/tags/develop">Develop</a></li>
 	        
-				<li><a href="/tags/tools">Tools</a></li>
+				<li><a href="/tags/algorithms">Algorithm</a></li>
 	        
-				<li><a href="/tags/gamedev">Game Dev</a></li>
+				<li><a href="/tags/biscuits">Biscuit</a></li>
 	        
 			</ul>
 		</nav>
 		<nav class="header-smart-menu">
     		
     			
-    			<a q-on="click: openSlider(e, 'innerArchive')" href="javascript:void(0)">所有文章</a>
+    			<a q-on="click: openSlider(e, 'innerArchive')" href="javascript:void(0)">Search</a>
     			
             
     			
-    			<a q-on="click: openSlider(e, 'friends')" href="javascript:void(0)">友链</a>
-    			
             
     			
-    			<a q-on="click: openSlider(e, 'aboutme')" href="javascript:void(0)">关于我</a>
+    			<a q-on="click: openSlider(e, 'aboutme')" href="javascript:void(0)">About</a>
     			
             
 		</nav>
@@ -132,7 +130,7 @@ var _hmt = _hmt || [];
 	<div class="intrude-less">
 		<header id="header" class="inner">
 			<div class="profilepic">
-				<img src="/assets/imgs/avatar.jpg" class="js-avatar">
+				<img src="/assets/imgs/avatar.png" class="js-avatar">
 			</div>
 			<hgroup>
 			  <h1 class="header-author js-header-author">Mark</h1>
@@ -170,9 +168,9 @@ var _hmt = _hmt || [];
 		        
 					<li style="width: 25%"><a href="/tags/develop">Develop</a></li>
 		        
-					<li style="width: 25%"><a href="/tags/tools">Tools</a></li>
+					<li style="width: 25%"><a href="/tags/algorithms">Algorithm</a></li>
 		        
-					<li style="width: 25%"><a href="/tags/gamedev">Game Dev</a></li>
+					<li style="width: 25%"><a href="/tags/biscuits">Biscuit</a></li>
 		        
 				</ul>
 			</nav>
@@ -229,6 +227,10 @@ var _hmt = _hmt || [];
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">php</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">biscuits</a>
         		</li>
       		
 		</ul>
@@ -437,8 +439,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
       
     
       
-      
-      
     
       
       
@@ -450,15 +450,13 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
     
     
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'innerArchive')"><a href="javascript:void(0)" q-class="active:innerArchive">所有文章</a></li>
+      <li style="width: 50%" q-on="click: openSlider(e, 'innerArchive')"><a href="javascript:void(0)" q-class="active:innerArchive">Search</a></li>
       
         
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'friends')"><a href="javascript:void(0)" q-class="active:friends">友链</a></li>
-      
         
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'aboutme')"><a href="javascript:void(0)" q-class="active:aboutme">关于我</a></li>
+      <li style="width: 50%" q-on="click: openSlider(e, 'aboutme')"><a href="javascript:void(0)" q-class="active:aboutme">About</a></li>
       
         
     </ul>
@@ -581,6 +579,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">tools</a>
               </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
             
             <div class="clearfix"></div>
           </ul>
@@ -625,22 +627,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
     	</section>
     
 
-    
-    	<section class="tools-section tools-section-friends" q-show="friends">
-  		
-        <ul class="search-ul">
-          
-            <li class="search-li">
-              <a href="http://memphis.wang" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>Memphis&#39; Talk</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="https://github.com/YangYmimi" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>Superman</a>
-            </li>
-          
-        </ul>
-  		
-    	</section>
     
 
     

@@ -6,19 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
-  <title>数据结构与算法 - 链表 | Mark&#39;s blog</title>
+  <title>数据结构与算法 - Linked list | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="链表是一种不需要连续空间存储的线性数据结构，通过指针把数据节点链接起来。数据节点的逻辑顺序取决于链表指针链接的先后顺序，同时，链表也有：单链表、双链表、循环链表等多类。 定义链表是由一系列节点组成，除此之外链表还有几个基本概念：  数据节点 一般由两块组成：数据域、指针域。   首元节点 链表的第一个数据节点。   头节点 非必要节点，放在第一个数据节点前。一般用于存储链表的信息（比如说链表长度等">
 <meta name="keywords" content="develop,data structures,algorithms">
 <meta property="og:type" content="article">
-<meta property="og:title" content="数据结构与算法 - 链表">
+<meta property="og:title" content="数据结构与算法 - Linked list">
 <meta property="og:url" content="http://xupin.im/2022/07/19/data-structures-algorithms-linked-list/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
 <meta property="og:description" content="链表是一种不需要连续空间存储的线性数据结构，通过指针把数据节点链接起来。数据节点的逻辑顺序取决于链表指针链接的先后顺序，同时，链表也有：单链表、双链表、循环链表等多类。 定义链表是由一系列节点组成，除此之外链表还有几个基本概念：  数据节点 一般由两块组成：数据域、指针域。   首元节点 链表的第一个数据节点。   头节点 非必要节点，放在第一个数据节点前。一般用于存储链表的信息（比如说链表长度等">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2022-07-25T10:37:21.588Z">
+<meta property="og:updated_time" content="2022-12-15T04:17:53.810Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="数据结构与算法 - 链表">
+<meta name="twitter:title" content="数据结构与算法 - Linked list">
 <meta name="twitter:description" content="链表是一种不需要连续空间存储的线性数据结构，通过指针把数据节点链接起来。数据节点的逻辑顺序取决于链表指针链接的先后顺序，同时，链表也有：单链表、双链表、循环链表等多类。 定义链表是由一系列节点组成，除此之外链表还有几个基本概念：  数据节点 一般由两块组成：数据域、指针域。   首元节点 链表的第一个数据节点。   头节点 非必要节点，放在第一个数据节点前。一般用于存储链表的信息（比如说链表长度等">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
@@ -72,7 +72,7 @@ var _hmt = _hmt || [];
 <div class="intrude-less">
 	<header id="header" class="inner">
 		<a href="/" class="profilepic">
-			<img src="/assets/imgs/avatar.jpg" class="js-avatar">
+			<img src="/assets/imgs/avatar.png" class="js-avatar">
 		</a>
 		<hgroup>
 		  <h1 class="header-author"><a href="/">Mark</a></h1>
@@ -88,24 +88,22 @@ var _hmt = _hmt || [];
 	        
 				<li><a href="/tags/develop">Develop</a></li>
 	        
-				<li><a href="/tags/tools">Tools</a></li>
+				<li><a href="/tags/algorithms">Algorithm</a></li>
 	        
-				<li><a href="/tags/gamedev">Game Dev</a></li>
+				<li><a href="/tags/biscuits">Biscuit</a></li>
 	        
 			</ul>
 		</nav>
 		<nav class="header-smart-menu">
     		
     			
-    			<a q-on="click: openSlider(e, 'innerArchive')" href="javascript:void(0)">所有文章</a>
+    			<a q-on="click: openSlider(e, 'innerArchive')" href="javascript:void(0)">Search</a>
     			
             
     			
-    			<a q-on="click: openSlider(e, 'friends')" href="javascript:void(0)">友链</a>
-    			
             
     			
-    			<a q-on="click: openSlider(e, 'aboutme')" href="javascript:void(0)">关于我</a>
+    			<a q-on="click: openSlider(e, 'aboutme')" href="javascript:void(0)">About</a>
     			
             
 		</nav>
@@ -132,7 +130,7 @@ var _hmt = _hmt || [];
 	<div class="intrude-less">
 		<header id="header" class="inner">
 			<div class="profilepic">
-				<img src="/assets/imgs/avatar.jpg" class="js-avatar">
+				<img src="/assets/imgs/avatar.png" class="js-avatar">
 			</div>
 			<hgroup>
 			  <h1 class="header-author js-header-author">Mark</h1>
@@ -170,9 +168,9 @@ var _hmt = _hmt || [];
 		        
 					<li style="width: 25%"><a href="/tags/develop">Develop</a></li>
 		        
-					<li style="width: 25%"><a href="/tags/tools">Tools</a></li>
+					<li style="width: 25%"><a href="/tags/algorithms">Algorithm</a></li>
 		        
-					<li style="width: 25%"><a href="/tags/gamedev">Game Dev</a></li>
+					<li style="width: 25%"><a href="/tags/biscuits">Biscuit</a></li>
 		        
 				</ul>
 			</nav>
@@ -194,7 +192,7 @@ var _hmt = _hmt || [];
         
   
     <h1 class="article-title" itemprop="name">
-      数据结构与算法 - 链表
+      数据结构与算法 - Linked list
     </h1>
   
 
@@ -413,7 +411,7 @@ var _hmt = _hmt || [];
             repo: 'xupin.github.io',
             owner: 'xupin',
             admin: ['xupin'],
-            id: '数据结构与算法 - 链表',
+            id: '数据结构与算法 - Linked list',
             distractionFreeMode: 'true'
         })
         gitalk.render('gitalk-container')
@@ -474,8 +472,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
       
     
       
-      
-      
     
       
       
@@ -487,15 +483,13 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
     
     
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'innerArchive')"><a href="javascript:void(0)" q-class="active:innerArchive">所有文章</a></li>
+      <li style="width: 50%" q-on="click: openSlider(e, 'innerArchive')"><a href="javascript:void(0)" q-class="active:innerArchive">Search</a></li>
       
         
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'friends')"><a href="javascript:void(0)" q-class="active:friends">友链</a></li>
-      
         
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'aboutme')"><a href="javascript:void(0)" q-class="active:aboutme">关于我</a></li>
+      <li style="width: 50%" q-on="click: openSlider(e, 'aboutme')"><a href="javascript:void(0)" q-class="active:aboutme">About</a></li>
       
         
     </ul>
@@ -618,6 +612,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">tools</a>
               </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
             
             <div class="clearfix"></div>
           </ul>
@@ -662,22 +660,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
     	</section>
     
 
-    
-    	<section class="tools-section tools-section-friends" q-show="friends">
-  		
-        <ul class="search-ul">
-          
-            <li class="search-li">
-              <a href="http://memphis.wang" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>Memphis&#39; Talk</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="https://github.com/YangYmimi" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>Superman</a>
-            </li>
-          
-        </ul>
-  		
-    	</section>
     
 
     

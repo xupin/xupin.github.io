@@ -9,7 +9,7 @@
   <title>数据结构与算法 - AOI | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="AOI（Area Of Interest）翻译过来称为“感兴趣的区域”，用于计算玩家与玩家（或其他Entity）之间彼此进入、离开、移动视野的算法。通俗的解释比如，玩家离开某个地图时，计算出需要通知的其他玩家。 AOI模块是多人联机游戏服务器中很重要的功能模块之一，AOI模块的“好”与“坏”会很大程度上影响服务器的运行效率。 思路当一个玩家进入场景后，首先要计算出场景中的其他所有玩家并放进对象集合">
-<meta name="keywords" content="develop,data structures,algorithms,gamedev">
+<meta name="keywords" content="develop,data structures,algorithms">
 <meta property="og:type" content="article">
 <meta property="og:title" content="数据结构与算法 - AOI">
 <meta property="og:url" content="http://xupin.im/2022/10/08/data-structures-algorithms-aoi/index.html">
@@ -18,7 +18,7 @@
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://xupin.im/assets/aoi/grid9.png">
 <meta property="og:image" content="http://xupin.im/assets/aoi/tower.png">
-<meta property="og:updated_time" content="2022-10-11T02:46:34.699Z">
+<meta property="og:updated_time" content="2022-12-15T04:13:48.976Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据结构与算法 - AOI">
 <meta name="twitter:description" content="AOI（Area Of Interest）翻译过来称为“感兴趣的区域”，用于计算玩家与玩家（或其他Entity）之间彼此进入、离开、移动视野的算法。通俗的解释比如，玩家离开某个地图时，计算出需要通知的其他玩家。 AOI模块是多人联机游戏服务器中很重要的功能模块之一，AOI模块的“好”与“坏”会很大程度上影响服务器的运行效率。 思路当一个玩家进入场景后，首先要计算出场景中的其他所有玩家并放进对象集合">
@@ -75,7 +75,7 @@ var _hmt = _hmt || [];
 <div class="intrude-less">
 	<header id="header" class="inner">
 		<a href="/" class="profilepic">
-			<img src="/assets/imgs/avatar.jpg" class="js-avatar">
+			<img src="/assets/imgs/avatar.png" class="js-avatar">
 		</a>
 		<hgroup>
 		  <h1 class="header-author"><a href="/">Mark</a></h1>
@@ -91,24 +91,22 @@ var _hmt = _hmt || [];
 	        
 				<li><a href="/tags/develop">Develop</a></li>
 	        
-				<li><a href="/tags/tools">Tools</a></li>
+				<li><a href="/tags/algorithms">Algorithm</a></li>
 	        
-				<li><a href="/tags/gamedev">Game Dev</a></li>
+				<li><a href="/tags/biscuits">Biscuit</a></li>
 	        
 			</ul>
 		</nav>
 		<nav class="header-smart-menu">
     		
     			
-    			<a q-on="click: openSlider(e, 'innerArchive')" href="javascript:void(0)">所有文章</a>
+    			<a q-on="click: openSlider(e, 'innerArchive')" href="javascript:void(0)">Search</a>
     			
             
     			
-    			<a q-on="click: openSlider(e, 'friends')" href="javascript:void(0)">友链</a>
-    			
             
     			
-    			<a q-on="click: openSlider(e, 'aboutme')" href="javascript:void(0)">关于我</a>
+    			<a q-on="click: openSlider(e, 'aboutme')" href="javascript:void(0)">About</a>
     			
             
 		</nav>
@@ -135,7 +133,7 @@ var _hmt = _hmt || [];
 	<div class="intrude-less">
 		<header id="header" class="inner">
 			<div class="profilepic">
-				<img src="/assets/imgs/avatar.jpg" class="js-avatar">
+				<img src="/assets/imgs/avatar.png" class="js-avatar">
 			</div>
 			<hgroup>
 			  <h1 class="header-author js-header-author">Mark</h1>
@@ -173,9 +171,9 @@ var _hmt = _hmt || [];
 		        
 					<li style="width: 25%"><a href="/tags/develop">Develop</a></li>
 		        
-					<li style="width: 25%"><a href="/tags/tools">Tools</a></li>
+					<li style="width: 25%"><a href="/tags/algorithms">Algorithm</a></li>
 		        
-					<li style="width: 25%"><a href="/tags/gamedev">Game Dev</a></li>
+					<li style="width: 25%"><a href="/tags/biscuits">Biscuit</a></li>
 		        
 				</ul>
 			</nav>
@@ -326,10 +324,6 @@ var _hmt = _hmt || [];
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
         		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">gamedev</a>
-        		</li>
       		
 		</ul>
 	</div>
@@ -402,7 +396,7 @@ var _hmt = _hmt || [];
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          数据结构与算法 - Tire树
+          数据结构与算法 - Tire Tree
         
       </div>
     </a>
@@ -537,8 +531,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
       
     
       
-      
-      
     
       
       
@@ -550,15 +542,13 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
     
     
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'innerArchive')"><a href="javascript:void(0)" q-class="active:innerArchive">所有文章</a></li>
+      <li style="width: 50%" q-on="click: openSlider(e, 'innerArchive')"><a href="javascript:void(0)" q-class="active:innerArchive">Search</a></li>
       
         
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'friends')"><a href="javascript:void(0)" q-class="active:friends">友链</a></li>
-      
         
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'aboutme')"><a href="javascript:void(0)" q-class="active:aboutme">关于我</a></li>
+      <li style="width: 50%" q-on="click: openSlider(e, 'aboutme')"><a href="javascript:void(0)" q-class="active:aboutme">About</a></li>
       
         
     </ul>
@@ -681,6 +671,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">tools</a>
               </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
             
             <div class="clearfix"></div>
           </ul>
@@ -725,22 +719,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
     	</section>
     
 
-    
-    	<section class="tools-section tools-section-friends" q-show="friends">
-  		
-        <ul class="search-ul">
-          
-            <li class="search-li">
-              <a href="http://memphis.wang" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>Memphis&#39; Talk</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="https://github.com/YangYmimi" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>Superman</a>
-            </li>
-          
-        </ul>
-  		
-    	</section>
     
 
     
