@@ -186,6 +186,90 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-mysql-index" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/16/mysql-index/">Mysql学习笔记 - 索引</a>
+    </h1>
+  
+
+        
+        <a href="/2019/12/16/mysql-index/" class="archive-article-date">
+  	<time datetime="2019-12-16T11:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-16</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>索引用于快速查找具有特定列值的行。没有索引，MySQL必须从第一行开始，然后通读整个表以找到相关的行。如果表中有相关​​列的索引，MySQL可以快速确定要在数据文件中间查找的位置，而不必查看所有数据。这比顺序读取每一行要快得多。<br>InnoDB和MyIsam只支持Btree，因此默认均是Btree，Memory和Heap支持Hash和Btree，如无明确声明，则默认索引均是Hash（包括主键）。</p>
+<h3 id="1-Mysql有哪些常用的索引"><a href="#1-Mysql有哪些常用的索引" class="headerlink" title="1.Mysql有哪些常用的索引"></a>1.Mysql有哪些常用的索引</h3><blockquote>
+<p>主键索引：数据列不允许重复，不允许为null，一个表只能有一个主键。</p>
+<p>唯一索引：数据列不允许重复，允许为null，一个表允许多个列创建唯一索引。</p>
+<p>普通索引：基本的索引类型，没有唯一性的限制，允许为null。</p>
+<p>全文索引：全文索引是目前实现大数据搜索的关键技术。</p>
+</blockquote>
+<h3 id="2-Mysql索引的建立原则"><a href="#2-Mysql索引的建立原则" class="headerlink" title="2.Mysql索引的建立原则"></a>2.Mysql索引的建立原则</h3><p>Mysql的索引遵循最左原则，在创建多列索引时，要根据业务需求，where条件中使用最频繁的一列放在最左边。</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/12/16/mysql-index/">More >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-mysql-transaction" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -640,7 +724,7 @@ var _hmt = _hmt || [];
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2022 Mark
+    		&copy; 2023 Mark
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -824,6 +908,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">game</a>
               </li>
             
             <div class="clearfix"></div>
