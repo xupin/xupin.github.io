@@ -6,19 +6,25 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
-  <title>Tag: develop | Mark&#39;s blog</title>
+  <title>游戏开发笔记 - 通信协议 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="安静的小屁屁">
-<meta name="keywords" content="nginx,php,golang,memcached,redis,mysql,mariadb,php7,前端,js,jquery,javascript,html5,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Mark&#39;s blog">
-<meta property="og:url" content="http://xupin.im/tags/develop/page/5/index.html">
+  <meta name="description" content="在网络游戏中，通信协议是其中必不可少的组成部分。一个通信协议的大小、结构将与服务器负载及客户端延迟息息相关。 前言游戏的通信协议，一般需要考虑2个部分：  网络传输协议  数据交换格式">
+<meta name="keywords" content="develop,game">
+<meta property="og:type" content="article">
+<meta property="og:title" content="游戏开发笔记 - 通信协议">
+<meta property="og:url" content="http://xupin.im/2023/02/27/game-communications-protocol/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="安静的小屁屁">
+<meta property="og:description" content="在网络游戏中，通信协议是其中必不可少的组成部分。一个通信协议的大小、结构将与服务器负载及客户端延迟息息相关。 前言游戏的通信协议，一般需要考虑2个部分：  网络传输协议  数据交换格式">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="http://xupin.im/assets/game-protocol/single.gif">
+<meta property="og:image" content="http://xupin.im/assets/game-protocol/two-way.gif">
+<meta property="og:image" content="http://xupin.im/assets/game-protocol/full-duplex.gif">
+<meta property="og:image" content="http://xupin.im/assets/game-protocol/structure.png">
+<meta property="og:updated_time" content="2023-02-27T06:46:22.417Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Mark&#39;s blog">
-<meta name="twitter:description" content="安静的小屁屁">
+<meta name="twitter:title" content="游戏开发笔记 - 通信协议">
+<meta name="twitter:description" content="在网络游戏中，通信协议是其中必不可少的组成部分。一个通信协议的大小、结构将与服务器负载及客户端延迟息息相关。 前言游戏的通信协议，一般需要考虑2个部分：  网络传输协议  数据交换格式">
+<meta name="twitter:image" content="http://xupin.im/assets/game-protocol/single.gif">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -184,36 +190,93 @@ var _hmt = _hmt || [];
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-game-communications-protocol" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      游戏开发笔记 - 通信协议
+    </h1>
+  
+
+        
+        <a href="/2023/02/27/game-communications-protocol/" class="archive-article-date">
+  	<time datetime="2023-02-26T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-02-27</time>
+</a>
+        
+      </header>
     
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在网络游戏中，通信协议是其中必不可少的组成部分。一个通信协议的大小、结构将与服务器负载及客户端延迟息息相关。</p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>游戏的通信协议，一般需要考虑2个部分：</p>
+<ol>
+<li><p>网络传输协议</p>
+</li>
+<li><p>数据交换格式</p>
+</li>
+</ol>
+<a id="more"></a>
+<h3 id="网络传输协议"><a href="#网络传输协议" class="headerlink" title="网络传输协议"></a>网络传输协议</h3><p>根据游戏类型的不同，网络传输协议选择也有些许不同。比如：</p>
+<ul>
+<li>弱联网类型</li>
+</ul>
+<blockquote>
+<p>单工/半双工通信协议：HTTP1.0、HTTP1.1</p>
+</blockquote>
+<ul>
+<li>强联网、强交互类型</li>
+</ul>
+<blockquote>
+<p>全双工通信协议：WebSocket、TCP</p>
+</blockquote>
+<ul>
+<li>强联网、实时交互类型</li>
+</ul>
+<blockquote>
+<p>UDP</p>
+</blockquote>
+<p>单工、半双工及全双工通信协议的区别用3张图来表示一下，具体内容留到下篇学习笔记再水…</p>
+<p>单工<br><img src="/assets/game-protocol/single.gif" width="300" height="100" alt="drawing"></p>
+<p>半双工<br><img src="/assets/game-protocol/two-way.gif" width="300" height="100" alt="drawing"></p>
+<p>全双工<br><img src="/assets/game-protocol/full-duplex.gif" width="300" height="100" alt="drawing"></p>
+<h3 id="数据交换格式"><a href="#数据交换格式" class="headerlink" title="数据交换格式"></a>数据交换格式</h3><p>对于数据交换格式来说，需要解决的最主要的问题就是内容语义清晰，结构稳定，通俗地说不同的程序都可以稳定的解析并且知道怎样去处理它们。</p>
+<p>对于数据结构，一般有以下几个选择：</p>
+<ul>
+<li>XML</li>
+</ul>
+<blockquote>
+<p>可读性高，解析难度高</p>
+</blockquote>
+<ul>
+<li>JSON</li>
+</ul>
+<blockquote>
+<p>可读性高、易解析、体积小</p>
+</blockquote>
+<ul>
+<li>Protocol Buffers</li>
+</ul>
+<blockquote>
+<p>可读性差、易解析、体积特别小</p>
+</blockquote>
+<p>在确定数据交换协议后，还需要制定数据交换的格式，保证数据不会出现歧义。比如下图这样的格式（未考虑加密）。</p>
+<p><img src="/assets/game-protocol/structure.png" alt="drawing"></p>
+<p>从左向右结构：<code>头字节表示协议名称的长度、中间部分是协议名称、最后是协议的具体数据（可以是XML、JSON、PB等）。</code></p>
+<h3 id="实现逻辑"><a href="#实现逻辑" class="headerlink" title="实现逻辑"></a>实现逻辑</h3><p>使用WebSocket + PB来实现一套通信协议，实现一个简易登录协议。</p>
+<p>协议文件<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">syntax = <span class="string">"proto3"</span>;</span><br><span class="line"></span><br><span class="line">option go_package = <span class="string">"./protocol"</span>;</span><br><span class="line"></span><br><span class="line">message login &#123;</span><br><span class="line">    <span class="keyword">string</span> username = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">string</span> password = <span class="number">2</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>服务端核心代码<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Packet <span class="keyword">struct</span> &#123;</span><br><span class="line">	Protocol <span class="keyword">string</span></span><br><span class="line">	Bytes    []<span class="keyword">byte</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Packet)</span> <span class="title">Encode</span><span class="params">()</span> []<span class="title">byte</span></span> &#123;</span><br><span class="line">	buffer := &amp;bytes.Buffer&#123;&#125;</span><br><span class="line">	<span class="comment">// 2字节，协议名称长度</span></span><br><span class="line">	buffer.Write(r.shortBytes(<span class="keyword">uint16</span>(<span class="built_in">len</span>(r.Protocol))))</span><br><span class="line">	<span class="comment">// 协议名称</span></span><br><span class="line">	buffer.WriteString(r.Protocol)</span><br><span class="line">	<span class="comment">// 协议内容</span></span><br><span class="line">	buffer.Write(r.Bytes)</span><br><span class="line">	<span class="keyword">return</span> buffer.Bytes()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Packet)</span> <span class="title">Decode</span><span class="params">()</span> []<span class="title">byte</span></span> &#123;</span><br><span class="line">	buffer := bytes.NewBuffer(r.Bytes)</span><br><span class="line">	byteLen := buffer.Len()</span><br><span class="line">	<span class="comment">// 2字节，协议名称长度</span></span><br><span class="line">	headLen := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">2</span>)</span><br><span class="line">	buffer.Read(headLen)</span><br><span class="line">	<span class="comment">// 协议名称</span></span><br><span class="line">	protocolLen := r.readShort(headLen)</span><br><span class="line">	protocol := <span class="built_in">make</span>([]<span class="keyword">byte</span>, protocolLen)</span><br><span class="line">	buffer.Read(protocol)</span><br><span class="line">	r.Protocol = <span class="keyword">string</span>(protocol)</span><br><span class="line">	<span class="comment">// 协议内容</span></span><br><span class="line">	bytes := <span class="built_in">make</span>([]<span class="keyword">byte</span>, byteLen<span class="number">-2</span>-<span class="keyword">int</span>(protocolLen))</span><br><span class="line">	buffer.Read(bytes)</span><br><span class="line">	r.Bytes = bytes</span><br><span class="line">	<span class="keyword">return</span> bytes</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Packet)</span> <span class="title">readShort</span><span class="params">(b []<span class="keyword">byte</span>)</span> <span class="title">uint16</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> binary.BigEndian.Uint16(b)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Packet)</span> <span class="title">shortBytes</span><span class="params">(i <span class="keyword">uint16</span>)</span> []<span class="title">byte</span></span> &#123;</span><br><span class="line">	bytes := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">2</span>)</span><br><span class="line">	binary.BigEndian.PutUint16(bytes, i)</span><br><span class="line">	<span class="keyword">return</span> bytes</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>附上完整实现：<br><a href="https://github.com/xupin/example/tree/main/protocol-cli" target="_blank" rel="noopener">客户端-ts</a><br><a href="https://github.com/xupin/example/tree/main/protocol-svr" target="_blank" rel="noopener">服务端-go</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2020" class="archive-year">2020</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/03/21/mysql-checkpoint/" class="archive-article-date">
-  	<time datetime="2020-03-20T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-21</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/03/21/mysql-checkpoint/">Mysql学习笔记 - 刷脏机制</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -223,340 +286,155 @@ var _hmt = _hmt || [];
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">game</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/03/19/laravel-chunk-upload/" class="archive-article-date">
-  	<time datetime="2020-03-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-19</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/03/19/laravel-chunk-upload/">PHP学习笔记 - 文件分片上传</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">laravel</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">dropzone</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/03/18/mysql-lru/" class="archive-article-date">
-  	<time datetime="2020-03-17T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-18</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/03/18/mysql-lru/">Mysql学习笔记 - LRU算法</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/03/15/mysql-int-length/" class="archive-article-date">
-  	<time datetime="2020-03-15T11:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-15</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/03/15/mysql-int-length/">Mysql学习笔记 - Int长度的问题</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">mysql int length</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/01/19/go-console/" class="archive-article-date">
-  	<time datetime="2020-01-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-19</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/01/19/go-console/">Go学习笔记 - 定时任务调度</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">golang</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/01/07/php-aliyundb/" class="archive-article-date">
-  	<time datetime="2020-01-06T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-07</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/01/07/php-aliyundb/">PHP小知识 - aliyundb SQLSetStatement is NOT supported</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">php</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">biscuits</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
       
-        </div></section>
+
       
+
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/12/31/go-gin/" class="archive-article-date">
-  	<time datetime="2019-12-30T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-31</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/12/31/go-gin/">Go学习笔记 - WEB框架Gin</a>
-    </h1>
-  
+      </div>
+    </span>
+  </div>
+</div>
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">golang</a>
-        		</li>
-      		
-		</ul>
-	</div>
+<div class="page-modal wx-share js-wx-box">
+  <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+  <p>扫一扫，分享到微信</p>
+  <div class="wx-qrcode">
+    <img src="https://api.pwmqr.com/qrcode/create/?url=http://xupin.im/2023/02/27/game-communications-protocol/" alt="微信分享二维码">
+  </div>
+</div>
 
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/12/17/elasticsearch-group/" class="archive-article-date">
-  	<time datetime="2019-12-16T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-17</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2023/01/30/game-map-editor/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">游戏开发笔记 - 地图编辑器</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3201242774373382"
+     crossorigin="anonymous"></script>
+  <!-- 文章广告 -->
+  <ins class="adsbygoogle"
+      style="display:block"
+      data-ad-client="ca-pub-3201242774373382"
+      data-ad-slot="3704842143"
+      data-ad-format="auto"
+      data-full-width-responsive="true"></ins>
+  <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/12/17/elasticsearch-group/">ES学习笔记 - 实现列分组统计</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">elasticsearch</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#网络传输协议"><span class="toc-number">2.</span> <span class="toc-text">网络传输协议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据交换格式"><span class="toc-number">3.</span> <span class="toc-text">数据交换格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实现逻辑"><span class="toc-number">4.</span> <span class="toc-text">实现逻辑</span></a></li></ol>
+                    </div>
+                </span>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
+        
+    </div>
+</aside>
+
+
   
   
-    </div></section>
   
 
-    
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/tags/develop/page/4/">&laquo; Prev</a><a class="page-number" href="/tags/develop/">1</a><span class="space">&hellip;</span><a class="page-number" href="/tags/develop/page/3/">3</a><a class="page-number" href="/tags/develop/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/tags/develop/page/6/">6</a><a class="extend next" rel="next" href="/tags/develop/page/6/">Next &raquo;</a>
-    </nav>
+  
+
+  
+  <div id="gitalk-container" style="padding: 0px 30px 0px 30px;"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    if (true) {
+        var gitalk = new Gitalk({
+            clientID: 'e3e84fb1a50e16e66f89',
+            clientSecret: '5690def96adce57dd5993ec671c2413afd60aa41',
+            repo: 'xupin.github.io',
+            owner: 'xupin',
+            admin: ['xupin'],
+            id: '游戏开发笔记 - 通信协议',
+            distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')
+    }
+</script>
+  
+
+  
+
   
 
 
@@ -580,9 +458,9 @@ var _hmt = _hmt || [];
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
