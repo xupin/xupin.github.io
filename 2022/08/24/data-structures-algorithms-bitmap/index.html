@@ -18,7 +18,7 @@
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://xupin.im/assets/bitmap/byte.png">
 <meta property="og:image" content="http://xupin.im/assets/bitmap/byte-4.png">
-<meta property="og:updated_time" content="2022-08-25T12:40:30.084Z">
+<meta property="og:updated_time" content="2023-11-07T14:54:44.705Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据结构与算法 - BitMap">
 <meta name="twitter:description" content="BitMap（位图）是一种以bit方式存储数据的数据结构，以此来提高空间利用率。 定义BitMap，通过字面意思理解利用bit映射数据的存储结构。所以它应该有Key、Value，Key是bit、Value是要存储的具体的值。核心思想是通过bit来记录数据是否存储：0不存在、1存在。 定义一个长度为8的bit数组，从0 ～ 7分别映射对应的整型数值。 当整数4存储时，则改变对应bit的状态（值）。">
@@ -220,7 +220,7 @@ var _hmt = _hmt || [];
 <p>把31存储进BitMap，利用按位或操作改变bit值<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">bits[<span class="number">31</span>&gt;&gt;<span class="number">3</span>] |= <span class="number">1</span> &lt;&lt; (<span class="number">31</span> % <span class="number">8</span>) </span><br><span class="line"><span class="comment">// 拆解逻辑</span></span><br><span class="line"><span class="comment">// bits[3] = 00000000 | 10000000</span></span><br></pre></td></tr></table></figure></p>
 <p>遇见数据去重，判断31是不是已存在<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">bits[<span class="number">31</span>&gt;&gt;<span class="number">3</span>]&amp;<span class="number">1</span>&lt;&lt;(<span class="number">31</span>%<span class="number">8</span>) == <span class="number">0</span> </span><br><span class="line"><span class="comment">// 拆解逻辑</span></span><br><span class="line"><span class="comment">// 10000000 &amp; 10000000</span></span><br></pre></td></tr></table></figure></p>
 <p>从BitMap删除指定数据<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">bits[<span class="number">31</span>&gt;&gt;<span class="number">3</span>] &amp;^= <span class="number">1</span> &lt;&lt; (<span class="number">31</span> % <span class="number">8</span>) </span><br><span class="line"><span class="comment">// 拆解逻辑</span></span><br><span class="line"><span class="comment">// 10000000 &amp; 10000000 = 10000000</span></span><br><span class="line"><span class="comment">// 10000000 ^ 10000000 = 00000000</span></span><br></pre></td></tr></table></figure></p>
-<p>完整代码：<a href="https://github.com/xupin/example/blob/main/bitmap/main.go" target="_blank" rel="noopener">bitmap/main.go</a></p>
+<p>完整代码：<a href="https://github.com/xupin/bitmap" target="_blank" rel="noopener">bitmap</a></p>
 <h3 id="位操作"><a href="#位操作" class="headerlink" title="位操作"></a>位操作</h3><p>BitMap通过位操作去实现，所以温习以下操作符：</p>
 <ul>
 <li><p>按位与：&amp;</p>

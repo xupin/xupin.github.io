@@ -8,20 +8,20 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>数据结构与算法 - AOI | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="AOI（Area Of Interest）翻译过来称为“感兴趣的区域”，用于计算玩家与玩家（或其他Entity）之间彼此进入、离开、移动视野的算法。通俗的解释比如，玩家离开某个地图时，计算出需要通知的其他玩家。 AOI模块是多人联机游戏服务器中很重要的功能模块之一，AOI模块的“好”与“坏”会很大程度上影响服务器的运行效率。 思路当一个玩家进入场景后，首先要计算出场景中的其他所有玩家并放进对象集合">
+  <meta name="description" content="AOI（Area Of Interest）翻译过来称为“感兴趣的区域”，用于计算玩家与玩家（或其他Entity）之间彼此进入、离开、移动视野的算法。通俗的解释比如，玩家离开某个地图时，计算出需要通知的其他玩家。 AOI模块是多人联机游戏服务器中很重要的功能模块之一，AOI模块的“好”与“坏”会很大程度上影响服务器的性能。 思路当一个玩家进入场景后，首先要计算出场景中的其他所有玩家并放进对象集合（又">
 <meta name="keywords" content="develop,data structures,algorithms">
 <meta property="og:type" content="article">
 <meta property="og:title" content="数据结构与算法 - AOI">
 <meta property="og:url" content="http://xupin.im/2022/10/08/data-structures-algorithms-aoi/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="AOI（Area Of Interest）翻译过来称为“感兴趣的区域”，用于计算玩家与玩家（或其他Entity）之间彼此进入、离开、移动视野的算法。通俗的解释比如，玩家离开某个地图时，计算出需要通知的其他玩家。 AOI模块是多人联机游戏服务器中很重要的功能模块之一，AOI模块的“好”与“坏”会很大程度上影响服务器的运行效率。 思路当一个玩家进入场景后，首先要计算出场景中的其他所有玩家并放进对象集合">
+<meta property="og:description" content="AOI（Area Of Interest）翻译过来称为“感兴趣的区域”，用于计算玩家与玩家（或其他Entity）之间彼此进入、离开、移动视野的算法。通俗的解释比如，玩家离开某个地图时，计算出需要通知的其他玩家。 AOI模块是多人联机游戏服务器中很重要的功能模块之一，AOI模块的“好”与“坏”会很大程度上影响服务器的性能。 思路当一个玩家进入场景后，首先要计算出场景中的其他所有玩家并放进对象集合（又">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://xupin.im/assets/aoi/grid9.png">
 <meta property="og:image" content="http://xupin.im/assets/aoi/tower.png">
-<meta property="og:updated_time" content="2022-12-15T04:13:48.976Z">
+<meta property="og:updated_time" content="2023-11-08T03:40:14.048Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据结构与算法 - AOI">
-<meta name="twitter:description" content="AOI（Area Of Interest）翻译过来称为“感兴趣的区域”，用于计算玩家与玩家（或其他Entity）之间彼此进入、离开、移动视野的算法。通俗的解释比如，玩家离开某个地图时，计算出需要通知的其他玩家。 AOI模块是多人联机游戏服务器中很重要的功能模块之一，AOI模块的“好”与“坏”会很大程度上影响服务器的运行效率。 思路当一个玩家进入场景后，首先要计算出场景中的其他所有玩家并放进对象集合">
+<meta name="twitter:description" content="AOI（Area Of Interest）翻译过来称为“感兴趣的区域”，用于计算玩家与玩家（或其他Entity）之间彼此进入、离开、移动视野的算法。通俗的解释比如，玩家离开某个地图时，计算出需要通知的其他玩家。 AOI模块是多人联机游戏服务器中很重要的功能模块之一，AOI模块的“好”与“坏”会很大程度上影响服务器的性能。 思路当一个玩家进入场景后，首先要计算出场景中的其他所有玩家并放进对象集合（又">
 <meta name="twitter:image" content="http://xupin.im/assets/aoi/grid9.png">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
@@ -211,14 +211,14 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>AOI（Area Of Interest）翻译过来称为“感兴趣的区域”，用于计算玩家与玩家（或其他Entity）之间彼此进入、离开、移动视野的算法。通俗的解释比如，玩家离开某个地图时，计算出需要通知的其他玩家。</p>
-<p>AOI模块是多人联机游戏服务器中很重要的功能模块之一，AOI模块的“好”与“坏”会很大程度上影响服务器的运行效率。</p>
-<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>当一个玩家进入场景后，首先要计算出场景中的其他所有玩家并放进对象集合（又称观察者集合），之后该玩家的进入、移动、离开或其他AOI行为都将会一一通知该集合内的玩家，并且每个玩家都需要维护这样一个对象集合。</p>
+<p>AOI模块是多人联机游戏服务器中很重要的功能模块之一，AOI模块的“好”与“坏”会很大程度上影响服务器的性能。</p>
+<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>当一个玩家进入场景后，首先要计算出场景中的其他所有玩家并放进对象集合（又称观察者集合），之后该玩家的进入、移动、离开或其他行为都将会一一通知该集合内的玩家，并且每个玩家都需要维护这样一个对象集合。</p>
 <blockquote>
 <p>Watchers 观察者集合，即能够看到我的其他玩家或实体。</p>
 </blockquote>
-<p>需要注意的是，<code>该对象集合内的玩家列表会随着玩家的AOI行为发生变化，在玩家离开场景后清空对象集合</code>。</p>
+<p>需要注意的是，<code>该对象集合内的玩家列表会随着玩家的行为发生变化，在玩家离开场景后清空对象集合</code>。</p>
 <a id="more"></a>
-<h3 id="全场景同步"><a href="#全场景同步" class="headerlink" title="全场景同步"></a>全场景同步</h3><p>即每个玩家都能看到进入该场景的所有玩家，那么所有进入该场景的玩家发生AOI行为，AOI场景管理器都会通知其他玩家。比如，我从地图0,0移动至地图10,10这样的行为。</p>
+<h3 id="全场景同步"><a href="#全场景同步" class="headerlink" title="全场景同步"></a>全场景同步</h3><p>即每个玩家都能看到进入该场景的所有玩家，那么所有进入该场景的玩家发生行为，AOI场景管理器都会通知其他玩家。比如，我从地图0,0移动至地图10,10这样的行为。</p>
 <ul>
 <li><p>进入</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">玩家[pp]进入地图 0,0 </span><br><span class="line">玩家[wl]进入地图 2,20</span><br><span class="line">       通知玩家[pp]进入视野</span><br><span class="line">玩家[sd]进入地图 0,4 </span><br><span class="line">       通知玩家[pp]进入视野</span><br><span class="line">       通知玩家[wl]进入视野</span><br></pre></td></tr></table></figure>
@@ -245,64 +245,53 @@ var _hmt = _hmt || [];
 </li>
 </ul>
 <p>对玩家进行了视野限制后，消息量会大幅下降。但因为会对场景内所有玩家进行暴力查找，所以检索效率并不高。</p>
-<h3 id="网格化"><a href="#网格化" class="headerlink" title="网格化"></a>网格化</h3><p>把玩家视野也进行网格化，类似的优化算法有：九宫格、灯塔、十字链表、六边形等</p>
-<ul>
-<li>九宫格</li>
-</ul>
-<p>把地图网格化后，限制玩家的视野范围为9个格子。如图：</p>
+<h3 id="九宫格"><a href="#九宫格" class="headerlink" title="九宫格"></a>九宫格</h3><p>把地图网格化后，限制玩家的视野范围为9个格子。如图：</p>
 <p><img src="/assets/aoi/grid9.png" alt="drawing" width="160" height="160"></p>
 <p>一般设计是玩家的手机屏幕显示为4/9格子，但真实视野为1 ～ 9网格，所以服务器只需要同步消息给玩家可视范围内的9个网格其他玩家。</p>
 <ul>
-<li>灯塔</li>
+<li>进入</li>
 </ul>
-<p>灯塔是在九宫格的基础上进行优化，在把地图网格化的基础上划分区域（比如4个网格组成一个区域），每个区域有一个管理者：灯塔，这个管理者知晓当前区域的全部玩家。如图：</p>
+<blockquote>
+<p>根据玩家坐标计算格子，把玩家加入到格子。通知九宫格内的玩家，有玩家进入场景。</p>
+</blockquote>
+<ul>
+<li>移动</li>
+</ul>
+<blockquote>
+<p>格子无变化，仅通知移动行为给九宫格内的玩家。<br>格子有变化，对格子进行交集、并集运算。并集，离开格子并通知格子内玩家离开行为，加入新格子并通知格子内玩家进入行为。交集，仅通知移动行为。</p>
+</blockquote>
+<ul>
+<li>离开</li>
+</ul>
+<blockquote>
+<p>根据玩家坐标计算格子，把玩家从格子移除。通知九宫格内的玩家，有玩家离开场景。</p>
+</blockquote>
+<h3 id="灯塔"><a href="#灯塔" class="headerlink" title="灯塔"></a>灯塔</h3><p>灯塔是在九宫格的基础上进行优化，在把地图网格化的基础上划分区域（比如4个网格组成一个区域），每个区域有一个管理者：灯塔，这个管理者知晓当前区域的全部玩家。如图：</p>
 <p><img src="/assets/aoi/tower.png" alt="drawing" width="240" height="240"></p>
 <p>每个灯塔维护两个对象集合：Watchers（观察者集合）、Markers（被观察者集合）。</p>
 <ul>
 <li>进入</li>
 </ul>
-<ol>
-<li><p>根据玩家坐标计算出灯塔，把玩家加入到灯塔的Markers。</p>
-</li>
-<li><p>通知该灯塔所有Watchers，有玩家进入场景。</p>
-</li>
-<li><p>找出该玩家视野内所有灯塔，把玩家加入到灯塔的Watchers，同时把这些Watchers和玩家互相加进对方的视野列表。</p>
-</li>
-</ol>
+<blockquote>
+<p>根据玩家坐标计算出灯塔，把玩家加入到灯塔的Markers。通知该灯塔所有Watchers，有玩家进入场景。找出该玩家视野内所有灯塔，把玩家加入到灯塔的Watchers，同时把这些Watchers和玩家互相加进对方的视野列表。</p>
+</blockquote>
 <ul>
 <li>移动</li>
 </ul>
-<ol>
-<li><p>灯塔无变化，仅通知移动行为给玩家视野列表内的玩家。</p>
-</li>
-<li><p>灯塔有变化，对灯塔列表差集进行交集、并集运算。</p>
-<ol>
-<li>并集，从离开灯塔的Watchers、Markers移除该玩家，新进入灯塔的Watchers、Markers添加该玩家。</li>
-<li>交集，仅通知移动行为。</li>
-</ol>
-</li>
-<li>对移动前后灯塔的Watchers进行交集、并集运算。<ol>
-<li>并集，从离开的Watchers互相从对方的视野列表内移除，新进入的Watchers互相加进对方的视野列表。</li>
-</ol>
-</li>
-</ol>
+<blockquote>
+<p>灯塔无变化，仅通知移动行为给玩家视野列表内的玩家。<br>灯塔有变化，对灯塔列表进行交集、并集运算。并集，从离开灯塔的Watchers、Markers移除该玩家，新进入灯塔的Watchers、Markers添加该玩家。 交集，仅通知移动行为。<br>对移动前后灯塔的Watchers进行并集运算。从离开的Watchers互相从对方的视野列表内移除，新进入的Watchers互相加进对方的视野列表。</p>
+</blockquote>
 <ul>
 <li>离开</li>
 </ul>
-<ol>
-<li><p>根据玩家坐标计算出灯塔，把玩家从该灯塔的Markers中移除。</p>
-</li>
-<li><p>通知该灯塔所有Watchers，有玩家离开场景。</p>
-</li>
-<li><p>找出该玩家视野内所有灯塔，把玩家从这些灯塔的Watchers中移除，同时把该玩家和视野列表内的所有玩家互相把对方从视野列表内移除。</p>
-</li>
-</ol>
-<p><code>十字链表及云风大神提出的六边形场景适用性和实现细节有待商榷，暂时不讨论</code></p>
-<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>一般设计上灯塔坐标是需要转换的，类似于Redis Cluster的slot机制，通过转换玩家坐标来判断灯塔归属。</p>
+<blockquote>
+<p>根据玩家坐标计算出灯塔，把玩家从该灯塔的Markers中移除。通知该灯塔所有Watchers，有玩家离开场景。<br>找出该玩家视野内所有灯塔，把玩家从这些灯塔的Watchers中移除，同时把该玩家和视野列表内的所有玩家互相把对方从视野列表内移除。</p>
+</blockquote>
+<p>一般设计上灯塔坐标是需要转换的，类似于Redis Cluster的slot机制，通过转换玩家坐标来判断灯塔归属。</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Aoi)</span> <span class="title">transPos</span><span class="params">(x, y <span class="keyword">uint</span>)</span> <span class="params">(<span class="keyword">uint</span>, <span class="keyword">uint</span>)</span></span> &#123;</span><br><span class="line">	x = <span class="keyword">uint</span>(math.Floor(<span class="keyword">float64</span>(x) / <span class="keyword">float64</span>(r.TowerWidth)))</span><br><span class="line">	y = <span class="keyword">uint</span>(math.Floor(<span class="keyword">float64</span>(y) / <span class="keyword">float64</span>(r.TowerHeight)))</span><br><span class="line">	<span class="keyword">return</span> x, y</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Aoi)</span> <span class="title">getTower</span><span class="params">(x, y <span class="keyword">uint</span>)</span> *<span class="title">Tower</span></span> &#123;</span><br><span class="line">	x, y = r.transPos(x, y)</span><br><span class="line">	tower, ok := r.Towers[x][y]</span><br><span class="line">	<span class="keyword">if</span> !ok &#123;</span><br><span class="line">		fmt.Printf(<span class="string">"灯塔[异常]不存在的灯塔: %d,%d \n"</span>, x, y)</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> tower</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>完整代码:</p>
-<p><a href="https://github.com/xupin/example/blob/main/aoi/grid/main.go" target="_blank" rel="noopener">grid/main.go</a></p>
-<p><a href="https://github.com/xupin/example/blob/main/aoi/tower/main.go" target="_blank" rel="noopener">tower/main.go</a></p>
+<h3 id="十字链表"><a href="#十字链表" class="headerlink" title="十字链表"></a>十字链表</h3><p>把X、Y轴分别以链表的形式存储，将玩家的坐标分别写入X、Y链表。需要注意的是：<code>两个链表的排序方式必须一致，比如都按照X、Y从小到大</code>。当玩家进入场景后根据当前坐标分别取出X、Y链表视距内的玩家列表取交集，这就是当前玩家视野范围内的其他玩家们。至于是进入、移动还是离开这些逻辑都和九宫格、灯塔其实是一样的。</p>
+<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>附上示例：</p>
+<p><a href="https://github.com/xupin/aoi" target="_blank" rel="noopener">aoi</a></p>
 
       
 
@@ -444,7 +433,7 @@ var _hmt = _hmt || [];
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#思路"><span class="toc-number">1.</span> <span class="toc-text">思路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#全场景同步"><span class="toc-number">2.</span> <span class="toc-text">全场景同步</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#限制玩家视野"><span class="toc-number">3.</span> <span class="toc-text">限制玩家视野</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#网格化"><span class="toc-number">4.</span> <span class="toc-text">网格化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例"><span class="toc-number">5.</span> <span class="toc-text">示例</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#思路"><span class="toc-number">1.</span> <span class="toc-text">思路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#全场景同步"><span class="toc-number">2.</span> <span class="toc-text">全场景同步</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#限制玩家视野"><span class="toc-number">3.</span> <span class="toc-text">限制玩家视野</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#九宫格"><span class="toc-number">4.</span> <span class="toc-text">九宫格</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#灯塔"><span class="toc-number">5.</span> <span class="toc-text">灯塔</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#十字链表"><span class="toc-number">6.</span> <span class="toc-text">十字链表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#最后"><span class="toc-number">7.</span> <span class="toc-text">最后</span></a></li></ol>
                     </div>
                 </span>
             </div>

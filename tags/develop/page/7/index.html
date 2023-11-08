@@ -6,22 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
-  <title>游戏开发笔记 - Behavior Tree(行为树) | Mark&#39;s blog</title>
+  <title>Tag: develop | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="行为树一般应用于游戏内物体的AI决策，以树的形式控制物体接下来的动作。比如: 血量太少 -&amp;gt; 吃药、攻击距离不够 -&amp;gt; 移动等等。 前言最近在摸索小游戏开发，有一些联机型的功能需要机器人参与，所以需要实现一下游戏AI。综合一下实现方案基本是以下两种：  有限状态机（Finite State Machine）   FSM也是最开始采用的方案，实现起来简单粗暴。缺点是整个逻辑非常臃肿很难模">
-<meta name="keywords" content="develop,game">
-<meta property="og:type" content="article">
-<meta property="og:title" content="游戏开发笔记 - Behavior Tree(行为树)">
-<meta property="og:url" content="http://xupin.im/2023/07/21/game-behavior-tree/index.html">
+  <meta name="description" content="安静的小屁屁">
+<meta name="keywords" content="nginx,php,golang,memcached,redis,mysql,mariadb,php7,前端,js,jquery,javascript,html5,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Mark&#39;s blog">
+<meta property="og:url" content="http://xupin.im/tags/develop/page/7/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="行为树一般应用于游戏内物体的AI决策，以树的形式控制物体接下来的动作。比如: 血量太少 -&amp;gt; 吃药、攻击距离不够 -&amp;gt; 移动等等。 前言最近在摸索小游戏开发，有一些联机型的功能需要机器人参与，所以需要实现一下游戏AI。综合一下实现方案基本是以下两种：  有限状态机（Finite State Machine）   FSM也是最开始采用的方案，实现起来简单粗暴。缺点是整个逻辑非常臃肿很难模">
+<meta property="og:description" content="安静的小屁屁">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://xupin.im/assets/bt/bt.png">
-<meta property="og:updated_time" content="2023-11-08T03:32:03.999Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="游戏开发笔记 - Behavior Tree(行为树)">
-<meta name="twitter:description" content="行为树一般应用于游戏内物体的AI决策，以树的形式控制物体接下来的动作。比如: 血量太少 -&amp;gt; 吃药、攻击距离不够 -&amp;gt; 移动等等。 前言最近在摸索小游戏开发，有一些联机型的功能需要机器人参与，所以需要实现一下游戏AI。综合一下实现方案基本是以下两种：  有限状态机（Finite State Machine）   FSM也是最开始采用的方案，实现起来简单粗暴。缺点是整个逻辑非常臃肿很难模">
-<meta name="twitter:image" content="http://xupin.im/assets/bt/bt.png">
+<meta name="twitter:title" content="Mark&#39;s blog">
+<meta name="twitter:description" content="安静的小屁屁">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -189,261 +186,67 @@ var _hmt = _hmt || [];
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-game-behavior-tree" class="article article-type-post " itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+            
   
-    <h1 class="article-title" itemprop="name">
-      游戏开发笔记 - Behavior Tree(行为树)
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2017" class="archive-year">2017</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2017/02/22/apple-msg-push/" class="archive-article-date">
+  	<time datetime="2017-02-21T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-22</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2017/02/22/apple-msg-push/">设备通知推送 - Apple APNS</a>
     </h1>
   
 
-        
-        <a href="/2023/07/21/game-behavior-tree/" class="archive-article-date">
-  	<time datetime="2023-07-20T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-07-21</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>行为树一般应用于游戏内物体的AI决策，以树的形式控制物体接下来的动作。比如: 血量太少 -&gt; 吃药、攻击距离不够 -&gt; 移动等等。</p>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>最近在摸索小游戏开发，有一些联机型的功能需要机器人参与，所以需要实现一下游戏AI。综合一下实现方案基本是以下两种：</p>
-<ul>
-<li>有限状态机（Finite State Machine）</li>
-</ul>
-<blockquote>
-<p>FSM也是最开始采用的方案，实现起来简单粗暴。缺点是整个逻辑非常臃肿很难模块化，后面再对AI进行更新和维护比较恶心，很容易因为漏改、错改导致不可用。</p>
-</blockquote>
-<ul>
-<li>行为树（Behavior Tree）</li>
-</ul>
-<blockquote>
-<p>行为树是由一系列节点构成的，每个节点对应一个动作，自上而下执行且每个节点都会返回执行状态。</p>
-</blockquote>
-<p><img src="/assets/bt/bt.png" alt="drawing" width="300" height="180"></p>
-<a id="more"></a>
-<h3 id="行为树"><a href="#行为树" class="headerlink" title="行为树"></a>行为树</h3><p>行为树一般由：根节点（Root）、序列节点（Sequence）、选择节点（Selector）、并行节点（Parallel）等等节点组成，可能还会有条件节点（Condition）。这些节点也可以被抽象的归为4类:</p>
-<ul>
-<li><p>控制节点</p>
-<ol>
-<li>序列节点（Sequence）</li>
-<li>选择节点（Selector）</li>
-<li>并行节点（Parallel）</li>
-</ol>
-</li>
-<li><p>条件节点</p>
-<ol>
-<li>条件节点（Condition）</li>
-</ol>
-</li>
-<li><p>行为节点</p>
-<ol>
-<li>自定义节点。比如：攻击、防御、吃药等，是真正执行游戏逻辑的节点。</li>
-</ol>
-</li>
-<li><p>装饰节点</p>
-<ol>
-<li>逆变节点（Inverter）</li>
-<li>重复执行节点（Repeater）</li>
-<li>装饰节点也算是自定义节点，主要作用是辅助子节点执行。</li>
-</ol>
-</li>
-</ul>
-<p>需要注意的是，无论是什么节点都必须实现<code>Exec()</code>执行方法。</p>
-<p>定义节点接口：<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Status <span class="keyword">int8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> (</span><br><span class="line">    Success Status = <span class="literal">iota</span></span><br><span class="line">    Failure</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> INode <span class="keyword">interface</span> &#123;</span><br><span class="line">    Exec() Status</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="序列节点"><a href="#序列节点" class="headerlink" title="序列节点"></a>序列节点</h3><p>有序的执行子节点，任意子节点失败终止执行返回失败，全部执行完毕返回成功。</p>
-<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 序列</span></span><br><span class="line"><span class="keyword">type</span> Sequence <span class="keyword">struct</span> &#123;</span><br><span class="line">    children []INode</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewSequence</span><span class="params">(children ...INode)</span> *<span class="title">Sequence</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> &amp;Sequence&#123;</span><br><span class="line">        children: children,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Sequence)</span> <span class="title">Exec</span><span class="params">()</span> <span class="title">Status</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> _, child := <span class="keyword">range</span> r.children &#123;</span><br><span class="line">        <span class="keyword">if</span> result := child.Exec(); result == Failure &#123;</span><br><span class="line">            <span class="keyword">return</span> Failure</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> Success</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="选择节点"><a href="#选择节点" class="headerlink" title="选择节点"></a>选择节点</h3><p>同样有序的执行子节点、和序列节点不同的是任意子节点执行成功返回成功。</p>
-<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Selector <span class="keyword">struct</span> &#123;</span><br><span class="line">    children []INode</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewSelector</span><span class="params">(children ...INode)</span> *<span class="title">Selector</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> &amp;Selector&#123;</span><br><span class="line">        children: children,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Selector)</span> <span class="title">Exec</span><span class="params">()</span> <span class="title">Status</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> _, child := <span class="keyword">range</span> r.children &#123;</span><br><span class="line">        <span class="keyword">if</span> result := child.Exec(); result == Success &#123;</span><br><span class="line">            <span class="keyword">return</span> Success</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> Failure</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="并行节点"><a href="#并行节点" class="headerlink" title="并行节点"></a>并行节点</h3><p>同时执行所有子节点</p>
-<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Parallel <span class="keyword">struct</span> &#123;</span><br><span class="line">    children []INode</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewParallel</span><span class="params">(children ...INode)</span> *<span class="title">Parallel</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> &amp;Parallel&#123;</span><br><span class="line">        children: children,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Parallel)</span> <span class="title">Exec</span><span class="params">()</span> <span class="title">Status</span></span> &#123;</span><br><span class="line">    wg := sync.WaitGroup&#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> _, child := <span class="keyword">range</span> r.children &#123;</span><br><span class="line">        wg.Add(<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(node INode)</span></span> &#123;</span><br><span class="line">            <span class="keyword">defer</span> wg.Done()</span><br><span class="line">            node.Exec()</span><br><span class="line">        &#125;(child)</span><br><span class="line">    &#125;</span><br><span class="line">    wg.Wait()</span><br><span class="line">    <span class="keyword">return</span> Success</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="条件节点-行为节点"><a href="#条件节点-行为节点" class="headerlink" title="条件节点 / 行为节点"></a>条件节点 / 行为节点</h3><p>顾名思义，执行子节点前需要检查是不是符合条件。</p>
-<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Condition <span class="keyword">struct</span> &#123;</span><br><span class="line">    f <span class="function"><span class="keyword">func</span><span class="params">(IBlackboard)</span> <span class="title">bool</span></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewCondition</span><span class="params">(f <span class="keyword">func</span>(IBlackboard)</span> <span class="title">bool</span>) *<span class="title">Condition</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> &amp;Condition&#123;</span><br><span class="line">        f: f,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Condition)</span> <span class="title">Exec</span><span class="params">(db IBlackboard)</span> <span class="title">Status</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> v := r.f(db); !v &#123;</span><br><span class="line">        <span class="keyword">return</span> Failure</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> Success</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在这引入一个概念: <code>黑板（Blackboard）</code>，一般一个行为树有且只有一个，用于各节点间共享数据。就像一群人在黑板前讨论问题，各自的思路、方案都被书写在黑板上供所有人阅读。调用实现:<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 绝招</span></span><br><span class="line"><span class="keyword">type</span> JueZhao <span class="keyword">struct</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewJueZhao</span><span class="params">()</span> *<span class="title">JueZhao</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> &amp;JueZhao&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *JueZhao)</span> <span class="title">Exec</span><span class="params">(db IBlackboard)</span> <span class="title">Status</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">"[绝招]done"</span>)</span><br><span class="line">    db.Set(<span class="string">"can_use_skill"</span>, <span class="literal">false</span>)</span><br><span class="line">	<span class="keyword">return</span> Success</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 蓄力</span></span><br><span class="line"><span class="keyword">type</span> XuLi <span class="keyword">struct</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewXuLi</span><span class="params">()</span> *<span class="title">XuLi</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> &amp;XuLi&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *XuLi)</span> <span class="title">Exec</span><span class="params">(db IBlackboard)</span> <span class="title">Status</span></span> &#123;</span><br><span class="line">    db.Set(<span class="string">"can_use_skill"</span>, <span class="literal">true</span>)</span><br><span class="line">    fmt.Println(<span class="string">"[蓄力]done"</span>)</span><br><span class="line">    <span class="keyword">return</span> Success</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 定义根节点</span></span><br><span class="line">    bt := NewSequence(</span><br><span class="line">        NewXuLi(),</span><br><span class="line">        NewCondition(<span class="function"><span class="keyword">func</span><span class="params">(db IBlackboard)</span> <span class="title">bool</span></span> &#123;</span><br><span class="line">            result := db.Get(<span class="string">"can_use_skill"</span>)</span><br><span class="line">            <span class="keyword">if</span> result == <span class="literal">nil</span> || !result.(<span class="keyword">bool</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">        &#125;),</span><br><span class="line">        NewJueZhao(),</span><br><span class="line">    )</span><br><span class="line">    db := &amp;Blackboard&#123;</span><br><span class="line">        data: <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">interface</span>&#123;&#125;, <span class="number">0</span>),</span><br><span class="line">    &#125;</span><br><span class="line">    result := bt.Exec(db)</span><br><span class="line">    fmt.Print(<span class="string">"结果: "</span>)</span><br><span class="line">    <span class="keyword">switch</span> result &#123;</span><br><span class="line">    <span class="keyword">case</span> Success:</span><br><span class="line">        fmt.Println(<span class="string">"成功"</span>)</span><br><span class="line">    <span class="keyword">case</span> Failure:</span><br><span class="line">        fmt.Println(<span class="string">"失败"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// [蓄力]done</span></span><br><span class="line"><span class="comment">// [绝招]done</span></span><br><span class="line"><span class="comment">// 结果: 成功</span></span><br></pre></td></tr></table></figure></p>
-<h3 id="装饰节点"><a href="#装饰节点" class="headerlink" title="装饰节点"></a>装饰节点</h3><p>比如让AI连续执行3次绝招。</p>
-<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Repeater <span class="keyword">struct</span> &#123;</span><br><span class="line">    child INode</span><br><span class="line">    count <span class="keyword">int8</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewRepeater</span><span class="params">(child INode, count <span class="keyword">int8</span>)</span> *<span class="title">Repeater</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> &amp;Repeater&#123;</span><br><span class="line">        child: child,</span><br><span class="line">        count: count,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Repeater)</span> <span class="title">Exec</span><span class="params">(db IBlackboard)</span> <span class="title">Status</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> r.count &gt; <span class="number">0</span> &#123;</span><br><span class="line">        r.child.Exec(db)</span><br><span class="line">        r.count -= <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> Success</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>通过以上几个简单实现，大概知道行为树其实就是把想要让AI执行的动作抽象成一个一个行为节点，使用组合节点加以控制组成一个复杂的AI树。</p>
-<p>优点显而易见，可读性好、方便扩展、可以脚本化编写。部分游戏引擎也提供可视化编写，比如：Unreal、Unity的Behavior Designer插件等</p>
-<p>缺点是每次都从根节点运行，行为树比较复杂的情况运行效率不会高。当然针对这个问题可以进行优化，就是对节点做Running记录，下次从Running节点继续执行。</p>
-<p>附上示例：<a href="https://github.com/xupin/behavior-tree" target="_blank" rel="noopener">bt</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
+        <div class="article-info info-on-right">
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">apns</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">game</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
         		</li>
       		
 		</ul>
 	</div>
 
-      
+          
 
-      
-
-      
-        
-<div class="share-btn share-icons tooltip-left">
-  <div class="tooltip tooltip-east">
-    <span class="tooltip-item">
-      <a href="javascript:;" class="share-sns share-outer">
-        <i class="icon icon-share"></i>
-      </a>
-    </span>
-    <span class="tooltip-content">
-      <div class="share-wrap">
-        <div class="share-icons">
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="icon icon-weibo"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="icon icon-weixin"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="icon icon-qq"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="icon icon-douban"></i>
-          </a>
-          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a>
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="icon icon-facebook"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="icon icon-twitter"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="icon icon-google"></i>
-          </a>
         </div>
-      </div>
-    </span>
-  </div>
-</div>
-
-<div class="page-modal wx-share js-wx-box">
-  <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
-  <p>扫一扫，分享到微信</p>
-  <div class="wx-qrcode">
-    <img src="https://api.pwmqr.com/qrcode/create/?url=http://xupin.im/2023/07/21/game-behavior-tree/" alt="微信分享二维码">
-  </div>
-</div>
-
-<div class="mask js-mask"></div>
-      
-      <div class="clearfix"></div>
-    </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-  
-<nav id="article-nav">
-  
-    <a href="/2023/11/06/game-task-system/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          游戏开发笔记 - 任务系统设计
-        
-      </div>
-    </a>
   
   
-    <a href="/2023/02/27/game-protocol/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">游戏开发笔记 - 通信协议</div>
-      <i class="icon-circle-right"></i>
-    </a>
-  
-</nav>
-
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3201242774373382"
-     crossorigin="anonymous"></script>
-  <!-- 文章广告 -->
-  <ins class="adsbygoogle"
-      style="display:block"
-      data-ad-client="ca-pub-3201242774373382"
-      data-ad-slot="3704842143"
-      data-ad-format="auto"
-      data-full-width-responsive="true"></ins>
-  <script>
-      (adsbygoogle = window.adsbygoogle || []).push({});
-  </script>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-        <div class="toc-container tooltip-left">
-            <i class="icon-font icon-category"></i>
-            <div class="tooltip tooltip-east">
-                <span class="tooltip-item">
-                </span>
-                <span class="tooltip-content">
-                    <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#行为树"><span class="toc-number">2.</span> <span class="toc-text">行为树</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#序列节点"><span class="toc-number">3.</span> <span class="toc-text">序列节点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#选择节点"><span class="toc-number">4.</span> <span class="toc-text">选择节点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#并行节点"><span class="toc-number">5.</span> <span class="toc-text">并行节点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#条件节点-行为节点"><span class="toc-number">6.</span> <span class="toc-text">条件节点 / 行为节点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#装饰节点"><span class="toc-number">7.</span> <span class="toc-text">装饰节点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#最后"><span class="toc-number">8.</span> <span class="toc-text">最后</span></a></li></ol>
-                    </div>
-                </span>
-            </div>
-        </div>
-        
-    </div>
-</aside>
-
-
-  
-  
+    </div></section>
   
 
-  
-
-  
-  <div id="gitalk-container" style="padding: 0px 30px 0px 30px;"></div>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
-<script type="text/javascript">
-    if (true) {
-        var gitalk = new Gitalk({
-            clientID: 'e3e84fb1a50e16e66f89',
-            clientSecret: '5690def96adce57dd5993ec671c2413afd60aa41',
-            repo: 'xupin.github.io',
-            owner: 'xupin',
-            admin: ['xupin'],
-            id: '游戏开发笔记 - Behavior Tree(行为树)',
-            distractionFreeMode: 'true'
-        })
-        gitalk.render('gitalk-container')
-    }
-</script>
-  
-
-  
-
+    
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/tags/develop/page/6/">&laquo; Prev</a><a class="page-number" href="/tags/develop/">1</a><span class="space">&hellip;</span><a class="page-number" href="/tags/develop/page/5/">5</a><a class="page-number" href="/tags/develop/page/6/">6</a><span class="page-number current">7</span>
+    </nav>
   
 
 
@@ -467,9 +270,9 @@ var _hmt = _hmt || [];
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: true,
+		isPost: false,
 		isArchive: false,
-		isTag: false,
+		isTag: true,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
