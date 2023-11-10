@@ -188,6 +188,97 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-game-aoi-opt" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/11/08/game-aoi-opt/">游戏开发笔记 - 同屏人数裁剪</a>
+    </h1>
+  
+
+        
+        <a href="/2023/11/08/game-aoi-opt/" class="archive-article-date">
+  	<time datetime="2023-11-07T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-11-08</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>简单优化下AOI模块</p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>当游戏开启活动让大量玩家聚集在指定地图范围内时，给服务器和客户端带来最直接的麻烦就是：</p>
+<ol>
+<li>服务器带宽占用率高</li>
+</ol>
+<blockquote>
+<p>假设同屏有1000个玩家，那么任意一个玩家移动一次需要同步其他999个玩家。这导致服务器消息数量指数级增长，带宽承受压力极高。</p>
+</blockquote>
+<ol>
+<li>客户端渲染卡顿</li>
+</ol>
+<blockquote>
+<p>因为同屏人数越多，客户端需要渲染的模型就越多。这样在一些普通的硬件设备下会直接导致卡顿、发热。</p>
+</blockquote>
+<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>除了升级硬件，还可以在以下两个方面进行优化:</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">game</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2023/11/08/game-aoi-opt/">More >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-game-task-system" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -763,91 +854,6 @@ var _hmt = _hmt || [];
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2022/10/08/data-structures-algorithms-aoi/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-data-structures-algorithms-bitmap" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/08/24/data-structures-algorithms-bitmap/">数据结构与算法 - BitMap</a>
-    </h1>
-  
-
-        
-        <a href="/2022/08/24/data-structures-algorithms-bitmap/" class="archive-article-date">
-  	<time datetime="2022-08-23T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>BitMap（位图）是一种以bit方式存储数据的数据结构，以此来提高空间利用率。</p>
-<h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>BitMap，通过字面意思理解利用bit映射数据的存储结构。所以它应该有Key、Value，Key是bit、Value是要存储的具体的值。核心思想是通过bit来记录数据是否存储：0不存在、1存在。</p>
-<p>定义一个长度为8的bit数组，从0 ～ 7分别映射对应的整型数值。<br><img src="/assets/bitmap/byte.png" alt="drawing" width="400" height="80"></p>
-<p>当整数4存储时，则改变对应bit的状态（值）。<br><img src="/assets/bitmap/byte-4.png" alt="drawing" width="400" height="80"></p>
-<p>这样做带来的好处，同样一个整数在数组中存储需要4byte*8bit=32bit空间，在BitMap中只需要1bit空间。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">data structures</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/08/24/data-structures-algorithms-bitmap/">More >></a>
         </p>
       
 

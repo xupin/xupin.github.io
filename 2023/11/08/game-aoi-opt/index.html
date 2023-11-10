@@ -6,19 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://xupin.im">
-  <title>Mark&#39;s blog</title>
+  <title>游戏开发笔记 - 同屏人数裁剪 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="安静的小屁屁">
-<meta name="keywords" content="nginx,php,golang,memcached,redis,mysql,mariadb,php7,前端,js,jquery,javascript,html5,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Mark&#39;s blog">
-<meta property="og:url" content="http://xupin.im/page/2/index.html">
+  <meta name="description" content="简单优化下AOI模块 前言当游戏开启活动让大量玩家聚集在指定地图范围内时，给服务器和客户端带来最直接的麻烦就是：  服务器带宽占用率高   假设同屏有1000个玩家，那么任意一个玩家移动一次需要同步其他999个玩家。这导致服务器消息数量指数级增长，带宽承受压力极高。   客户端渲染卡顿   因为同屏人数越多，客户端需要渲染的模型就越多。这样在一些普通的硬件设备下会直接导致卡顿、发热。  思路除了升">
+<meta name="keywords" content="develop,game">
+<meta property="og:type" content="article">
+<meta property="og:title" content="游戏开发笔记 - 同屏人数裁剪">
+<meta property="og:url" content="http://xupin.im/2023/11/08/game-aoi-opt/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="安静的小屁屁">
+<meta property="og:description" content="简单优化下AOI模块 前言当游戏开启活动让大量玩家聚集在指定地图范围内时，给服务器和客户端带来最直接的麻烦就是：  服务器带宽占用率高   假设同屏有1000个玩家，那么任意一个玩家移动一次需要同步其他999个玩家。这导致服务器消息数量指数级增长，带宽承受压力极高。   客户端渲染卡顿   因为同屏人数越多，客户端需要渲染的模型就越多。这样在一些普通的硬件设备下会直接导致卡顿、发热。  思路除了升">
 <meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2023-11-10T04:28:38.392Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Mark&#39;s blog">
-<meta name="twitter:description" content="安静的小屁屁">
+<meta name="twitter:title" content="游戏开发笔记 - 同屏人数裁剪">
+<meta name="twitter:description" content="简单优化下AOI模块 前言当游戏开启活动让大量玩家聚集在指定地图范围内时，给服务器和客户端带来最直接的麻烦就是：  服务器带宽占用率高   假设同屏有1000个玩家，那么任意一个玩家移动一次需要同步其他999个玩家。这导致服务器消息数量指数级增长，带宽承受压力极高。   客户端渲染卡顿   因为同屏人数越多，客户端需要渲染的模型就越多。这样在一些普通的硬件设备下会直接导致卡顿、发热。  思路除了升">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -186,308 +187,73 @@ var _hmt = _hmt || [];
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-data-structures-algorithms-bitmap" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-game-aoi-opt" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/08/24/data-structures-algorithms-bitmap/">数据结构与算法 - BitMap</a>
+    <h1 class="article-title" itemprop="name">
+      游戏开发笔记 - 同屏人数裁剪
     </h1>
   
 
         
-        <a href="/2022/08/24/data-structures-algorithms-bitmap/" class="archive-article-date">
-  	<time datetime="2022-08-23T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-24</time>
+        <a href="/2023/11/08/game-aoi-opt/" class="archive-article-date">
+  	<time datetime="2023-11-07T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-11-08</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>BitMap（位图）是一种以bit方式存储数据的数据结构，以此来提高空间利用率。</p>
-<h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>BitMap，通过字面意思理解利用bit映射数据的存储结构。所以它应该有Key、Value，Key是bit、Value是要存储的具体的值。核心思想是通过bit来记录数据是否存储：0不存在、1存在。</p>
-<p>定义一个长度为8的bit数组，从0 ～ 7分别映射对应的整型数值。<br><img src="/assets/bitmap/byte.png" alt="drawing" width="400" height="80"></p>
-<p>当整数4存储时，则改变对应bit的状态（值）。<br><img src="/assets/bitmap/byte-4.png" alt="drawing" width="400" height="80"></p>
-<p>这样做带来的好处，同样一个整数在数组中存储需要4byte*8bit=32bit空间，在BitMap中只需要1bit空间。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">data structures</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/08/24/data-structures-algorithms-bitmap/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-data-structures-algorithms-jps" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/08/12/data-structures-algorithms-jps/">数据结构与算法 - JPS</a>
-    </h1>
-  
-
-        
-        <a href="/2022/08/12/data-structures-algorithms-jps/" class="archive-article-date">
-  	<time datetime="2022-08-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>JPS寻路算法是基于A*计算过程中查找节点冗余、效率较低等问题优化的一种算法。</p>
-<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>A*是比较常见的寻路算法，但存在一个较为明显的问题，当移动到新的节点总是会把相邻节点（4、8）加入到待查找列表。这样带来两个问题</p>
+        <p>简单优化下AOI模块</p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>当游戏开启活动让大量玩家聚集在指定地图范围内时，给服务器和客户端带来最直接的麻烦就是：</p>
 <ol>
-<li><p>在多条移动路径成本相同时，冗余查找。</p>
+<li>服务器带宽占用率高</li>
+</ol>
+<blockquote>
+<p>假设同屏有1000个玩家，那么任意一个玩家移动一次需要同步其他999个玩家。这导致服务器消息数量指数级增长，带宽承受压力极高。</p>
+</blockquote>
+<ol>
+<li>客户端渲染卡顿</li>
+</ol>
+<blockquote>
+<p>因为同屏人数越多，客户端需要渲染的模型就越多。这样在一些普通的硬件设备下会直接导致卡顿、发热。</p>
+</blockquote>
+<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>除了升级硬件，还可以在以下两个方面进行优化:</p>
+<a id="more"></a>
+<ol>
+<li><p>服务器控制AOI消息频率</p>
 </li>
-<li><p>待查找节点过多，内存使用率过高。</p>
+<li><p>客户端裁剪同屏人数</p>
 </li>
 </ol>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">data structures</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/08/12/data-structures-algorithms-jps/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-data-structures-algorithms-astar" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/08/01/data-structures-algorithms-astar/">数据结构与算法 - AStar(A*)</a>
-    </h1>
-  
-
-        
-        <a href="/2022/08/01/data-structures-algorithms-astar/" class="archive-article-date">
-  	<time datetime="2022-07-31T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>寻路算法是游戏比较重要的组成部分之一，尤其在国内游戏很常见的自动寻路系统，比如操纵角色从A点到B点的移动。计算最短路径有很多不同的算法，比如：Dijkstra、AStar（A*）、NavMesh（多边形算法）、RVO动态避障等等</p>
-<h3 id="A-寻路算法"><a href="#A-寻路算法" class="headerlink" title="A*寻路算法"></a>A*寻路算法</h3><p>寻路算法的移动路径核心有2点：最短、可移动。</p>
-<p>所以首先需要确定起点坐标的相邻节点（4方向、8方向），然后通过计算最靠近终点坐标的相邻坐标（不考虑障碍物）确认检索方向，再去计算“相邻坐标”移动的下一个坐标（距离终点坐标最近 &amp; 可移动），重复计算这个过程直至找到终点坐标，这就是A*算法</p>
-<p>A*算法是一类基于网格的寻路算法，也就是把地图看作一个由网格组成的矩阵，每个坐标就是一个网格。</p>
-<p>一张3x3地图</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">data structures</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/08/01/data-structures-algorithms-astar/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-data-structures-algorithms-linked-list" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/07/19/data-structures-algorithms-linked-list/">数据结构与算法 - Linked list</a>
-    </h1>
-  
-
-        
-        <a href="/2022/07/19/data-structures-algorithms-linked-list/" class="archive-article-date">
-  	<time datetime="2022-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-07-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>链表是一种不需要连续空间存储的线性数据结构，通过指针把数据节点链接起来。数据节点的逻辑顺序取决于链表指针链接的先后顺序，同时，链表也有：单链表、双链表、循环链表等多类。</p>
-<h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>链表是由一系列节点组成，除此之外链表还有几个基本概念：</p>
+<h3 id="实现逻辑"><a href="#实现逻辑" class="headerlink" title="实现逻辑"></a>实现逻辑</h3><p>AOI同步被动推送改成主动推送，原来的设计是玩家移动后（Move消息），然后向该玩家推送周围玩家的信息。新的方式是地图AOI模块固定频率同步信息（比如1s发送一次），把需要同步的信息分类：</p>
 <ul>
-<li>数据节点<blockquote>
-<p>一般由两块组成：数据域、指针域。</p>
-</blockquote>
-</li>
-<li>首元节点<blockquote>
-<p>链表的第一个数据节点。</p>
-</blockquote>
-</li>
-<li>头节点<blockquote>
-<p>非必要节点，放在第一个数据节点前。一般用于存储链表的信息（比如说链表长度等）和保证数据节点操作的统一性。</p>
-</blockquote>
-</li>
-<li>头指针<blockquote>
-<p>指向第一个节点的指针，如果有头节点则指向头节点，否则指向首元节点。</p>
-</blockquote>
-</li>
+<li>移除</li>
 </ul>
-<h3 id="单链表"><a href="#单链表" class="headerlink" title="单链表"></a>单链表</h3><p>最简单的一种链表，只支持一个遍历方向：链头 -&gt; 链尾。两部分组成：当前节点的数据、指向后置节点的指针（尾节点指针指向nil）。</p>
-        
+<blockquote>
+<p>不在视野范围内的物体，不需要显示在屏幕内</p>
+</blockquote>
+<ul>
+<li>新增</li>
+</ul>
+<blockquote>
+<p>新增的物体，需要显示在屏幕内</p>
+</blockquote>
+<ul>
+<li>需要更新</li>
+</ul>
+<blockquote>
+<p>原来在屏幕内的物体，需要更新信息</p>
+</blockquote>
+<p><code>（如果原来在屏幕内的物体，不需要更新信息则不会发送）</code></p>
+<p>同时设置同屏人数上限，超过的数量裁剪掉。不过这里面也有些坑需要注意，比如：NPC不能被裁剪、队友不能被裁剪及被裁剪的物体尽量分散避免“秃头”。</p>
+<p>实现：</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Map)</span> <span class="title">Init</span><span class="params">()</span></span> &#123;</span><br><span class="line">    r.aoiMgr = NewAoiMgr(r.config.Cols, r.config.Rows)</span><br><span class="line">    r.aoiNodes = <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">uint32</span>]*aoiNode, <span class="number">0</span>)</span><br><span class="line">    r.ticker = time.NewTicker(<span class="number">1</span> * time.Second) <span class="comment">// 1s</span></span><br><span class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="keyword">for</span> &#123;</span><br><span class="line">            &lt;-r.ticker.C</span><br><span class="line">            r.Update()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Map)</span> <span class="title">Update</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> _, node := <span class="keyword">range</span> r.aoiNodes &#123;</span><br><span class="line">        <span class="keyword">if</span> node.Type != enums.LIVING_TYPE_PLAYER &#123;</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">go</span> r.send(node)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Map)</span> <span class="title">send</span><span class="params">(role interfaces.IMapRole)</span></span> &#123;</span><br><span class="line">    player := playersvr.Ins.Get(node.MapRole.GetId())</span><br><span class="line">    <span class="keyword">if</span> player == <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 掉线或战斗中不同步视野</span></span><br><span class="line">    <span class="keyword">if</span> !player.IsOnline() || player.IsInBattle() &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 处理周围节点信息</span></span><br><span class="line">    node.UpdateNodes(r.aoiNodes)</span><br><span class="line">    <span class="comment">// 周围节点信息</span></span><br><span class="line">    dels := node.GetLeaveNodes()</span><br><span class="line">    adds := r.buildMapDatas(node.GetEnterNodes(), <span class="literal">true</span>)</span><br><span class="line">    keeps := r.buildMapDatas(node.GetKeepNodes(), <span class="literal">false</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(adds) == <span class="number">0</span> &amp;&amp; <span class="built_in">len</span>(dels) == <span class="number">0</span> &amp;&amp; <span class="built_in">len</span>(keeps) == <span class="number">0</span> &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    bytes, _ := proto.Marshal(&amp;pb.S2C_MapSyncView&#123;</span><br><span class="line">        Adds: adds,</span><br><span class="line">        Dels: dels,</span><br><span class="line">        Keeps:  keeps,</span><br><span class="line">    &#125;)</span><br><span class="line">    player.Send(enums.Cmd_S2C_MapSyncView, bytes)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> aoiNode <span class="keyword">struct</span> &#123;</span><br><span class="line">    Id           <span class="keyword">uint32</span></span><br><span class="line">    Name         <span class="keyword">string</span></span><br><span class="line">    X            <span class="keyword">int32</span></span><br><span class="line">    Y            <span class="keyword">int32</span></span><br><span class="line">    AoiModel     <span class="keyword">string</span></span><br><span class="line">    Type         <span class="keyword">int32</span></span><br><span class="line">    Blink        <span class="keyword">bool</span></span><br><span class="line">    MapRole      interfaces.IMapRole</span><br><span class="line">    MaxViewNodes <span class="keyword">int</span></span><br><span class="line">    enterNodes   <span class="keyword">map</span>[<span class="keyword">uint32</span>]<span class="keyword">bool</span></span><br><span class="line">    keepNodes    <span class="keyword">map</span>[<span class="keyword">uint32</span>]<span class="keyword">bool</span></span><br><span class="line">    leaveNodes   []<span class="keyword">uint32</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *aoiNode)</span> <span class="title">UpdateNodes</span><span class="params">(nodes <span class="keyword">map</span>[<span class="keyword">uint32</span>]*aoiNode)</span></span> &#123;</span><br><span class="line">    <span class="comment">// 超过最大显示数量</span></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(r.enterNodes)+<span class="built_in">len</span>(r.keepNodes) &lt;= r.MaxViewNodes &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">var</span> (</span><br><span class="line">        delNum  <span class="keyword">int</span></span><br><span class="line">        delKeep <span class="keyword">bool</span></span><br><span class="line">    )</span><br><span class="line">    <span class="comment">// 优先判断keep nodes</span></span><br><span class="line">    <span class="keyword">if</span> l := <span class="built_in">len</span>(r.keepNodes); l &gt; r.MaxViewNodes &#123;</span><br><span class="line">        delNum = l - r.MaxViewNodes</span><br><span class="line">        delKeep = <span class="literal">true</span></span><br><span class="line">        <span class="keyword">for</span> id := <span class="keyword">range</span> r.enterNodes &#123;</span><br><span class="line">            node, ok := nodes[id]</span><br><span class="line">            <span class="keyword">if</span> !ok &#123;</span><br><span class="line">                <span class="built_in">delete</span>(r.enterNodes, id)</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// NPC不裁剪</span></span><br><span class="line">            <span class="keyword">if</span> node.Type == enums.LIVING_TYPE_NPC &#123;</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 队友不裁剪</span></span><br><span class="line">            <span class="keyword">if</span> teamId := r.MapRole.GetTeamId(); teamId &gt; <span class="number">0</span> &amp;&amp; teamId == node.MapRole.GetTeamId() &#123;</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">delete</span>(r.enterNodes, id)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        delNum = <span class="built_in">len</span>(r.enterNodes) - (r.MaxViewNodes - <span class="built_in">len</span>(r.keepNodes))</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 找出可以被裁减的物体</span></span><br><span class="line">    <span class="keyword">var</span> (</span><br><span class="line">        mayDelIds = <span class="built_in">make</span>([]<span class="keyword">uint32</span>, <span class="number">0</span>)</span><br><span class="line">        fromNodes = <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">uint32</span>]<span class="keyword">bool</span>, <span class="number">0</span>)</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">if</span> delKeep &#123;</span><br><span class="line">        fromNodes = r.keepNodes</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        fromNodes = r.enterNodes</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> id := <span class="keyword">range</span> fromNodes &#123;</span><br><span class="line">        node, ok := nodes[id]</span><br><span class="line">        <span class="keyword">if</span> !ok &#123;</span><br><span class="line">            <span class="built_in">delete</span>(r.enterNodes, id)</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// NPC不裁剪</span></span><br><span class="line">        <span class="keyword">if</span> node.Type == enums.LIVING_TYPE_NPC &#123;</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 队友不裁剪</span></span><br><span class="line">        <span class="keyword">if</span> teamId := r.MapRole.GetTeamId(); teamId &gt; <span class="number">0</span> &amp;&amp; teamId == node.MapRole.GetTeamId() &#123;</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        &#125;</span><br><span class="line">        mayDelIds = <span class="built_in">append</span>(mayDelIds, id)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 均匀删除，避免集中</span></span><br><span class="line">    <span class="keyword">if</span> l := <span class="built_in">len</span>(mayDelIds) - delNum; l &gt;= <span class="number">0</span> &#123;</span><br><span class="line">        <span class="comment">// 随机保留</span></span><br><span class="line">        <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; l; i++ &#123;</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">len</span>(mayDelIds) == <span class="number">0</span> &#123;</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            &#125;</span><br><span class="line">            randIdx := helpers.Random(<span class="built_in">len</span>(mayDelIds))</span><br><span class="line">            mayDelIds = <span class="built_in">append</span>(mayDelIds[:randIdx], mayDelIds[randIdx+<span class="number">1</span>:]...)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> _, id := <span class="keyword">range</span> mayDelIds &#123;</span><br><span class="line">        <span class="keyword">if</span> delKeep &#123;</span><br><span class="line">            <span class="built_in">delete</span>(r.keepNodes, id)</span><br><span class="line">            r.leaveNodes = <span class="built_in">append</span>(r.leaveNodes, id)</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">delete</span>(r.enterNodes, id)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
       
 
       
@@ -504,11 +270,7 @@ var _hmt = _hmt || [];
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">data structures</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">game</a>
         		</li>
       		
 		</ul>
@@ -517,16 +279,87 @@ var _hmt = _hmt || [];
       
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/07/19/data-structures-algorithms-linked-list/">More >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+  <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+  <p>扫一扫，分享到微信</p>
+  <div class="wx-qrcode">
+    <img src="https://api.pwmqr.com/qrcode/create/?url=http://xupin.im/2023/11/08/game-aoi-opt/" alt="微信分享二维码">
+  </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2023/11/06/game-task-system/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">游戏开发笔记 - 任务系统设计</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3201242774373382"
+     crossorigin="anonymous"></script>
+  <!-- 文章广告 -->
+  <ins class="adsbygoogle"
+      style="display:block"
+      data-ad-client="ca-pub-3201242774373382"
+      data-ad-slot="3704842143"
+      data-ad-format="auto"
+      data-full-width-responsive="true"></ins>
+  <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -541,338 +374,51 @@ var _hmt = _hmt || [];
         </div>
         
         
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-go-generic" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/07/14/go-generic/">Go学习笔记 - 泛型</a>
-    </h1>
-  
-
-        
-        <a href="/2022/07/14/go-generic/" class="archive-article-date">
-  	<time datetime="2022-07-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-07-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>2009年Go语言首次发布后，支持泛型一直以来呼声最高的功能之一。十年磨一剑！Go官方终于在2022年03月15日发布go1.18 stable正式支持<code>泛型</code></p>
-<h3 id="什么是泛型"><a href="#什么是泛型" class="headerlink" title="什么是泛型"></a>什么是泛型</h3><p>泛型的核心是把<code>类型参数化</code>，通俗的来说就是允许使用时才指定类型的一种设计。</p>
-<p>假设有个两变量相加的需求，且这俩变量可能是int或者string，简单粗暴就直接定义两个函数分别支持int、string<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 传统写法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">AddInt</span><span class="params">(arg1, arg2 <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> arg1 + arg2</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">AddString</span><span class="params">(arg1, arg2 <span class="keyword">string</span>)</span> <span class="title">string</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> arg1 + arg2</span><br><span class="line">&#125;</span><br><span class="line">AddInt(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">AddString(<span class="string">"a"</span>, <span class="string">"b"</span>)</span><br></pre></td></tr></table></figure></p>
-<p>那如果使用泛型来定义呢，它的写法大概是这样的</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">golang</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/07/14/go-generic/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#思路"><span class="toc-number">2.</span> <span class="toc-text">思路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实现逻辑"><span class="toc-number">3.</span> <span class="toc-text">实现逻辑</span></a></li></ol>
+                    </div>
+                </span>
             </div>
         </div>
         
-        
     </div>
 </aside>
 
 
-
-  
-    <article id="post-go-init" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/08/go-init/">Go学习笔记 - init函数</a>
-    </h1>
-  
-
-        
-        <a href="/2022/03/08/go-init/" class="archive-article-date">
-  	<time datetime="2022-03-07T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-08</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>Golang中的特殊函数，会先于main函数执行且不能被调用。该函数无入参、返回值，同时支持选择性定义。也可以选择定义多个init函数，但建议只定义一个。<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">init</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">"init1"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">init</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">"init2"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">"main"</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// init1</span></span><br><span class="line"><span class="comment">// init3</span></span><br><span class="line"><span class="comment">// main</span></span><br></pre></td></tr></table></figure></p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">golang</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/03/08/go-init/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-clickhouse-mergetree" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/01/26/clickhouse-mergetree/">ClickHouse学习笔记 - MergeTree存储结构</a>
-    </h1>
-  
-
-        
-        <a href="/2022/01/26/clickhouse-mergetree/" class="archive-article-date">
-  	<time datetime="2022-01-25T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-01-26</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>ClickHouse是这两年备受瞩目的开源列式数据库，主要应用场景是OLAP（在线数据分析处理）场景。</p>
-<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>之前因为遇见一些小问题，所以想通过存储结构和索引方式两个方面搞清楚它为什么可以这么快。</p>
-<p>ClickHouse是OLAP型的列式数据库，官方称比较行式数据库查询效率提升至少100倍，<a href="https://clickhouse.com/benchmark/dbms/#[%22100000000%22,[%22ClickHouse%22,%22Vertica%22,%22MySQL%22,%22PostgreSQL%22],[%221%22,%222%22]]" target="_blank" rel="noopener">DB Benchmark</a>显示ClickHouse比Mysql快800倍！</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">clickhouse</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/01/26/clickhouse-mergetree/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-func-closure-lambda-diff" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/01/19/func-closure-lambda-diff/">函数 - 闭包函数、匿名函数及lambda“函数”有什么关系</a>
-    </h1>
-  
-
-        
-        <a href="/2022/01/19/func-closure-lambda-diff/" class="archive-article-date">
-  	<time datetime="2022-01-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-01-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>经常在技术博客中看到匿名函数、闭包函数和lambda表达式这样名词，但一直傻傻分不清他们之间究竟有什么区别，所以想一探究竟。</p>
-<h3 id="函数定义"><a href="#函数定义" class="headerlink" title="函数定义"></a>函数定义</h3><p>一个函数的定义，一般会包含：函数名、函数的参数、函数的主体（代码块）、函数的返回类型/值。<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">hello</span><span class="params">(name <span class="keyword">string</span>)</span> <span class="title">string</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="string">"Hello, "</span> + name</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">lambda</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">closure</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">function</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/01/19/func-closure-lambda-diff/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
   
   
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
-    </nav>
+  
+
+  
+
+  
+  <div id="gitalk-container" style="padding: 0px 30px 0px 30px;"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    if (true) {
+        var gitalk = new Gitalk({
+            clientID: 'e3e84fb1a50e16e66f89',
+            clientSecret: '5690def96adce57dd5993ec671c2413afd60aa41',
+            repo: 'xupin.github.io',
+            owner: 'xupin',
+            admin: ['xupin'],
+            id: '游戏开发笔记 - 同屏人数裁剪',
+            distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')
+    }
+</script>
+  
+
+  
+
   
 
 
@@ -895,8 +441,8 @@ var _hmt = _hmt || [];
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,

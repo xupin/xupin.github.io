@@ -188,6 +188,91 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-google-msg-push" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/28/google-msg-push/">设备通知推送 - Google FCM</a>
+    </h1>
+  
+
+        
+        <a href="/2017/02/28/google-msg-push/" class="archive-article-date">
+  	<time datetime="2017-02-27T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-28</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Firebase 是一个移动平台，可以帮助您快速开发高品质应用，扩大用户群，并赚取更多收益。Firebase 由多种互补功能组成，您可以自行组合和匹配这些功能以满足自己的需求。</p>
+<h3 id="1-获取Google推送的KEY-Google应用后台"><a href="#1-获取Google推送的KEY-Google应用后台" class="headerlink" title="1.获取Google推送的KEY(Google应用后台)"></a>1.获取Google推送的KEY(Google应用后台)</h3><blockquote>
+<p>AIzaSyCm5Vufc1FAtWE1kupGhVDRb0ThkCoWC7d // 这个是我的</p>
+</blockquote>
+<h3 id="2-PHP推送代码"><a href="#2-PHP推送代码" class="headerlink" title="2.PHP推送代码"></a>2.PHP推送代码</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化环境</span></span><br><span class="line">$url = <span class="string">'https://fcm.googleapis.com/fcm/send'</span>;</span><br><span class="line">$ch = curl_init($url);</span><br><span class="line">curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, <span class="keyword">false</span>);</span><br><span class="line">curl_setopt($ch, CURLOPT_RETURNTRANSFER,<span class="number">1</span>);</span><br><span class="line">curl_setopt($ch, CURLOPT_POST, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">$header = <span class="keyword">array</span>(</span><br><span class="line">	<span class="string">'Content-Type: application/json'</span>,</span><br><span class="line">	<span class="string">'Authorization: key=AIzaSyCm5Vufc1FAtWE1kupGhVDRb0ThkCoWC7d'</span> <span class="comment">// 这里是刚才的KEY</span></span><br><span class="line">);</span><br><span class="line">curl_setopt($ch, CURLOPT_HTTPHEADER, $header);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 构建消息体,json编码</span></span><br><span class="line">$content = json_encode([</span><br><span class="line"><span class="string">'notification'</span>=&gt;[</span><br><span class="line">	<span class="string">'title'</span> =&gt; <span class="string">'这里是标题'</span>, </span><br><span class="line">	<span class="string">'body'</span> =&gt; <span class="string">'这里是内容'</span>, </span><br><span class="line">	<span class="string">'icon'</span> =&gt; <span class="string">'这里是后台设置的iconName'</span></span><br><span class="line">],</span><br><span class="line"><span class="string">'to'</span>=&gt;<span class="string">'设备标识(Google SDK可以获取)'</span>,</span><br><span class="line"><span class="string">'registration_ids'</span>=&gt;[<span class="string">'设备标识'</span>,<span class="string">'设备标识'</span>] <span class="comment">// 如果要推送多台设备,可以使用此字段,最多支持1000台设备</span></span><br><span class="line">]);</span><br><span class="line"></span><br><span class="line">curl_setopt($ch, CURLOPT_POSTFIELDS, $content);</span><br><span class="line"></span><br><span class="line">$ret = json_decode(curl_exec($ch), <span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line">$ret[<span class="string">'success'</span>]; <span class="comment">// 推送成功数</span></span><br><span class="line"></span><br><span class="line">$ret[<span class="string">'failure'</span>]; <span class="comment">// 推送失败数</span></span><br></pre></td></tr></table></figure>
+<h3 id="3-返回值示例"><a href="#3-返回值示例" class="headerlink" title="3.返回值示例"></a>3.返回值示例</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"multicast_id"</span>: <span class="number">7669649331143639654</span>,</span><br><span class="line">    <span class="attr">"success"</span>: <span class="number">3</span>,</span><br><span class="line">    <span class="attr">"failure"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"canonical_ids"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"results"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"message_id"</span>: <span class="string">"0:1488360060090224%6490a2d16490a2d1"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"message_id"</span>: <span class="string">"0:1488360060095871%6490a2d16490a2d1"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"message_id"</span>: <span class="string">"0:1488360060090765%6490a2d16490a2d1"</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="4-Google-FCM-文档"><a href="#4-Google-FCM-文档" class="headerlink" title="4.Google(FCM) 文档"></a>4.Google(FCM) 文档</h3><blockquote>
+<p><a href="https://firebase.google.com/docs" target="_blank" rel="noopener">https://firebase.google.com/docs</a></p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">google fcm</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/02/28/google-msg-push/">More >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-apple-msg-push" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
