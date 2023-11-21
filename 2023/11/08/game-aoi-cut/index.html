@@ -12,11 +12,11 @@
 <meta name="keywords" content="develop,game">
 <meta property="og:type" content="article">
 <meta property="og:title" content="游戏开发笔记 - 同屏人数裁剪">
-<meta property="og:url" content="http://xupin.im/2023/11/08/game-aoi-opt/index.html">
+<meta property="og:url" content="http://xupin.im/2023/11/08/game-aoi-cut/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
 <meta property="og:description" content="简单优化下AOI模块 前言当游戏开启活动让大量玩家聚集在指定地图范围内时，给服务器和客户端带来最直接的麻烦就是：  服务器带宽占用率高   假设同屏有1000个玩家，那么任意一个玩家移动一次需要同步其他999个玩家。这导致服务器消息数量指数级增长，带宽承受压力极高。   客户端渲染卡顿   因为同屏人数越多，客户端需要渲染的模型就越多。这样在一些普通的硬件设备下会直接导致卡顿、发热。  思路除了升">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2023-11-10T08:30:41.709Z">
+<meta property="og:updated_time" content="2023-11-21T03:34:55.992Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="游戏开发笔记 - 同屏人数裁剪">
 <meta name="twitter:description" content="简单优化下AOI模块 前言当游戏开启活动让大量玩家聚集在指定地图范围内时，给服务器和客户端带来最直接的麻烦就是：  服务器带宽占用率高   假设同屏有1000个玩家，那么任意一个玩家移动一次需要同步其他999个玩家。这导致服务器消息数量指数级增长，带宽承受压力极高。   客户端渲染卡顿   因为同屏人数越多，客户端需要渲染的模型就越多。这样在一些普通的硬件设备下会直接导致卡顿、发热。  思路除了升">
@@ -187,7 +187,7 @@ var _hmt = _hmt || [];
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-game-aoi-opt" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-game-aoi-cut" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
@@ -199,7 +199,7 @@ var _hmt = _hmt || [];
   
 
         
-        <a href="/2023/11/08/game-aoi-opt/" class="archive-article-date">
+        <a href="/2023/11/08/game-aoi-cut/" class="archive-article-date">
   	<time datetime="2023-11-07T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-11-08</time>
 </a>
         
@@ -326,7 +326,7 @@ var _hmt = _hmt || [];
   <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
   <p>扫一扫，分享到微信</p>
   <div class="wx-qrcode">
-    <img src="https://api.pwmqr.com/qrcode/create/?url=http://xupin.im/2023/11/08/game-aoi-opt/" alt="微信分享二维码">
+    <img src="https://api.pwmqr.com/qrcode/create/?url=http://xupin.im/2023/11/08/game-aoi-cut/" alt="微信分享二维码">
   </div>
 </div>
 
@@ -339,6 +339,15 @@ var _hmt = _hmt || [];
 
   
 <nav id="article-nav">
+  
+    <a href="/2023/11/21/game-aoi-list-fast/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          游戏开发笔记 - 链表优化（快慢指针）
+        
+      </div>
+    </a>
   
   
     <a href="/2023/11/06/game-task-system/" id="article-nav-older" class="article-nav-link-wrap">

@@ -188,19 +188,111 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-game-aoi-opt" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-game-aoi-list-fast" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2023/11/08/game-aoi-opt/">游戏开发笔记 - 同屏人数裁剪</a>
+      <a class="article-title" href="/2023/11/21/game-aoi-list-fast/">游戏开发笔记 - 链表优化（快慢指针）</a>
     </h1>
   
 
         
-        <a href="/2023/11/08/game-aoi-opt/" class="archive-article-date">
+        <a href="/2023/11/21/game-aoi-list-fast/" class="archive-article-date">
+  	<time datetime="2023-11-20T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-11-21</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>优化链表查询效率</p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>链表在操作的时候需要从头节点遍历到目标节点，如果数据量大比较耗时。当链表应用在AOI算法（十字链表，双有序链表）时这个效率问题更会凸显，最坏的情况是遍历x*y*{v}个节点。</p>
+<h3 id="优化方案"><a href="#优化方案" class="headerlink" title="优化方案"></a>优化方案</h3><p>常见的2种优化方式：</p>
+<ol>
+<li>快慢针</li>
+</ol>
+<blockquote>
+<p>创建2个指针同时指向头节点，快指针移动步长大、慢指针移动步长小，查询时通过快慢指针确定目标节点的范围。</p>
+</blockquote>
+<ol>
+<li>跳表</li>
+</ol>
+<blockquote>
+<p>链表每固定步长的节点为索引节点，这些索引节点再组成一个索引链表，查询时通过索引链表确定目标节点的范围。</p>
+</blockquote>
+<p>原理类似ClickHouse的<code>跳数索引</code>，可以存在多个索引链表。</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">game</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2023/11/21/game-aoi-list-fast/">More >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+    <article id="post-game-aoi-cut" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/11/08/game-aoi-cut/">游戏开发笔记 - 同屏人数裁剪</a>
+    </h1>
+  
+
+        
+        <a href="/2023/11/08/game-aoi-cut/" class="archive-article-date">
   	<time datetime="2023-11-07T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-11-08</time>
 </a>
         
@@ -250,7 +342,7 @@ var _hmt = _hmt || [];
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2023/11/08/game-aoi-opt/">More >></a>
+          <a class="article-more-a" href="/2023/11/08/game-aoi-cut/">More >></a>
         </p>
       
 
@@ -767,93 +859,6 @@ var _hmt = _hmt || [];
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2022/12/11/data-structures-algorithms-tire/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-data-structures-algorithms-aoi" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/10/08/data-structures-algorithms-aoi/">数据结构与算法 - AOI</a>
-    </h1>
-  
-
-        
-        <a href="/2022/10/08/data-structures-algorithms-aoi/" class="archive-article-date">
-  	<time datetime="2022-10-07T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-10-08</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>AOI（Area Of Interest）翻译过来称为“感兴趣的区域”，用于计算玩家与玩家（或其他Entity）之间彼此进入、离开、移动视野的算法。通俗的解释比如，玩家离开某个地图时，计算出需要通知的其他玩家。</p>
-<p>AOI模块是多人联机游戏服务器中很重要的功能模块之一，AOI模块的“好”与“坏”会很大程度上影响服务器的性能。</p>
-<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>当一个玩家进入场景后，首先要计算出场景中的其他所有玩家并放进对象集合（又称观察者集合），之后该玩家的进入、移动、离开或其他行为都将会一一通知该集合内的玩家，并且每个玩家都需要维护这样一个对象集合。</p>
-<blockquote>
-<p>Watchers 观察者集合，即能够看到我的其他玩家或实体。</p>
-</blockquote>
-<p>需要注意的是，<code>该对象集合内的玩家列表会随着玩家的行为发生变化，在玩家离开场景后清空对象集合</code>。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">data structures</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/10/08/data-structures-algorithms-aoi/">More >></a>
         </p>
       
 
