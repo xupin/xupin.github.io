@@ -188,6 +188,98 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-game-server-reload" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2024/01/29/game-server-reload/">游戏开发笔记 - 服务器不停机更新</a>
+    </h1>
+  
+
+        
+        <a href="/2024/01/29/game-server-reload/" class="archive-article-date">
+  	<time datetime="2024-01-28T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-01-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>简单实现服务器不停机更新的机制</p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>之前接触过某moba游戏，除了其丰富的游戏内容之外，对其服务器更新机制非常好奇。他们的服务器很少进行停机更新，大部分是不停机更新内容。这是如何实现的呢？</p>
+<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>服务器更新场景，一般是业务代码迭代或者配置表需要重载。moba游戏一般是一个服务器承载1或多个房间，所以热更新机制有可能是这样一个设计：</p>
+<ol>
+<li>正在使用的服务器</li>
+</ol>
+<blockquote>
+<p>先停止接收新的请求，等待处理完已有的战斗后重启</p>
+</blockquote>
+<ol>
+<li>未使用的服务器</li>
+</ol>
+<blockquote>
+<p>有序重启，防止无服务器可用</p>
+</blockquote>
+<p>当然，实现上肯定不是这么简单。如果按照上面的思路来实现，流程如下：</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">game</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2024/01/29/game-server-reload/">More >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-game-rank" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -771,100 +863,6 @@ var _hmt = _hmt || [];
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2023/01/30/game-map-editor/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-data-structures-algorithms-ast" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/12/13/data-structures-algorithms-ast/">数据结构与算法 - AST</a>
-    </h1>
-  
-
-        
-        <a href="/2022/12/13/data-structures-algorithms-ast/" class="archive-article-date">
-  	<time datetime="2022-12-12T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-12-13</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>AST（Abstract syntax tree）抽象语法树，用于表示编程语言源代码的一种抽象语法的结构，树的每个节点都对应源代码中的一个结构。</p>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>计算机如何生成AST结构？一般来说顺序如下：</p>
-<ol>
-<li>词法分析</li>
-</ol>
-<blockquote>
-<p>扫描源代码，生成标记（token）</p>
-</blockquote>
-<ol>
-<li>语法分析</li>
-</ol>
-<blockquote>
-<p>解析tokens，构造AST结构</p>
-</blockquote>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">data structures</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/12/13/data-structures-algorithms-ast/">More >></a>
         </p>
       
 
