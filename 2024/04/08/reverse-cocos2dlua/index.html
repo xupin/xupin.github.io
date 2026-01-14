@@ -17,12 +17,10 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://xupin.im/assets/reverse/encrypted.png">
 <meta property="og:image" content="http://xupin.im/assets/reverse/encrypted-content.png">
-<meta property="og:image" content="http://xupin.im/assets/reverse/ida.png">
-<meta property="og:image" content="http://xupin.im/assets/reverse/ida-strings.png">
-<meta property="og:image" content="http://xupin.im/assets/reverse/ida-funcs.png">
+<meta property="og:image" content="http://xupin.im/assets/reverse/ida-strings-xxtea.jpg">
 <meta property="og:image" content="http://xupin.im/assets/reverse/decrypted.png">
 <meta property="article:published_time" content="2024-04-07T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-08-08T07:24:11.552Z">
+<meta property="article:modified_time" content="2026-01-14T06:23:18.108Z">
 <meta property="article:author" content="Mark">
 <meta property="article:tag" content="develop">
 <meta property="article:tag" content="reverse engineering">
@@ -216,7 +214,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">1.2k字</span>
+        <span class="post-count">1.1k字</span>
       </span>
     </span>
 
@@ -254,20 +252,14 @@ var _hmt = _hmt || [];
 <p>如果有<code>libmono.so</code>,<code>libil2cpp.so</code>等文件，则可能是 Unity 。</p>
 </blockquote>
 <p>res 目录一般是 Android 工程的 Icon、Logo 等文件（忽略）。assets&#x2F;res 是我们要找的资源目录，随便挑一张图片文件打开是这样的：</p>
-<img src="/assets/reverse/encrypted.png" width="650" height="350"/>
+<img src="/assets/reverse/encrypted.png" width="390" height="231"/>
 
 <p>通过文本编辑器打开内容是这样的：</p>
 <img src="/assets/reverse/encrypted-content.png" width="650" height="350"/>
 
 <p>打开多个文件发现头都是<code>sm!fd9%3nX4@</code>这几个字符，基本确定是 XXTEA 算法（这是 Sign，我们需要找到 Key 就可以进行解密资源）。</p>
-<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>通过 IDA 工具进行分析，拖入 libcocos2dlua.so 等待分析完成。</p>
-<img src="/assets/reverse/ida.png" width="650" height="350"/>
-
-<p>点击 View-&gt;Open Subviews-&gt;Strings，CTRL + F 搜索<code>sm!fd9%3nX4@</code>，如果能够搜到就最简单，双击<code>sm!fd9%3nX4@</code>进入 Hex View 页面能看到 Key 就在附近。</p>
-<img src="/assets/reverse/ida-strings.png" width="650" height="350"/>
-
-<p>如果没有搜索到，重新搜索<code>xxtea</code>，列表中<code>_Z13xxtea_encryptPhjS_jPj</code>、<code>_Z13xxtea_decryptPhjS_jPj</code>这俩就是 xxtea 加解密的函数。</p>
-  <img src="/assets/reverse/ida-funcs.png" width="650" height="350"/>
+<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>IDA 工具拖入 libcocos2dlua.so 等待分析完成，点击 View-&gt;Open Subviews-&gt;Strings 搜索<code>xxtea</code>，列表中<code>_Z13xxtea_encryptPhjS_jPj</code>、<code>_Z13xxtea_decryptPhjS_jPj</code>这俩就是 xxtea 加解密的函数。</p>
+<img src="/assets/reverse/ida-strings-xxtea.jpg" width="379" height="107"/>
 
 <h3 id="逆向方案"><a href="#逆向方案" class="headerlink" title="逆向方案"></a>逆向方案</h3><p>确定是 XXTEA 算法之后，有两种方式来获取 Key</p>
 <ul>
@@ -299,13 +291,13 @@ var _hmt = _hmt || [];
 <blockquote>
 <p><a href="https://github.com/frida/frida/releases">https://github.com/frida/frida/releases</a></p>
 <blockquote>
-<p>frida-server-16.2.1-linux-x86_64.xz</p>
+<p>frida-server-16.2.1-android-x86_64.xz</p>
 </blockquote>
 </blockquote>
 <ul>
 <li>模拟器开启 root 权限，打开 USB 调试模式。</li>
 </ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /Applications/NemuPlayer.app/Contents/MacOS</span><br><span class="line">$ ./adb push /Users/mark/Downloads/frida-server-16.2.1-android-x86_64 /data/adb/frida-server-16.2.1</span><br><span class="line">$ ./adb forward tcp:27042 tcp:27042</span><br><span class="line">$ ./adb root <span class="comment"># 开启root权限</span></span><br><span class="line">$ ./adb shell <span class="comment"># 进入模拟器 adb shell</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /Applications/NemuPlayer.app/Contents/MacOS</span><br><span class="line">$ ./adb push ./frida-server-16.2.1-android-x86_64 /data/adb/frida-server-16.2.1</span><br><span class="line">$ ./adb forward tcp:27042 tcp:27042</span><br><span class="line">$ ./adb root <span class="comment"># 开启root权限</span></span><br><span class="line">$ ./adb shell <span class="comment"># 进入模拟器 adb shell</span></span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>查看游戏包名</li>
@@ -336,11 +328,10 @@ var _hmt = _hmt || [];
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">LuaStack::luaLoadBuffer</span><span class="params">(lua_State *L, <span class="type">const</span> <span class="type">char</span> *chunk, <span class="type">int</span> chunkSize, <span class="type">const</span> <span class="type">char</span> *chunkName)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> r = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (_xxteaEnabled &amp;&amp; <span class="built_in">strncmp</span>(chunk, _xxteaSign, _xxteaSignLen) == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// decrypt XXTEA</span></span><br><span class="line">        xxtea_long len = <span class="number">0</span>;</span><br><span class="line">        <span class="type">unsigned</span> <span class="type">char</span>* result = <span class="built_in">xxtea_decrypt</span>((<span class="type">unsigned</span> <span class="type">char</span>*)chunk + _xxteaSignLen,</span><br><span class="line">                                              (xxtea_long)chunkSize - _xxteaSignLen,</span><br><span class="line">                                              (<span class="type">unsigned</span> <span class="type">char</span>*)_xxteaKey,</span><br><span class="line">                                              (xxtea_long)_xxteaKeyLen,</span><br><span class="line">                                              &amp;len);</span><br><span class="line">        <span class="type">unsigned</span> <span class="type">char</span>* content = result;</span><br><span class="line">        xxtea_long contentSize = len;</span><br><span class="line">        <span class="built_in">skipBOM</span>((<span class="type">const</span> <span class="type">char</span>*&amp;)content, (<span class="type">int</span>&amp;)contentSize);</span><br><span class="line">        r = <span class="built_in">luaL_loadbuffer</span>(L, (<span class="type">char</span>*)content, contentSize, chunkName);</span><br><span class="line">        <span class="built_in">free</span>(result);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">skipBOM</span>(chunk, chunkSize);</span><br><span class="line">        r = <span class="built_in">luaL_loadbuffer</span>(L, chunk, chunkSize, chunkName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> defined(COCOS2D_DEBUG) &amp;&amp; COCOS2D_DEBUG &gt; 0</span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">    <span class="keyword">return</span> r;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>根据逻辑可以推出，根据加密资源头部 Sign 来确定是否 XXTEA 加密，解密时把 Sign 忽略。实现如下：</p>
-<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">sign := <span class="string">&quot;sm!fd9%3nX4@&quot;</span></span><br><span class="line">key := <span class="string">&quot;gb4sZzoV/fP2P)t3&quot;</span></span><br><span class="line"></span><br><span class="line">bs, err := os.ReadFile(<span class="string">&quot;/Users/mark/Downloads/aaa/assets/res/9325.png&quot;</span>)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">  <span class="built_in">panic</span>(err)</span><br><span class="line">&#125;</span><br><span class="line">bs = bs[<span class="built_in">len</span>(sign):]</span><br><span class="line">nBs := xxtea.Decrypt(bs, key)</span><br><span class="line">os.WriteFile(<span class="string">&quot;/Users/mark/Downloads/aaa/assets/res/9325_decry.png&quot;</span>, nBs, os.ModePerm)</span><br></pre></td></tr></table></figure>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    sign := <span class="string">&quot;sm!fd9%3nX4@&quot;</span></span><br><span class="line">    key := <span class="string">&quot;gb4sZzoV/fP2P)t3&quot;</span></span><br><span class="line"></span><br><span class="line">    bs, err := os.ReadFile(<span class="string">&quot;../assets/9322.png&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="built_in">panic</span>(err)</span><br><span class="line">    &#125;</span><br><span class="line">    nbs := xxtea.Decrypt(bs[<span class="built_in">len</span>(sign):], key)</span><br><span class="line">    os.WriteFile(<span class="string">&quot;../assets/9322_dec.png&quot;</span>, nbs, os.ModePerm)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <img src="/assets/reverse/decrypted.png" width="320" height="220"/>
 
-<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>附上示例：<a href="https://github.com/xupin/cocos2d-reverse">cocos2d-reverse</a></p>
 <h3 id="Q-A"><a href="#Q-A" class="headerlink" title="Q&amp;A"></a>Q&amp;A</h3><ol>
 <li>adb shell 提示 error: no devices&#x2F;emulators found</li>
 </ol>
@@ -482,7 +473,7 @@ var _hmt = _hmt || [];
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8B%E6%89%8B"><span class="toc-number">2.</span> <span class="toc-text">下手</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E6%9E%90"><span class="toc-number">3.</span> <span class="toc-text">分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%86%E5%90%91%E6%96%B9%E6%A1%88"><span class="toc-number">4.</span> <span class="toc-text">逆向方案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Frida-Hook"><span class="toc-number">5.</span> <span class="toc-text">Frida Hook</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IDA-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95"><span class="toc-number">6.</span> <span class="toc-text">IDA 动态调试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%AF%86%E8%B5%84%E6%BA%90"><span class="toc-number">7.</span> <span class="toc-text">解密资源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E5%90%8E"><span class="toc-number">8.</span> <span class="toc-text">最后</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q-A"><span class="toc-number">9.</span> <span class="toc-text">Q&amp;A</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8B%E6%89%8B"><span class="toc-number">2.</span> <span class="toc-text">下手</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E6%9E%90"><span class="toc-number">3.</span> <span class="toc-text">分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%86%E5%90%91%E6%96%B9%E6%A1%88"><span class="toc-number">4.</span> <span class="toc-text">逆向方案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Frida-Hook"><span class="toc-number">5.</span> <span class="toc-text">Frida Hook</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IDA-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95"><span class="toc-number">6.</span> <span class="toc-text">IDA 动态调试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%AF%86%E8%B5%84%E6%BA%90"><span class="toc-number">7.</span> <span class="toc-text">解密资源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q-A"><span class="toc-number">8.</span> <span class="toc-text">Q&amp;A</span></a></li></ol>
                     </div>
                 </span>
             </div>
@@ -530,7 +521,7 @@ var _hmt = _hmt || [];
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2025 Mark
+    		&copy; 2026 Mark
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
