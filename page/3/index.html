@@ -183,6 +183,120 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-game-behavior-tree" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <!-- 标题 -->
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/07/21/game-behavior-tree/">游戏开发笔记 - Behavior Tree(行为树)</a>
+    </h1>
+  
+
+        <!-- 发布日期 -->
+        
+        <a href="/2023/07/21/game-behavior-tree/" class="archive-article-date">
+  	<time datetime="2023-07-20T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-07-21</time>
+</a>
+        
+        <!-- 字数统计 -->
+        
+          <div style="margin-top:10px;">
+    <span class="post-time">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-keyboard-o"></i>
+        <span class="post-meta-item-text">  全文 ≈</span>
+        <span class="post-count">1.2k字</span>
+      </span>
+    </span>
+
+    <span class="post-time">
+      &nbsp; | &nbsp;
+      <span class="post-meta-item-icon">
+        <i class="fa fa-hourglass-half"></i>
+        <span class="post-meta-item-text">  预计阅读时长</span>
+        <span class="post-count">5分钟</span>
+      </span>
+    </span>
+</div>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>行为树一般应用于游戏内物体的 AI 决策，以树的形式控制物体接下来的动作。比如: 血量太少 -&gt; 吃药、攻击距离不够 -&gt; 移动等等。</p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>最近在摸索小游戏开发，有一些联机型的功能需要机器人参与，所以需要实现一下游戏 AI。综合一下实现方案基本是以下两种：</p>
+<ul>
+<li>有限状态机（Finite State Machine）</li>
+</ul>
+<blockquote>
+<p>FSM 也是最开始采用的方案，实现起来简单粗暴。缺点是整个逻辑非常臃肿很难模块化，后面再对 AI 进行更新和维护比较恶心，很容易因为漏改、错改导致不可用。</p>
+</blockquote>
+<ul>
+<li>行为树（Behavior Tree）</li>
+</ul>
+<blockquote>
+<p>行为树是由一系列节点构成的，每个节点对应一个动作，自上而下执行且每个节点都会返回执行状态。</p>
+</blockquote>
+<img src="/assets/bt/bt.png" width="300" height="180"/>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">game</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2023/07/21/game-behavior-tree/">More >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-game-protocol" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -950,114 +1064,6 @@ var _hmt = _hmt || [];
 
 
   
-    <article id="post-ds-algos-astar" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/08/01/ds-algos-astar/">数据结构与算法 - AStar(A*)</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2022/08/01/ds-algos-astar/" class="archive-article-date">
-  	<time datetime="2022-07-31T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-01</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">2.1k字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">8分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>寻路算法是游戏比较重要的组成部分之一，尤其在国内游戏很常见的自动寻路系统，比如操纵角色从 A 点到 B 点的移动。计算最短路径有很多不同的算法，比如：Dijkstra、AStar（A*）、NavMesh（多边形算法）、RVO 动态避障等等</p>
-<h3 id="A-寻路算法"><a href="#A-寻路算法" class="headerlink" title="A*寻路算法"></a>A*寻路算法</h3><p>寻路算法的移动路径核心有 2 点：最短、可移动。</p>
-<p>所以首先需要确定起点坐标的相邻节点（4 方向、8 方向），然后通过计算最靠近终点坐标的相邻坐标（不考虑障碍物）确认检索方向，再去计算“相邻坐标”移动的下一个坐标（距离终点坐标最近 &amp; 可移动），重复计算这个过程直至找到终点坐标，这就是 A*算法</p>
-<p>A*算法是一类基于网格的寻路算法，也就是把地图看作一个由网格组成的矩阵，每个坐标就是一个网格。</p>
-<p>一张 3x3 地图</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">data structures</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/08/01/ds-algos-astar/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
@@ -1260,6 +1266,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">rust</a>
               </li>
             
             <div class="clearfix"></div>

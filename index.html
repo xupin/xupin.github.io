@@ -183,6 +183,111 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-rust-tokio-axum" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <!-- 标题 -->
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2026/05/10/rust-tokio-axum/">Rust学习笔记 - axum</a>
+    </h1>
+  
+
+        <!-- 发布日期 -->
+        
+        <a href="/2026/05/10/rust-tokio-axum/" class="archive-article-date">
+  	<time datetime="2026-05-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-05-10</time>
+</a>
+        
+        <!-- 字数统计 -->
+        
+          <div style="margin-top:10px;">
+    <span class="post-time">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-keyboard-o"></i>
+        <span class="post-meta-item-text">  全文 ≈</span>
+        <span class="post-count">1.4k字</span>
+      </span>
+    </span>
+
+    <span class="post-time">
+      &nbsp; | &nbsp;
+      <span class="post-meta-item-icon">
+        <i class="fa fa-hourglass-half"></i>
+        <span class="post-meta-item-text">  预计阅读时长</span>
+        <span class="post-count">7分钟</span>
+      </span>
+    </span>
+</div>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Axum 是由 Tokio 官方团队开发的一个高性能、设计优雅的现代化 Web 框架。</p>
+<h3 id="为什么选择Axum？"><a href="#为什么选择Axum？" class="headerlink" title="为什么选择Axum？"></a>为什么选择Axum？</h3><p>Tokio 是 Rust 社区中最流行的异步编程框架之一（在区块链和智能合约圈子比较受欢迎），而Axum是由Tokio官方开发、且深度集成的Web框架。</p>
+<h3 id="快速使用"><a href="#快速使用" class="headerlink" title="快速使用"></a>快速使用</h3><p>假设已经安装了Rust开发环境</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// main.rs</span></span><br><span class="line"><span class="keyword">use</span> axum::&#123;Router, routing&#125;;</span><br><span class="line"><span class="keyword">use</span> tokio::net::TcpListener;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[tokio::main]</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">router</span> = Router::<span class="title function_ invoke__">new</span>().<span class="title function_ invoke__">route</span>(<span class="string">&quot;/&quot;</span>, routing::<span class="title function_ invoke__">get</span>(<span class="keyword">async</span> || <span class="string">&quot;Hi, Rust!&quot;</span>));</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">addr</span> = <span class="string">&quot;0.0.0.0:8000&quot;</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">listener</span> = TcpListener::<span class="title function_ invoke__">bind</span>(&amp;addr).<span class="keyword">await</span>.<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;listening on &#123;&#125;&quot;</span>, addr);</span><br><span class="line">    axum::<span class="title function_ invoke__">serve</span>(listener, router).<span class="keyword">await</span>.<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ curl -X GET <span class="string">&#x27;http://127.0.0.1:8000&#x27;</span></span><br><span class="line">Hi, Rust!</span><br></pre></td></tr></table></figure>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rust</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2026/05/10/rust-tokio-axum/">More >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-reverse-cocos2djs" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -953,117 +1058,6 @@ var _hmt = _hmt || [];
 
 
   
-    <article id="post-game-spine-change-attach" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2024/05/10/game-spine-change-attach/">游戏开发笔记 - Spine换装</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2024/05/10/game-spine-change-attach/" class="archive-article-date">
-  	<time datetime="2024-05-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-05-10</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">825字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">4分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>想给小游戏做个时装功能，在游戏中一般来说换装分为两种：</p>
-<ol>
-<li><p>整体时装</p>
-</li>
-<li><p>局部换装</p>
-</li>
-</ol>
-<p>2D 游戏中一般用到的骨骼动画 Spine 和 DragonBone(龙骨)。这里主要学习一下 Spine 换装的相关实现</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">game</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">spine</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2024/05/10/game-spine-change-attach/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1266,6 +1260,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">rust</a>
               </li>
             
             <div class="clearfix"></div>
