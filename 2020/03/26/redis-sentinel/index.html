@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Redis学习笔记 - 哨兵 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="现在这篇来学习一下Redis Sentinel即哨兵策略的相关知识。 1.什么是哨兵？哨兵（Sentinel），Redis2.6版本（正式版本是2.8，现2.6版本已被废弃）开始提供的一种集群策略，核心思想是解决了主从复制（Replication）在Master节点故障，无法自动切换Slave节点为新Master节点的问题。  特点  哨兵策略是分布式部署，节点间相互协调工作。 哨兵集群至少要3个">
+  <meta name="description" content="现在这篇来学习一下Redis Sentinel即哨兵策略的相关知识。 1.什么是哨兵？ 哨兵（Sentinel），Redis2.6版本（正式版本是2.8，现2.6版本已被废弃）开始提供的一种集群策略，核心思想是解决了主从复制（Replication）在Master节点故障，无法自动切换Slave节点为新Master节点的问题。   特点  哨兵策略是分布式部署，节点间相互协调工作。 哨兵集群至少要">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redis学习笔记 - 哨兵">
 <meta property="og:url" content="http://xupin.im/2020/03/26/redis-sentinel/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="现在这篇来学习一下Redis Sentinel即哨兵策略的相关知识。 1.什么是哨兵？哨兵（Sentinel），Redis2.6版本（正式版本是2.8，现2.6版本已被废弃）开始提供的一种集群策略，核心思想是解决了主从复制（Replication）在Master节点故障，无法自动切换Slave节点为新Master节点的问题。  特点  哨兵策略是分布式部署，节点间相互协调工作。 哨兵集群至少要3个">
+<meta property="og:description" content="现在这篇来学习一下Redis Sentinel即哨兵策略的相关知识。 1.什么是哨兵？ 哨兵（Sentinel），Redis2.6版本（正式版本是2.8，现2.6版本已被废弃）开始提供的一种集群策略，核心思想是解决了主从复制（Replication）在Master节点故障，无法自动切换Slave节点为新Master节点的问题。   特点  哨兵策略是分布式部署，节点间相互协调工作。 哨兵集群至少要">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-03-25T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-07-15T02:59:17.757Z">
@@ -28,6 +28,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -228,16 +229,19 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>现在这篇来学习一下Redis Sentinel即哨兵策略的相关知识。</p>
-<h3 id="1-什么是哨兵？"><a href="#1-什么是哨兵？" class="headerlink" title="1.什么是哨兵？"></a>1.什么是哨兵？</h3><p>哨兵（Sentinel），Redis2.6版本（正式版本是2.8，现2.6版本已被废弃）开始提供的一种集群策略，核心思想是解决了主从复制（Replication）在Master节点故障，无法自动切换Slave节点为新Master节点的问题。</p>
+<h3 id="1-什么是哨兵？">1.什么是哨兵？</h3>
+<p>哨兵（Sentinel），Redis2.6版本（正式版本是2.8，现2.6版本已被废弃）开始提供的一种集群策略，核心思想是解决了主从复制（Replication）在Master节点故障，无法自动切换Slave节点为新Master节点的问题。</p>
 <ul>
-<li><p>特点</p>
+<li>
+<p>特点</p>
 <ol>
 <li>哨兵策略是分布式部署，节点间相互协调工作。</li>
 <li>哨兵集群至少要3个节点。</li>
 <li>可以把哨兵看作是一种特殊的Redis服务。</li>
 </ol>
 </li>
-<li><p>优点</p>
+<li>
+<p>优点</p>
 <ol>
 <li>哨兵策略拥有主从复制的优点。</li>
 <li>哨兵策略解决了Master节点故障，无法自动切换Slave节点为新Master节点的问题。</li>
@@ -245,22 +249,23 @@ var _hmt = _hmt || [];
 </li>
 </ul>
 <span id="more"></span>
-
 <ul>
-<li>缺点<ol>
+<li>缺点
+<ol>
 <li>Master节点写操作的压力没有得到解决。</li>
 <li>数据存储能力还是受到单节点限制。</li>
 </ol>
 </li>
 </ul>
-<h3 id="2-如何配置（多种方式）"><a href="#2-如何配置（多种方式）" class="headerlink" title="2.如何配置（多种方式）"></a>2.如何配置（多种方式）</h3><ul>
-<li>启动Redis哨兵，.&#x2F;redis-sentinel redis-sentinel.conf</li>
-<li>启动Redis服务时并且启动哨兵，.&#x2F;redis-server redis-sentinel.conf –sentinel</li>
+<h3 id="2-如何配置（多种方式）">2.如何配置（多种方式）</h3>
+<ul>
+<li>启动Redis哨兵，./redis-sentinel redis-sentinel.conf</li>
+<li>启动Redis服务时并且启动哨兵，./redis-server redis-sentinel.conf --sentinel</li>
 </ul>
 <p>redis-sentinel.conf示例</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 哨兵监控的节点。</span></span><br><span class="line"><span class="comment"># MASTER_NAME：自定义的Master节点名称。</span></span><br><span class="line"><span class="comment"># IP：Master节点的地址。</span></span><br><span class="line"><span class="comment"># PORT：Master节点的端口。</span></span><br><span class="line"><span class="comment"># QUORUM：当Master节点故障，确认Master节点odown最少的哨兵数量。</span></span><br><span class="line">sentinel monitor &#123;MASTER_NAME&#125; &#123;IP&#125; &#123;PORT&#125; &#123;QUORUM&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 哨兵验证</span></span><br><span class="line"><span class="comment"># PASS：Master节点的auth，需要注意的时哨兵不能同时为Master节点和Slave节点设置密码，所以auth需要保持一致。</span></span><br><span class="line">sentinel auth-pass &#123;MASTER_NAME&#125; &#123;PASS&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 哨兵心跳Ping最大时间，如果哨兵向Master节点发送Ping超过这个时间或者回复err，那么哨兵会主观（sdown）认为该Master节点已经处于不可用状态。</span></span><br><span class="line"><span class="comment"># MS：心跳Ping等待响应的最大时间（单位：Millisecond）。</span></span><br><span class="line">sentinel down-after-milliseconds &#123;MASTER_NAME&#125; &#123;MS&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 同时同步数据的Slave节点数量</span></span><br><span class="line"><span class="comment"># SLAVE_NUM：当Master节点故障，Slave节点通过竞选当选新Master节点，最多允许几个Slave节点开始同步新Master的数据。</span></span><br><span class="line">sentinel parallel-syncs &#123;MASTER_NAME&#125; &#123;SLAVE_NUM&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 主从节点切换所需要的最大时间。</span></span><br><span class="line"><span class="comment"># MS：主从节点切换所需要的最大时间（单位：Millisecond）。</span></span><br><span class="line">sentinel failover-timeout &#123;MASTER_NAME&#125; &#123;MS&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># Master节点故障调用的脚本</span></span><br><span class="line"><span class="comment"># SCRIPT_PATH：脚本路径</span></span><br><span class="line">sentinel notification-script &#123;MASTER_NAME&#125; &#123;SCRIPT_PATH&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="3-工作机制"><a href="#3-工作机制" class="headerlink" title="3.工作机制"></a>3.工作机制</h3><ol>
+<h3 id="3-工作机制">3.工作机制</h3>
+<ol>
 <li>哨兵向已知节点和哨兵发送心跳包检测状态。</li>
 <li>Master节点无效回复，哨兵判断Master节点状态：主观宕机，客观宕机。</li>
 <li>Master节点被确定客观宕机，进行领头（Leader）哨兵选举。</li>
@@ -268,15 +273,19 @@ var _hmt = _hmt || [];
 <li>授权成功，从Slave节点中选举新Master节点。</li>
 <li>领头哨兵把新Master节点信息同步给其他哨兵，其他哨兵把新Master节点信息同步对应Slave节点。</li>
 </ol>
-<h3 id="4-心跳包"><a href="#4-心跳包" class="headerlink" title="4.心跳包"></a>4.心跳包</h3><p>每个哨兵以每秒钟1次的频率向它已知的Master节点、Slave节点和其他哨兵发送PING命令，希望得到的有效回复如下：</p>
+<h3 id="4-心跳包">4.心跳包</h3>
+<p>每个哨兵以每秒钟1次的频率向它已知的Master节点、Slave节点和其他哨兵发送PING命令，希望得到的有效回复如下：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">PING replied with +PONG.</span><br><span class="line">PING replied with -LOADING error.</span><br><span class="line">PING replied with -MASTERDOWN error.</span><br></pre></td></tr></table></figure>
 <p>其它任何回复或者无回复都是无效回复。</p>
-<h3 id="5-哨兵和节点之间的自动发现机制"><a href="#5-哨兵和节点之间的自动发现机制" class="headerlink" title="5.哨兵和节点之间的自动发现机制"></a>5.哨兵和节点之间的自动发现机制</h3><p>通过Redis的pub&#x2F;sub系统实现，每个哨兵都会向自己监控的节点对应的channel：<strong>sentinel</strong>:hello发送一条消息（消息体包含自己的{IP}、{PORT}和{RUNID}以及Master节点的完整配置），每个订阅该channel的哨兵都可以消费这条消息并且能发现到其他哨兵的存在，如果某个哨兵发现自己维护的节点配置低于新接收的节点配置，则会用新的节点配置进行覆盖。</p>
-<h3 id="6-主观-客观宕机"><a href="#6-主观-客观宕机" class="headerlink" title="6.主观&#x2F;客观宕机"></a>6.主观&#x2F;客观宕机</h3><p>如果一个Master节点在收到PING命令后没有在有效时间内（down-after-milliseconds）进行有效回复，则会被标记为主观宕机（sdown，Subjectively Down）。</p>
+<h3 id="5-哨兵和节点之间的自动发现机制">5.哨兵和节点之间的自动发现机制</h3>
+<p>通过Redis的pub/sub系统实现，每个哨兵都会向自己监控的节点对应的channel：<strong>sentinel</strong>:hello发送一条消息（消息体包含自己的{IP}、{PORT}和{RUNID}以及Master节点的完整配置），每个订阅该channel的哨兵都可以消费这条消息并且能发现到其他哨兵的存在，如果某个哨兵发现自己维护的节点配置低于新接收的节点配置，则会用新的节点配置进行覆盖。</p>
+<h3 id="6-主观-客观宕机">6.主观/客观宕机</h3>
+<p>如果一个Master节点在收到PING命令后没有在有效时间内（down-after-milliseconds）进行有效回复，则会被标记为主观宕机（sdown，Subjectively Down）。</p>
 <p>哨兵会获取其他哨兵检测该节点的状态，命令：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># IP：主观宕机的Master节点地址</span></span><br><span class="line"><span class="comment"># PORT：主观宕机的Master节点端口</span></span><br><span class="line"><span class="comment"># CURRENT_EPOCH：哨兵的配置纪元，用于领头哨兵选举。</span></span><br><span class="line"><span class="comment"># RUNID：可以是*和哨兵的RunID，当值是 * 代表检测节点是否主观宕机，如果是RunID则用于领头哨兵选举。</span></span><br><span class="line">SENTINEL is-master-down-byaddr &#123;IP&#125; &#123;PORT&#125; &#123;CURRENT_EPOCH&#125; &#123;RUNID&#125;</span><br></pre></td></tr></table></figure>
 <p>当有足够数量（{QUORUM}）的哨兵都认为该Master节点处于主观宕机状态。则该Master节点会被标记为客观宕机（odown，Objectively Down），若没有足够数量的哨兵都认为该Master节点处于主观宕机状态，则不会被标记为客观宕机，同时如果该Master节点重新返回哨兵有效回复，该Master节点主观宕机状态会被移除。</p>
-<h3 id="7-领头哨兵选举"><a href="#7-领头哨兵选举" class="headerlink" title="7.领头哨兵选举"></a>7.领头哨兵选举</h3><p>因为只需要一个哨兵完成主从切换，所以需要选举一个领头哨兵。</p>
+<h3 id="7-领头哨兵选举">7.领头哨兵选举</h3>
+<p>因为只需要一个哨兵完成主从切换，所以需要选举一个领头哨兵。</p>
 <ol>
 <li>每个哨兵都会发送<code>SENTINEL is-master-down-byaddr</code>命令希望成为领头哨兵。收到该命令的哨兵如果没有同意过其他哨兵的同样命令，那么同意该请求，否则拒绝。</li>
 <li>如果某一哨兵发现同意自己请求的哨兵数量并且数量大于等于{QUORUM}，那么它将成为领头哨兵。</li>
@@ -285,26 +294,31 @@ var _hmt = _hmt || [];
 <blockquote>
 <p>该方法基于raft算法领头选举方法实现。</p>
 </blockquote>
-<h3 id="8-主从切换授权"><a href="#8-主从切换授权" class="headerlink" title="8.主从切换授权"></a>8.主从切换授权</h3><p>当选举出领头哨兵之后并未马上进行主从切换，领头哨兵还需要获取{MAJORITY}数量的哨兵授权。</p>
+<h3 id="8-主从切换授权">8.主从切换授权</h3>
+<p>当选举出领头哨兵之后并未马上进行主从切换，领头哨兵还需要获取{MAJORITY}数量的哨兵授权。</p>
 <figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># MAJORITY：该值不可配置，Redis自行计算。公式：majority = voters / 2 + 1</span></span><br></pre></td></tr></table></figure>
 <ul>
 <li>如果{QUORUM} &lt; {MAJORITY}，领头哨兵需要{MAJORITY}数量的哨兵进行授权。</li>
-<li>如果{QUORUM} &gt;&#x3D; {MAJORITY}，那么领头哨兵需要{QUORUM}数量的哨兵授权才可以。</li>
+<li>如果{QUORUM} &gt;= {MAJORITY}，那么领头哨兵需要{QUORUM}数量的哨兵授权才可以。</li>
 </ul>
 <p>当领头哨兵获得授权之后，正式开始主从切换流程。</p>
-<h3 id="9-主从切换"><a href="#9-主从切换" class="headerlink" title="9.主从切换"></a>9.主从切换</h3><p>开始主从切换（failover），首先领头哨兵会选举出一个Slave节点出来作为新Master节点，该Slave节点选举参考参数：</p>
+<h3 id="9-主从切换">9.主从切换</h3>
+<p>开始主从切换（failover），首先领头哨兵会选举出一个Slave节点出来作为新Master节点，该Slave节点选举参考参数：</p>
 <ul>
-<li>该节点和Master节点断开的时长，如果一个Slave节点与Master节点断开连接时间已经超过<code>down-after-milliseconds</code>参数的<code>10倍</code>，再加上Master宕机的时长，该Slave节点就会被认为不适合选举为新的Master节点。  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(down-after-milliseconds * 10) + milliseconds_since_master_is_in_SDOWN_state</span><br></pre></td></tr></table></figure></li>
+<li>该节点和Master节点断开的时长，如果一个Slave节点与Master节点断开连接时间已经超过<code>down-after-milliseconds</code>参数的<code>10倍</code>，再加上Master宕机的时长，该Slave节点就会被认为不适合选举为新的Master节点。  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(down-after-milliseconds * 10) + milliseconds_since_master_is_in_SDOWN_state</span><br></pre></td></tr></table></figure>
+</li>
 <li>Slave节点的优先级（slave-priority），slave-priority越低优先级越高。</li>
 <li>复制数据偏移量（复制数据最完整）</li>
 <li>RunID（最小的）</li>
 </ul>
-<h3 id="10-配置同步"><a href="#10-配置同步" class="headerlink" title="10.配置同步"></a>10.配置同步</h3><p>在领头哨兵完成主从切换之后，会在本地生成最新的Master配置然后通过pub&#x2F;sub消息机制同步给其他哨兵，其他哨兵则更新对应的Master节点配置。</p>
+<h3 id="10-配置同步">10.配置同步</h3>
+<p>在领头哨兵完成主从切换之后，会在本地生成最新的Master配置然后通过pub/sub消息机制同步给其他哨兵，其他哨兵则更新对应的Master节点配置。</p>
 <p>那么其他哨兵怎么知道这份配置是最新的呢？</p>
 <blockquote>
 <p>领头哨兵准备执行主从切换前，会从要切换成新Master节点的Slave节点取得一个configuration epoch，可以理解为配置版本号。如果领头哨兵主从切换失败了，那么其他哨兵会等待<code>failover-timeout</code>时间然后接替继续执行切换，每次接替都会重新获取一个configuration epoch，作为新的配置版本号。如果领头哨兵切换成功，那么其他哨兵会根据自己的配置版本号来更新对应Slave节点的Master节点配置。</p>
 </blockquote>
-<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>为什么说哨兵最少要3个节点，举个例子：</p>
+<h3 id="最后">最后</h3>
+<p>为什么说哨兵最少要3个节点，举个例子：</p>
 <blockquote>
 <p>如果是2个节点，{QUORUM}值为1，此时其中一台服务器出现客观宕机。领头哨兵需要进行主从切换，在进行主从切换前需要获取{MAJORITY}数量的哨兵同意，该{MAJORITY}参数最小的值是：2，此时领头哨兵无法进行主从切换。</p>
 </blockquote>
@@ -579,7 +593,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -591,15 +609,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -623,11 +645,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -672,18 +698,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

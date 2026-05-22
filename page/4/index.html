@@ -25,6 +25,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -183,6 +184,120 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-ds-algos-jps" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <!-- 标题 -->
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/08/12/ds-algos-jps/">数据结构与算法 - JPS</a>
+    </h1>
+  
+
+        <!-- 发布日期 -->
+        
+        <a href="/2022/08/12/ds-algos-jps/" class="archive-article-date">
+  	<time datetime="2022-08-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-12</time>
+</a>
+        
+        <!-- 字数统计 -->
+        
+          <div style="margin-top:10px;">
+    <span class="post-time">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-keyboard-o"></i>
+        <span class="post-meta-item-text">  全文 ≈</span>
+        <span class="post-count">1.8k字</span>
+      </span>
+    </span>
+
+    <span class="post-time">
+      &nbsp; | &nbsp;
+      <span class="post-meta-item-icon">
+        <i class="fa fa-hourglass-half"></i>
+        <span class="post-meta-item-text">  预计阅读时长</span>
+        <span class="post-count">7分钟</span>
+      </span>
+    </span>
+</div>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>JPS 寻路算法是基于 A*计算过程中查找节点冗余、效率较低等问题优化的一种算法。</p>
+<h3 id="背景">背景</h3>
+<p>A*是比较常见的寻路算法，但存在一个较为明显的问题，当移动到新的节点总是会把相邻节点（4、8）加入到待查找列表。这样带来两个问题</p>
+<ol>
+<li>
+<p>在多条移动路径成本相同时，冗余查找。</p>
+</li>
+<li>
+<p>待查找节点过多，内存使用率过高。</p>
+</li>
+</ol>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">data structures</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/08/12/ds-algos-jps/">More >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-ds-algos-astar" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -227,7 +342,8 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>寻路算法是游戏比较重要的组成部分之一，尤其在国内游戏很常见的自动寻路系统，比如操纵角色从 A 点到 B 点的移动。计算最短路径有很多不同的算法，比如：Dijkstra、AStar（A*）、NavMesh（多边形算法）、RVO 动态避障等等</p>
-<h3 id="A-寻路算法"><a href="#A-寻路算法" class="headerlink" title="A*寻路算法"></a>A*寻路算法</h3><p>寻路算法的移动路径核心有 2 点：最短、可移动。</p>
+<h3 id="A-寻路算法">A*寻路算法</h3>
+<p>寻路算法的移动路径核心有 2 点：最短、可移动。</p>
 <p>所以首先需要确定起点坐标的相邻节点（4 方向、8 方向），然后通过计算最靠近终点坐标的相邻坐标（不考虑障碍物）确认检索方向，再去计算“相邻坐标”移动的下一个坐标（距离终点坐标最近 &amp; 可移动），重复计算这个过程直至找到终点坐标，这就是 A*算法</p>
 <p>A*算法是一类基于网格的寻路算法，也就是把地图看作一个由网格组成的矩阵，每个坐标就是一个网格。</p>
 <p>一张 3x3 地图</p>
@@ -335,26 +451,34 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>链表是一种不需要连续空间存储的线性数据结构，通过指针把数据节点链接起来。数据节点的逻辑顺序取决于链表指针链接的先后顺序，同时，链表也有：单链表、双链表、循环链表等多类。</p>
-<h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>链表是由一系列节点组成，除此之外链表还有几个基本概念：</p>
+<h3 id="定义">定义</h3>
+<p>链表是由一系列节点组成，除此之外链表还有几个基本概念：</p>
 <ul>
-<li>数据节点<blockquote>
+<li>数据节点</li>
+</ul>
+<blockquote>
 <p>一般由两块组成：数据域、指针域。</p>
 </blockquote>
-</li>
-<li>首元节点<blockquote>
+<ul>
+<li>首元节点</li>
+</ul>
+<blockquote>
 <p>链表的第一个数据节点。</p>
 </blockquote>
-</li>
-<li>头节点<blockquote>
+<ul>
+<li>头节点</li>
+</ul>
+<blockquote>
 <p>非必要节点，放在第一个数据节点前。一般用于存储链表的信息（比如说链表长度等）和保证数据节点操作的统一性。</p>
 </blockquote>
-</li>
-<li>头指针<blockquote>
+<ul>
+<li>头指针</li>
+</ul>
+<blockquote>
 <p>指向第一个节点的指针，如果有头节点则指向头节点，否则指向首元节点。</p>
 </blockquote>
-</li>
-</ul>
-<h3 id="单链表"><a href="#单链表" class="headerlink" title="单链表"></a>单链表</h3><p>最简单的一种链表，只支持一个遍历方向：链头 -&gt; 链尾。两部分组成：当前节点的数据、指向后置节点的指针（尾节点指针指向nil）。</p>
+<h3 id="单链表">单链表</h3>
+<p>最简单的一种链表，只支持一个遍历方向：链头 -&gt; 链尾。两部分组成：当前节点的数据、指向后置节点的指针（尾节点指针指向nil）。</p>
         
       
 
@@ -459,10 +583,10 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>2009 年 Go 语言首次发布后，支持泛型一直以来呼声最高的功能之一。十年磨一剑！Go 官方终于在 2022 年 03 月 15 日发布 go1.18 stable 正式支持<code>泛型</code></p>
-<h3 id="什么是泛型"><a href="#什么是泛型" class="headerlink" title="什么是泛型"></a>什么是泛型</h3><p>泛型的核心是把<code>类型参数化</code>，通俗的来说就是允许使用时才指定类型的一种设计。</p>
+<h3 id="什么是泛型">什么是泛型</h3>
+<p>泛型的核心是把<code>类型参数化</code>，通俗的来说就是允许使用时才指定类型的一种设计。</p>
 <p>假设有个两变量相加的需求，且这俩变量可能是 int 或者 string，简单粗暴就直接定义两个函数分别支持 int、string</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 传统写法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">AddInt</span><span class="params">(arg1, arg2 <span class="type">int</span>)</span></span> <span class="type">int</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> arg1 + arg2</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">AddString</span><span class="params">(arg1, arg2 <span class="type">string</span>)</span></span> <span class="type">string</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> arg1 + arg2</span><br><span class="line">&#125;</span><br><span class="line">AddInt(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">AddString(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>)</span><br></pre></td></tr></table></figure>
-
 <p>那如果使用泛型来定义呢，它的写法大概是这样的</p>
         
       
@@ -563,7 +687,8 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>Golang中的特殊函数，会先于main函数执行且不能被调用。该函数无入参、返回值，同时支持选择性定义。也可以选择定义多个init函数，但建议只定义一个。</p>
+        <h3 id="定义">定义</h3>
+<p>Golang中的特殊函数，会先于main函数执行且不能被调用。该函数无入参、返回值，同时支持选择性定义。也可以选择定义多个init函数，但建议只定义一个。</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">init</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;init1&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">init</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;init2&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;main&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// init1</span></span><br><span class="line"><span class="comment">// init3</span></span><br><span class="line"><span class="comment">// main</span></span><br></pre></td></tr></table></figure>
         
       
@@ -665,8 +790,9 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>ClickHouse 是这两年备受瞩目的开源列式数据库，主要应用场景是 OLAP（在线数据分析处理）场景。</p>
-<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>之前因为遇见一些小问题，所以想通过存储结构和索引方式两个方面搞清楚它为什么可以这么快。</p>
-<p>ClickHouse 是 OLAP 型的列式数据库，官方称比较行式数据库查询效率提升至少 100 倍，<a href="https://clickhouse.com/benchmark/dbms/#[%22100000000%22,[%22ClickHouse%22,%22Vertica%22,%22MySQL%22,%22PostgreSQL%22],[%221%22,%222%22]]">DB Benchmark</a>显示 ClickHouse 比 Mysql 快 800 倍！</p>
+<h3 id="背景">背景</h3>
+<p>之前因为遇见一些小问题，所以想通过存储结构和索引方式两个方面搞清楚它为什么可以这么快。</p>
+<p>ClickHouse 是 OLAP 型的列式数据库，官方称比较行式数据库查询效率提升至少 100 倍，<a href="https://clickhouse.com/benchmark/dbms/#%5B%22100000000%22,%5B%22ClickHouse%22,%22Vertica%22,%22MySQL%22,%22PostgreSQL%22%5D,%5B%221%22,%222%22%5D%5D">DB Benchmark</a>显示 ClickHouse 比 Mysql 快 800 倍！</p>
         
       
 
@@ -680,11 +806,11 @@ var _hmt = _hmt || [];
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">clickhouse</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">clickhouse</a>
         		</li>
       		
 		</ul>
@@ -748,7 +874,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">876字</span>
+        <span class="post-count">875字</span>
       </span>
     </span>
 
@@ -767,7 +893,8 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>经常在技术博客中看到匿名函数、闭包函数和 lambda 表达式这样名词，但一直傻傻分不清他们之间究竟有什么区别，所以想一探究竟。</p>
-<h3 id="函数定义"><a href="#函数定义" class="headerlink" title="函数定义"></a>函数定义</h3><p>一个函数的定义，一般会包含：函数名、函数的参数、函数的主体（代码块）、函数的返回类型&#x2F;值。</p>
+<h3 id="函数定义">函数定义</h3>
+<p>一个函数的定义，一般会包含：函数名、函数的参数、函数的主体（代码块）、函数的返回类型/值。</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">hello</span><span class="params">(name <span class="type">string</span>)</span></span> <span class="type">string</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="string">&quot;Hello, &quot;</span> + name</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
         
       
@@ -877,7 +1004,8 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>ClickHouse是个由老毛子国内市场使用率第一的搜索引擎Yandex开源的OLAP型列式数据库。</p>
-<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>之前因为业务接触到ClickHouse，但因为没有系统的了解过导致遇见个很小的问题、花了大量的时间、用了很挫的方式来解决问题，痛定思痛的情况下决心系统的逐步学习一下。ClickHouse无论是存储还是使用方式都不同程度的异于我们常用的Mysql，PostgreSql，Mssql等行式数据库，但它支持绝大部分的SQL语法。</p>
+<h3 id="背景">背景</h3>
+<p>之前因为业务接触到ClickHouse，但因为没有系统的了解过导致遇见个很小的问题、花了大量的时间、用了很挫的方式来解决问题，痛定思痛的情况下决心系统的逐步学习一下。ClickHouse无论是存储还是使用方式都不同程度的异于我们常用的Mysql，PostgreSql，Mssql等行式数据库，但它支持绝大部分的SQL语法。</p>
         
       
 
@@ -891,11 +1019,11 @@ var _hmt = _hmt || [];
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">clickhouse</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">clickhouse</a>
         		</li>
       		
 		</ul>
@@ -906,109 +1034,6 @@ var _hmt = _hmt || [];
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2022/01/16/clickhouse-engines/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-clickhouse-array-split-group" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/01/14/clickhouse-array-split-group/">ClickHouse学习笔记 - 数组拆分再分组</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2022/01/14/clickhouse-array-split-group/" class="archive-article-date">
-  	<time datetime="2022-01-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-01-14</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">1.7k字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">7分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>ClickHouse是个由老毛子国内市场使用率第一的搜索引擎Yandex开源的OLAP型列式数据库。</p>
-<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>最近，数据分析项目要做一个广告素材推广成效分析功能。需求评审下来大概是通过给广告素材打标签进行分类，然后按标签纬度进行分析数据。</p>
-<h3 id="数据库选型"><a href="#数据库选型" class="headerlink" title="数据库选型"></a>数据库选型</h3><p>该项目之前的数据是存放在Elasticsearch，但总是感觉ES的DSL语句过于繁琐不利于阅读且学习成本较高，内部针对该问题讨论之后选用了在大数据处理上同样出色的ClickHouse作为新功能的数据仓库（试点功能233）。</p>
-<h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><p>因为是列式数据库，所以不需要遵守<code>数据库三大范式</code>。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">clickhouse</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/01/14/clickhouse-array-split-group/">More >></a>
         </p>
       
 
@@ -1134,7 +1159,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1146,15 +1175,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1178,11 +1211,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1227,18 +1264,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

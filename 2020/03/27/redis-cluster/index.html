@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Redis学习笔记 - 集群 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="之前粗浅的学习了Redis三种集群策略的主从复制和哨兵策略，现在最后这篇来学习一下Redis Cluster也就是最后一个集群策略。 1.什么是集群？集群（Cluster），Redis2.6版本（正式版本是3.0）推出的分布式解决方案，有效解决了单Master节点写操作的压力并且分布式存储数据，大大提高了负载能力。  在Redis发布3.0正式版本前，一般使用代理中间件来实现分布式集群策略。这里不">
+  <meta name="description" content="之前粗浅的学习了Redis三种集群策略的主从复制和哨兵策略，现在最后这篇来学习一下Redis Cluster也就是最后一个集群策略。 1.什么是集群？ 集群（Cluster），Redis2.6版本（正式版本是3.0）推出的分布式解决方案，有效解决了单Master节点写操作的压力并且分布式存储数据，大大提高了负载能力。  在Redis发布3.0正式版本前，一般使用代理中间件来实现分布式集群策略。这里">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redis学习笔记 - 集群">
 <meta property="og:url" content="http://xupin.im/2020/03/27/redis-cluster/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="之前粗浅的学习了Redis三种集群策略的主从复制和哨兵策略，现在最后这篇来学习一下Redis Cluster也就是最后一个集群策略。 1.什么是集群？集群（Cluster），Redis2.6版本（正式版本是3.0）推出的分布式解决方案，有效解决了单Master节点写操作的压力并且分布式存储数据，大大提高了负载能力。  在Redis发布3.0正式版本前，一般使用代理中间件来实现分布式集群策略。这里不">
+<meta property="og:description" content="之前粗浅的学习了Redis三种集群策略的主从复制和哨兵策略，现在最后这篇来学习一下Redis Cluster也就是最后一个集群策略。 1.什么是集群？ 集群（Cluster），Redis2.6版本（正式版本是3.0）推出的分布式解决方案，有效解决了单Master节点写操作的压力并且分布式存储数据，大大提高了负载能力。  在Redis发布3.0正式版本前，一般使用代理中间件来实现分布式集群策略。这里">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-03-26T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-07-15T02:59:17.756Z">
@@ -28,6 +28,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -228,14 +229,17 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>之前粗浅的学习了Redis三种集群策略的主从复制和哨兵策略，现在最后这篇来学习一下Redis Cluster也就是最后一个集群策略。</p>
-<h3 id="1-什么是集群？"><a href="#1-什么是集群？" class="headerlink" title="1.什么是集群？"></a>1.什么是集群？</h3><p>集群（Cluster），Redis2.6版本（正式版本是3.0）推出的分布式解决方案，有效解决了单Master节点写操作的压力并且分布式存储数据，大大提高了负载能力。</p>
+<h3 id="1-什么是集群？">1.什么是集群？</h3>
+<p>集群（Cluster），Redis2.6版本（正式版本是3.0）推出的分布式解决方案，有效解决了单Master节点写操作的压力并且分布式存储数据，大大提高了负载能力。</p>
 <blockquote>
 <p>在Redis发布3.0正式版本前，一般使用代理中间件来实现分布式集群策略。这里不展开学习了，有兴趣的小伙伴自行研究。</p>
 </blockquote>
 <ul>
-<li><p>特点</p>
+<li>
+<p>特点</p>
 <ol>
-<li>Cluster策略是分布式部署，节点间相互协调工作。<blockquote>
+<li>Cluster策略是分布式部署，节点间相互协调工作。
+<blockquote>
 <p>因为对主从复制和哨兵策略都称为集群策略，所以为了防止误解在下文中提及的集群（Cluster）策略，直接用Cluster称呼。</p>
 </blockquote>
 </li>
@@ -244,7 +248,8 @@ var _hmt = _hmt || [];
 <li>数据的分布式存储不需要指定，Cluster会自动完成。</li>
 </ol>
 </li>
-<li><p>优点</p>
+<li>
+<p>优点</p>
 <ol>
 <li>Cluster策略拥有主从复制和哨兵策略的优点。</li>
 <li>解决了单Master节点写操作的压力。</li>
@@ -254,29 +259,31 @@ var _hmt = _hmt || [];
 </li>
 </ul>
 <span id="more"></span>
-
 <ul>
-<li>缺点<ol>
+<li>缺点
+<ol>
 <li>部分操作命令受限，比如mset，目前只能支持同一个插槽（slot）的key进行操作。</li>
 <li>事务机制不支持多节点操作。</li>
 <li>不支持多数据库，即只有db0。</li>
 </ol>
 </li>
 </ul>
-<h3 id="2-如何配置（新旧方式）"><a href="#2-如何配置（新旧方式）" class="headerlink" title="2.如何配置（新旧方式）"></a>2.如何配置（新旧方式）</h3><ul>
-<li>旧方式，.&#x2F;redis-trib.rb create –replicas {SLAVE_NUM} {IP}:{PORT} … {IP}:{PORT}</li>
-<li>新方式，.&#x2F;redis-cli –cluster create –cluster-replicas {SLAVE_NUM} {IP}:{PORT} … {IP}:{PORT}</li>
+<h3 id="2-如何配置（新旧方式）">2.如何配置（新旧方式）</h3>
+<ul>
+<li>旧方式，./redis-trib.rb create --replicas {SLAVE_NUM} {IP}:{PORT} … {IP}:{PORT}</li>
+<li>新方式，./redis-cli --cluster create --cluster-replicas {SLAVE_NUM} {IP}:{PORT} … {IP}:{PORT}</li>
 </ul>
 <p>redis.conf示例</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 是否以守护进程方式运行</span></span><br><span class="line">daemonize <span class="built_in">yes</span>/no</span><br><span class="line"></span><br><span class="line"><span class="comment"># 是否启用Cluster</span></span><br><span class="line">cluster-enabled <span class="built_in">yes</span>/no</span><br><span class="line"></span><br><span class="line"><span class="comment"># 节点信息配置文件，自动生成。</span></span><br><span class="line"><span class="comment"># FILE_NAME：配置文件名</span></span><br><span class="line">cluster-cluster-config-file &#123;FILE_NAME&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 节点连接超时时间</span></span><br><span class="line"><span class="comment"># MS：超时时间（单位：Millisecond）</span></span><br><span class="line">cluster-node-timeout &#123;MS&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="3-工作机制"><a href="#3-工作机制" class="headerlink" title="3.工作机制"></a>3.工作机制</h3><ul>
+<h3 id="3-工作机制">3.工作机制</h3>
+<ul>
 <li>Redis节点启动，节点根据配置<code>cluster-enabled</code>判断是否加入Cluster。</li>
-<li>新节点通过<code>cluster meet &#123;IP&#125; &#123;PORT&#125;</code>命令和其他节点感知并建立连接，节点间会通过<code>Gossip协议</code>PING&#x2F;PONG命令来检测状态和交换信息。 </li>
+<li>新节点通过<code>cluster meet &#123;IP&#125; &#123;PORT&#125;</code>命令和其他节点感知并建立连接，节点间会通过<code>Gossip协议</code>PING/PONG命令来检测状态和交换信息。</li>
 <li>Cluster计算并且分配主节点插槽数量。<code>这个地方注意，不是插槽数量，是每个节点的插槽数量。插槽数量是固定的：16384。</code></li>
 <li>插槽分配成功之后，Cluster开始服务。</li>
 </ul>
-<h3 id="4-如何感知新节点？"><a href="#4-如何感知新节点？" class="headerlink" title="4.如何感知新节点？"></a>4.如何感知新节点？</h3><p>当给某一节点发送命令<code>cluster meet &#123;IP&#125; &#123;PORT&#125;</code>（新节点），该节点就会尝试与新节点建立连接，具体流程：</p>
+<h3 id="4-如何感知新节点？">4.如何感知新节点？</h3>
+<p>当给某一节点发送命令<code>cluster meet &#123;IP&#125; &#123;PORT&#125;</code>（新节点），该节点就会尝试与新节点建立连接，具体流程：</p>
 <ul>
 <li>该节点向新节点发送MEET命令。</li>
 <li>新节点接收到MEET命令后，回复PONG命令。</li>
@@ -289,10 +296,12 @@ var _hmt = _hmt || [];
 <blockquote>
 <p>可以通过<code>cluster nodes</code>命令查看集群中哪些节点已经建立连接。</p>
 </blockquote>
-<h3 id="5-数据插槽"><a href="#5-数据插槽" class="headerlink" title="5.数据插槽"></a>5.数据插槽</h3><p>说到插槽（slot）不得不提一下，为了能够让数据平均分配到多个节点上而采用的数据分区算法。常见的数据分区算法：范围（Range）、哈希（Hash）、一致性哈希算法和虚拟哈希槽等。</p>
-<p>Cluster采用的虚拟哈希槽数据分区算法，所有的key根据哈希函数映射到0 ~ 16383插槽内（公式：slot &#x3D; crc16(key) &amp; 16383），之前也提到过插槽也是平均分配到每个Master节点的。</p>
+<h3 id="5-数据插槽">5.数据插槽</h3>
+<p>说到插槽（slot）不得不提一下，为了能够让数据平均分配到多个节点上而采用的数据分区算法。常见的数据分区算法：范围（Range）、哈希（Hash）、一致性哈希算法和虚拟哈希槽等。</p>
+<p>Cluster采用的虚拟哈希槽数据分区算法，所有的key根据哈希函数映射到0 ~ 16383插槽内（公式：slot = crc16(key) &amp; 16383），之前也提到过插槽也是平均分配到每个Master节点的。</p>
 <ul>
-<li>虚拟哈希槽的特点<ol>
+<li>虚拟哈希槽的特点
+<ol>
 <li>降低了节点和数据之间的耦合性，方便线性扩容&amp;动态管理节点。</li>
 <li>节点自己管理和插槽的对应关系。</li>
 <li>支持查询节点、插槽和key的对应关系。</li>
@@ -300,7 +309,8 @@ var _hmt = _hmt || [];
 </li>
 </ul>
 <p>可以通俗理解为，插槽是Cluster管理数据的基本单位。</p>
-<h3 id="6-动态管理节点"><a href="#6-动态管理节点" class="headerlink" title="6.动态管理节点"></a>6.动态管理节点</h3><p>假如我们原有4个Master节点（M1 … M4），但是现在因为数据增量问题临时加一个Master节点（M5），我们需要怎么操作呢？</p>
+<h3 id="6-动态管理节点">6.动态管理节点</h3>
+<p>假如我们原有4个Master节点（M1 … M4），但是现在因为数据增量问题临时加一个Master节点（M5），我们需要怎么操作呢？</p>
 <ul>
 <li>启动M5节点，客户端发送MEET命令让M5节点加入到Cluster中，现在M5节点没有任何插槽所以不会接受任何读写操作。</li>
 <li>在M5节点执行<code>cluster setslot &#123;SLOT&#125; importing &#123;SOURCE_NODE_ID&#125;</code>命令，让M5节点准备导入{SLOT}插槽。</li>
@@ -311,19 +321,21 @@ var _hmt = _hmt || [];
 <li>在源节点和M5节点执行<code>cluster setslot &#123;SLOT&#125; NODE &#123;M5_NODE_ID&#125;</code>，完成迁移。</li>
 </ul>
 <p>这就是动态增加节点的流程了，可能在新的Redis版本中增加了节点迁移工具，但是核心流程应该还是这样。</p>
-<h3 id="7-Hash-Tag"><a href="#7-Hash-Tag" class="headerlink" title="7.Hash Tag"></a>7.Hash Tag</h3><p>学习了数据插槽，我们知道Redis在key分配到插槽的这一操作完全是自动化的，不过当我们有需求对不同的key需要放到同一插槽中的时候，这个时候要怎么操作呢？我们只需要在key中加入{}符号即可，比如：</p>
+<h3 id="7-Hash-Tag">7.Hash Tag</h3>
+<p>学习了数据插槽，我们知道Redis在key分配到插槽的这一操作完全是自动化的，不过当我们有需求对不同的key需要放到同一插槽中的时候，这个时候要怎么操作呢？我们只需要在key中加入{}符号即可，比如：</p>
 <ul>
 <li>{UID_1001}:following</li>
 <li>{UID_1001}:followers</li>
 </ul>
 <p>这两个key会被分配到同一插槽，原理就是当key中存在{}符号，哈希算法只会针对{}符号内的字符串。</p>
-<h3 id="8-插槽为什么是16384？这个值能修改吗？"><a href="#8-插槽为什么是16384？这个值能修改吗？" class="headerlink" title="8.插槽为什么是16384？这个值能修改吗？"></a>8.插槽为什么是16384？这个值能修改吗？</h3><p>首先crc16算法算出的值有16bit，2^16即65536。也就是说该算法的值在0 ~ 65535之间，那么为什么作者还是选择了16384即0 ~ 16383。</p>
+<h3 id="8-插槽为什么是16384？这个值能修改吗？">8.插槽为什么是16384？这个值能修改吗？</h3>
+<p>首先crc16算法算出的值有16bit，2^16即65536。也就是说该算法的值在0 ~ 65535之间，那么为什么作者还是选择了16384即0 ~ 16383。</p>
 <p>很开心，对于这个疑问Redis作者给了明确的回答。前面我们知道每个节点之间会以每秒1次的频率互相发送心跳包（PING）&amp;交换信息（信息分为消息头和消息体），之前也提了交换的信息体里面主要包含节点的信息等，那么消息头的内容呢？如下：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="type">char</span> sig[<span class="number">4</span>];        <span class="comment">/* Siganture &quot;RCmb&quot; (Redis Cluster message bus). */</span></span><br><span class="line">    <span class="type">uint32_t</span> totlen;    <span class="comment">/* Total length of this message */</span></span><br><span class="line">    <span class="type">uint16_t</span> ver;       <span class="comment">/* Protocol version, currently set to 1. */</span></span><br><span class="line">    <span class="type">uint16_t</span> port;      <span class="comment">/* TCP base port number. */</span></span><br><span class="line">    <span class="type">uint16_t</span> type;      <span class="comment">/* Message type */</span></span><br><span class="line">    <span class="type">uint16_t</span> count;     <span class="comment">/* Only used for some kind of messages. */</span></span><br><span class="line">    <span class="type">uint64_t</span> currentEpoch;  <span class="comment">/* The epoch accordingly to the sending node. */</span></span><br><span class="line">    <span class="type">uint64_t</span> configEpoch;   <span class="comment">/* The config epoch if it&#x27;s a master, or the last</span></span><br><span class="line"><span class="comment">                               epoch advertised by its master if it is a</span></span><br><span class="line"><span class="comment">                               slave. */</span></span><br><span class="line">    <span class="type">uint64_t</span> offset;    <span class="comment">/* Master replication offset if node is a master or</span></span><br><span class="line"><span class="comment">                           processed replication offset if node is a slave. */</span></span><br><span class="line">    <span class="type">char</span> sender[CLUSTER_NAMELEN]; <span class="comment">/* Name of the sender node */</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> myslots[CLUSTER_SLOTS/<span class="number">8</span>];</span><br><span class="line">    <span class="type">char</span> slaveof[CLUSTER_NAMELEN];</span><br><span class="line">    <span class="type">char</span> myip[NET_IP_STR_LEN];    <span class="comment">/* Sender IP, if not all zeroed. */</span></span><br><span class="line">    <span class="type">char</span> notused1[<span class="number">34</span>];  <span class="comment">/* 34 bytes reserved for future usage. */</span></span><br><span class="line">    <span class="type">uint16_t</span> cport;      <span class="comment">/* Sender TCP cluster bus port */</span></span><br><span class="line">    <span class="type">uint16_t</span> flags;      <span class="comment">/* Sender node flags */</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> state; <span class="comment">/* Cluster state from the POV of the sender */</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> mflags[<span class="number">3</span>]; <span class="comment">/* Message flags: CLUSTERMSG_FLAG[012]_... */</span></span><br><span class="line">    <span class="keyword">union</span> <span class="title class_">clusterMsgData</span> data; <span class="comment">/* message body*/</span></span><br><span class="line">&#125; clusterMsg;</span><br></pre></td></tr></table></figure>
-<p>其中有个<code>myslots</code>字段要注意，该字段使用位图，即1bit代表1slot，如果该bit为1即说明该插槽属于这个节点。那么该字段的大小为：16384 &#x2F; 8bit &#x2F; 1024b &#x3D; 2kb。也就是消息头不考虑其他信息的情况，单是<code>myslots</code>就已经有2kb大小。</p>
-<p>那么消息体呢？之前已经提到了消息体中会包含节点信息。具体是什么样的呢？消息体每次携带最少3个节点的信息，数量约为总节点数的1&#x2F;10。如果节点数量越多，消息体越大。</p>
+<p>其中有个<code>myslots</code>字段要注意，该字段使用位图，即1bit代表1slot，如果该bit为1即说明该插槽属于这个节点。那么该字段的大小为：16384 / 8bit / 1024b = 2kb。也就是消息头不考虑其他信息的情况，单是<code>myslots</code>就已经有2kb大小。</p>
+<p>那么消息体呢？之前已经提到了消息体中会包含节点信息。具体是什么样的呢？消息体每次携带最少3个节点的信息，数量约为总节点数的1/10。如果节点数量越多，消息体越大。</p>
 <ol>
-<li>如果插槽数量是65535，那么该字段的大小放大为：65535 &#x2F; 8bit &#x2F; 1024b &#x3D; 8kb。这对于每秒1次频率的心跳包来讲，带宽开销是极大的。</li>
+<li>如果插槽数量是65535，那么该字段的大小放大为：65535 / 8bit / 1024b = 8kb。这对于每秒1次频率的心跳包来讲，带宽开销是极大的。</li>
 <li>上面说了节点越多，消息体也就越大，如果节点超过1000个也会导致网络拥堵，因为Redis作者不建议Cluster节点的数量超过1000，那么对于1000个以下的节点来说16384个插槽也就够用了。</li>
 <li>第三个考虑是关于位图的压缩问题，我还没有搞明白~~所以这里不展开说了，先埋个坑。</li>
 </ol>
@@ -332,7 +344,8 @@ var _hmt = _hmt || [];
 <blockquote>
 <p><a href="https://github.com/antirez/redis/issues/2576">https://github.com/antirez/redis/issues/2576</a></p>
 </blockquote>
-<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>Cluster在故障恢复主从切换的机制（包括：主观宕机、客观宕机、投票选举、主从切换）和哨兵策略基本一致，所以在这里就不学习Cluster关于故障恢复主从切换的相关知识了。</p>
+<h3 id="最后">最后</h3>
+<p>Cluster在故障恢复主从切换的机制（包括：主观宕机、客观宕机、投票选举、主从切换）和哨兵策略基本一致，所以在这里就不学习Cluster关于故障恢复主从切换的相关知识了。</p>
 <p>前面提到过Gossip协议，它主要职责就是各节点间的信息交换，常用的Gossip消息可分为：</p>
 <ul>
 <li>ping</li>
@@ -609,7 +622,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -621,15 +638,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -653,11 +674,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -702,18 +727,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Mysql学习笔记 - InnoDB并发死锁问题 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="项目中某个定时任务执行过程中出现死锁问题，具体错误如下: 1Error 1213: Deadlock found when trying to get lock; try restarting transaction  分析检查一下表引擎 &amp; 事务隔离级别 123456789101112131415161718192021mysql&gt; show variables like &amp;#x2">
+  <meta name="description" content="项目中某个定时任务执行过程中出现死锁问题，具体错误如下: 1Error 1213: Deadlock found when trying to get lock; try restarting transaction 分析 检查一下表引擎 &amp; 事务隔离级别 123456789101112131415161718192021mysql&gt; show variables like &amp;#x2">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Mysql学习笔记 - InnoDB并发死锁问题">
 <meta property="og:url" content="http://xupin.im/2021/11/15/mysql-deadlock/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="项目中某个定时任务执行过程中出现死锁问题，具体错误如下: 1Error 1213: Deadlock found when trying to get lock; try restarting transaction  分析检查一下表引擎 &amp; 事务隔离级别 123456789101112131415161718192021mysql&gt; show variables like &amp;#x2">
+<meta property="og:description" content="项目中某个定时任务执行过程中出现死锁问题，具体错误如下: 1Error 1213: Deadlock found when trying to get lock; try restarting transaction 分析 检查一下表引擎 &amp; 事务隔离级别 123456789101112131415161718192021mysql&gt; show variables like &amp;#x2">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-11-14T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-07-15T02:59:17.752Z">
@@ -28,6 +28,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -229,25 +230,34 @@ var _hmt = _hmt || [];
       
         <p>项目中某个定时任务执行过程中出现死锁问题，具体错误如下:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Error 1213: Deadlock found when trying to get lock; try restarting transaction</span><br></pre></td></tr></table></figure>
-
-<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>检查一下表引擎 &amp; 事务隔离级别</p>
+<h3 id="分析">分析</h3>
+<p>检查一下表引擎 &amp; 事务隔离级别</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show variables like <span class="string">&#x27;%storage_engine%&#x27;</span>;</span><br><span class="line">+---------------------------------+-----------+</span><br><span class="line">| Variable_name                   | Value     |</span><br><span class="line">+---------------------------------+-----------+</span><br><span class="line">| default_storage_engine          | InnoDB    |</span><br><span class="line">| default_tmp_storage_engine      | InnoDB    |</span><br><span class="line">| disabled_storage_engines        |           |</span><br><span class="line">| internal_tmp_mem_storage_engine | TempTable |</span><br><span class="line">+---------------------------------+-----------+</span><br><span class="line">4 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> @@global.tx_isolation;</span><br><span class="line">ERROR 1193 (HY000): Unknown system variable <span class="string">&#x27;tx_isolation&#x27;</span> // Mysql8.0以后取消了该变量</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> @@transaction_isolation;</span><br><span class="line">+-------------------------+</span><br><span class="line">| @@transaction_isolation |</span><br><span class="line">+-------------------------+</span><br><span class="line">| REPEATABLE-READ         |</span><br><span class="line">+-------------------------+</span><br><span class="line">1 row <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</span><br></pre></td></tr></table></figure>
-
 <span id="more"></span>
-
 <p>默认使用的引擎是InnoDB，Insert、Update、Delete操作会触发排它锁（X锁）即行锁，所以怀疑是不是触发了共享锁（S锁）。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show engine innodb status;</span><br><span class="line"></span><br><span class="line">=====================================</span><br><span class="line">2021-11-15 02:42:28 0x2b1f5b160700 INNODB MONITOR OUTPUT</span><br><span class="line">=====================================</span><br><span class="line">Per second averages calculated from the last 59 seconds</span><br><span class="line">...</span><br><span class="line">------------------------</span><br><span class="line">LATEST DETECTED DEADLOCK</span><br><span class="line">------------------------</span><br><span class="line">2021-11-12 14:21:02 0x2b204ca06700</span><br><span class="line">*** (1) TRANSACTION:</span><br><span class="line">TRANSACTION 3805455, ACTIVE 0 sec inserting</span><br><span class="line">mysql tables <span class="keyword">in</span> use 1, locked 1</span><br><span class="line">LOCK WAIT 4 lock struct(s), heap size 1136, 3 row lock(s), undo <span class="built_in">log</span> entries 1</span><br><span class="line">MySQL thread <span class="built_in">id</span> 875327, OS thread handle 47411963238144, query <span class="built_in">id</span> 20765167 10.85.62.212 dsc update</span><br><span class="line">INSERT INTO `user_tag_distributes` (`created_at`,`updated_at`,`deleted_at`,`app_id`,`tag_name`,`tag_value`,`account_num`) VALUES (<span class="string">&#x27;2021-11-12 14:21:02.386&#x27;</span>,<span class="string">&#x27;2021-11-12 14:21:02.386&#x27;</span>,NULL,<span class="string">&#x27;im&#x27;</span>,<span class="string">&#x27;churn_model_v2&#x27;</span>,<span class="string">&#x27;0.70709264&#x27;</span>,1)</span><br><span class="line"></span><br><span class="line">*** (1) HOLDS THE LOCK(S):</span><br><span class="line">RECORD LOCKS space <span class="built_in">id</span> 334 page no 341 n bits 160 index PRIMARY of table `api`.`user_tag_distributes` trx <span class="built_in">id</span> 3805455 lock_mode X locks rec but not gap</span><br><span class="line">Record lock, heap no 89 PHYSICAL RECORD: n_fields 11; compact format; info bits 0</span><br><span class="line"> 0: len 8; hex 000000000002515d; asc       Q];;</span><br><span class="line"> 1: len 6; hex 0000003a110f; asc    :  ;;</span><br><span class="line"> 2: len 7; hex 81000001960110; asc        ;;</span><br><span class="line"> 3: len 7; hex 99ab18e5420f14; asc     B  ;;</span><br><span class="line"> 4: len 7; hex 99ab18e5420f14; asc     B  ;;</span><br><span class="line"> 5: SQL NULL;</span><br><span class="line"> 6: SQL NULL;</span><br><span class="line"> 7: len 2; hex 696d; asc im;;</span><br><span class="line"> 8: len 14; hex 636875726e5f6d6f64656c5f7632; asc churn_model_v2;;</span><br><span class="line"> 9: len 10; hex 302e3730373039323634; asc 0.70709264;;</span><br><span class="line"> 10: len 3; hex 800001; asc    ;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">*** (1) WAITING FOR THIS LOCK TO BE GRANTED:</span><br><span class="line">RECORD LOCKS space <span class="built_in">id</span> 334 page no 203 n bits 392 index tag of table `api`.`user_tag_distributes` trx <span class="built_in">id</span> 3805455 lock mode S waiting</span><br><span class="line">Record lock, heap no 88 PHYSICAL RECORD: n_fields 3; compact format; info bits 32</span><br><span class="line"> 0: len 14; hex 636875726e5f6d6f64656c5f7632; asc churn_model_v2;;</span><br><span class="line"> 1: len 9; hex 302e37303730393735; asc 0.7070975;;</span><br><span class="line"> 2: len 8; hex 0000000000022d5f; asc       -_;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">*** (2) TRANSACTION:</span><br><span class="line">TRANSACTION 3805441, ACTIVE 0 sec fetching rows</span><br><span class="line">mysql tables <span class="keyword">in</span> use 1, locked 1</span><br><span class="line">LOCK WAIT 89 lock struct(s), heap size 24784, 17767 row lock(s), undo <span class="built_in">log</span> entries 10247</span><br><span class="line">MySQL thread <span class="built_in">id</span> 875354, OS thread handle 47415383693056, query <span class="built_in">id</span> 20765093 10.85.62.212 dsc updating</span><br><span class="line">DELETE FROM `user_tag_distributes` WHERE app_id = <span class="string">&#x27;im&#x27;</span> and tag_name = <span class="string">&#x27;churn_model_v2&#x27;</span></span><br><span class="line"></span><br><span class="line">*** (2) HOLDS THE LOCK(S):</span><br><span class="line">RECORD LOCKS space <span class="built_in">id</span> 334 page no 203 n bits 392 index tag of table `api`.`user_tag_distributes` trx <span class="built_in">id</span> 3805441 lock_mode X locks rec but not gap</span><br><span class="line">Record lock, heap no 88 PHYSICAL RECORD: n_fields 3; compact format; info bits 32</span><br><span class="line"> 0: len 14; hex 636875726e5f6d6f64656c5f7632; asc churn_model_v2;;</span><br><span class="line"> 1: len 9; hex 302e37303730393735; asc 0.7070975;;</span><br><span class="line"> 2: len 8; hex 0000000000022d5f; asc       -_;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">*** (2) WAITING FOR THIS LOCK TO BE GRANTED:</span><br><span class="line">RECORD LOCKS space <span class="built_in">id</span> 334 page no 341 n bits 160 index PRIMARY of table `api`.`user_tag_distributes` trx <span class="built_in">id</span> 3805441 lock_mode X waiting</span><br><span class="line">Record lock, heap no 89 PHYSICAL RECORD: n_fields 11; compact format; info bits 0</span><br><span class="line"> 0: len 8; hex 000000000002515d; asc       Q];;</span><br><span class="line"> 1: len 6; hex 0000003a110f; asc    :  ;;</span><br><span class="line"> 2: len 7; hex 81000001960110; asc        ;;</span><br><span class="line"> 3: len 7; hex 99ab18e5420f14; asc     B  ;;</span><br><span class="line"> 4: len 7; hex 99ab18e5420f14; asc     B  ;;</span><br><span class="line"> 5: SQL NULL;</span><br><span class="line"> 6: SQL NULL;</span><br><span class="line"> 7: len 2; hex 696d; asc im;;</span><br><span class="line"> 8: len 14; hex 636875726e5f6d6f64656c5f7632; asc churn_model_v2;;</span><br><span class="line"> 9: len 10; hex 302e3730373039323634; asc 0.70709264;;</span><br><span class="line"> 10: len 3; hex 800001; asc    ;;</span><br><span class="line"></span><br><span class="line">*** WE ROLL BACK TRANSACTION (1)</span><br><span class="line">------------</span><br><span class="line">TRANSACTIONS</span><br><span class="line">------------</span><br><span class="line">Trx <span class="built_in">id</span> counter 3945122</span><br><span class="line">Purge <span class="keyword">done</span> <span class="keyword">for</span> trx<span class="string">&#x27;s n:o &lt; 3945122 undo n:o &lt; 0 state: running but idle</span></span><br><span class="line"><span class="string">History list length 3</span></span><br><span class="line"><span class="string">LIST OF TRANSACTIONS FOR EACH SESSION:</span></span><br><span class="line"><span class="string">---TRANSACTION 328886640459544, not started</span></span><br><span class="line"><span class="string">0 lock struct(s), heap size 1136, 0 row lock(s)</span></span><br><span class="line"><span class="string">---TRANSACTION 328886640456152, not started</span></span><br><span class="line"><span class="string">0 lock struct(s), heap size 1136, 0 row lock(s)</span></span><br><span class="line"><span class="string">---TRANSACTION 328886640455304, not started</span></span><br><span class="line"><span class="string">0 lock struct(s), heap size 1136, 0 row lock(s)</span></span><br><span class="line"><span class="string">---TRANSACTION 328886640457000, not started</span></span><br><span class="line"><span class="string">0 lock struct(s), heap size 1136, 0 row lock(s)</span></span><br><span class="line"><span class="string">---TRANSACTION 328886640448520, not started</span></span><br><span class="line"><span class="string">0 lock struct(s), heap size 1136, 0 row lock(s)</span></span><br><span class="line"><span class="string">---TRANSACTION 328886640447672, not started</span></span><br><span class="line"><span class="string">0 lock struct(s), heap size 1136, 0 row lock(s)</span></span><br><span class="line"><span class="string">---TRANSACTION 328886640452760, not started</span></span><br><span class="line"><span class="string">0 lock struct(s), heap size 1136, 0 row lock(s)</span></span><br><span class="line"><span class="string">---TRANSACTION 328886640458696, not started</span></span><br><span class="line"><span class="string">0 lock struct(s), heap size 1136, 0 row lock(s)</span></span><br><span class="line"><span class="string">---TRANSACTION 328886640446824, not started</span></span><br><span class="line"><span class="string">0 lock struct(s), heap size 1136, 0 row lock(s)</span></span><br><span class="line"><span class="string">---TRANSACTION 328886640453608, not started</span></span><br><span class="line"><span class="string">0 lock struct(s), heap size 1136, 0 row lock(s)</span></span><br><span class="line"><span class="string">---TRANSACTION 328886640457848, not started</span></span><br><span class="line"><span class="string">0 lock struct(s), heap size 1136, 0 row lock(s)</span></span><br><span class="line"><span class="string">---TRANSACTION 328886640451912, not started</span></span><br><span class="line"><span class="string">0 lock struct(s), heap size 1136, 0 row lock(s)</span></span><br><span class="line"><span class="string">---TRANSACTION 328886640451064, not started</span></span><br><span class="line"><span class="string">0 lock struct(s), heap size 1136, 0 row lock(s)</span></span><br><span class="line"><span class="string">---TRANSACTION 328886640454456, not started</span></span><br><span class="line"><span class="string">0 lock struct(s), heap size 1136, 0 row lock(s)</span></span><br><span class="line"><span class="string">---TRANSACTION 328886640450216, not started</span></span><br><span class="line"><span class="string">0 lock struct(s), heap size 1136, 0 row lock(s)</span></span><br><span class="line"><span class="string">---TRANSACTION 328886640449368, not started</span></span><br><span class="line"><span class="string">0 lock struct(s), heap size 1136, 0 row lock(s)</span></span><br><span class="line"><span class="string">---TRANSACTION 328886640445976, not started</span></span><br><span class="line"><span class="string">0 lock struct(s), heap size 1136, 0 row lock(s)</span></span><br><span class="line"><span class="string">---TRANSACTION 328886640445128, not started</span></span><br><span class="line"><span class="string">0 lock struct(s), heap size 1136, 0 row lock(s)</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="string">----------------------------</span></span><br><span class="line"><span class="string">END OF INNODB MONITOR OUTPUT</span></span><br><span class="line"><span class="string">============================</span></span><br></pre></td></tr></table></figure>
 <p>通过以上信息确认是因为[事务1]Insert &amp; [事务2]Delete互相等待对方事务释放锁的问题造成死锁，最后[事务1]进行回滚。</p>
-<h3 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h3><p>review代码梳理一下业务逻辑，场景应该如下：</p>
-<p>| trx1 | trx2 |<br>| —— | —— | —— |<br>|  | BEGIN |<br>| BEGIN | DELETE FROM <code>user_tag_distributes</code> WHERE app_id &#x3D; ‘im’ and tag_name &#x3D; ‘churn_model_v2’ |<br>| DELETE FROM <code>user_tag_distributes</code> WHERE app_id &#x3D; ‘im’ and tag_name &#x3D; ‘churn_model_v2’ |  |<br>| INSERT INTO <code>user_tag_distributes</code> (<code>created_at</code>,<code>updated_at</code>,<code>deleted_at</code>,<code>app_id</code>,<code>tag_name</code>,<code>tag_value</code>,<code>account_num</code>) VALUES (‘2021-11-12 14:21:02.386’,’2021-11-12 14:21:02.386’,NULL,’im’,’churn_model_v2’,’0.70709264’,1) |  |<br>| ERROR 1213 (40001): Deadlock found when trying to get lock |  |<br>| ROLLBACK | … |<br>| | COMMIT |</p>
+<h3 id="原因">原因</h3>
+<p>review代码梳理一下业务逻辑，场景应该如下：</p>
+<p>| trx1 | trx2 |<br>
+| ------ | ------ | ------ |<br>
+|  | BEGIN |<br>
+| BEGIN | DELETE FROM <code>user_tag_distributes</code> WHERE app_id = ‘im’ and tag_name = ‘churn_model_v2’ |<br>
+| DELETE FROM <code>user_tag_distributes</code> WHERE app_id = ‘im’ and tag_name = ‘churn_model_v2’ |  |<br>
+| INSERT INTO <code>user_tag_distributes</code> (<code>created_at</code>,<code>updated_at</code>,<code>deleted_at</code>,<code>app_id</code>,<code>tag_name</code>,<code>tag_value</code>,<code>account_num</code>) VALUES (‘2021-11-12 14:21:02.386’,‘2021-11-12 14:21:02.386’,NULL,‘im’,‘churn_model_v2’,‘0.70709264’,1) |  |<br>
+| ERROR 1213 (40001): Deadlock found when trying to get lock |  |<br>
+| ROLLBACK | … |<br>
+| | COMMIT |</p>
 <p>可以看出[事务1]进行Insert操作时发现[事务2]进行Delete操作且已申请X锁，[事务1]想要获取S锁则需要[事务2]提交，所以[事务1]、[事务2]在相互等待对方提交事务（释放锁）。</p>
-<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>目前想到的几种措施：</p>
+<h3 id="解决方案">解决方案</h3>
+<p>目前想到的几种措施：</p>
 <ul>
 <li>尽量避免在并发程序中Delete &amp; Insert操作无缝执行</li>
 <li>并发程序采用分布式锁控制</li>
 <li>程序不允许并发执行</li>
 </ul>
-<p><a href="https://dev.mysql.com/doc/refman/8.0/en/mysql-nutshell.html">https://dev.mysql.com/doc/refman/8.0/en/mysql-nutshell.html</a><br><a href="https://dev.mysql.com/doc/refman/8.0/en/innodb-standard-monitor.html">https://dev.mysql.com/doc/refman/8.0/en/innodb-standard-monitor.html</a></p>
+<p><a href="https://dev.mysql.com/doc/refman/8.0/en/mysql-nutshell.html">https://dev.mysql.com/doc/refman/8.0/en/mysql-nutshell.html</a><br>
+<a href="https://dev.mysql.com/doc/refman/8.0/en/innodb-standard-monitor.html">https://dev.mysql.com/doc/refman/8.0/en/innodb-standard-monitor.html</a></p>
 
       
 
@@ -516,7 +526,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -528,15 +542,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -560,11 +578,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -609,18 +631,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>游戏开发笔记 - 任务设计 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="一个粗略的任务系统 前言为了让游戏的内容丰富起来，同时也能辅助构建游戏世界所处的环境和世界观等等，所以准备简单的开发一个任务系统。 e.g.支线任务 - 砍人买瓜「前去长安城购买甘甜可口的西瓜」奖励：载具*1、武器*1 我：“哥们儿，这瓜多少钱一斤呐”瓜摊老板：“两块钱一斤”我：“给我挑一个”瓜摊老板：“行，这个怎么样？”  选项 1[这瓜保熟吗？] 选项 2[不买了]">
+  <meta name="description" content="一个粗略的任务系统 前言 为了让游戏的内容丰富起来，同时也能辅助构建游戏世界所处的环境和世界观等等，所以准备简单的开发一个任务系统。 e.g. 支线任务 - 砍人买瓜 「前去长安城购买甘甜可口的西瓜」 奖励：载具*1、武器*1 我：“哥们儿，这瓜多少钱一斤呐” 瓜摊老板：“两块钱一斤” 我：“给我挑一个” 瓜摊老板：“行，这个怎么样？”  选项 1[这瓜保熟吗？] 选项 2[不买了]">
 <meta property="og:type" content="article">
 <meta property="og:title" content="游戏开发笔记 - 任务设计">
 <meta property="og:url" content="http://xupin.im/2023/11/06/game-task/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="一个粗略的任务系统 前言为了让游戏的内容丰富起来，同时也能辅助构建游戏世界所处的环境和世界观等等，所以准备简单的开发一个任务系统。 e.g.支线任务 - 砍人买瓜「前去长安城购买甘甜可口的西瓜」奖励：载具*1、武器*1 我：“哥们儿，这瓜多少钱一斤呐”瓜摊老板：“两块钱一斤”我：“给我挑一个”瓜摊老板：“行，这个怎么样？”  选项 1[这瓜保熟吗？] 选项 2[不买了]">
+<meta property="og:description" content="一个粗略的任务系统 前言 为了让游戏的内容丰富起来，同时也能辅助构建游戏世界所处的环境和世界观等等，所以准备简单的开发一个任务系统。 e.g. 支线任务 - 砍人买瓜 「前去长安城购买甘甜可口的西瓜」 奖励：载具*1、武器*1 我：“哥们儿，这瓜多少钱一斤呐” 瓜摊老板：“两块钱一斤” 我：“给我挑一个” 瓜摊老板：“行，这个怎么样？”  选项 1[这瓜保熟吗？] 选项 2[不买了]">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-11-05T16:00:00.000Z">
 <meta property="article:modified_time" content="2024-05-10T08:15:00.504Z">
@@ -28,6 +28,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -228,16 +229,23 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>一个粗略的任务系统</p>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>为了让游戏的内容丰富起来，同时也能辅助构建游戏世界所处的环境和世界观等等，所以准备简单的开发一个任务系统。</p>
-<p>e.g.<br>支线任务 - <del>砍人</del>买瓜<br>「前去长安城购买甘甜可口的西瓜」<br><code>奖励：载具*1、武器*1</code></p>
-<p><em>我：“哥们儿，这瓜多少钱一斤呐”</em><br>瓜摊老板：“两块钱一斤”<br><em>我：“给我挑一个”</em><br>瓜摊老板：“行，这个怎么样？”</p>
+<h3 id="前言">前言</h3>
+<p>为了让游戏的内容丰富起来，同时也能辅助构建游戏世界所处的环境和世界观等等，所以准备简单的开发一个任务系统。</p>
+<p>e.g.<br>
+支线任务 - <s>砍人</s>买瓜<br>
+「前去长安城购买甘甜可口的西瓜」<br>
+<code>奖励：载具*1、武器*1</code></p>
+<p><em>我：“哥们儿，这瓜多少钱一斤呐”</em><br>
+瓜摊老板：“两块钱一斤”<br>
+<em>我：“给我挑一个”</em><br>
+瓜摊老板：“行，这个怎么样？”</p>
 <ul>
 <li>选项 1[<code>这瓜保熟吗？</code>]</li>
 <li>选项 2[<code>不买了</code>]</li>
 </ul>
 <span id="more"></span>
-
-<h3 id="任务设计"><a href="#任务设计" class="headerlink" title="任务设计"></a>任务设计</h3><p>参考了一些成熟的游戏，任务暂且分 4 类：</p>
+<h3 id="任务设计">任务设计</h3>
+<p>参考了一些成熟的游戏，任务暂且分 4 类：</p>
 <ul>
 <li>主线任务</li>
 </ul>
@@ -294,17 +302,15 @@ var _hmt = _hmt || [];
 <p>任务超时失败。比如：限制 3 分钟内完成「买瓜」任务</p>
 </blockquote>
 <p>暂时想到这么多，新的想法后面再补充</p>
-<h3 id="任务配置结构"><a href="#任务配置结构" class="headerlink" title="任务配置结构"></a>任务配置结构</h3><p>定义「吃瓜」这个任务的数据结构</p>
+<h3 id="任务配置结构">任务配置结构</h3>
+<p>定义「吃瓜」这个任务的数据结构</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 任务类别</span></span><br><span class="line"><span class="keyword">const</span> (</span><br><span class="line">    TASK_KIND_UNKNOWN = <span class="literal">iota</span></span><br><span class="line">    TASK_KIND_STORY       <span class="comment">// 主线</span></span><br><span class="line">    TASK_KIND_DAILY       <span class="comment">// 日常</span></span><br><span class="line">    TASK_KIND_WEEKLY      <span class="comment">// 周常</span></span><br><span class="line">    TASK_KIND_BRANCH_LINE <span class="comment">// 支线</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 事件类型</span></span><br><span class="line"><span class="keyword">const</span> (</span><br><span class="line">    TASK_EVENT_TYPE_UNKNOWN = <span class="literal">iota</span></span><br><span class="line">    TASK_EVENT_TYPE_TALK <span class="comment">// 对话</span></span><br><span class="line">    TASK_EVENT_TYPE_KILL <span class="comment">// 击杀</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 任务失败类型</span></span><br><span class="line"><span class="keyword">const</span> (</span><br><span class="line">    TASK_FAIL_EVENT_TYPE_UNKNOWN = <span class="literal">iota</span></span><br><span class="line">    TASK_FAIL_EVENT_TYPE_DEAD <span class="comment">// 死亡</span></span><br><span class="line">    TASK_FAIL_EVENT_TYPE_TIME <span class="comment">// 超时</span></span><br><span class="line">)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">	<span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="number">4001</span><span class="punctuation">,</span> <span class="comment">// 任务编号</span></span><br><span class="line">	<span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;支线 买瓜&quot;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;kind&quot;</span><span class="punctuation">:</span> <span class="number">4</span><span class="punctuation">,</span> <span class="comment">// 任务类别</span></span><br><span class="line">	<span class="attr">&quot;limits&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">		<span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;刘华强&quot;</span> <span class="comment">// 限制只能叫刘华强的玩家领取</span></span><br><span class="line">	<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;events&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">		<span class="punctuation">&#123;</span></span><br><span class="line">			<span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span> <span class="comment">// 事件类型</span></span><br><span class="line">			<span class="attr">&quot;title&quot;</span><span class="punctuation">:</span> <span class="string">&quot;前去长安城购买甘甜可口的西瓜&quot;</span><span class="punctuation">,</span> <span class="comment">// 事件标题</span></span><br><span class="line">			<span class="attr">&quot;npc&quot;</span><span class="punctuation">:</span> <span class="number">250</span><span class="punctuation">,</span> <span class="comment">// NPC编号</span></span><br><span class="line">			<span class="attr">&quot;dialog&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">				<span class="comment">// 对话内容 0:玩家 !0:NPC</span></span><br><span class="line">				<span class="string">&quot;0:哥们儿，这瓜多少钱一斤呐&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="string">&quot;250:两块钱一斤&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="string">&quot;0:给我挑一个&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="string">&quot;250:行，这个怎么样？&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="string">&quot;0:这瓜保熟吗？&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="string">&quot;250:我开水果摊的，能卖给你生瓜蛋子？&quot;</span></span><br><span class="line">			<span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;rewards&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span><span class="punctuation">&#125;</span> <span class="comment">// 事件奖励</span></span><br><span class="line">		<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">		<span class="punctuation">&#123;</span></span><br><span class="line">			<span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="number">2</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;title&quot;</span><span class="punctuation">:</span> <span class="string">&quot;与瓜摊老板理性讨论&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;npc&quot;</span><span class="punctuation">:</span> <span class="number">250</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;dialog&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;250:你他🐴劈我瓜是吧？&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;rewards&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">				<span class="attr">&quot;car&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;weapon&quot;</span><span class="punctuation">:</span> <span class="number">1</span></span><br><span class="line">			<span class="punctuation">&#125;</span></span><br><span class="line">		<span class="punctuation">&#125;</span></span><br><span class="line">	<span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;failEvents&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">		<span class="punctuation">&#123;</span></span><br><span class="line">			<span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="number">2</span><span class="punctuation">,</span> <span class="comment">// 任务失败类型</span></span><br><span class="line">			<span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="number">30</span> <span class="comment">// 具体数值</span></span><br><span class="line">		<span class="punctuation">&#125;</span></span><br><span class="line">	<span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="逻辑实现"><a href="#逻辑实现" class="headerlink" title="逻辑实现"></a>逻辑实现</h3><p>对话</p>
+<h3 id="逻辑实现">逻辑实现</h3>
+<p>对话</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *TaskMgr)</span></span> OnTalkNpc(id <span class="type">uint32</span>, step <span class="type">int</span>) <span class="type">bool</span> &#123;</span><br><span class="line">    task, ok := r.list[id]</span><br><span class="line">    <span class="keyword">if</span> !ok &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">    event := task.getEvent(step)</span><br><span class="line">    <span class="keyword">if</span> event == <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> event.Type != enums.TASK_EVENT_TYPE_TALK_NPC &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> event.State != enums.TASK_EVENT_STATE_ING &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> r.eventUpdate(task, event)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>击杀</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *TaskMgr)</span></span> OnKillNpc(npc interfaces.INpc) <span class="type">bool</span> &#123;</span><br><span class="line">    <span class="keyword">for</span> _, task := <span class="keyword">range</span> r.list &#123;</span><br><span class="line">        <span class="keyword">for</span> _, event := <span class="keyword">range</span> task.Events &#123;</span><br><span class="line">            <span class="keyword">if</span> event.Type != enums.TASK_EVENT_TYPE_KILL_NPC &#123;</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> event.State != enums.TASK_EVENT_STATE_ING &#123;</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">for</span> _, eventNpc := <span class="keyword">range</span> event.EventNpcs &#123;</span><br><span class="line">                <span class="keyword">if</span> npc.GetId() != eventNpc.Id &#123;</span><br><span class="line">                    <span class="keyword">continue</span></span><br><span class="line">                &#125;</span><br><span class="line">                event.EventNpcs = event.EventNpcs[<span class="number">1</span>:]</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">len</span>(event.EventNpcs) &gt; <span class="number">0</span> &#123;</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> r.eventUpdate(task, event)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 更新任务事件</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *TaskMgr)</span></span> eventUpdate(task *Task, event *event) <span class="type">bool</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> _, ok := r.list[task.Id]; !ok &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 发送奖励</span></span><br><span class="line">    <span class="keyword">for</span> key, reward := <span class="keyword">range</span> event.config.KvRewards &#123;</span><br><span class="line">        <span class="keyword">switch</span> key &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">&quot;car&quot;</span>:</span><br><span class="line">            <span class="comment">// 发送载具</span></span><br><span class="line">        <span class="keyword">case</span> <span class="string">&quot;weapon&quot;</span>:</span><br><span class="line">            <span class="comment">// 发送武器</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 事件完成</span></span><br><span class="line">    event.State = enums.TASK_EVENT_STATE_DONE</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
       
@@ -574,7 +580,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -586,15 +596,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -618,11 +632,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -667,18 +685,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

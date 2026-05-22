@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Mysql学习笔记 - 索引 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="索引用于快速查找具有特定列值的行。没有索引，MySQL必须从第一行开始，然后通读整个表以找到相关的行。如果表中有相关​​列的索引，MySQL可以快速确定要在数据文件中间查找的位置，而不必查看所有数据。这比顺序读取每一行要快得多。InnoDB和MyIsam只支持Btree，因此默认均是Btree，Memory和Heap支持Hash和Btree，如无明确声明，则默认索引均是Hash（包括主键）。 1.">
+  <meta name="description" content="索引用于快速查找具有特定列值的行。没有索引，MySQL必须从第一行开始，然后通读整个表以找到相关的行。如果表中有相关​​列的索引，MySQL可以快速确定要在数据文件中间查找的位置，而不必查看所有数据。这比顺序读取每一行要快得多。 InnoDB和MyIsam只支持Btree，因此默认均是Btree，Memory和Heap支持Hash和Btree，如无明确声明，则默认索引均是Hash（包括主键）。 1">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Mysql学习笔记 - 索引">
 <meta property="og:url" content="http://xupin.im/2019/12/16/mysql-index/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="索引用于快速查找具有特定列值的行。没有索引，MySQL必须从第一行开始，然后通读整个表以找到相关的行。如果表中有相关​​列的索引，MySQL可以快速确定要在数据文件中间查找的位置，而不必查看所有数据。这比顺序读取每一行要快得多。InnoDB和MyIsam只支持Btree，因此默认均是Btree，Memory和Heap支持Hash和Btree，如无明确声明，则默认索引均是Hash（包括主键）。 1.">
+<meta property="og:description" content="索引用于快速查找具有特定列值的行。没有索引，MySQL必须从第一行开始，然后通读整个表以找到相关的行。如果表中有相关​​列的索引，MySQL可以快速确定要在数据文件中间查找的位置，而不必查看所有数据。这比顺序读取每一行要快得多。 InnoDB和MyIsam只支持Btree，因此默认均是Btree，Memory和Heap支持Hash和Btree，如无明确声明，则默认索引均是Hash（包括主键）。 1">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-12-16T11:30:00.000Z">
 <meta property="article:modified_time" content="2022-07-15T02:59:17.752Z">
@@ -28,6 +28,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -209,7 +210,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">752字</span>
+        <span class="post-count">753字</span>
       </span>
     </span>
 
@@ -227,8 +228,10 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>索引用于快速查找具有特定列值的行。没有索引，MySQL必须从第一行开始，然后通读整个表以找到相关的行。如果表中有相关​​列的索引，MySQL可以快速确定要在数据文件中间查找的位置，而不必查看所有数据。这比顺序读取每一行要快得多。<br>InnoDB和MyIsam只支持Btree，因此默认均是Btree，Memory和Heap支持Hash和Btree，如无明确声明，则默认索引均是Hash（包括主键）。</p>
-<h3 id="1-Mysql有哪些常用的索引"><a href="#1-Mysql有哪些常用的索引" class="headerlink" title="1.Mysql有哪些常用的索引"></a>1.Mysql有哪些常用的索引</h3><blockquote>
+        <p>索引用于快速查找具有特定列值的行。没有索引，MySQL必须从第一行开始，然后通读整个表以找到相关的行。如果表中有相关​​列的索引，MySQL可以快速确定要在数据文件中间查找的位置，而不必查看所有数据。这比顺序读取每一行要快得多。<br>
+InnoDB和MyIsam只支持Btree，因此默认均是Btree，Memory和Heap支持Hash和Btree，如无明确声明，则默认索引均是Hash（包括主键）。</p>
+<h3 id="1-Mysql有哪些常用的索引">1.Mysql有哪些常用的索引</h3>
+<blockquote>
 <p>主键索引：数据列不允许重复，不允许为null，一个表只能有一个主键。</p>
 </blockquote>
 <blockquote>
@@ -240,12 +243,12 @@ var _hmt = _hmt || [];
 <blockquote>
 <p>全文索引：全文索引是目前实现大数据搜索的关键技术。</p>
 </blockquote>
-<h3 id="2-Mysql索引的建立原则"><a href="#2-Mysql索引的建立原则" class="headerlink" title="2.Mysql索引的建立原则"></a>2.Mysql索引的建立原则</h3><p>Mysql的索引遵循最左原则，在创建多列索引时，要根据业务需求，where条件中使用最频繁的一列放在最左边。</p>
+<h3 id="2-Mysql索引的建立原则">2.Mysql索引的建立原则</h3>
+<p>Mysql的索引遵循最左原则，在创建多列索引时，要根据业务需求，where条件中使用最频繁的一列放在最左边。</p>
 <span id="more"></span>
-
 <figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">index</span><span class="params">(a,b,c)</span></span></span><br><span class="line">where <span class="selector-tag">a</span> = v <span class="comment">// 使用a</span></span><br><span class="line">where <span class="selector-tag">a</span> = v and <span class="selector-tag">b</span> = v <span class="comment">// 使用a,b</span></span><br><span class="line">where <span class="selector-tag">a</span> = v and <span class="selector-tag">b</span> = v and c = v <span class="comment">// 使用a,b,c</span></span><br><span class="line"></span><br><span class="line">where <span class="selector-tag">b</span> = v <span class="comment">// 未使用索引</span></span><br><span class="line">where <span class="selector-tag">a</span> = v and c = v <span class="comment">// 使用a</span></span><br><span class="line">where <span class="selector-tag">b</span> = v and c = v <span class="comment">// 未使用索引</span></span><br><span class="line"></span><br><span class="line">where <span class="selector-tag">a</span> &gt; v <span class="comment">// 是否使用索引，取决于查询结果集，如果全表扫描速度比索引速度快，那么不使用索引。</span></span><br><span class="line"></span><br><span class="line">where <span class="selector-tag">a</span> like <span class="string">&quot;v%&quot;</span> <span class="comment">// 使用a</span></span><br><span class="line">where <span class="selector-tag">a</span> like <span class="string">&quot;%v%&quot;</span> <span class="comment">// 不适用索引</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="3-如何分析SQL语句执行性能"><a href="#3-如何分析SQL语句执行性能" class="headerlink" title="3.如何分析SQL语句执行性能"></a>3.如何分析SQL语句执行性能</h3><p>以下是两种分析SQL性能的常用方式，explain、show profiles&#x2F;show profile。</p>
+<h3 id="3-如何分析SQL语句执行性能">3.如何分析SQL语句执行性能</h3>
+<p>以下是两种分析SQL性能的常用方式，explain、show profiles/show profile。</p>
 <blockquote>
 <p>explain + SQL语句，获取SQL分析数据</p>
 </blockquote>
@@ -265,7 +268,8 @@ var _hmt = _hmt || [];
 <blockquote>
 <p>show profiles获得当前会话中执行的SQL语句，字段为：Query_ID, Duration, Query，show profile all for query {Query_ID}</p>
 </blockquote>
-<h3 id="4-Mysql中索引建立常见问题"><a href="#4-Mysql中索引建立常见问题" class="headerlink" title="4.Mysql中索引建立常见问题"></a>4.Mysql中索引建立常见问题</h3><ol>
+<h3 id="4-Mysql中索引建立常见问题">4.Mysql中索引建立常见问题</h3>
+<ol>
 <li>为经常需要排序、分组和联合操作的字段建立索引</li>
 <li>为常作为查询条件的字段建立索引</li>
 <li>索引列值保证唯一性</li>
@@ -543,7 +547,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -555,15 +563,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -587,11 +599,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -636,18 +652,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

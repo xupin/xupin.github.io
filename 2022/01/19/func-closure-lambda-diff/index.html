@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Go学习笔记 - 闭包函数、匿名函数及lambda“函数”有什么关系 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="经常在技术博客中看到匿名函数、闭包函数和 lambda 表达式这样名词，但一直傻傻分不清他们之间究竟有什么区别，所以想一探究竟。 函数定义一个函数的定义，一般会包含：函数名、函数的参数、函数的主体（代码块）、函数的返回类型&#x2F;值。 123func hello(name string) string &#123;	return &quot;Hello, &quot; + name&#125;">
+  <meta name="description" content="经常在技术博客中看到匿名函数、闭包函数和 lambda 表达式这样名词，但一直傻傻分不清他们之间究竟有什么区别，所以想一探究竟。 函数定义 一个函数的定义，一般会包含：函数名、函数的参数、函数的主体（代码块）、函数的返回类型&#x2F;值。 123func hello(name string) string &#123;	return &quot;Hello, &quot; + name&#125;">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Go学习笔记 - 闭包函数、匿名函数及lambda“函数”有什么关系">
 <meta property="og:url" content="http://xupin.im/2022/01/19/func-closure-lambda-diff/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="经常在技术博客中看到匿名函数、闭包函数和 lambda 表达式这样名词，但一直傻傻分不清他们之间究竟有什么区别，所以想一探究竟。 函数定义一个函数的定义，一般会包含：函数名、函数的参数、函数的主体（代码块）、函数的返回类型&#x2F;值。 123func hello(name string) string &#123;	return &quot;Hello, &quot; + name&#125;">
+<meta property="og:description" content="经常在技术博客中看到匿名函数、闭包函数和 lambda 表达式这样名词，但一直傻傻分不清他们之间究竟有什么区别，所以想一探究竟。 函数定义 一个函数的定义，一般会包含：函数名、函数的参数、函数的主体（代码块）、函数的返回类型&#x2F;值。 123func hello(name string) string &#123;	return &quot;Hello, &quot; + name&#125;">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-01-18T16:00:00.000Z">
 <meta property="article:modified_time" content="2024-04-09T08:16:03.984Z">
@@ -30,6 +30,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -211,7 +212,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">876字</span>
+        <span class="post-count">875字</span>
       </span>
     </span>
 
@@ -230,14 +231,13 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>经常在技术博客中看到匿名函数、闭包函数和 lambda 表达式这样名词，但一直傻傻分不清他们之间究竟有什么区别，所以想一探究竟。</p>
-<h3 id="函数定义"><a href="#函数定义" class="headerlink" title="函数定义"></a>函数定义</h3><p>一个函数的定义，一般会包含：函数名、函数的参数、函数的主体（代码块）、函数的返回类型&#x2F;值。</p>
+<h3 id="函数定义">函数定义</h3>
+<p>一个函数的定义，一般会包含：函数名、函数的参数、函数的主体（代码块）、函数的返回类型/值。</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">hello</span><span class="params">(name <span class="type">string</span>)</span></span> <span class="type">string</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="string">&quot;Hello, &quot;</span> + name</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <span id="more"></span>
-
-<h3 id="闭包函数"><a href="#闭包函数" class="headerlink" title="闭包函数"></a>闭包函数</h3><p>通过字面意思理解，即定义在内部的函数。</p>
+<h3 id="闭包函数">闭包函数</h3>
+<p>通过字面意思理解，即定义在内部的函数。</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	t := test()</span><br><span class="line">	t()</span><br><span class="line">	t()</span><br><span class="line">	t()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">test</span><span class="params">()</span></span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">	x := <span class="number">0</span></span><br><span class="line">	fmt.Println(<span class="string">&quot;test()&quot;</span>, x, &amp;x)</span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		x += <span class="number">1</span></span><br><span class="line">		fmt.Println(<span class="string">&quot;closure()&quot;</span>, x, &amp;x)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 执行程序输出以下内容</span></span><br><span class="line"><span class="comment">// test() 0 0xc000016098</span></span><br><span class="line"><span class="comment">// closure() 1 0xc000016098</span></span><br><span class="line"><span class="comment">// closure() 2 0xc000016098</span></span><br><span class="line"><span class="comment">// closure() 3 0xc000016098</span></span><br></pre></td></tr></table></figure>
-
 <ol>
 <li>执行 test()函数返回闭包函数。</li>
 <li>执行闭包函数发现可以使用 x 变量，但不用声明 x 变量。</li>
@@ -251,23 +251,23 @@ var _hmt = _hmt || [];
 <blockquote>
 <p>A closure is the combination of a function and the lexical environment within which that function was declared.</p>
 </blockquote>
-<h3 id="匿名函数"><a href="#匿名函数" class="headerlink" title="匿名函数"></a>匿名函数</h3><p>匿名函数，即“无名”函数。</p>
+<h3 id="匿名函数">匿名函数</h3>
+<p>匿名函数，即“无名”函数。</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	lam := <span class="function"><span class="keyword">func</span><span class="params">(x, y, z <span class="type">int</span>)</span></span> <span class="type">int</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> x + y + z</span><br><span class="line">	&#125;</span><br><span class="line">	x := lam(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line">	fmt.Println(x)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>匿名函数可以直接定义在代码块中。匿名函数可以减少函数暴露，防止被外部代码调用执行（避免数据污染）。</p>
-<h3 id="lambda“函数”"><a href="#lambda“函数”" class="headerlink" title="lambda“函数”"></a>lambda“函数”</h3><p>lambda“函数”，严格来说应该叫 lambda 表达式。它是一个可以接受 N 个参数但只返回单个表达式值的“函数”，可以理解为它是匿名函数的一种代码风格或者语法糖。</p>
+<h3 id="lambda“函数”">lambda“函数”</h3>
+<p>lambda“函数”，严格来说应该叫 lambda 表达式。它是一个可以接受 N 个参数但只返回单个表达式值的“函数”，可以理解为它是匿名函数的一种代码风格或者语法糖。</p>
 <p>lambda 会使代码看起来比较简洁，很适用于这个函数“只用一次”的场景。比如：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">square</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">return</span> x * x</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;square()&quot;</span>, <span class="built_in">list</span>(<span class="built_in">map</span>(square, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>])))</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;lambda&quot;</span>, <span class="built_in">list</span>(<span class="built_in">map</span>(<span class="keyword">lambda</span> x: x * x, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>])))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出</span></span><br><span class="line"><span class="comment"># square() [1, 4, 9, 16, 25]</span></span><br><span class="line"><span class="comment"># lambda [1, 4, 9, 16, 25]</span></span><br></pre></td></tr></table></figure>
-
 <p>lambda 表达式带来代码简洁的同时也有副作用，lambda 可读性较差，不适用于很长很复杂的逻辑，所以不要为了写 lambda 而写 lambda。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">func = <span class="keyword">lambda</span> x, y, z: x + y + z</span><br><span class="line">x = func(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line"><span class="built_in">print</span>(x)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 代码被自动转换</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">func</span>(<span class="params">x, y, z</span>): <span class="keyword">return</span> x + y + z</span><br><span class="line">x = func(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line"><span class="built_in">print</span>(x)</span><br></pre></td></tr></table></figure>
-
 <p>在<code>Visual Studio Code</code>中编辑保存这段代码会被自动转换，在<code>PyCharm</code>中则会直接给出警告<code>PEP 8: E731 do not assign a lambda expression, use a def</code><a href="https://pypi.org/project/autopep8/#features">autopep8</a></p>
 <p>至于为什么这种书写方式称之为 lambda 表达式，则是有原因的：</p>
 <blockquote>
 <p>Alonzo Church 在 30 年代发明的<a href="https://en.wikipedia.org/wiki/Lambda_calculus">Lambda Calculus</a>，你可以在其中做的一件事就是 λ 运算。</p>
 </blockquote>
-<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>猜猜以下这段代码执行后会输出什么？</p>
+<h3 id="最后">最后</h3>
+<p>猜猜以下这段代码执行后会输出什么？</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;sync&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line">	a := []<span class="type">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>&#125;</span><br><span class="line">	<span class="keyword">for</span> _, v := <span class="keyword">range</span> a &#123;</span><br><span class="line">		i := v</span><br><span class="line">		fmt.Printf(<span class="string">&quot;for v:%d i:%d\n&quot;</span>, v, i)</span><br><span class="line">		wg.Add(<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">			<span class="keyword">defer</span> wg.Done()</span><br><span class="line">			fmt.Printf(<span class="string">&quot;func v:%d i:%d\n&quot;</span>, v, i)</span><br><span class="line">		&#125;()</span><br><span class="line">	&#125;</span><br><span class="line">	wg.Wait()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
       
@@ -545,7 +545,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -557,15 +561,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -589,11 +597,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -638,18 +650,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>数据结构与算法 - AStar(A*) | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="寻路算法是游戏比较重要的组成部分之一，尤其在国内游戏很常见的自动寻路系统，比如操纵角色从 A 点到 B 点的移动。计算最短路径有很多不同的算法，比如：Dijkstra、AStar（A*）、NavMesh（多边形算法）、RVO 动态避障等等 A*寻路算法寻路算法的移动路径核心有 2 点：最短、可移动。 所以首先需要确定起点坐标的相邻节点（4 方向、8 方向），然后通过计算最靠近终点坐标的相邻坐标（不">
+  <meta name="description" content="寻路算法是游戏比较重要的组成部分之一，尤其在国内游戏很常见的自动寻路系统，比如操纵角色从 A 点到 B 点的移动。计算最短路径有很多不同的算法，比如：Dijkstra、AStar（A*）、NavMesh（多边形算法）、RVO 动态避障等等 A*寻路算法 寻路算法的移动路径核心有 2 点：最短、可移动。 所以首先需要确定起点坐标的相邻节点（4 方向、8 方向），然后通过计算最靠近终点坐标的相邻坐标（">
 <meta property="og:type" content="article">
 <meta property="og:title" content="数据结构与算法 - AStar(A*)">
 <meta property="og:url" content="http://xupin.im/2022/08/01/ds-algos-astar/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="寻路算法是游戏比较重要的组成部分之一，尤其在国内游戏很常见的自动寻路系统，比如操纵角色从 A 点到 B 点的移动。计算最短路径有很多不同的算法，比如：Dijkstra、AStar（A*）、NavMesh（多边形算法）、RVO 动态避障等等 A*寻路算法寻路算法的移动路径核心有 2 点：最短、可移动。 所以首先需要确定起点坐标的相邻节点（4 方向、8 方向），然后通过计算最靠近终点坐标的相邻坐标（不">
+<meta property="og:description" content="寻路算法是游戏比较重要的组成部分之一，尤其在国内游戏很常见的自动寻路系统，比如操纵角色从 A 点到 B 点的移动。计算最短路径有很多不同的算法，比如：Dijkstra、AStar（A*）、NavMesh（多边形算法）、RVO 动态避障等等 A*寻路算法 寻路算法的移动路径核心有 2 点：最短、可移动。 所以首先需要确定起点坐标的相邻节点（4 方向、8 方向），然后通过计算最靠近终点坐标的相邻坐标（">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://xupin.im/assets/astar/grid.png">
 <meta property="og:image" content="http://xupin.im/assets/astar/3x3.png">
@@ -32,6 +32,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -232,19 +233,20 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>寻路算法是游戏比较重要的组成部分之一，尤其在国内游戏很常见的自动寻路系统，比如操纵角色从 A 点到 B 点的移动。计算最短路径有很多不同的算法，比如：Dijkstra、AStar（A*）、NavMesh（多边形算法）、RVO 动态避障等等</p>
-<h3 id="A-寻路算法"><a href="#A-寻路算法" class="headerlink" title="A*寻路算法"></a>A*寻路算法</h3><p>寻路算法的移动路径核心有 2 点：最短、可移动。</p>
+<h3 id="A-寻路算法">A*寻路算法</h3>
+<p>寻路算法的移动路径核心有 2 点：最短、可移动。</p>
 <p>所以首先需要确定起点坐标的相邻节点（4 方向、8 方向），然后通过计算最靠近终点坐标的相邻坐标（不考虑障碍物）确认检索方向，再去计算“相邻坐标”移动的下一个坐标（距离终点坐标最近 &amp; 可移动），重复计算这个过程直至找到终点坐标，这就是 A*算法</p>
 <p>A*算法是一类基于网格的寻路算法，也就是把地图看作一个由网格组成的矩阵，每个坐标就是一个网格。</p>
 <p>一张 3x3 地图</p>
 <span id="more"></span>
-
 <img src="/assets/astar/grid.png" width="90" height="90"/>
-
-<h3 id="启发函数"><a href="#启发函数" class="headerlink" title="启发函数"></a>启发函数</h3><p>从起点移动到终点坐标可能会产生多条移动路径，所以还需要计算出哪条移动路径最短，不然越走越远就演变成《论述如何帮助玩家刷微信步数》的尴尬情况。</p>
+<h3 id="启发函数">启发函数</h3>
+<p>从起点移动到终点坐标可能会产生多条移动路径，所以还需要计算出哪条移动路径最短，不然越走越远就演变成《论述如何帮助玩家刷微信步数》的尴尬情况。</p>
 <p>在网格地图中肯定是经过越少的网格路径就越短，但我们不可能把每条可能的路径都走一遍再选出哪条路径最短，所以需要进行评估接下来走哪个网格最近。</p>
 <p>假设我们把网格直线（水平、垂直）移动成本设为 1、对角移动成本设为：1.4。然后把移动路径上的坐标的成本进行相加取出最小值即可能是当前最佳移动路径。</p>
 <p>这也叫启发式算法，即优先检索可能是成本最低的网格。</p>
-<h3 id="估价公式"><a href="#估价公式" class="headerlink" title="估价公式"></a>估价公式</h3><p>我们不可能把每条可能的路径都走一遍，所以通过估价公式：<code>f = g + h</code>，来评估接下来走哪一个网格。</p>
+<h3 id="估价公式">估价公式</h3>
+<p>我们不可能把每条可能的路径都走一遍，所以通过估价公式：<code>f = g + h</code>，来评估接下来走哪一个网格。</p>
 <ul>
 <li>g</li>
 </ul>
@@ -264,7 +266,8 @@ var _hmt = _hmt || [];
 <p>当前坐标的移动成本</p>
 </blockquote>
 <p>通过这样一个网格移动成本的评估公式，可以大概计算出从起点网格移动至终点网格的路径中，下一步走哪一个网格可能路径最短。</p>
-<h3 id="移动成本"><a href="#移动成本" class="headerlink" title="移动成本"></a>移动成本</h3><p>怎么计算移动成本？使用距离算法作为估价函数对网格进行估价。比如以下的距离算法（不仅限于）：</p>
+<h3 id="移动成本">移动成本</h3>
+<p>怎么计算移动成本？使用距离算法作为估价函数对网格进行估价。比如以下的距离算法（不仅限于）：</p>
 <ol>
 <li>欧氏距离</li>
 <li>曼哈顿距离</li>
@@ -299,38 +302,36 @@ var _hmt = _hmt || [];
 </blockquote>
 <p>所以在对 4 方向、8 方向又或者 6 方向上的算法选择是不一样的。比如 4 方向移动<code>上下左右</code>使用曼哈顿距离来进行估价就完全足够，但如果是 8 方向移动就不可以（可以对角移动）。</p>
 <p>所以，如果是 8 方向移动的场景通常会采用曼哈顿+对角计算的距离算法。</p>
-<h3 id="寻路思路"><a href="#寻路思路" class="headerlink" title="寻路思路"></a>寻路思路</h3><p>示例：3x3 &amp; 无障碍的地图</p>
+<h3 id="寻路思路">寻路思路</h3>
+<p>示例：3x3 &amp; 无障碍的地图</p>
 <img src="/assets/astar/3x3.png" width="300" height="300"/>
-
 <p>绿色是<code>起点</code>，蓝色是<code>终点</code></p>
 <ol>
-<li><p>把起点放进待查找节点列表。</p>
+<li>
+<p>把起点放进待查找节点列表。</p>
 </li>
-<li><p>从待查找节点列表里面取出一个，判断该节点是否是终点，如果不是则查找该节点的相邻节点，找到 3 个节点分别是右、右下、下。</p>
+<li>
+<p>从待查找节点列表里面取出一个，判断该节点是否是终点，如果不是则查找该节点的相邻节点，找到 3 个节点分别是右、右下、下。</p>
 </li>
-<li><p>遍历相邻节点，判断节点是否已查找过，否则对 3 个相邻节点的进行估价（因为使用曼哈顿算法所以把浮点数放大<code>10倍</code>），并把绿色节点设为 3 个相邻节点的父节点，如果某一相邻节点是终点则返回，否则把相邻节点加入到待查找节点列表。</p>
+<li>
+<p>遍历相邻节点，判断节点是否已查找过，否则对 3 个相邻节点的进行估价（因为使用曼哈顿算法所以把浮点数放大<code>10倍</code>），并把绿色节点设为 3 个相邻节点的父节点，如果某一相邻节点是终点则返回，否则把相邻节点加入到待查找节点列表。</p>
 </li>
 </ol>
 <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>. 右</span><br><span class="line">    起点距离该节点水平移动一个网格，所以g = <span class="number">10</span>。该节点到终点对角移动一个网格，所以<span class="built_in">h</span> = <span class="number">14</span>。最终该节点的移动成本：<span class="number">14</span>（f = g + <span class="built_in">h</span> ）。</span><br><span class="line"><span class="number">2</span>. 右下</span><br><span class="line">    起点距离该节点对角移动一个网格，所以g = <span class="number">14</span>。该节点到终点垂直移动一个网格，所以<span class="built_in">h</span> = <span class="number">10</span>。最终该节点的移动成本：<span class="number">14</span>（f = g + <span class="built_in">h</span> ）。</span><br><span class="line"><span class="number">3</span>. 下</span><br><span class="line">    起点距离该节点垂直移动一个网格，所以g = <span class="number">10</span>。该节点到终点水平移动两个网格，所以<span class="built_in">h</span> = <span class="number">20</span>。最终该节点的移动成本：<span class="number">30</span>（f = g + <span class="built_in">h</span> ）。</span><br></pre></td></tr></table></figure>
-
 <ol start="4">
 <li>对待查找节点列表按 <code>f</code> 值进行排序，取最小值。重复 2、3、4 步骤，直至找到终点坐标。</li>
 </ol>
-<h3 id="代码实现（附上完整代码）"><a href="#代码实现（附上完整代码）" class="headerlink" title="代码实现（附上完整代码）"></a>代码实现（附上完整代码）</h3><p>首先最基础的是把地图进行网格化。</p>
+<h3 id="代码实现（附上完整代码）">代码实现（附上完整代码）</h3>
+<p>首先最基础的是把地图进行网格化。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">地图从左上角开始，水平x 垂直y</span></span><br><span class="line"><span class="comment">  y</span></span><br><span class="line"><span class="comment">x 0,0 1,0 2,0</span></span><br><span class="line"><span class="comment">  0,1 1,1 2,1</span></span><br><span class="line"><span class="comment">  0,2 1,2 2,2</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">// 0是可移动节点、1是障碍节点</span></span><br><span class="line">mapData := [][]<span class="type">int</span>&#123;</span><br><span class="line">    &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>&#125;,</span><br><span class="line">    &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>&#125;,</span><br><span class="line">    &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>&#125;,</span><br><span class="line">    &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>&#125;,</span><br><span class="line">    &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>&#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>每个节点（网格）对应一个坐标，因为估价需要同时每个节点还存储着 f、g、h 值。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 节点</span></span><br><span class="line"><span class="keyword">type</span> Node <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// 坐标</span></span><br><span class="line">	X <span class="type">int</span></span><br><span class="line">	Y <span class="type">int</span></span><br><span class="line">	<span class="comment">// 成本</span></span><br><span class="line">	F <span class="type">int</span></span><br><span class="line">	G <span class="type">int</span></span><br><span class="line">	H <span class="type">int</span></span><br><span class="line">	<span class="comment">// 父节点</span></span><br><span class="line">	Parent *Node</span><br><span class="line">	<span class="comment">// 类型</span></span><br><span class="line">	Type <span class="type">int</span></span><br><span class="line">	<span class="comment">// 状态</span></span><br><span class="line">	State <span class="type">int</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>有了节点，那么还需要定义每个节点有哪些邻居（这里是 8 方向）</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 如果不允许对角移动，去除对角坐标</span></span><br><span class="line">neighborPos = [][]<span class="type">int</span>&#123;</span><br><span class="line">    &#123;<span class="number">0</span>, <span class="number">-1</span>&#125;,  <span class="comment">// 上</span></span><br><span class="line">    &#123;<span class="number">1</span>, <span class="number">-1</span>&#125;,  <span class="comment">// 右上</span></span><br><span class="line">    &#123;<span class="number">1</span>, <span class="number">0</span>&#125;,   <span class="comment">// 右</span></span><br><span class="line">    &#123;<span class="number">1</span>, <span class="number">1</span>&#125;,   <span class="comment">// 右下</span></span><br><span class="line">    &#123;<span class="number">0</span>, <span class="number">1</span>&#125;,   <span class="comment">// 下</span></span><br><span class="line">    &#123;<span class="number">-1</span>, <span class="number">1</span>&#125;,  <span class="comment">// 左下</span></span><br><span class="line">    &#123;<span class="number">-1</span>, <span class="number">0</span>&#125;,  <span class="comment">// 左</span></span><br><span class="line">    &#123;<span class="number">-1</span>, <span class="number">-1</span>&#125;, <span class="comment">// 左上</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>并不是所有节点都需要查找，所以还需要定义待查找节点列表、已查找节点列表（已查找过的节点会被忽略）。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> openList, closeList []*Node</span><br></pre></td></tr></table></figure>
-
 <p>最后，查找节点的逻辑（这里偷懒，直接贴上封装过的逻辑）</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> AStar <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// 启发算法</span></span><br><span class="line">	Heuristic <span class="function"><span class="keyword">func</span><span class="params">(node, end *Node)</span></span> <span class="type">int</span></span><br><span class="line">	<span class="comment">// 地图大小</span></span><br><span class="line">	Rows <span class="type">int</span> <span class="comment">// y</span></span><br><span class="line">	Cols <span class="type">int</span> <span class="comment">// x</span></span><br><span class="line">	<span class="comment">// 地图节点</span></span><br><span class="line">	nodes [][]*Node</span><br><span class="line">	start *Node</span><br><span class="line">	end   *Node</span><br><span class="line">	<span class="comment">// 开放、关闭列表</span></span><br><span class="line">	openList  []*Node</span><br><span class="line">	closeList []*Node</span><br><span class="line">	<span class="comment">// 相邻节点坐标</span></span><br><span class="line">	neighborPos [][]<span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *AStar)</span></span> FindPath(start, end *Node) *Node &#123;</span><br><span class="line">	r.start = r.nodes[start.X][start.Y]</span><br><span class="line">	r.end = r.nodes[end.X][end.Y]</span><br><span class="line">	<span class="comment">// 如果起止点是障碍物</span></span><br><span class="line">	<span class="keyword">if</span> !r.start.isWalkable() || !r.end.isWalkable() &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;障碍物不可移动&quot;</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 先把开始节点放进开放列表</span></span><br><span class="line">	r.openListAppend(start)</span><br><span class="line">	<span class="keyword">for</span> <span class="built_in">len</span>(r.openList) &gt; <span class="number">0</span> &#123;</span><br><span class="line">		node := r.openListPop()</span><br><span class="line">		<span class="comment">// 判断当前节点是否是终点</span></span><br><span class="line">		<span class="keyword">if</span> r.isEnd(node) &#123;</span><br><span class="line">			<span class="keyword">return</span> node</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 找开放列表的第一个节点的相邻节点</span></span><br><span class="line">		neighbors := r.findNeighbors(node)</span><br><span class="line">		<span class="keyword">for</span> _, neighbor := <span class="keyword">range</span> neighbors &#123;</span><br><span class="line">			<span class="comment">// 是否在关闭列表</span></span><br><span class="line">			<span class="keyword">if</span> neighbor.isClosed() &#123;</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">// 开始节点移动至当前节点的成本</span></span><br><span class="line">			<span class="comment">// 相邻节点的坐标x,y</span></span><br><span class="line">			<span class="comment">// 开始节点移动至相邻节点的成本</span></span><br><span class="line">			g, x, y := node.G, neighbor.X, neighbor.Y</span><br><span class="line">			<span class="comment">// 判断移动方式是水平（或垂直）、对角，计算成本</span></span><br><span class="line">			<span class="keyword">if</span> x == node.X || y == node.Y &#123;</span><br><span class="line">				g += COST_STRAIGHT</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				g += COST_DIAGONAL</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> !neighbor.isOpened() || g &lt; neighbor.G &#123;</span><br><span class="line">				neighbor.G = g</span><br><span class="line">				neighbor.H = r.Heuristic(neighbor, end)</span><br><span class="line">				neighbor.F = neighbor.G + neighbor.H</span><br><span class="line">				neighbor.Parent = node</span><br><span class="line">				<span class="comment">// 优化逻辑，相邻节点是否是终点</span></span><br><span class="line">				<span class="comment">// if r.isEnd(neighbor) &#123;</span></span><br><span class="line">				<span class="comment">// 	return neighbor</span></span><br><span class="line">				<span class="comment">// &#125;</span></span><br><span class="line">				<span class="keyword">if</span> !neighbor.isOpened() &#123;</span><br><span class="line">					r.openListAppend(neighbor)</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 当前节点放进关闭列表</span></span><br><span class="line">		r.closeListAppend(node)</span><br><span class="line">		<span class="comment">// 更新开放列表顺序</span></span><br><span class="line">		r.openListSort()</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>为什么要给节点定义父节点？</p>
 <blockquote>
 <p>这里使用链表记录移动路径，即通过终点节点不断迭代父节点打印出完整路径。</p>
@@ -608,7 +609,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -620,15 +625,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -652,11 +661,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -701,18 +714,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

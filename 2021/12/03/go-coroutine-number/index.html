@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Go学习笔记 - 控制协程数量 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="之前因为需要并发同步单张数据表的脚本，因为设置协程数量太多连接数过高导致服务宕机 … 得不偿失，所以想怎么控制一下协程数量 Channel利用channel阻塞，上代码：">
+  <meta name="description" content="之前因为需要并发同步单张数据表的脚本，因为设置协程数量太多连接数过高导致服务宕机 … 得不偿失，所以想怎么控制一下协程数量 Channel 利用channel阻塞，上代码：">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Go学习笔记 - 控制协程数量">
 <meta property="og:url" content="http://xupin.im/2021/12/03/go-coroutine-number/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="之前因为需要并发同步单张数据表的脚本，因为设置协程数量太多连接数过高导致服务宕机 … 得不偿失，所以想怎么控制一下协程数量 Channel利用channel阻塞，上代码：">
+<meta property="og:description" content="之前因为需要并发同步单张数据表的脚本，因为设置协程数量太多连接数过高导致服务宕机 … 得不偿失，所以想怎么控制一下协程数量 Channel 利用channel阻塞，上代码：">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-12-02T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-07-15T02:59:17.750Z">
@@ -28,6 +28,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -209,7 +210,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">361字</span>
+        <span class="post-count">363字</span>
       </span>
     </span>
 
@@ -228,16 +229,15 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>之前因为需要并发同步单张数据表的脚本，因为设置协程数量太多连接数过高导致服务宕机 … 得不偿失，所以想怎么控制一下协程数量</p>
-<h3 id="Channel"><a href="#Channel" class="headerlink" title="Channel"></a>Channel</h3><p>利用channel阻塞，上代码：</p>
+<h3 id="Channel">Channel</h3>
+<p>利用channel阻塞，上代码：</p>
 <span id="more"></span>
-
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;sync&quot;</span></span><br><span class="line">	<span class="string">&quot;time&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 允许最大协程数</span></span><br><span class="line">	ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="type">int</span>, <span class="number">5</span>)</span><br><span class="line">	wg := &amp;sync.WaitGroup&#123;&#125;</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10</span>; i++ &#123;</span><br><span class="line">		wg.Add(<span class="number">1</span>)</span><br><span class="line">		ch &lt;- i <span class="comment">// ch长度等于5时，阻塞等待</span></span><br><span class="line">		<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(i <span class="type">int</span>)</span></span> &#123;</span><br><span class="line">			<span class="keyword">defer</span> wg.Done()</span><br><span class="line">			fmt.Println(<span class="string">&quot;记录执行 &quot;</span>, i)</span><br><span class="line">			time.Sleep(time.Second * <span class="number">3</span>)</span><br><span class="line">			fmt.Println(<span class="string">&quot;执行完毕 &quot;</span>, &lt;-ch)</span><br><span class="line">		&#125;(i)</span><br><span class="line">	&#125;</span><br><span class="line">	wg.Wait()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>原理就是利用<code>channel</code>通道的特性，当通道满的时候继续向通道丢数据会阻塞代码执行。</p>
 <p>封装一下:</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;sync&quot;</span></span><br><span class="line">	<span class="string">&quot;time&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Worker <span class="keyword">struct</span> &#123;</span><br><span class="line">	ch <span class="keyword">chan</span> <span class="keyword">interface</span>&#123;&#125;</span><br><span class="line">	wg *sync.WaitGroup</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 允许最大协程数</span></span><br><span class="line">	worker := NewWorker(<span class="number">5</span>)</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10</span>; i++ &#123;</span><br><span class="line">		worker.Run(i)</span><br><span class="line">		<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(i <span class="type">int</span>)</span></span> &#123;</span><br><span class="line">			fmt.Println(<span class="string">&quot;记录执行 &quot;</span>, i)</span><br><span class="line">			time.Sleep(time.Second * <span class="number">3</span>)</span><br><span class="line">			key := worker.Done()</span><br><span class="line">			fmt.Println(<span class="string">&quot;执行完毕 &quot;</span>, key)</span><br><span class="line">		&#125;(i)</span><br><span class="line">	&#125;</span><br><span class="line">	worker.Wait()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewWorker</span><span class="params">(size <span class="type">int</span>)</span></span> *Worker &#123;</span><br><span class="line">	<span class="keyword">return</span> &amp;Worker&#123;</span><br><span class="line">		ch: <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">interface</span>&#123;&#125;, size),</span><br><span class="line">		wg: &amp;sync.WaitGroup&#123;&#125;,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(w *Worker)</span></span> Run(key <span class="keyword">interface</span>&#123;&#125;) &#123;</span><br><span class="line">	w.ch &lt;- key</span><br><span class="line">	w.wg.Add(<span class="number">1</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(w *Worker)</span></span> Done() <span class="keyword">interface</span>&#123;&#125; &#123;</span><br><span class="line">	key := &lt;-w.ch</span><br><span class="line">	w.wg.Done()</span><br><span class="line">	<span class="keyword">return</span> key</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(w *Worker)</span></span> Wait() &#123;</span><br><span class="line">	w.wg.Wait()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Goroutine-Pool"><a href="#Goroutine-Pool" class="headerlink" title="Goroutine Pool"></a>Goroutine Pool</h3><p>感觉Duck不必 … 日后再谈</p>
+<h3 id="Goroutine-Pool">Goroutine Pool</h3>
+<p>感觉Duck不必 … 日后再谈</p>
 
       
 
@@ -506,7 +506,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -518,15 +522,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -550,11 +558,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -599,18 +611,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

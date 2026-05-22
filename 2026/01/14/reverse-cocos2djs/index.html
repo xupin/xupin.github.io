@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>逆向学习笔记 - Cocos2d JS逆向提取资源 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="记一次半吊子逆向工程的…不那么艰难的过程。 「逆向学习笔记 - Cocos2d Lua逆向提取资源 」难弟篇 前言最近刷到一款某道换皮手游，玩法和美术风格都是我喜欢的类型。于是想着做点逆向学习，顺便捞一手美术资源。 动手一个某道换皮手游，解压安装包： 12345678910111213141516171819202122232425├── AndroidManifest.xml├── assets">
+  <meta name="description" content="记一次半吊子逆向工程的…不那么艰难的过程。 「逆向学习笔记 - Cocos2d Lua逆向提取资源 」难弟篇 前言 最近刷到一款某道换皮手游，玩法和美术风格都是我喜欢的类型。于是想着做点逆向学习，顺便捞一手美术资源。 动手 一个某道换皮手游，解压安装包： 12345678910111213141516171819202122232425├── AndroidManifest.xml├── asse">
 <meta property="og:type" content="article">
 <meta property="og:title" content="逆向学习笔记 - Cocos2d JS逆向提取资源">
 <meta property="og:url" content="http://xupin.im/2026/01/14/reverse-cocos2djs/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="记一次半吊子逆向工程的…不那么艰难的过程。 「逆向学习笔记 - Cocos2d Lua逆向提取资源 」难弟篇 前言最近刷到一款某道换皮手游，玩法和美术风格都是我喜欢的类型。于是想着做点逆向学习，顺便捞一手美术资源。 动手一个某道换皮手游，解压安装包： 12345678910111213141516171819202122232425├── AndroidManifest.xml├── assets">
+<meta property="og:description" content="记一次半吊子逆向工程的…不那么艰难的过程。 「逆向学习笔记 - Cocos2d Lua逆向提取资源 」难弟篇 前言 最近刷到一款某道换皮手游，玩法和美术风格都是我喜欢的类型。于是想着做点逆向学习，顺便捞一手美术资源。 动手 一个某道换皮手游，解压安装包： 12345678910111213141516171819202122232425├── AndroidManifest.xml├── asse">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://xupin.im/assets/reverse/xor-encrypted.jpg">
 <meta property="og:image" content="http://xupin.im/assets/reverse/xor-encrypted-content.jpg">
@@ -39,6 +39,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -220,7 +221,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">565字</span>
+        <span class="post-count">563字</span>
       </span>
     </span>
 
@@ -240,46 +241,37 @@ var _hmt = _hmt || [];
       
         <p>记一次半吊子逆向工程的…不那么艰难的过程。</p>
 <p>「<a href="/2024/04/08/reverse-cocos2dlua/" title="逆向学习笔记 - Cocos2d Lua逆向提取资源">逆向学习笔记 - Cocos2d Lua逆向提取资源</a> 」难弟篇</p>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>最近刷到一款某道换皮手游，玩法和美术风格都是我喜欢的类型。于是想着做点逆向学习，顺便捞一手美术资源。</p>
-<h3 id="动手"><a href="#动手" class="headerlink" title="动手"></a>动手</h3><p>一个某道换皮手游，解压安装包：</p>
+<h3 id="前言">前言</h3>
+<p>最近刷到一款某道换皮手游，玩法和美术风格都是我喜欢的类型。于是想着做点逆向学习，顺便捞一手美术资源。</p>
+<h3 id="动手">动手</h3>
+<p>一个某道换皮手游，解压安装包：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">├── AndroidManifest.xml</span><br><span class="line">├── assets</span><br><span class="line">│   ├── assets</span><br><span class="line">│   ├── jsb-adapter</span><br><span class="line">│   ├── main.js</span><br><span class="line">│   ├── project.json</span><br><span class="line">│   └── src</span><br><span class="line">├── classes.dex</span><br><span class="line">├── kotlin</span><br><span class="line">│   └── ...</span><br><span class="line">├── lib</span><br><span class="line">│   ├── arm64-v8a</span><br><span class="line">│   ├── armeabi-v7a</span><br><span class="line">│   ├── x86</span><br><span class="line">│   └── x86_64</span><br><span class="line">├── META-INF</span><br><span class="line">│   ├── CERT.RSA</span><br><span class="line">│   ├── CERT.SF</span><br><span class="line">│   ├── com</span><br><span class="line">│   └── MANIFEST.MF</span><br><span class="line">├── org</span><br><span class="line">│   └── cocos2dx</span><br><span class="line">├── res</span><br><span class="line">│   └── ...</span><br><span class="line">└── resources.arsc</span><br></pre></td></tr></table></figure>
-
 <span id="more"></span>
-
-<p>注意到 assets&#x2F;main.js 文件，根据 assets 目录结构猜测是 Cocos Creator 项目。</p>
+<p>注意到 assets/main.js 文件，根据 assets 目录结构猜测是 Cocos Creator 项目。</p>
 <p>打开 lib 目录，下面子目录对应不同 CPU 架构。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">├── arm64-v8a</span><br><span class="line">│   ├── libBugly_Native.so</span><br><span class="line">│   ├── libcocos2djs.so</span><br><span class="line">│   └── libn.so</span><br><span class="line">├── armeabi-v7a</span><br><span class="line">│   ├── libBugly_Native.so</span><br><span class="line">│   ├── libcocos2djs.so</span><br><span class="line">│   └── libn.so</span><br><span class="line">└── x86</span><br><span class="line">    ├── libBugly_Native.so</span><br><span class="line">    ├── libcocos2djs.so</span><br><span class="line">    └── libn.so</span><br></pre></td></tr></table></figure>
-
 <p>通过<code>libcocos2djs.so</code>结合刚才的<code>main.js</code>可以确定是 Cocos Creator 项目。</p>
-<p>res 目录一般是 Android 工程的 Icon、Logo 等文件（忽略）。assets&#x2F;assets 是我们要找的资源目录，随便挑一张图片文件打开是这样的：</p>
+<p>res 目录一般是 Android 工程的 Icon、Logo 等文件（忽略）。assets/assets 是我们要找的资源目录，随便挑一张图片文件打开是这样的：</p>
 <img src="/assets/reverse/xor-encrypted.jpg" width="260" height="250"/>
-
 <p>通过文本编辑器打开内容是这样的：</p>
 <img src="/assets/reverse/xor-encrypted-content.jpg" width="324" height="144"/>
-
 <p>打开多个文件发现头都是<code>VZ7sx4MGw4</code>这几个字符，猜测是 XXTEA 算法（是不是有点耳熟）。</p>
-<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>把 libcocos2djs.so 拖入 IDA 工具静态分析，点击 View-&gt;Open Subviews-&gt;Strings，搜索<code>VZ7sx4MGw4</code>，如果能够搜到就最简单，双击<code>VZ7sx4MGw4</code>进入 Hex View 页面能看到 Key（<code>CeAcMKM6QveeNpymbm2v</code>） 就在附近。</p>
+<h3 id="分析">分析</h3>
+<p>把 <a href="http://libcocos2djs.so">libcocos2djs.so</a> 拖入 IDA 工具静态分析，点击 View-&gt;Open Subviews-&gt;Strings，搜索<code>VZ7sx4MGw4</code>，如果能够搜到就最简单，双击<code>VZ7sx4MGw4</code>进入 Hex View 页面能看到 Key（<code>CeAcMKM6QveeNpymbm2v</code>） 就在附近。</p>
 <img src="/assets/reverse/ida-js-strings-xor.jpg" width="308" height="98"/>
-
 <img src="/assets/reverse/ida-js-xor-key.jpg" width="388" height="93"/>
-
 <p>当然也可以直接搜索<code>xxtea</code>，找到<code>jsb_set_xxtea_key</code>函数，伪代码中的 v8 就是 Key（<code>jiuzhou2025-6-10</code>）。</p>
 <img src="/assets/reverse/ida-fns-xxtea.jpg" width="337" height="148"/>
-
 <img src="/assets/reverse/ida-js-xxtea-fn.jpg" width="370" height="323"/>
-
 <p>等一下，为什么两个 Key 不一样！</p>
 <p>先给结论，<code>CeAcMKM6QveeNpymbm2v</code> 并不是用于 XXTEA 的 Key。</p>
 <img src="/assets/reverse/ida-xor-init.jpg" width="339" height="62"/>
-
 <img src="/assets/reverse/ida-xor-key-ref.jpg" width="413" height="124"/>
-
 <p>顺着这个 Key 的交叉引用一路跟进，可以定位到 <code>getDataFromFile</code> 函数，发现以下这段代码基本确定是 XOR 算法。</p>
 <img src="/assets/reverse/ida-xor-function.jpg" width="353" height="393"/>
-
-<h3 id="解密资源"><a href="#解密资源" class="headerlink" title="解密资源"></a>解密资源</h3><p>确定是 XOR 算法之后，解密逻辑就相当简单了。</p>
+<h3 id="解密资源">解密资源</h3>
+<p>确定是 XOR 算法之后，解密逻辑就相当简单了。</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    sign := <span class="string">&quot;VZ7sx4MGw4&quot;</span></span><br><span class="line">    key := <span class="string">&quot;CeAcMKM6QveeNpymbm2v&quot;</span></span><br><span class="line"></span><br><span class="line">    bs, err := os.ReadFile(<span class="string">&quot;../assets/d7923.png&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="built_in">panic</span>(err)</span><br><span class="line">    &#125;</span><br><span class="line">    nbs := Crypt(bs[<span class="built_in">len</span>(sign):], []<span class="type">byte</span>(key))</span><br><span class="line">    os.WriteFile(<span class="string">&quot;../assets/d7923_dec.png&quot;</span>, nbs, os.ModePerm)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Crypt</span><span class="params">(data []<span class="type">byte</span>, key []<span class="type">byte</span>)</span></span> []<span class="type">byte</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(data) == <span class="number">0</span> || <span class="built_in">len</span>(key) == <span class="number">0</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> data</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    out := <span class="built_in">make</span>([]<span class="type">byte</span>, <span class="built_in">len</span>(data))</span><br><span class="line">    keyLen := <span class="built_in">len</span>(key)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span>(data); i++ &#123;</span><br><span class="line">        out[i] = data[i] ^ key[i%keyLen]</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> out</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
 <img src="/assets/reverse/xor-decrypted.jpg" width="370" height="223"/>
 
       
@@ -549,7 +541,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -561,15 +557,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -593,11 +593,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -642,18 +646,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

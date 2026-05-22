@@ -8,19 +8,19 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Git小知识 - Clone项目速度慢的小技巧 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="碰上github网络抽风的时候，恰巧你又需要拉取github上托管的项目，这个时候看着2kb&#x2F;s的下载速度是不是很抓狂？ 粗暴的解决方式打开ipaddress查询以下三个域名的ip，写到hosts文件中。  github.com github.global.ssl.fastly.net codeload.github.com  进阶的方式">
+  <meta name="description" content="碰上github网络抽风的时候，恰巧你又需要拉取github上托管的项目，这个时候看着2kb&#x2F;s的下载速度是不是很抓狂？ 粗暴的解决方式 打开ipaddress查询以下三个域名的ip，写到hosts文件中。  github.com github.global.ssl.fastly.net codeload.github.com  进阶的方式">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Git小知识 - Clone项目速度慢的小技巧">
 <meta property="og:url" content="http://xupin.im/2020/07/05/git-cloning-slow/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="碰上github网络抽风的时候，恰巧你又需要拉取github上托管的项目，这个时候看着2kb&#x2F;s的下载速度是不是很抓狂？ 粗暴的解决方式打开ipaddress查询以下三个域名的ip，写到hosts文件中。  github.com github.global.ssl.fastly.net codeload.github.com  进阶的方式">
+<meta property="og:description" content="碰上github网络抽风的时候，恰巧你又需要拉取github上托管的项目，这个时候看着2kb&#x2F;s的下载速度是不是很抓狂？ 粗暴的解决方式 打开ipaddress查询以下三个域名的ip，写到hosts文件中。  github.com github.global.ssl.fastly.net codeload.github.com  进阶的方式">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-07-04T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-12-15T04:31:28.035Z">
 <meta property="article:author" content="Mark">
+<meta property="article:tag" content="biscuits">
 <meta property="article:tag" content="develop">
 <meta property="article:tag" content="github">
-<meta property="article:tag" content="biscuits">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
@@ -29,6 +29,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -210,7 +211,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">152字</span>
+        <span class="post-count">147字</span>
       </span>
     </span>
 
@@ -228,22 +229,28 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>碰上github网络抽风的时候，恰巧你又需要拉取github上托管的项目，这个时候看着2kb&#x2F;s的下载速度是不是很抓狂？</p>
-<h3 id="粗暴的解决方式"><a href="#粗暴的解决方式" class="headerlink" title="粗暴的解决方式"></a>粗暴的解决方式</h3><p>打开<a href="https://www.ipaddress.com/">ipaddress</a>查询以下三个域名的ip，写到hosts文件中。</p>
+        <p>碰上github网络抽风的时候，恰巧你又需要拉取github上托管的项目，这个时候看着2kb/s的下载速度是不是很抓狂？</p>
+<h3 id="粗暴的解决方式">粗暴的解决方式</h3>
+<p>打开<a href="https://www.ipaddress.com">ipaddress</a>查询以下三个域名的ip，写到hosts文件中。</p>
 <ul>
-<li>github.com</li>
-<li>github.global.ssl.fastly.net</li>
-<li>codeload.github.com</li>
+<li><a href="http://github.com">github.com</a></li>
+<li><a href="http://github.global.ssl.fastly.net">github.global.ssl.fastly.net</a></li>
+<li><a href="http://codeload.github.com">codeload.github.com</a></li>
 </ul>
-<h3 id="进阶的方式"><a href="#进阶的方式" class="headerlink" title="进阶的方式"></a>进阶的方式</h3><span id="more"></span>
-
-<p>挂代理，哦豁<br>export ALL_PROXY&#x3D;socks5:&#x2F;&#x2F;127.0.0.1:4000</p>
-<h3 id="究极方式"><a href="#究极方式" class="headerlink" title="究极方式"></a>究极方式</h3><ol>
-<li><p>复制你要拉取的项目github地址，比如：<a href="https://github.com/v2ray/v2ray-core">https://github.com/v2ray/v2ray-core</a></p>
+<h3 id="进阶的方式">进阶的方式</h3>
+<span id="more"></span>
+<p>挂代理，哦豁<br>
+export ALL_PROXY=socks5://127.0.0.1:4000</p>
+<h3 id="究极方式">究极方式</h3>
+<ol>
+<li>
+<p>复制你要拉取的项目github地址，比如：<a href="https://github.com/v2ray/v2ray-core">https://github.com/v2ray/v2ray-core</a></p>
 </li>
-<li><p>打开<a href="https://gitee.com/">码云</a>，创建仓库-&gt;从 GitHub &#x2F; GitLab 导入仓库</p>
+<li>
+<p>打开<a href="https://gitee.com">码云</a>，创建仓库-&gt;从 GitHub / GitLab 导入仓库</p>
 </li>
-<li><p>搞定！git clone <a href="https://gitee.com/xupinbest/v2ray-core">https://gitee.com/xupinbest/v2ray-core</a></p>
+<li>
+<p>搞定！git clone <a href="https://gitee.com/xupinbest/v2ray-core">https://gitee.com/xupinbest/v2ray-core</a></p>
 </li>
 </ol>
 
@@ -259,15 +266,15 @@ var _hmt = _hmt || [];
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">biscuits</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">github</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">biscuits</a>
         		</li>
       		
 		</ul>
@@ -518,7 +525,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -530,15 +541,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -562,11 +577,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -611,18 +630,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

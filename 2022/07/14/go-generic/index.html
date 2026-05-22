@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Go学习笔记 - 泛型 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="2009 年 Go 语言首次发布后，支持泛型一直以来呼声最高的功能之一。十年磨一剑！Go 官方终于在 2022 年 03 月 15 日发布 go1.18 stable 正式支持泛型 什么是泛型泛型的核心是把类型参数化，通俗的来说就是允许使用时才指定类型的一种设计。 假设有个两变量相加的需求，且这俩变量可能是 int 或者 string，简单粗暴就直接定义两个函数分别支持 int、string 12">
+  <meta name="description" content="2009 年 Go 语言首次发布后，支持泛型一直以来呼声最高的功能之一。十年磨一剑！Go 官方终于在 2022 年 03 月 15 日发布 go1.18 stable 正式支持泛型 什么是泛型 泛型的核心是把类型参数化，通俗的来说就是允许使用时才指定类型的一种设计。 假设有个两变量相加的需求，且这俩变量可能是 int 或者 string，简单粗暴就直接定义两个函数分别支持 int、string 1">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Go学习笔记 - 泛型">
 <meta property="og:url" content="http://xupin.im/2022/07/14/go-generic/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="2009 年 Go 语言首次发布后，支持泛型一直以来呼声最高的功能之一。十年磨一剑！Go 官方终于在 2022 年 03 月 15 日发布 go1.18 stable 正式支持泛型 什么是泛型泛型的核心是把类型参数化，通俗的来说就是允许使用时才指定类型的一种设计。 假设有个两变量相加的需求，且这俩变量可能是 int 或者 string，简单粗暴就直接定义两个函数分别支持 int、string 12">
+<meta property="og:description" content="2009 年 Go 语言首次发布后，支持泛型一直以来呼声最高的功能之一。十年磨一剑！Go 官方终于在 2022 年 03 月 15 日发布 go1.18 stable 正式支持泛型 什么是泛型 泛型的核心是把类型参数化，通俗的来说就是允许使用时才指定类型的一种设计。 假设有个两变量相加的需求，且这俩变量可能是 int 或者 string，简单粗暴就直接定义两个函数分别支持 int、string 1">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://xupin.im/assets/go-generic/reflect-slow.png">
 <meta property="article:published_time" content="2022-07-13T16:00:00.000Z">
@@ -30,6 +30,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -230,32 +231,31 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>2009 年 Go 语言首次发布后，支持泛型一直以来呼声最高的功能之一。十年磨一剑！Go 官方终于在 2022 年 03 月 15 日发布 go1.18 stable 正式支持<code>泛型</code></p>
-<h3 id="什么是泛型"><a href="#什么是泛型" class="headerlink" title="什么是泛型"></a>什么是泛型</h3><p>泛型的核心是把<code>类型参数化</code>，通俗的来说就是允许使用时才指定类型的一种设计。</p>
+<h3 id="什么是泛型">什么是泛型</h3>
+<p>泛型的核心是把<code>类型参数化</code>，通俗的来说就是允许使用时才指定类型的一种设计。</p>
 <p>假设有个两变量相加的需求，且这俩变量可能是 int 或者 string，简单粗暴就直接定义两个函数分别支持 int、string</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 传统写法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">AddInt</span><span class="params">(arg1, arg2 <span class="type">int</span>)</span></span> <span class="type">int</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> arg1 + arg2</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">AddString</span><span class="params">(arg1, arg2 <span class="type">string</span>)</span></span> <span class="type">string</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> arg1 + arg2</span><br><span class="line">&#125;</span><br><span class="line">AddInt(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">AddString(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>)</span><br></pre></td></tr></table></figure>
-
 <p>那如果使用泛型来定义呢，它的写法大概是这样的</p>
 <span id="more"></span>
-
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 泛型写法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Add</span>[<span class="title">type</span>] <span class="params">(var1, var2)</span></span> <span class="keyword">type</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> var1 + var2</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 使用时再指定数据类型</span></span><br><span class="line">Add[<span class="type">int</span>](<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">Add[<span class="type">string</span>](<span class="string">&quot;a&quot;</span>,<span class="string">&quot;b&quot;</span>)</span><br></pre></td></tr></table></figure>
-
 <p>好处显而易见，至少可以少拷贝一个函数。当然这不足以体现出泛型的优点，毕竟这种通用函数通过<code>interface</code>一样可以实现。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Add</span><span class="params">(var1, var2 <span class="keyword">interface</span>&#123;&#125;)</span></span> <span class="keyword">interface</span>&#123;&#125; &#123;</span><br><span class="line">	r := reflect.TypeOf(var1)</span><br><span class="line">	<span class="keyword">switch</span> r.Kind() &#123;</span><br><span class="line">	<span class="keyword">case</span> reflect.Int:</span><br><span class="line">		<span class="keyword">return</span> var1.(<span class="type">int</span>) + var2.(<span class="type">int</span>)</span><br><span class="line">	<span class="keyword">case</span> reflect.String:</span><br><span class="line">		<span class="keyword">return</span> var1.(<span class="type">string</span>) + var2.(<span class="type">string</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line">Add(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">Add(<span class="string">&quot;a&quot;</span>,<span class="string">&quot;b&quot;</span>)</span><br></pre></td></tr></table></figure>
-
 <p>既然通过<code>interface</code>也可以实现，那么为什么泛型还备受推崇呢？</p>
 <ol>
-<li>便利性 &amp; 效率<blockquote>
+<li>便利性 &amp; 效率
+<blockquote>
 <p>使用 interface 实现则需要使用断言或者反射来处理类型问题，同时 Go 语言中反射性能十分低下（见下图）。</p>
 </blockquote>
 </li>
-<li>安全性<blockquote>
+<li>安全性
+<blockquote>
 <p>interface 极易引发类型异常问题，编译器在编译过程中不能发现类型问题。</p>
 </blockquote>
 </li>
 </ol>
 <img src="/assets/go-generic/reflect-slow.png" width="400" height="300"/>
-
-<h3 id="Go-的泛型"><a href="#Go-的泛型" class="headerlink" title="Go 的泛型"></a>Go 的泛型</h3><p>在 Go 语言中如何使用泛型，先了解一下泛型的 3 个概念：</p>
+<h3 id="Go-的泛型">Go 的泛型</h3>
+<p>在 Go 语言中如何使用泛型，先了解一下泛型的 3 个概念：</p>
 <ol>
 <li>泛型参数</li>
 <li>泛型参数类型约束</li>
@@ -263,32 +263,30 @@ var _hmt = _hmt || [];
 </ol>
 <p>Go 泛型的代码风格和其他语言基本类似，比如定义一个只支持 int 和 string 两值相加的泛型函数：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Add</span>[<span class="title">T</span> <span class="title">int</span> | <span class="title">string</span>]<span class="params">(var1, var2 T)</span></span> T &#123;</span><br><span class="line">	<span class="keyword">return</span> var1 + var2</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>以上函数，</p>
 <ul>
-<li><p>T 泛型参数，可以是任意字母且不区分大小写（但通常使用大写字母）。</p>
+<li>
+<p>T 泛型参数，可以是任意字母且不区分大小写（但通常使用大写字母）。</p>
 </li>
-<li><p>int | string 泛型参数类型约束，用于声明和约束泛型参数 T 支持的数据类型。比如</p>
+<li>
+<p>int | string 泛型参数类型约束，用于声明和约束泛型参数 T 支持的数据类型。比如</p>
 </li>
 </ul>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Add[T <span class="type">float64</span>] <span class="comment">// 只支持float64类型</span></span><br><span class="line">Add[T any] <span class="comment">// 支持任何类型，any等价于interface&#123;&#125;</span></span><br><span class="line">Add[T comparable] <span class="comment">// golang新增的内置接口，任何可进行比较的类型（!=、==、&amp;&amp;、||）</span></span><br><span class="line">Add[T ~<span class="type">int</span>] <span class="comment">// 任何底层类型为int的类型，~是新增的操作符。</span></span><br></pre></td></tr></table></figure>
-
 <ul>
 <li>[] 中括号内是泛型参数列表，支持任意个泛型参数，使用逗号分隔。</li>
 </ul>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Add[T <span class="type">int64</span>, T2 <span class="type">float64</span>](var1, var2 T, var3 T2)</span><br></pre></td></tr></table></figure>
-
 <p>如果泛型仅仅能在函数上使用好像有点“鸡肋”。它还可以这样去使用，</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 泛型结构体</span></span><br><span class="line"><span class="keyword">type</span> Resp[T any] <span class="keyword">struct</span> &#123;</span><br><span class="line">	Code <span class="type">int</span></span><br><span class="line">	Msg  <span class="type">string</span></span><br><span class="line">	Data T</span><br><span class="line">&#125;</span><br><span class="line">resp := &amp;Resp[<span class="type">string</span>]&#123;</span><br><span class="line">    Code: <span class="number">200</span>,</span><br><span class="line">    Msg:  <span class="string">&quot;OK&quot;</span>,</span><br><span class="line">    Data: <span class="string">&quot;&quot;</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 泛型管道</span></span><br><span class="line"><span class="keyword">type</span> MyChan[T <span class="type">int</span> | <span class="type">bool</span>] <span class="keyword">chan</span> T</span><br><span class="line">ch := <span class="built_in">make</span>(MyChan[<span class="type">bool</span>], <span class="number">1</span>)</span><br><span class="line">ch &lt;- <span class="literal">true</span></span><br><span class="line">&lt;-ch</span><br><span class="line"></span><br><span class="line"><span class="comment">// 泛型Map</span></span><br><span class="line"><span class="keyword">type</span> MyMap[T <span class="type">int</span> | <span class="type">string</span>, T1 any] <span class="keyword">map</span>[T]T1</span><br><span class="line">m := MyMap[<span class="type">string</span>, <span class="type">string</span>]&#123;</span><br><span class="line">    <span class="string">&quot;key&quot;</span>: <span class="string">&quot;val&quot;</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 泛型接口</span></span><br><span class="line"><span class="keyword">type</span> Personer[T any] <span class="keyword">interface</span> &#123;</span><br><span class="line">	Say(age T)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Male <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(g *Male)</span></span> Say(age <span class="type">int</span>) &#123;</span><br><span class="line">	fmt.Println(age)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> m Personer[<span class="type">int</span>] = &amp;Male&#123;&#125;</span><br><span class="line">m.Say(<span class="number">12</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Female <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(f *Female)</span></span> Say(age <span class="type">string</span>) &#123;</span><br><span class="line">	fmt.Println(age)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> f Personer[<span class="type">string</span>] = &amp;Female&#123;&#125;</span><br><span class="line">f.Say(<span class="string">&quot;secret&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 泛型类型</span></span><br><span class="line"><span class="keyword">type</span> MyType <span class="keyword">interface</span> &#123;</span><br><span class="line">	<span class="type">int</span> | <span class="type">string</span> | <span class="type">float64</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Add</span>[<span class="title">T</span> <span class="title">MyType</span>]<span class="params">(var1, var2 T)</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> var1 + var2</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>以上只是简单列举，还支持一些列“套娃”行为。值的注意的是，Go 新增的操作符<code>~</code>。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> MyType <span class="keyword">interface</span> &#123;</span><br><span class="line">	~<span class="type">int</span> | <span class="type">string</span> | <span class="type">float64</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">type</span> MyInt <span class="type">int</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Add</span>[<span class="title">T</span> <span class="title">MyType</span>]<span class="params">(var1, var2 T)</span></span> T &#123;</span><br><span class="line">	<span class="keyword">return</span> var1 + var2</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> a, b MyInt = <span class="number">1</span>, <span class="number">2</span></span><br><span class="line">Add(a, b)</span><br></pre></td></tr></table></figure>
-
 <p>使用操作符~，意味不仅支持该操作符后的基本类型，同时还支持任意底层类型是该类型的数据。</p>
 <blockquote>
 <p>以上内容参考来源：<a href="https://tip.golang.org/doc/go1.18">https://tip.golang.org/doc/go1.18</a></p>
 </blockquote>
-<h3 id="什么时候使用泛型"><a href="#什么时候使用泛型" class="headerlink" title="什么时候使用泛型"></a>什么时候使用泛型</h3><p>当你要为不同数据类型做着同样的处理逻辑时，可以考虑使用泛型。泛型是把双刃剑，既可以提高编码效率、提升代码美学，同样也可以让代码可读性变的很差。</p>
+<h3 id="什么时候使用泛型">什么时候使用泛型</h3>
+<p>当你要为不同数据类型做着同样的处理逻辑时，可以考虑使用泛型。泛型是把双刃剑，既可以提高编码效率、提升代码美学，同样也可以让代码可读性变的很差。</p>
 
       
 
@@ -557,7 +555,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -569,15 +571,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -601,11 +607,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -650,18 +660,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

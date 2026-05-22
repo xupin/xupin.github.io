@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>游戏开发笔记 - NPC随机名称 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="前言因为之前设计的系统很粗糙，任务看起来很单调，比如 NPC 名称都是一成不变的，所以进行一些小改动。 思路思路很简单，预设字典库随机分配名称。 名字组成字典 12345&#123;	&quot;男弟子&quot;: [&quot;弟子姓&quot;, &quot;弟子男名&quot;],	&quot;女弟子&quot;: [&quot;弟子姓&quot;, &quot;弟子女名&quot;],">
+  <meta name="description" content="前言 因为之前设计的系统很粗糙，任务看起来很单调，比如 NPC 名称都是一成不变的，所以进行一些小改动。 思路 思路很简单，预设字典库随机分配名称。 名字组成字典 12345&#123;	&quot;男弟子&quot;: [&quot;弟子姓&quot;, &quot;弟子男名&quot;],	&quot;女弟子&quot;: [&quot;弟子姓&quot;, &quot;弟子女名&quot;]">
 <meta property="og:type" content="article">
 <meta property="og:title" content="游戏开发笔记 - NPC随机名称">
 <meta property="og:url" content="http://xupin.im/2024/04/09/game-task-opt/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="前言因为之前设计的系统很粗糙，任务看起来很单调，比如 NPC 名称都是一成不变的，所以进行一些小改动。 思路思路很简单，预设字典库随机分配名称。 名字组成字典 12345&#123;	&quot;男弟子&quot;: [&quot;弟子姓&quot;, &quot;弟子男名&quot;],	&quot;女弟子&quot;: [&quot;弟子姓&quot;, &quot;弟子女名&quot;],">
+<meta property="og:description" content="前言 因为之前设计的系统很粗糙，任务看起来很单调，比如 NPC 名称都是一成不变的，所以进行一些小改动。 思路 思路很简单，预设字典库随机分配名称。 名字组成字典 12345&#123;	&quot;男弟子&quot;: [&quot;弟子姓&quot;, &quot;弟子男名&quot;],	&quot;女弟子&quot;: [&quot;弟子姓&quot;, &quot;弟子女名&quot;]">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-04-08T16:00:00.000Z">
 <meta property="article:modified_time" content="2024-05-10T08:14:58.295Z">
@@ -28,6 +28,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -227,19 +228,18 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>因为之前设计的系统很粗糙，任务看起来很单调，比如 NPC 名称都是一成不变的，所以进行一些小改动。</p>
-<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>思路很简单，预设字典库随机分配名称。</p>
+        <h3 id="前言">前言</h3>
+<p>因为之前设计的系统很粗糙，任务看起来很单调，比如 NPC 名称都是一成不变的，所以进行一些小改动。</p>
+<h3 id="思路">思路</h3>
+<p>思路很简单，预设字典库随机分配名称。</p>
 <p>名字组成字典</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">	<span class="attr">&quot;男弟子&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;弟子姓&quot;</span><span class="punctuation">,</span> <span class="string">&quot;弟子男名&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;女弟子&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;弟子姓&quot;</span><span class="punctuation">,</span> <span class="string">&quot;弟子女名&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;弟子&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;弟子男名&quot;</span><span class="punctuation">,</span> <span class="string">&quot;弟子姓&quot;</span><span class="punctuation">,</span> <span class="string">&quot;弟子女名&quot;</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-
 <span id="more"></span>
-
 <p>名字字典</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">	<span class="attr">&quot;弟子姓&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;首席&quot;</span><span class="punctuation">,</span> <span class="string">&quot;牛逼&quot;</span><span class="punctuation">,</span> <span class="string">&quot;樊&quot;</span><span class="punctuation">,</span> <span class="string">&quot;胡&quot;</span><span class="punctuation">,</span> <span class="string">&quot;凌&quot;</span><span class="punctuation">,</span> <span class="string">&quot;霍&quot;</span><span class="punctuation">,</span> <span class="string">&quot;万&quot;</span><span class="punctuation">,</span> <span class="string">&quot;柯&quot;</span><span class="punctuation">,</span> <span class="string">&quot;应&quot;</span><span class="punctuation">,</span> <span class="string">&quot;宗&quot;</span><span class="punctuation">,</span> <span class="string">&quot;单&quot;</span><span class="punctuation">,</span> <span class="string">&quot;陈&quot;</span><span class="punctuation">,</span> <span class="string">&quot;成&quot;</span><span class="punctuation">,</span> <span class="string">&quot;甄&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;弟子女名&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;前端&quot;</span><span class="punctuation">,</span> <span class="string">&quot;测试&quot;</span><span class="punctuation">,</span> <span class="string">&quot;产品&quot;</span><span class="punctuation">,</span> <span class="string">&quot;梅梅&quot;</span><span class="punctuation">,</span> <span class="string">&quot;清时&quot;</span><span class="punctuation">,</span> <span class="string">&quot;嫣然&quot;</span><span class="punctuation">,</span> <span class="string">&quot;碧彤&quot;</span><span class="punctuation">,</span> <span class="string">&quot;之桃&quot;</span><span class="punctuation">,</span> <span class="string">&quot;若兰&quot;</span><span class="punctuation">,</span> <span class="string">&quot;旧雨&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;弟子男名&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;来虎&quot;</span><span class="punctuation">,</span> <span class="string">&quot;家顺&quot;</span><span class="punctuation">,</span> <span class="string">&quot;道哥&quot;</span><span class="punctuation">,</span> <span class="string">&quot;长栓&quot;</span><span class="punctuation">,</span> <span class="string">&quot;刀疤&quot;</span><span class="punctuation">,</span> <span class="string">&quot;麻子&quot;</span><span class="punctuation">,</span> <span class="string">&quot;立山&quot;</span><span class="punctuation">,</span> <span class="string">&quot;耀祖&quot;</span><span class="punctuation">,</span> <span class="string">&quot;来福&quot;</span><span class="punctuation">,</span> <span class="string">&quot;春喜&quot;</span><span class="punctuation">,</span> <span class="string">&quot;铁柱&quot;</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>实现起来过于简单，直接上代码</p>
+<h3 id="实现">实现</h3>
+<p>实现起来过于简单，直接上代码</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> randomNameMgr <span class="keyword">struct</span> &#123;</span><br><span class="line">  names <span class="keyword">map</span>[<span class="type">string</span>][]<span class="type">string</span></span><br><span class="line">  rand  *rand.Rand</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> (</span><br><span class="line">  once          sync.Once</span><br><span class="line">  RandomNameMgr *randomNameMgr</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Load</span><span class="params">()</span></span> &#123;</span><br><span class="line">  once.Do(<span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">    mgr := &amp;randomNameMgr&#123;</span><br><span class="line">      names: <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="type">string</span>][]<span class="type">string</span>, <span class="number">0</span>),</span><br><span class="line">      rand:  rand.New(rand.NewSource(time.Now().Unix())),</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">var</span> (</span><br><span class="line">      types, parts <span class="keyword">map</span>[<span class="type">string</span>][]<span class="type">string</span></span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">if</span> err := parseJSONFile(<span class="string">&quot;random_types&quot;</span>, &amp;types); err != <span class="literal">nil</span> &#123;</span><br><span class="line">      <span class="built_in">panic</span>(err)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> err := parseJSONFile(<span class="string">&quot;random_parts&quot;</span>, &amp;parts); err != <span class="literal">nil</span> &#123;</span><br><span class="line">      <span class="built_in">panic</span>(err)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> t, partKs := <span class="keyword">range</span> types &#123;</span><br><span class="line">      <span class="keyword">var</span> compose [][]<span class="type">string</span></span><br><span class="line">      <span class="keyword">for</span> _, partK := <span class="keyword">range</span> partKs &#123;</span><br><span class="line">        part, ok := parts[partK]</span><br><span class="line">        <span class="keyword">if</span> !ok &#123;</span><br><span class="line">          <span class="keyword">continue</span></span><br><span class="line">        &#125;</span><br><span class="line">        compose = <span class="built_in">append</span>(compose, part)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 排列组合</span></span><br><span class="line">      list := utils.Product(compose)</span><br><span class="line">      <span class="keyword">for</span> _, v := <span class="keyword">range</span> list &#123;</span><br><span class="line">        mgr.names[t] = <span class="built_in">append</span>(mgr.names[t], strings.Join(v, <span class="string">&quot;&quot;</span>))</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    RandomNameMgr = mgr</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *randomNameMgr)</span></span> GetRandomName(t <span class="type">string</span>) <span class="type">string</span> &#123;</span><br><span class="line">  names, ok := r.names[t]</span><br><span class="line">  <span class="keyword">if</span> !ok &#123;</span><br><span class="line">    <span class="keyword">return</span> t</span><br><span class="line">  &#125;</span><br><span class="line">  l := <span class="built_in">len</span>(names)</span><br><span class="line">  <span class="keyword">if</span> l == <span class="number">0</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> t</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> names[r.rand.Intn(l)]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">parseJSONFile</span><span class="params">(file <span class="type">string</span>, v any)</span></span> (err <span class="type">error</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> !strings.Contains(file, <span class="string">&quot;.json&quot;</span>) &#123;</span><br><span class="line">    file += <span class="string">&quot;.json&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">  bytes, err := os.ReadFile(<span class="string">&quot;./config/data/&quot;</span> + file)</span><br><span class="line">  <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line">  err = json.Unmarshal(bytes, &amp;v)</span><br><span class="line">  <span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  config.Load()</span><br><span class="line"></span><br><span class="line">  fmt.Println(time.Now().Unix())</span><br><span class="line">  <span class="keyword">for</span> i := <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++ &#123;</span><br><span class="line">    name := config.RandomNameMgr.GetRandomName(<span class="string">&quot;女弟子&quot;</span>)</span><br><span class="line">    fmt.Println(name)</span><br><span class="line">    <span class="comment">// 首席前端</span></span><br><span class="line">    <span class="comment">// 牛逼测试</span></span><br><span class="line">    <span class="comment">// 席嫣然</span></span><br><span class="line">    <span class="comment">// 甄梅梅</span></span><br><span class="line">    <span class="comment">// 首席产品</span></span><br><span class="line">  &#125;</span><br><span class="line">  fmt.Println(time.Now().Unix())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
       
@@ -509,7 +509,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -521,15 +525,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -553,11 +561,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -602,18 +614,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

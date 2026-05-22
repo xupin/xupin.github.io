@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>数据结构与算法 - Tire Tree | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Tire 树又称单词查找树、前缀树，是一种哈希树变种的树形结构。核心思想是空间换时间，利用字符串的公共前缀来提高查询效率，常常被应用字符统计、检索等场景，比如搜索引擎的词频统计和提示等   原理前缀树的存储原理很简单，即合并字符串相同的字符前缀进行存储。 比如，存储dog、cat、doing三个字符串的树结构：">
+  <meta name="description" content="Tire 树又称单词查找树、前缀树，是一种哈希树变种的树形结构。核心思想是空间换时间，利用字符串的公共前缀来提高查询效率，常常被应用字符统计、检索等场景，比如搜索引擎的词频统计和提示等  原理 前缀树的存储原理很简单，即合并字符串相同的字符前缀进行存储。 比如，存储dog、cat、doing三个字符串的树结构：">
 <meta property="og:type" content="article">
 <meta property="og:title" content="数据结构与算法 - Tire Tree">
 <meta property="og:url" content="http://xupin.im/2022/12/11/ds-algos-tire/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="Tire 树又称单词查找树、前缀树，是一种哈希树变种的树形结构。核心思想是空间换时间，利用字符串的公共前缀来提高查询效率，常常被应用字符统计、检索等场景，比如搜索引擎的词频统计和提示等   原理前缀树的存储原理很简单，即合并字符串相同的字符前缀进行存储。 比如，存储dog、cat、doing三个字符串的树结构：">
+<meta property="og:description" content="Tire 树又称单词查找树、前缀树，是一种哈希树变种的树形结构。核心思想是空间换时间，利用字符串的公共前缀来提高查询效率，常常被应用字符统计、检索等场景，比如搜索引擎的词频统计和提示等  原理 前缀树的存储原理很简单，即合并字符串相同的字符前缀进行存储。 比如，存储dog、cat、doing三个字符串的树结构：">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://xupin.im/assets/tire/suggestion.jpeg">
 <meta property="og:image" content="http://xupin.im/assets/tire/tire.png">
@@ -32,6 +32,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -233,13 +234,11 @@ var _hmt = _hmt || [];
       
         <p>Tire 树又称单词查找树、前缀树，是一种哈希树变种的树形结构。核心思想是空间换时间，利用字符串的公共前缀来提高查询效率，常常被应用字符统计、检索等场景，比如搜索引擎的词频统计和提示等</p>
 <img src="/assets/tire/suggestion.jpeg" width="400" height="200"/>
-
-<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>前缀树的存储原理很简单，即合并字符串相同的字符前缀进行存储。</p>
+<h3 id="原理">原理</h3>
+<p>前缀树的存储原理很简单，即合并字符串相同的字符前缀进行存储。</p>
 <p>比如，存储<code>dog</code>、<code>cat</code>、<code>doing</code>三个字符串的树结构：</p>
 <span id="more"></span>
-
 <img src="/assets/tire/tire.png" width="150" height="250">
-
 <p>需要注意：<code>前缀树不是二叉树，而是多叉树</code>。</p>
 <p>前缀树的特征：</p>
 <ol>
@@ -248,7 +247,8 @@ var _hmt = _hmt || [];
 <li>根节点到任意子节点是为存储的字符串。</li>
 <li>写入和查询操作的时间复杂度均为 O(N)。</li>
 </ol>
-<h3 id="如何实现"><a href="#如何实现" class="headerlink" title="如何实现"></a>如何实现</h3><p>一般可以通过以下两种方式来实现，</p>
+<h3 id="如何实现">如何实现</h3>
+<p>一般可以通过以下两种方式来实现，</p>
 <ol>
 <li>单向链表（本文采用方式）</li>
 <li>二维数组</li>
@@ -257,22 +257,19 @@ var _hmt = _hmt || [];
 <li>存储</li>
 </ul>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义根结点</span></span><br><span class="line"><span class="keyword">type</span> Tire <span class="keyword">struct</span> &#123;</span><br><span class="line">	Root *Node</span><br><span class="line">	Size <span class="type">int</span> <span class="comment">// 总共存储多少个字符</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义存储字符的节点</span></span><br><span class="line"><span class="keyword">type</span> Node <span class="keyword">struct</span> &#123;</span><br><span class="line">	Char   <span class="type">string</span>         <span class="comment">// 当前节点存储的字符</span></span><br><span class="line">	Count  <span class="type">int</span>            <span class="comment">// 出现过多少次</span></span><br><span class="line">	IsWord <span class="type">bool</span>           <span class="comment">// 是否是完整的单词（字符串结尾）</span></span><br><span class="line">	Next   <span class="keyword">map</span>[<span class="type">rune</span>]*Node <span class="comment">// 存储下一个字符的节点</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>从结构可以看出，其实前缀树就是把字符串按字符顺序存储。</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Tire)</span></span> Append(s <span class="type">string</span>) &#123;</span><br><span class="line">	<span class="keyword">if</span> r.Find(s, <span class="literal">true</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	node := r.Root</span><br><span class="line">	<span class="keyword">for</span> _, c := <span class="keyword">range</span> s &#123;</span><br><span class="line">		v, ok := node.Next[c] <span class="comment">// 是否存在该字符，如果不存在则进行存储，反之取下一个字符</span></span><br><span class="line">		<span class="keyword">if</span> !ok &#123;</span><br><span class="line">			v = &amp;Node&#123;</span><br><span class="line">				Char:   <span class="type">string</span>(c),</span><br><span class="line">				IsWord: <span class="literal">false</span>,</span><br><span class="line">				Count:  <span class="number">1</span>,</span><br><span class="line">				Next:   <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="type">rune</span>]*Node, <span class="number">0</span>),</span><br><span class="line">			&#125;</span><br><span class="line">			node.Next[c] = v</span><br><span class="line">			r.Size += <span class="number">1</span></span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			v.Count += <span class="number">1</span></span><br><span class="line">		&#125;</span><br><span class="line">		node = v</span><br><span class="line">	&#125;</span><br><span class="line">	node.IsWord = <span class="literal">true</span> <span class="comment">// 最后一个字符把IsWord标记为true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <ul>
 <li>查找</li>
 </ul>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Tire)</span></span> Find(s <span class="type">string</span>, isFullMatch <span class="type">bool</span>) <span class="type">bool</span> &#123;</span><br><span class="line">	node := r.Root</span><br><span class="line">	<span class="keyword">for</span> _, c := <span class="keyword">range</span> s &#123;</span><br><span class="line">		v, ok := node.Next[c] <span class="comment">// 是否存在该字符，如果不存在则直接返回false，反之继续查找下一个字符</span></span><br><span class="line">		<span class="keyword">if</span> !ok &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">		&#125;</span><br><span class="line">		node = v</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> (!isFullMatch &amp;&amp; !node.IsWord) || node.IsWord</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <ul>
 <li>删除</li>
 </ul>
 <p>删除是前缀树中稍复杂一点的操作，如果字符被其他字符串使用，不能直接删除。</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Tire)</span></span> Remove(s <span class="type">string</span>) <span class="type">bool</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> !r.Find(s, <span class="literal">true</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">	&#125;</span><br><span class="line">	node := r.Root</span><br><span class="line">	prev := r.Root</span><br><span class="line">	<span class="keyword">for</span> i, c := <span class="keyword">range</span> s &#123;</span><br><span class="line">		node = node.Next[c]</span><br><span class="line">		node.Count -= <span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> node.Count == <span class="number">0</span> &#123;</span><br><span class="line">			r.Size -= (<span class="built_in">len</span>(s) - i)</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		prev = node</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> node.Count == <span class="number">0</span> &#123;</span><br><span class="line">		<span class="built_in">delete</span>(prev.Next, <span class="type">rune</span>(node.Char[<span class="number">0</span>]))</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		node.IsWord = <span class="literal">false</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>附上完整代码：<a href="https://github.com/xupin/tire">tire</a></p>
+<h3 id="最后">最后</h3>
+<p>附上完整代码：<a href="https://github.com/xupin/tire">tire</a></p>
 
       
 
@@ -545,7 +542,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -557,15 +558,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -589,11 +594,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -638,18 +647,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

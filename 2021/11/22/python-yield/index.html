@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Python学习笔记 - yield | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="在程序中除了迭代器还有生成器均是可迭代对象，迭代器是通过移动游标来遍历数据，那生成器呢 生成器生成器创建方式（python）  (表达式)123456generator &#x3D; (i for i in [1, 2, 3]) &#x2F;&#x2F; 这里有区别于 [i for i in [1, 2, 3]]print(generator)  # &lt;generator object &lt;genexpr&gt; a">
+  <meta name="description" content="在程序中除了迭代器还有生成器均是可迭代对象，迭代器是通过移动游标来遍历数据，那生成器呢 生成器 生成器创建方式（python）  (表达式)  123456generator &#x3D; (i for i in [1, 2, 3]) &#x2F;&#x2F; 这里有区别于 [i for i in [1, 2, 3]]print(generator)  # &lt;generator object &lt;genexpr&amp;gt">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Python学习笔记 - yield">
 <meta property="og:url" content="http://xupin.im/2021/11/22/python-yield/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="在程序中除了迭代器还有生成器均是可迭代对象，迭代器是通过移动游标来遍历数据，那生成器呢 生成器生成器创建方式（python）  (表达式)123456generator &#x3D; (i for i in [1, 2, 3]) &#x2F;&#x2F; 这里有区别于 [i for i in [1, 2, 3]]print(generator)  # &lt;generator object &lt;genexpr&gt; a">
+<meta property="og:description" content="在程序中除了迭代器还有生成器均是可迭代对象，迭代器是通过移动游标来遍历数据，那生成器呢 生成器 生成器创建方式（python）  (表达式)  123456generator &#x3D; (i for i in [1, 2, 3]) &#x2F;&#x2F; 这里有区别于 [i for i in [1, 2, 3]]print(generator)  # &lt;generator object &lt;genexpr&amp;gt">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-11-21T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-07-15T02:59:17.755Z">
@@ -28,6 +28,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -209,7 +210,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">609字</span>
+        <span class="post-count">610字</span>
       </span>
     </span>
 
@@ -228,34 +229,37 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>在程序中除了迭代器还有生成器均是可迭代对象，迭代器是通过移动游标来遍历数据，那生成器呢</p>
-<h3 id="生成器"><a href="#生成器" class="headerlink" title="生成器"></a>生成器</h3><p>生成器创建方式（python）</p>
+<h3 id="生成器">生成器</h3>
+<p>生成器创建方式（python）</p>
 <ul>
-<li>(表达式)<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">generator = (i <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]) // 这里有区别于 [i <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]]</span><br><span class="line"><span class="built_in">print</span>(generator)  <span class="comment"># &lt;generator object &lt;genexpr&gt; at 0x10c312870&gt;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(generator))  <span class="comment"># 1</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(generator))  <span class="comment"># 2</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(generator))  <span class="comment"># 3</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(generator))  <span class="comment"># raise StopIteration</span></span><br></pre></td></tr></table></figure></li>
+<li>(表达式)</li>
 </ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">generator = (i <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]) // 这里有区别于 [i <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]]</span><br><span class="line"><span class="built_in">print</span>(generator)  <span class="comment"># &lt;generator object &lt;genexpr&gt; at 0x10c312870&gt;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(generator))  <span class="comment"># 1</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(generator))  <span class="comment"># 2</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(generator))  <span class="comment"># 3</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(generator))  <span class="comment"># raise StopIteration</span></span><br></pre></td></tr></table></figure>
 <span id="more"></span>
-
 <ul>
-<li>yield<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">getGenerator</span>():</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]: </span><br><span class="line">        <span class="keyword">yield</span> i</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;done&quot;</span>)</span><br><span class="line"></span><br><span class="line">generator = getGenerator()</span><br><span class="line"><span class="built_in">print</span>(generator)  <span class="comment"># &lt;generator object getGenerator at 0x10c3128c0&gt;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(generator))  <span class="comment"># 1</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(generator))  <span class="comment"># 2</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(generator))  <span class="comment"># 3</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(generator))  <span class="comment"># done &amp; raise StopIteration</span></span><br></pre></td></tr></table></figure></li>
+<li>yield</li>
 </ul>
-<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>当<code>yield</code>出现在函数中（yield只能定义在函数中），那么调用时不会直接运行函数而是返回一个生成器对象，生成器也是一个特殊的迭代器（实现了迭代器协议的对象）。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">getGenerator</span>():</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]: </span><br><span class="line">        <span class="keyword">yield</span> i</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;done&quot;</span>)</span><br><span class="line"></span><br><span class="line">generator = getGenerator()</span><br><span class="line"><span class="built_in">print</span>(generator)  <span class="comment"># &lt;generator object getGenerator at 0x10c3128c0&gt;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(generator))  <span class="comment"># 1</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(generator))  <span class="comment"># 2</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(generator))  <span class="comment"># 3</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(generator))  <span class="comment"># done &amp; raise StopIteration</span></span><br></pre></td></tr></table></figure>
+<h3 id="原理">原理</h3>
+<p>当<code>yield</code>出现在函数中（yield只能定义在函数中），那么调用时不会直接运行函数而是返回一个生成器对象，生成器也是一个特殊的迭代器（实现了迭代器协议的对象）。</p>
 <ul>
 <li>第一次调用<code>next()</code>函数，遇见<code>yield</code>停下返回yield后面的内容</li>
-<li>再次调用<code>next()</code>函数，从上次yield语句处恢复，如果还存在<code>yield</code>则正常执行，否则函数体执行完毕抛出<code>StopIteration</code>异常<blockquote>
+<li>再次调用<code>next()</code>函数，从上次yield语句处恢复，如果还存在<code>yield</code>则正常执行，否则函数体执行完毕抛出<code>StopIteration</code>异常</li>
+</ul>
+<blockquote>
 <p>通俗的来说：yield相当于return，但yield会记住这个返回位置，再次执行会从这个位置开始。</p>
 </blockquote>
-</li>
-</ul>
 <p>生成器中<code>send()</code>是和<code>next()</code>一样能让生成器恢复执行的函数，不同的是<code>send(arg)</code>函数可以传递参数</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">getGenerator</span>():</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;before: &quot;</span>, i)</span><br><span class="line">        t = <span class="keyword">yield</span> i</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;after: &quot;</span>, i, t)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">generator = getGenerator()</span><br><span class="line"><span class="built_in">print</span>(generator)  <span class="comment"># &lt;generator object getGenerator at 0x10c3128c0&gt;</span></span><br><span class="line">generator.send(<span class="literal">None</span>)  <span class="comment"># before:  1</span></span><br><span class="line"><span class="built_in">next</span>(generator)  <span class="comment"># after:  1 None &amp; before:  2</span></span><br><span class="line">generator.send(<span class="number">22</span>)  <span class="comment"># after:  2 22 &amp; before:  3</span></span><br><span class="line">generator.send(<span class="number">33</span>)  <span class="comment"># after:  3 33 &amp; raise StopIteration</span></span><br></pre></td></tr></table></figure>
-
 <p>注意第一次调用生成器不可以直接传递非None参数，因为yield还未准备好（无返回值），可以<code>generator.send(None)</code>或<code>next(generator)</code>。具体可以参考python源码:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">const char *msg = <span class="string">&quot;can&#x27;t send non-None value to a &quot;</span></span><br><span class="line">                              <span class="string">&quot;just-started generator&quot;</span>;</span><br></pre></td></tr></table></figure>
 <p><a href="https://github.com/python/cpython/blob/3.9/Objects/genobject.c#L181">https://github.com/python/cpython/blob/3.9/Objects/genobject.c#L181</a></p>
-<h3 id="迭代协议"><a href="#迭代协议" class="headerlink" title="迭代协议"></a>迭代协议</h3><p>什么是可迭代协议？</p>
+<h3 id="迭代协议">迭代协议</h3>
+<p>什么是可迭代协议？</p>
 <blockquote>
 <p>当处理迭代时首先调用<code>可迭代对象.__iter__()</code>，返回迭代器。然后通过<code>迭代器.__next__()</code>获取迭代器的元素，直至抛出<code>StopIteration</code>。</p>
 </blockquote>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">CustomGenerator</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, data</span>):</span><br><span class="line">        self.data = data</span><br><span class="line">        self.index = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__iter__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;look at me&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span> self</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__next__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">if</span> self.index &lt; <span class="built_in">len</span>(self.data):</span><br><span class="line">            val = self.data[self.index]</span><br><span class="line">            self.index += <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> val</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">raise</span> StopIteration</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">generator = CustomGenerator([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])</span><br><span class="line"><span class="built_in">print</span>(generator)  <span class="comment"># &lt;__main__.CustomGenerator object at 0x1047161f0&gt;</span></span><br><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> generator:</span><br><span class="line">    <span class="built_in">print</span>(x)</span><br><span class="line"><span class="comment"># look at me</span></span><br><span class="line"><span class="comment"># 1</span></span><br><span class="line"><span class="comment"># 2</span></span><br><span class="line"><span class="comment"># 3</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(generator))  <span class="comment"># raise StopIteration</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">CustomGenerator</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, data</span>):</span><br><span class="line">        <span class="variable language_">self</span>.data = data</span><br><span class="line">        <span class="variable language_">self</span>.index = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__iter__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;look at me&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__next__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.index &lt; <span class="built_in">len</span>(<span class="variable language_">self</span>.data):</span><br><span class="line">            val = <span class="variable language_">self</span>.data[<span class="variable language_">self</span>.index]</span><br><span class="line">            <span class="variable language_">self</span>.index += <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> val</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">raise</span> StopIteration</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">generator = CustomGenerator([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])</span><br><span class="line"><span class="built_in">print</span>(generator)  <span class="comment"># &lt;__main__.CustomGenerator object at 0x1047161f0&gt;</span></span><br><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> generator:</span><br><span class="line">    <span class="built_in">print</span>(x)</span><br><span class="line"><span class="comment"># look at me</span></span><br><span class="line"><span class="comment"># 1</span></span><br><span class="line"><span class="comment"># 2</span></span><br><span class="line"><span class="comment"># 3</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(generator))  <span class="comment"># raise StopIteration</span></span><br></pre></td></tr></table></figure>
       
 
       
@@ -523,7 +527,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -535,15 +543,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -567,11 +579,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -616,18 +632,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

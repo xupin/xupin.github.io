@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>逆向学习笔记 - Cocos2d Lua逆向提取资源 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="记一次半吊子逆向工程的…艰难过程 前言在搞小游戏的过程中需要一些美术资源，从网上购买了一些不是很满意，所以准备对几个精品同类手游下手，捞一手美术资源。 下手一个某大话私服手游，解压安装包： 123456789101112131415├── AndroidManifest.xml├── META-INF│   ├── MANIFEST.MF│   ├── SAMPLE.RSA│   └── SAMP">
+  <meta name="description" content="记一次半吊子逆向工程的…艰难过程 前言 在搞小游戏的过程中需要一些美术资源，从网上购买了一些不是很满意，所以准备对几个精品同类手游下手，捞一手美术资源。 下手 一个某大话私服手游，解压安装包： 123456789101112131415├── AndroidManifest.xml├── META-INF│   ├── MANIFEST.MF│   ├── SAMPLE.RSA│   └── SA">
 <meta property="og:type" content="article">
 <meta property="og:title" content="逆向学习笔记 - Cocos2d Lua逆向提取资源">
 <meta property="og:url" content="http://xupin.im/2024/04/08/reverse-cocos2dlua/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="记一次半吊子逆向工程的…艰难过程 前言在搞小游戏的过程中需要一些美术资源，从网上购买了一些不是很满意，所以准备对几个精品同类手游下手，捞一手美术资源。 下手一个某大话私服手游，解压安装包： 123456789101112131415├── AndroidManifest.xml├── META-INF│   ├── MANIFEST.MF│   ├── SAMPLE.RSA│   └── SAMP">
+<meta property="og:description" content="记一次半吊子逆向工程的…艰难过程 前言 在搞小游戏的过程中需要一些美术资源，从网上购买了一些不是很满意，所以准备对几个精品同类手游下手，捞一手美术资源。 下手 一个某大话私服手游，解压安装包： 123456789101112131415├── AndroidManifest.xml├── META-INF│   ├── MANIFEST.MF│   ├── SAMPLE.RSA│   └── SA">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://xupin.im/assets/reverse/encrypted.png">
 <meta property="og:image" content="http://xupin.im/assets/reverse/encrypted-content.png">
@@ -36,6 +36,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -217,7 +218,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">1.2k字</span>
+        <span class="post-count">1.3k字</span>
       </span>
     </span>
 
@@ -236,62 +237,77 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>记一次半吊子逆向工程的…艰难过程</p>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>在搞小游戏的过程中需要一些美术资源，从网上购买了一些不是很满意，所以准备对几个精品同类手游下手，捞一手美术资源。</p>
-<h3 id="下手"><a href="#下手" class="headerlink" title="下手"></a>下手</h3><p>一个某大话私服手游，解压安装包：</p>
+<h3 id="前言">前言</h3>
+<p>在搞小游戏的过程中需要一些美术资源，从网上购买了一些不是很满意，所以准备对几个精品同类手游下手，捞一手美术资源。</p>
+<h3 id="下手">下手</h3>
+<p>一个某大话私服手游，解压安装包：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">├── AndroidManifest.xml</span><br><span class="line">├── META-INF</span><br><span class="line">│   ├── MANIFEST.MF</span><br><span class="line">│   ├── SAMPLE.RSA</span><br><span class="line">│   └── SAMPLE.SF</span><br><span class="line">├── assets</span><br><span class="line">│   └── res</span><br><span class="line">├── classes.dex</span><br><span class="line">├── lib</span><br><span class="line">│   ├── arm64-v8a</span><br><span class="line">│   ├── armeabi-v7a</span><br><span class="line">│   └── x86</span><br><span class="line">├── res</span><br><span class="line">│   └── ...</span><br><span class="line">└── resources.arsc</span><br></pre></td></tr></table></figure>
-
 <span id="more"></span>
-
 <p>打开 lib 目录，下面三个目录对应不同 CPU 架构。</p>
 <ul>
-<li>arm64-v8a<br>第 8 代 64 位 ARM 处理器，是以后的架构的趋势。</li>
-<li>armeabiv-v7a<br>第 7 代及以上的 ARM 处理器，目前是主流架构。</li>
-<li>x86 &#x2F; x86_64<br>32 位架构，模拟器用的比较多</li>
+<li>arm64-v8a<br>
+第 8 代 64 位 ARM 处理器，是以后的架构的趋势。</li>
+<li>armeabiv-v7a<br>
+第 7 代及以上的 ARM 处理器，目前是主流架构。</li>
+<li>x86 / x86_64<br>
+32 位架构，模拟器用的比较多</li>
 </ul>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">├── arm64-v8a</span><br><span class="line">│   └── libcocos2dlua.so</span><br><span class="line">├── armeabi-v7a</span><br><span class="line">│   └── libcocos2dlua.so</span><br><span class="line">└── x86</span><br><span class="line">    └── libcocos2dlua.so</span><br></pre></td></tr></table></figure>
-
 <p>通过<code>libcocos2dlua.so</code>可以确定游戏引擎是 Cocos2d-Lua 。</p>
 <blockquote>
 <p>如果有<code>libmono.so</code>,<code>libil2cpp.so</code>等文件，则可能是 Unity 。</p>
 </blockquote>
-<p>res 目录一般是 Android 工程的 Icon、Logo 等文件（忽略）。assets&#x2F;res 是我们要找的资源目录，随便挑一张图片文件打开是这样的：</p>
+<p>res 目录一般是 Android 工程的 Icon、Logo 等文件（忽略）。assets/res 是我们要找的资源目录，随便挑一张图片文件打开是这样的：</p>
 <img src="/assets/reverse/encrypted.png" width="390" height="231"/>
-
 <p>通过文本编辑器打开内容是这样的：</p>
 <img src="/assets/reverse/encrypted-content.png" width="650" height="350"/>
-
 <p>打开多个文件发现头都是<code>sm!fd9%3nX4@</code>这几个字符，应该是 XXTEA 算法（这是 Sign，我们需要找到 Key 就可以进行解密资源）。</p>
-<h3 id="逆向方案"><a href="#逆向方案" class="headerlink" title="逆向方案"></a>逆向方案</h3><p>确定是 XXTEA 算法之后，有两种方式来获取 Key：</p>
+<h3 id="逆向方案">逆向方案</h3>
+<p>确定是 XXTEA 算法之后，有两种方式来获取 Key：</p>
 <ul>
-<li>IDA<br>静态分析，或附加进程动态调试</li>
-<li>Frida<br>注入 Hook 脚本获取</li>
+<li>IDA<br>
+静态分析，或附加进程动态调试</li>
+<li>Frida<br>
+注入 Hook 脚本获取</li>
 </ul>
 <p>两种动态获取方式流程大致相同，其原理都是注入程序读取内存之后通过端口进行转发，但是 Frida 相比较容易一些。</p>
 <p>准备工作：</p>
 <ol>
-<li>安卓设备 &#x2F; 模拟器（本文使用的 Mumu 模拟器）</li>
+<li>安卓设备 / 模拟器（本文使用的 Mumu 模拟器）</li>
 <li>游戏安装包（需要开启 debug 模式）</li>
 </ol>
-<h3 id="IDA"><a href="#IDA" class="headerlink" title="IDA"></a>IDA</h3><p>IDA 工具拖入 libcocos2dlua.so 等待分析完成，点击 View-&gt;Open Subviews-&gt;Strings 搜索<code>xxtea</code>，列表中<code>_Z13xxtea_encryptPhjS_jPj</code>、<code>_Z13xxtea_decryptPhjS_jPj</code>这俩就是 xxtea 加解密的函数。</p>
+<h3 id="IDA">IDA</h3>
+<p>IDA 工具拖入 <a href="http://libcocos2dlua.so">libcocos2dlua.so</a> 等待分析完成，点击 View-&gt;Open Subviews-&gt;Strings 搜索<code>xxtea</code>，列表中<code>_Z13xxtea_encryptPhjS_jPj</code>、<code>_Z13xxtea_decryptPhjS_jPj</code>这俩就是 xxtea 加解密的函数。</p>
 <img src="/assets/reverse/ida-strings-xxtea.jpg" width="379" height="107"/>
-
 <p>跟进 _Z13xxtea_decryptPhjS_jPj ，找到 xxtea_decrypt 及调用函数。</p>
 <img src="/assets/reverse/ida-strings-xxtea-ref.jpg" width="554" height="227"/>
-
 <br/>
-
 <img src="/assets/reverse/ida-lua-xxtea-fn.jpg" width="481" height="420"/>
-
 <p>伪代码中的 v8 就是 Key，这里被标记一段 128 bit 宽度的数据（xmmword，刚好 16 字节），继续跟进 g_xmmword_1220CF0 。</p>
 <img src="/assets/reverse/ida-lua-xxtea-key.jpg" width="553" height="90"/>
-
-<p>hex -&gt; decimal -&gt; ascii<br>0x67 -&gt; 103 -&gt; g<br>0x62 -&gt; 98 -&gt; b<br>0x34 -&gt; 52 -&gt; 4<br>0x73 -&gt; 115 -&gt; s<br>0x5A -&gt; 90 -&gt; Z<br>0x7A -&gt; 122 -&gt; z<br>0x6F -&gt; 111 -&gt; o<br>0x56 -&gt; 86 -&gt; V<br>0x2F -&gt; 47 -&gt; &#x2F;<br>0x66 -&gt; 102 -&gt; f<br>0x50 -&gt; 80 -&gt; P<br>0x32 -&gt; 50 -&gt; 2<br>0x50 -&gt; 80 -&gt; P<br>0x29 -&gt; 41 -&gt; )<br>0x74 -&gt; 116 -&gt; t<br>0x33 -&gt; 51 -&gt; 3</p>
+<p>hex -&gt; decimal -&gt; ascii<br>
+0x67 -&gt; 103 -&gt; g<br>
+0x62 -&gt; 98 -&gt; b<br>
+0x34 -&gt; 52 -&gt; 4<br>
+0x73 -&gt; 115 -&gt; s<br>
+0x5A -&gt; 90 -&gt; Z<br>
+0x7A -&gt; 122 -&gt; z<br>
+0x6F -&gt; 111 -&gt; o<br>
+0x56 -&gt; 86 -&gt; V<br>
+0x2F -&gt; 47 -&gt; /<br>
+0x66 -&gt; 102 -&gt; f<br>
+0x50 -&gt; 80 -&gt; P<br>
+0x32 -&gt; 50 -&gt; 2<br>
+0x50 -&gt; 80 -&gt; P<br>
+0x29 -&gt; 41 -&gt; )<br>
+0x74 -&gt; 116 -&gt; t<br>
+0x33 -&gt; 51 -&gt; 3</p>
 <p><code>gb4sZzoV/fP2P)t3</code> 这一段就是我们要找的 Key 啦。</p>
-<h3 id="Frida"><a href="#Frida" class="headerlink" title="Frida"></a>Frida</h3><ul>
+<h3 id="Frida">Frida</h3>
+<ul>
 <li>安装 Frida 环境</li>
 </ul>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ pip3 install frida</span><br><span class="line">$ pip3 install frida-tools</span><br><span class="line">$ frida --version</span><br><span class="line">16.2.1</span><br></pre></td></tr></table></figure>
-
 <ul>
 <li>下载 Frida Server</li>
 </ul>
@@ -305,45 +321,38 @@ var _hmt = _hmt || [];
 <li>模拟器开启 root 权限，打开 USB 调试模式。</li>
 </ul>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /Applications/NemuPlayer.app/Contents/MacOS</span><br><span class="line">$ ./adb push ./frida-server-16.2.1-android-x86_64 /data/adb/frida-server-16.2.1</span><br><span class="line">$ ./adb forward tcp:27042 tcp:27042</span><br><span class="line">$ ./adb root <span class="comment"># 开启root权限</span></span><br><span class="line">$ ./adb shell <span class="comment"># 进入模拟器 adb shell</span></span><br></pre></td></tr></table></figure>
-
 <ul>
 <li>查看游戏包名</li>
 </ul>
 <figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># cd /data/app</span></span><br><span class="line"><span class="comment"># ls -a</span></span><br><span class="line"><span class="attribute">code_cache</span></span><br><span class="line"><span class="attribute">com</span>.mumu.acc-<span class="number">1</span></span><br><span class="line"><span class="attribute">com</span>.mumu.launcher-<span class="number">1</span></span><br><span class="line"><span class="attribute">com</span>.mumu.store-<span class="number">1</span></span><br><span class="line"><span class="attribute">com</span>.netease.mumu.cloner-<span class="number">1</span></span><br><span class="line"><span class="attribute">www</span>.cocos.game-<span class="number">1</span> # 这是我们要找的游戏</span><br></pre></td></tr></table></figure>
-
 <ul>
 <li>启动 Frida Server</li>
 </ul>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">cd</span> /data/adb</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">chmod</span> +x ./frida-server-16.2.1</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">nohup</span> ./frida-server-16.2.1 &amp;</span></span><br></pre></td></tr></table></figure>
-
 <ul>
 <li>测试服务</li>
 </ul>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ frida-ps -U</span><br><span class="line"> 268  adbd</span><br><span class="line"> 976  android.process.acore</span><br><span class="line">1069  android.process.media</span><br><span class="line">1224  com.android.keychain</span><br><span class="line">1247  com.android.providers.calendar</span><br><span class="line"> 763  com.android.systemui</span><br><span class="line"> 287  debuggerd</span><br><span class="line"> 288  debuggerd64</span><br><span class="line"> 290  drmserver</span><br><span class="line">1360  frida-server-16.2.1 <span class="comment"># 说明注入程序也成功启动</span></span><br></pre></td></tr></table></figure>
-
 <ul>
 <li>运行 Hook 脚本</li>
 </ul>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> libName = <span class="string">&quot;libcocos2dlua.so&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> funcName = <span class="string">&quot;_Z13xxtea_decryptPhjS_jPj&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> ptr = <span class="title class_">Module</span>.<span class="title function_">findExportByName</span>(libName, funcName);</span><br><span class="line"><span class="keyword">if</span> (!ptr) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="title class_">Interceptor</span>.<span class="title function_">attach</span>(ptr, &#123;</span><br><span class="line">    <span class="attr">onEnter</span>: <span class="keyword">function</span> (<span class="params">args</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Key:&quot;</span>, <span class="title class_">Memory</span>.<span class="title function_">readUtf8String</span>(args[<span class="number">2</span>])); <span class="comment">// 这里为什么取第三个参数，另一种IDA方式会有解释。</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">onLeave</span>: <span class="keyword">function</span> (<span class="params">retval</span>) &#123;&#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">$ frida -U -f www.cocos.game -l ./key.js</span><br><span class="line">     ____</span><br><span class="line">    / _  |   Frida 16.2.1 - A world-class dynamic instrumentation toolkit</span><br><span class="line">   | (_| |</span><br><span class="line">    &gt; _  |   Commands:</span><br><span class="line">   /_/ |_|       <span class="built_in">help</span>      -&gt; Displays the <span class="built_in">help</span> system</span><br><span class="line">   . . . .       object?   -&gt; Display information about <span class="string">&#x27;object&#x27;</span></span><br><span class="line">   . . . .       <span class="built_in">exit</span>/quit -&gt; Exit</span><br><span class="line">   . . . .</span><br><span class="line">   . . . .   More info at https://frida.re/docs/home/</span><br><span class="line">   . . . .</span><br><span class="line">   . . . .   Connected to Android Emulator 5554 (<span class="built_in">id</span>=emulator-5554)</span><br><span class="line">Spawned `www.cocos.game`. Resuming main thread!</span><br><span class="line">[Android Emulator 5554::www.cocos.game ]-&gt; Key: gb4sZzoV/fP2P)t3</span><br><span class="line">Key: gb4sZzoV/fP2P)t3</span><br><span class="line">Key: gb4sZzoV/fP2P)t3</span><br><span class="line">Key: gb4sZzoV/fP2P)t3</span><br><span class="line">Key: gb4sZzoV/fP2P)t3</span><br><span class="line">...</span><br><span class="line">Process terminated</span><br><span class="line">[Android Emulator 5554::www.cocos.game ]-&gt;</span><br><span class="line"></span><br><span class="line">Thank you <span class="keyword">for</span> using Frida!</span><br></pre></td></tr></table></figure>
-
 <p><code>gb4sZzoV/fP2P)t3</code> 这个就是动态获取的 Key。</p>
-<h3 id="解密资源"><a href="#解密资源" class="headerlink" title="解密资源"></a>解密资源</h3><p>Cocos2d-x 关于 XXTEA 的 Lua 资源解密流程</p>
+<h3 id="解密资源">解密资源</h3>
+<p>Cocos2d-x 关于 XXTEA 的 Lua 资源解密流程</p>
 <p>CCLuaStack.cpp</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">LuaStack::luaLoadBuffer</span><span class="params">(lua_State *L, <span class="type">const</span> <span class="type">char</span> *chunk, <span class="type">int</span> chunkSize, <span class="type">const</span> <span class="type">char</span> *chunkName)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> r = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (_xxteaEnabled &amp;&amp; <span class="built_in">strncmp</span>(chunk, _xxteaSign, _xxteaSignLen) == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// decrypt XXTEA</span></span><br><span class="line">        xxtea_long len = <span class="number">0</span>;</span><br><span class="line">        <span class="type">unsigned</span> <span class="type">char</span>* result = <span class="built_in">xxtea_decrypt</span>((<span class="type">unsigned</span> <span class="type">char</span>*)chunk + _xxteaSignLen,</span><br><span class="line">                                              (xxtea_long)chunkSize - _xxteaSignLen,</span><br><span class="line">                                              (<span class="type">unsigned</span> <span class="type">char</span>*)_xxteaKey,</span><br><span class="line">                                              (xxtea_long)_xxteaKeyLen,</span><br><span class="line">                                              &amp;len);</span><br><span class="line">        <span class="type">unsigned</span> <span class="type">char</span>* content = result;</span><br><span class="line">        xxtea_long contentSize = len;</span><br><span class="line">        <span class="built_in">skipBOM</span>((<span class="type">const</span> <span class="type">char</span>*&amp;)content, (<span class="type">int</span>&amp;)contentSize);</span><br><span class="line">        r = <span class="built_in">luaL_loadbuffer</span>(L, (<span class="type">char</span>*)content, contentSize, chunkName);</span><br><span class="line">        <span class="built_in">free</span>(result);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">skipBOM</span>(chunk, chunkSize);</span><br><span class="line">        r = <span class="built_in">luaL_loadbuffer</span>(L, chunk, chunkSize, chunkName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> defined(COCOS2D_DEBUG) &amp;&amp; COCOS2D_DEBUG &gt; 0</span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">    <span class="keyword">return</span> r;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>根据逻辑可以推出，根据加密资源头部 Sign 来确定是否 XXTEA 加密，解密时把 Sign 忽略。实现如下：</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    sign := <span class="string">&quot;sm!fd9%3nX4@&quot;</span></span><br><span class="line">    key := <span class="string">&quot;gb4sZzoV/fP2P)t3&quot;</span></span><br><span class="line"></span><br><span class="line">    bs, err := os.ReadFile(<span class="string">&quot;../assets/9322.png&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="built_in">panic</span>(err)</span><br><span class="line">    &#125;</span><br><span class="line">    nbs := xxtea.Decrypt(bs[<span class="built_in">len</span>(sign):], key)</span><br><span class="line">    os.WriteFile(<span class="string">&quot;../assets/9322_dec.png&quot;</span>, nbs, os.ModePerm)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <img src="/assets/reverse/decrypted.png" width="320" height="220"/>
-
-<h3 id="Q-A"><a href="#Q-A" class="headerlink" title="Q&amp;A"></a>Q&amp;A</h3><ol>
-<li>adb shell 提示 error: no devices&#x2F;emulators found</li>
+<h3 id="Q-A">Q&amp;A</h3>
+<ol>
+<li>adb shell 提示 error: no devices/emulators found</li>
 </ol>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ ./adb kill-server</span><br><span class="line">$ ./adb start-server</span><br></pre></td></tr></table></figure>
-
-<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>附上示例：<a href="https://github.com/xupin/cocos2d-reverse">cocos2d-reverse</a></p>
+<h3 id="最后">最后</h3>
+<p>附上示例：<a href="https://github.com/xupin/cocos2d-reverse">cocos2d-reverse</a></p>
 
       
 
@@ -612,7 +621,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -624,15 +637,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -656,11 +673,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -705,18 +726,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

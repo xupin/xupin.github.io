@@ -25,6 +25,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -183,6 +184,136 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-game-gateway" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <!-- 标题 -->
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2024/08/08/game-gateway/">游戏开发笔记 - gRPC网关服务器</a>
+    </h1>
+  
+
+        <!-- 发布日期 -->
+        
+        <a href="/2024/08/08/game-gateway/" class="archive-article-date">
+  	<time datetime="2024-08-07T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-08-08</time>
+</a>
+        
+        <!-- 字数统计 -->
+        
+          <div style="margin-top:10px;">
+    <span class="post-time">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-keyboard-o"></i>
+        <span class="post-meta-item-text">  全文 ≈</span>
+        <span class="post-count">794字</span>
+      </span>
+    </span>
+
+    <span class="post-time">
+      &nbsp; | &nbsp;
+      <span class="post-meta-item-icon">
+        <i class="fa fa-hourglass-half"></i>
+        <span class="post-meta-item-text">  预计阅读时长</span>
+        <span class="post-count">3分钟</span>
+      </span>
+    </span>
+</div>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>因为客户端直连服务器会出现很多潜在的风险，比如暴露服务器 IP 地址导致被攻击等问题，所以增加一个网关服务器。</p>
+<h3 id="网关服务器">网关服务器</h3>
+<p>网关服务器是介于客户端与游戏服务器之间的服务，包含以下功能：</p>
+<ul>
+<li>客户端连接管理</li>
+</ul>
+<blockquote>
+<p>维护游戏客户端的连接。</p>
+</blockquote>
+<ul>
+<li>负载均衡</li>
+</ul>
+<blockquote>
+<p>负责将客户端的请求分配到空闲的游戏服务器。</p>
+</blockquote>
+<ul>
+<li>协议检查转换</li>
+</ul>
+<blockquote>
+<p>检查协议格式，如有多协议服务器也可以做协议格式转换。</p>
+</blockquote>
+<ul>
+<li>安全控制</li>
+</ul>
+<blockquote>
+<p>拦截非法请求，隐藏游戏服务器 IP 地址（避免 DDOS 攻击）。</p>
+</blockquote>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">game</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">gRPC</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2024/08/08/game-gateway/">More >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-game-spine-change-attach" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -208,7 +339,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">825字</span>
+        <span class="post-count">827字</span>
       </span>
     </span>
 
@@ -226,11 +357,14 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>想给小游戏做个时装功能，在游戏中一般来说换装分为两种：</p>
+        <h3 id="前言">前言</h3>
+<p>想给小游戏做个时装功能，在游戏中一般来说换装分为两种：</p>
 <ol>
-<li><p>整体时装</p>
+<li>
+<p>整体时装</p>
 </li>
-<li><p>局部换装</p>
+<li>
+<p>局部换装</p>
 </li>
 </ol>
 <p>2D 游戏中一般用到的骨骼动画 Spine 和 DragonBone(龙骨)。这里主要学习一下 Spine 换装的相关实现</p>
@@ -337,8 +471,10 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>因为之前设计的系统很粗糙，任务看起来很单调，比如 NPC 名称都是一成不变的，所以进行一些小改动。</p>
-<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>思路很简单，预设字典库随机分配名称。</p>
+        <h3 id="前言">前言</h3>
+<p>因为之前设计的系统很粗糙，任务看起来很单调，比如 NPC 名称都是一成不变的，所以进行一些小改动。</p>
+<h3 id="思路">思路</h3>
+<p>思路很简单，预设字典库随机分配名称。</p>
 <p>名字组成字典</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">	<span class="attr">&quot;男弟子&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;弟子姓&quot;</span><span class="punctuation">,</span> <span class="string">&quot;弟子男名&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;女弟子&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;弟子姓&quot;</span><span class="punctuation">,</span> <span class="string">&quot;弟子女名&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;弟子&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;弟子男名&quot;</span><span class="punctuation">,</span> <span class="string">&quot;弟子姓&quot;</span><span class="punctuation">,</span> <span class="string">&quot;弟子女名&quot;</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
         
@@ -422,7 +558,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">1.2k字</span>
+        <span class="post-count">1.3k字</span>
       </span>
     </span>
 
@@ -441,8 +577,10 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>记一次半吊子逆向工程的…艰难过程</p>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>在搞小游戏的过程中需要一些美术资源，从网上购买了一些不是很满意，所以准备对几个精品同类手游下手，捞一手美术资源。</p>
-<h3 id="下手"><a href="#下手" class="headerlink" title="下手"></a>下手</h3><p>一个某大话私服手游，解压安装包：</p>
+<h3 id="前言">前言</h3>
+<p>在搞小游戏的过程中需要一些美术资源，从网上购买了一些不是很满意，所以准备对几个精品同类手游下手，捞一手美术资源。</p>
+<h3 id="下手">下手</h3>
+<p>一个某大话私服手游，解压安装包：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">├── AndroidManifest.xml</span><br><span class="line">├── META-INF</span><br><span class="line">│   ├── MANIFEST.MF</span><br><span class="line">│   ├── SAMPLE.RSA</span><br><span class="line">│   └── SAMPLE.SF</span><br><span class="line">├── assets</span><br><span class="line">│   └── res</span><br><span class="line">├── classes.dex</span><br><span class="line">├── lib</span><br><span class="line">│   ├── arm64-v8a</span><br><span class="line">│   ├── armeabi-v7a</span><br><span class="line">│   └── x86</span><br><span class="line">├── res</span><br><span class="line">│   └── ...</span><br><span class="line">└── resources.arsc</span><br></pre></td></tr></table></figure>
         
       
@@ -525,7 +663,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">909字</span>
+        <span class="post-count">908字</span>
       </span>
     </span>
 
@@ -544,8 +682,10 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>简单实现服务器不停机更新的机制</p>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>之前接触过某 moba 游戏，除了其丰富的游戏内容之外，对其服务器更新机制非常好奇。他们的服务器很少进行停机更新，大部分是不停机更新内容。这是如何实现的呢？</p>
-<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>服务器更新场景，一般是业务代码迭代或者配置表需要重载。moba 游戏一般是一个服务器承载 1 或多个房间，所以热更新机制有可能是这样一个设计：</p>
+<h3 id="前言">前言</h3>
+<p>之前接触过某 moba 游戏，除了其丰富的游戏内容之外，对其服务器更新机制非常好奇。他们的服务器很少进行停机更新，大部分是不停机更新内容。这是如何实现的呢？</p>
+<h3 id="思路">思路</h3>
+<p>服务器更新场景，一般是业务代码迭代或者配置表需要重载。moba 游戏一般是一个服务器承载 1 或多个房间，所以热更新机制有可能是这样一个设计：</p>
 <ol>
 <li>正在使用的服务器</li>
 </ol>
@@ -640,7 +780,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">780字</span>
+        <span class="post-count">779字</span>
       </span>
     </span>
 
@@ -659,7 +799,8 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>大部分游戏中都有排行榜的存在，既可以展示玩家分数之间的排名，也可以用于激发玩家的胜负欲。</p>
-<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>排行榜的设计思路比较粗暴，谁的分数高谁在前，分数一致谁先达成谁在前。实现方式有多种，这里列举常见的2种：</p>
+<h3 id="思路">思路</h3>
+<p>排行榜的设计思路比较粗暴，谁的分数高谁在前，分数一致谁先达成谁在前。实现方式有多种，这里列举常见的2种：</p>
 <ol>
 <li>数据库</li>
 </ol>
@@ -772,8 +913,10 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>优化链表查询效率</p>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>链表在操作的时候需要从头节点遍历到目标节点，如果数据量大比较耗时。当链表应用在 AOI 算法（十字链表，双有序链表）时这个效率问题更会凸显，最坏的情况是遍历 x*y*{v}个节点。</p>
-<h3 id="优化方案"><a href="#优化方案" class="headerlink" title="优化方案"></a>优化方案</h3><p>常见的 2 种优化方式：</p>
+<h3 id="前言">前言</h3>
+<p>链表在操作的时候需要从头节点遍历到目标节点，如果数据量大比较耗时。当链表应用在 AOI 算法（十字链表，双有序链表）时这个效率问题更会凸显，最坏的情况是遍历 x*y*{v}个节点。</p>
+<h3 id="优化方案">优化方案</h3>
+<p>常见的 2 种优化方式：</p>
 <ol>
 <li>快慢针</li>
 </ol>
@@ -887,7 +1030,8 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>简单优化下AOI模块</p>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>当游戏开启活动让大量玩家聚集在指定地图范围内时，给服务器和客户端带来最直接的麻烦就是：</p>
+<h3 id="前言">前言</h3>
+<p>当游戏开启活动让大量玩家聚集在指定地图范围内时，给服务器和客户端带来最直接的麻烦就是：</p>
 <ol>
 <li>服务器带宽占用率高</li>
 </ol>
@@ -900,7 +1044,8 @@ var _hmt = _hmt || [];
 <blockquote>
 <p>因为同屏人数越多，客户端需要渲染的模型就越多。这样在一些普通的硬件设备下会直接导致卡顿、发热。</p>
 </blockquote>
-<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>除了升级硬件，还可以在以下两个方面进行优化:</p>
+<h3 id="思路">思路</h3>
+<p>除了升级硬件，还可以在以下两个方面进行优化:</p>
         
       
 
@@ -929,113 +1074,6 @@ var _hmt = _hmt || [];
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2023/11/08/game-aoi-cut/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-game-task" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2023/11/06/game-task/">游戏开发笔记 - 任务设计</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2023/11/06/game-task/" class="archive-article-date">
-  	<time datetime="2023-11-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-11-06</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">915字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">4分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>一个粗略的任务系统</p>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>为了让游戏的内容丰富起来，同时也能辅助构建游戏世界所处的环境和世界观等等，所以准备简单的开发一个任务系统。</p>
-<p>e.g.<br>支线任务 - <del>砍人</del>买瓜<br>「前去长安城购买甘甜可口的西瓜」<br><code>奖励：载具*1、武器*1</code></p>
-<p><em>我：“哥们儿，这瓜多少钱一斤呐”</em><br>瓜摊老板：“两块钱一斤”<br><em>我：“给我挑一个”</em><br>瓜摊老板：“行，这个怎么样？”</p>
-<ul>
-<li>选项 1[<code>这瓜保熟吗？</code>]</li>
-<li>选项 2[<code>不买了</code>]</li>
-</ul>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">game</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2023/11/06/game-task/">More >></a>
         </p>
       
 
@@ -1161,7 +1199,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1173,15 +1215,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1205,11 +1251,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1254,18 +1304,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

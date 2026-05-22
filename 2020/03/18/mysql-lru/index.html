@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Mysql学习笔记 - LRU算法 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="1.什么是LRU？LRU（Least recently used，最近最少使用）算法根据数据的历史访问记录来进行淘汰数据，其核心思想是“最近使用的页面数据会在未来一段时期内仍然被使用,已经很久没有使用的页面很有可能在未来较长的一段时间内仍然不会被使用”。 2.LRU的实现LRU算法最常见的实现是使用链表来保存数据，该链表是双向链表，然后利用先进先出的特性，最新写入的数据会最快被获取。  访问不存在">
+  <meta name="description" content="1.什么是LRU？ LRU（Least recently used，最近最少使用）算法根据数据的历史访问记录来进行淘汰数据，其核心思想是“最近使用的页面数据会在未来一段时期内仍然被使用,已经很久没有使用的页面很有可能在未来较长的一段时间内仍然不会被使用”。 2.LRU的实现 LRU算法最常见的实现是使用链表来保存数据，该链表是双向链表，然后利用先进先出的特性，最新写入的数据会最快被获取。  访问不">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Mysql学习笔记 - LRU算法">
 <meta property="og:url" content="http://xupin.im/2020/03/18/mysql-lru/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="1.什么是LRU？LRU（Least recently used，最近最少使用）算法根据数据的历史访问记录来进行淘汰数据，其核心思想是“最近使用的页面数据会在未来一段时期内仍然被使用,已经很久没有使用的页面很有可能在未来较长的一段时间内仍然不会被使用”。 2.LRU的实现LRU算法最常见的实现是使用链表来保存数据，该链表是双向链表，然后利用先进先出的特性，最新写入的数据会最快被获取。  访问不存在">
+<meta property="og:description" content="1.什么是LRU？ LRU（Least recently used，最近最少使用）算法根据数据的历史访问记录来进行淘汰数据，其核心思想是“最近使用的页面数据会在未来一段时期内仍然被使用,已经很久没有使用的页面很有可能在未来较长的一段时间内仍然不会被使用”。 2.LRU的实现 LRU算法最常见的实现是使用链表来保存数据，该链表是双向链表，然后利用先进先出的特性，最新写入的数据会最快被获取。  访问不">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://xupin.im/assets/lru/struct.png">
 <meta property="og:image" content="http://xupin.im/assets/lru/innodb-buffer-pool-list.png">
@@ -31,6 +31,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -230,20 +231,23 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="1-什么是LRU？"><a href="#1-什么是LRU？" class="headerlink" title="1.什么是LRU？"></a>1.什么是LRU？</h3><p>LRU（Least recently used，最近最少使用）算法根据数据的历史访问记录来进行淘汰数据，其核心思想是“最近使用的页面数据会在未来一段时期内仍然被使用,已经很久没有使用的页面很有可能在未来较长的一段时间内仍然不会被使用”。</p>
-<h3 id="2-LRU的实现"><a href="#2-LRU的实现" class="headerlink" title="2.LRU的实现"></a>2.LRU的实现</h3><p>LRU算法最常见的实现是使用链表来保存数据，该链表是双向链表，然后利用先进先出的特性，最新写入的数据会最快被获取。</p>
+        <h3 id="1-什么是LRU？">1.什么是LRU？</h3>
+<p>LRU（Least recently used，最近最少使用）算法根据数据的历史访问记录来进行淘汰数据，其核心思想是“最近使用的页面数据会在未来一段时期内仍然被使用,已经很久没有使用的页面很有可能在未来较长的一段时间内仍然不会被使用”。</p>
+<h3 id="2-LRU的实现">2.LRU的实现</h3>
+<p>LRU算法最常见的实现是使用链表来保存数据，该链表是双向链表，然后利用先进先出的特性，最新写入的数据会最快被获取。</p>
 <ul>
 <li>访问不存在的数据时，缓存数据则会写入链表的头部，链表写满时会淘汰掉尾部的缓存数据。</li>
 <li>当缓存数据被访问时，则将该缓存数据向链表头部移动。</li>
 </ul>
-<p><img src="/assets/lru/struct.png"></p>
+<p><img src="/assets/lru/struct.png" alt=""></p>
 <blockquote>
 <p>优点：面对频繁访问的热点数据，查询效率高</p>
 </blockquote>
 <blockquote>
 <p>缺点：如果一次查询扫描全表，那么LRU列表会被污染</p>
 </blockquote>
-<h3 id="3-Mysql-LRU算法有何不同？"><a href="#3-Mysql-LRU算法有何不同？" class="headerlink" title="3.Mysql LRU算法有何不同？"></a>3.Mysql LRU算法有何不同？</h3><p>Mysql（InnoDB）的缓冲池（buffer pool）使用了LRU算法的变体，将链表分为三个部分：young、midpoint、old。链表比例(5、3)分配给young、old。其中young占据5&#x2F;8，old占据3&#x2F;8，此比例受参数innodb_old_blocks_pct控制。</p>
+<h3 id="3-Mysql-LRU算法有何不同？">3.Mysql LRU算法有何不同？</h3>
+<p>Mysql（InnoDB）的缓冲池（buffer pool）使用了LRU算法的变体，将链表分为三个部分：young、midpoint、old。链表比例(5、3)分配给young、old。其中young占据5/8，old占据3/8，此比例受参数innodb_old_blocks_pct控制。</p>
 <blockquote>
 <p>young是链表中最近访问过的新子表。</p>
 </blockquote>
@@ -254,19 +258,18 @@ var _hmt = _hmt || [];
 <p>midpoint是介于新子表 &amp; 旧子表的边界中间位置（也可以理解为旧子表的头部）。</p>
 </blockquote>
 <span id="more"></span>
-
 <ul>
 <li>数据库刚启动LRU链表为空时，此时会检查Free List中是否有空闲的数据页，如果有则从Free List中删除并且在LRU链表中写入相同的数据页。</li>
 <li>访问不存在的数据页时，数据页不会直接写入链表的头部，而是写入中间位置，如果链表满了则会从旧子表尾部淘汰数据页。</li>
 <li>当数据页被访问时，则判断访问数据页的时间是否大于设定innodb_old_blocks_time（默认：1000ms），如果大于则向链表头部移动，如果小于其位置不变。</li>
 </ul>
-<p><img src="/assets/lru/innodb-buffer-pool-list.png"></p>
+<p><img src="/assets/lru/innodb-buffer-pool-list.png" alt=""></p>
 <blockquote>
 <p>改进优点：能够防止单次大量的全表扫描污染整个LRU链表。</p>
 </blockquote>
-<h3 id="4-Mysql-LRU相关查询命令"><a href="#4-Mysql-LRU相关查询命令" class="headerlink" title="4.Mysql LRU相关查询命令"></a>4.Mysql LRU相关查询命令</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&gt;show engine innodb status\G;</span><br><span class="line">----------------------</span><br><span class="line">BUFFER POOL AND MEMORY</span><br><span class="line">----------------------</span><br><span class="line">Total memory allocated 137756672; <span class="keyword">in</span> additional pool allocated 0</span><br><span class="line">Total memory allocated by <span class="built_in">read</span> views 88</span><br><span class="line">Internal <span class="built_in">hash</span> tables (constant <span class="built_in">factor</span> + variable <span class="built_in">factor</span>)</span><br><span class="line">    Adaptive <span class="built_in">hash</span> index 2217584         (2213368 + 4216)</span><br><span class="line">    Page <span class="built_in">hash</span>           139112 (buffer pool 0 only)</span><br><span class="line">    Dictionary cache    593780  (554768 + 39012)</span><br><span class="line">    File system         83536   (82672 + 864)</span><br><span class="line">    Lock system         333248  (332872 + 376)</span><br><span class="line">    Recovery system     0       (0 + 0)</span><br><span class="line">Dictionary memory allocated 39012</span><br><span class="line">Buffer pool size        8191</span><br><span class="line">Buffer pool size, bytes 134201344</span><br><span class="line">Free buffers            8048</span><br><span class="line">Database pages          143</span><br><span class="line">Old database pages      0</span><br><span class="line">Modified db pages       0</span><br><span class="line">Pending reads 0</span><br><span class="line">Pending writes: LRU 0, flush list 0, single page 0</span><br><span class="line">Pages made young 0, not young 0</span><br><span class="line">0.00 youngs/s, 0.00 non-youngs/s</span><br><span class="line">Pages <span class="built_in">read</span> 143, created 0, written 0</span><br><span class="line">0.00 reads/s, 0.00 creates/s, 0.00 writes/s</span><br><span class="line">No buffer pool page gets since the last printout</span><br><span class="line">Pages <span class="built_in">read</span> ahead 0.00/s, evicted without access 0.00/s, Random <span class="built_in">read</span> ahead 0.00/s</span><br><span class="line">LRU len: 143, unzip_LRU len: 0</span><br><span class="line">I/O <span class="built_in">sum</span>[0]:cur[0], unzip <span class="built_in">sum</span>[0]:cur[0]</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Buffer pool size                    <span class="string">|   innodb_buffer_pool的大小</span></span><br><span class="line">Free buffers                        <span class="string">|   当前Free List中数据页数量</span></span><br><span class="line">Database pages                      <span class="string">|   LRU链表中数据页数量</span></span><br><span class="line">Old database pages                  <span class="string">|   LRU链表中旧子表数据页数量</span></span><br><span class="line">Modified db pages                   <span class="string">|   LRU链表中脏页数量</span></span><br><span class="line">Pages made young <span class="number">0</span>, not young <span class="number">0</span>     <span class="string">|   数据页从old移至young的行为：page made young,数据页因为innodb_old_blocks_time导致没有从old移至young的行为：page not young。后面的数值是该行为发生的次数。</span></span><br></pre></td></tr></table></figure>
+<h3 id="4-Mysql-LRU相关查询命令">4.Mysql LRU相关查询命令</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&gt;show engine innodb status\G;</span><br><span class="line">----------------------</span><br><span class="line">BUFFER POOL AND MEMORY</span><br><span class="line">----------------------</span><br><span class="line">Total memory allocated 137756672; <span class="keyword">in</span> additional pool allocated 0</span><br><span class="line">Total memory allocated by <span class="built_in">read</span> views 88</span><br><span class="line">Internal <span class="built_in">hash</span> tables (constant <span class="built_in">factor</span> + variable <span class="built_in">factor</span>)</span><br><span class="line">    Adaptive <span class="built_in">hash</span> index 2217584         (2213368 + 4216)</span><br><span class="line">    Page <span class="built_in">hash</span>           139112 (buffer pool 0 only)</span><br><span class="line">    Dictionary cache    593780  (554768 + 39012)</span><br><span class="line">    File system         83536   (82672 + 864)</span><br><span class="line">    Lock system         333248  (332872 + 376)</span><br><span class="line">    Recovery system     0       (0 + 0)</span><br><span class="line">Dictionary memory allocated 39012</span><br><span class="line">Buffer pool size        8191</span><br><span class="line">Buffer pool size, bytes 134201344</span><br><span class="line">Free buffers            8048</span><br><span class="line">Database pages          143</span><br><span class="line">Old database pages      0</span><br><span class="line">Modified db pages       0</span><br><span class="line">Pending reads 0</span><br><span class="line">Pending writes: LRU 0, flush list 0, single page 0</span><br><span class="line">Pages made young 0, not young 0</span><br><span class="line">0.00 youngs/s, 0.00 non-youngs/s</span><br><span class="line">Pages <span class="built_in">read</span> 143, created 0, written 0</span><br><span class="line">0.00 reads/s, 0.00 creates/s, 0.00 writes/s</span><br><span class="line">No buffer pool page gets since the last printout</span><br><span class="line">Pages <span class="built_in">read</span> ahead 0.00/s, evicted without access 0.00/s, Random <span class="built_in">read</span> ahead 0.00/s</span><br><span class="line">LRU len: 143, unzip_LRU len: 0</span><br><span class="line">I/O <span class="built_in">sum</span>[0]:cur[0], unzip <span class="built_in">sum</span>[0]:cur[0]</span><br></pre></td></tr></table></figure>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Buffer pool size                    <span class="string">|   innodb_buffer_pool的大小</span></span><br><span class="line">Free buffers                        <span class="string">|   当前Free List中数据页数量</span></span><br><span class="line">Database pages                      <span class="string">|   LRU链表中数据页数量</span></span><br><span class="line">Old database pages                  <span class="string">|   LRU链表中旧子表数据页数量</span></span><br><span class="line">Modified db pages                   <span class="string">|   LRU链表中脏页数量</span></span><br><span class="line">Pages made young <span class="number">0</span><span class="punctuation">,</span> not young <span class="number">0</span>     <span class="string">|   数据页从old移至young的行为：page made young,数据页因为innodb_old_blocks_time导致没有从old移至young的行为：page not young。后面的数值是该行为发生的次数。</span></span><br></pre></td></tr></table></figure>
 
       
 
@@ -535,7 +538,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -547,15 +554,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -579,11 +590,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -628,18 +643,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

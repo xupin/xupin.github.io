@@ -25,6 +25,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -183,6 +184,112 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-clickhouse-array-split-group" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <!-- 标题 -->
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/01/14/clickhouse-array-split-group/">ClickHouse学习笔记 - 数组拆分再分组</a>
+    </h1>
+  
+
+        <!-- 发布日期 -->
+        
+        <a href="/2022/01/14/clickhouse-array-split-group/" class="archive-article-date">
+  	<time datetime="2022-01-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-01-14</time>
+</a>
+        
+        <!-- 字数统计 -->
+        
+          <div style="margin-top:10px;">
+    <span class="post-time">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-keyboard-o"></i>
+        <span class="post-meta-item-text">  全文 ≈</span>
+        <span class="post-count">1.6k字</span>
+      </span>
+    </span>
+
+    <span class="post-time">
+      &nbsp; | &nbsp;
+      <span class="post-meta-item-icon">
+        <i class="fa fa-hourglass-half"></i>
+        <span class="post-meta-item-text">  预计阅读时长</span>
+        <span class="post-count">6分钟</span>
+      </span>
+    </span>
+</div>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>ClickHouse是个由老毛子国内市场使用率第一的搜索引擎Yandex开源的OLAP型列式数据库。</p>
+<h3 id="背景">背景</h3>
+<p>最近，数据分析项目要做一个广告素材推广成效分析功能。需求评审下来大概是通过给广告素材打标签进行分类，然后按标签纬度进行分析数据。</p>
+<h3 id="数据库选型">数据库选型</h3>
+<p>该项目之前的数据是存放在Elasticsearch，但总是感觉ES的DSL语句过于繁琐不利于阅读且学习成本较高，内部针对该问题讨论之后选用了在大数据处理上同样出色的ClickHouse作为新功能的数据仓库（试点功能233）。</p>
+<h3 id="数据结构">数据结构</h3>
+<p>因为是列式数据库，所以不需要遵守<code>数据库三大范式</code>。</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">clickhouse</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/01/14/clickhouse-array-split-group/">More >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-go-coroutine-number" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -208,7 +315,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">361字</span>
+        <span class="post-count">363字</span>
       </span>
     </span>
 
@@ -227,7 +334,8 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>之前因为需要并发同步单张数据表的脚本，因为设置协程数量太多连接数过高导致服务宕机 … 得不偿失，所以想怎么控制一下协程数量</p>
-<h3 id="Channel"><a href="#Channel" class="headerlink" title="Channel"></a>Channel</h3><p>利用channel阻塞，上代码：</p>
+<h3 id="Channel">Channel</h3>
+<p>利用channel阻塞，上代码：</p>
         
       
 
@@ -309,7 +417,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">512字</span>
+        <span class="post-count">513字</span>
       </span>
     </span>
 
@@ -328,7 +436,8 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>最近接触一个项目，需要每天定时把PgSql一张数据量超大的数据表同步到ClickHouse 思考这种场景下怎么提高同步速度。</p>
-<h3 id="按主键分页"><a href="#按主键分页" class="headerlink" title="按主键分页"></a>按主键分页</h3><p>思路</p>
+<h3 id="按主键分页">按主键分页</h3>
+<p>思路</p>
 <blockquote>
 <p>按照主键排序分区间查询</p>
 </blockquote>
@@ -413,7 +522,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">609字</span>
+        <span class="post-count">610字</span>
       </span>
     </span>
 
@@ -432,10 +541,12 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>在程序中除了迭代器还有生成器均是可迭代对象，迭代器是通过移动游标来遍历数据，那生成器呢</p>
-<h3 id="生成器"><a href="#生成器" class="headerlink" title="生成器"></a>生成器</h3><p>生成器创建方式（python）</p>
+<h3 id="生成器">生成器</h3>
+<p>生成器创建方式（python）</p>
 <ul>
-<li>(表达式)<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">generator = (i <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]) // 这里有区别于 [i <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]]</span><br><span class="line"><span class="built_in">print</span>(generator)  <span class="comment"># &lt;generator object &lt;genexpr&gt; at 0x10c312870&gt;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(generator))  <span class="comment"># 1</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(generator))  <span class="comment"># 2</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(generator))  <span class="comment"># 3</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(generator))  <span class="comment"># raise StopIteration</span></span><br></pre></td></tr></table></figure></li>
+<li>(表达式)</li>
 </ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">generator = (i <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]) // 这里有区别于 [i <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]]</span><br><span class="line"><span class="built_in">print</span>(generator)  <span class="comment"># &lt;generator object &lt;genexpr&gt; at 0x10c312870&gt;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(generator))  <span class="comment"># 1</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(generator))  <span class="comment"># 2</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(generator))  <span class="comment"># 3</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(generator))  <span class="comment"># raise StopIteration</span></span><br></pre></td></tr></table></figure>
         
       
 
@@ -536,22 +647,28 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>游标（cursor）是可以从数据库检索结果集中每次提取一行记录的机制，游标的作用就是对结果集进行遍历，方便对记录进行操作。</p>
-<h3 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h3><p>三种特性：</p>
+<h3 id="特性">特性</h3>
+<p>三种特性：</p>
 <ul>
-<li>只读<blockquote>
+<li>只读</li>
+</ul>
+<blockquote>
 <p>不能更新它</p>
 </blockquote>
-</li>
-<li>非滚动<blockquote>
+<ul>
+<li>非滚动</li>
+</ul>
+<blockquote>
 <p>根据SQL语句确定顺序，不能向后获取记录和跳过记录</p>
 </blockquote>
-</li>
-<li>敏感&#x2F;不敏感<blockquote>
+<ul>
+<li>敏感/不敏感</li>
+</ul>
+<blockquote>
 <p>敏感游标指向的是数据表，不敏感游标指向的则是临时数据表。（Mysql使用的是敏感游标）</p>
 </blockquote>
-</li>
-</ul>
-<h3 id="声明游标"><a href="#声明游标" class="headerlink" title="声明游标"></a>声明游标</h3><p>游标使用的变量必须在声明游标之前声明</p>
+<h3 id="声明游标">声明游标</h3>
+<p>游标使用的变量必须在声明游标之前声明</p>
         
       
 
@@ -653,8 +770,8 @@ var _hmt = _hmt || [];
       
         <p>项目中某个定时任务执行过程中出现死锁问题，具体错误如下:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Error 1213: Deadlock found when trying to get lock; try restarting transaction</span><br></pre></td></tr></table></figure>
-
-<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>检查一下表引擎 &amp; 事务隔离级别</p>
+<h3 id="分析">分析</h3>
+<p>检查一下表引擎 &amp; 事务隔离级别</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show variables like <span class="string">&#x27;%storage_engine%&#x27;</span>;</span><br><span class="line">+---------------------------------+-----------+</span><br><span class="line">| Variable_name                   | Value     |</span><br><span class="line">+---------------------------------+-----------+</span><br><span class="line">| default_storage_engine          | InnoDB    |</span><br><span class="line">| default_tmp_storage_engine      | InnoDB    |</span><br><span class="line">| disabled_storage_engines        |           |</span><br><span class="line">| internal_tmp_mem_storage_engine | TempTable |</span><br><span class="line">+---------------------------------+-----------+</span><br><span class="line">4 rows <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> @@global.tx_isolation;</span><br><span class="line">ERROR 1193 (HY000): Unknown system variable <span class="string">&#x27;tx_isolation&#x27;</span> // Mysql8.0以后取消了该变量</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> @@transaction_isolation;</span><br><span class="line">+-------------------------+</span><br><span class="line">| @@transaction_isolation |</span><br><span class="line">+-------------------------+</span><br><span class="line">| REPEATABLE-READ         |</span><br><span class="line">+-------------------------+</span><br><span class="line">1 row <span class="keyword">in</span> <span class="built_in">set</span> (0.00 sec)</span><br></pre></td></tr></table></figure>
         
       
@@ -756,7 +873,8 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>之前项目数据表有分表设计，现在因为业务量增长数据表数据量膨胀数倍导致单表性能不理想 … 所以希望在不影响用户使用的情况下扩展数据表（迁移）</p>
-<h3 id="数据迁移方案"><a href="#数据迁移方案" class="headerlink" title="数据迁移方案"></a>数据迁移方案</h3><p>基本分为<code>热迁移</code>和<code>冷迁移</code>两种方式</p>
+<h3 id="数据迁移方案">数据迁移方案</h3>
+<p>基本分为<code>热迁移</code>和<code>冷迁移</code>两种方式</p>
 <ul>
 <li>冷迁移</li>
 </ul>
@@ -868,16 +986,17 @@ var _hmt = _hmt || [];
       
         <p>有时候git项目比较大，git clone会因为各种原因中断，但是Git并不会断点续“传”再次clone又是重新来过,类似这种问题…让人很是苦恼</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ error: RPC failed; HTTP 504 curl 22 The requested URL returned error: 504 Gateway Time-out</span><br><span class="line">$ ...</span><br><span class="line">$ error: RPC failed; curl 18 transfer closed with outstanding <span class="built_in">read</span> data remaining</span><br></pre></td></tr></table></figure>
-
-<h3 id="解决方式"><a href="#解决方式" class="headerlink" title="解决方式"></a>解决方式</h3><ul>
-<li><p>git配置流</p>
+<h3 id="解决方式">解决方式</h3>
+<ul>
+<li>git配置流</li>
+</ul>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ git config --global http.lowSpeedLimit 0 // 最小速度</span><br><span class="line">$ git config --global http.lowSpeedTime 999999 // 最大速度</span><br><span class="line">$ git config --global http.postBuffer 524288000 // 文件大小</span><br><span class="line">$ git config --global compression 0 // 关闭压缩</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>分块拉取</p>
+<ul>
+<li>分块拉取</li>
+</ul>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> --depth=1 &#123;repo&#125; // 拉取最新的代码（最后一次commit）</span><br></pre></td></tr></table></figure>
 <p>但这样会带来其他的小问题，就是拉下来的代码默认分支既不是master也不是其他分支 … 需要拉取完整的项目</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git fetch --unshallow // 拉取深层代码</span><br><span class="line">$ git config remote.origin.fetch <span class="string">&quot;+refs/heads/*:refs/remotes/origin/*&quot;</span> // 修正remote关系（修改之前: <span class="string">&quot;fetch = +refs/heads/master:refs/remotes/origin/master&quot;</span>）</span><br><span class="line">$ git fetch -pv // 拉取所有分支</span><br></pre></td></tr></table></figure></li>
-</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git fetch --unshallow // 拉取深层代码</span><br><span class="line">$ git config remote.origin.fetch <span class="string">&quot;+refs/heads/*:refs/remotes/origin/*&quot;</span> // 修正remote关系（修改之前: <span class="string">&quot;fetch = +refs/heads/master:refs/remotes/origin/master&quot;</span>）</span><br><span class="line">$ git fetch -pv // 拉取所有分支</span><br></pre></td></tr></table></figure>
 
       
 
@@ -891,11 +1010,11 @@ var _hmt = _hmt || [];
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">biscuits</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">biscuits</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -910,109 +1029,6 @@ var _hmt = _hmt || [];
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2021/11/01/git-depth/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-design-ioc-di" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/10/18/design-ioc-di/">设计模式 - 控制反转/依赖注入</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2020/10/18/design-ioc-di/" class="archive-article-date">
-  	<time datetime="2020-10-17T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-10-18</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">722字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">3分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Laravel框架中控制反转和依赖注入功能是怎么实现的？<br>其实控制反转和依赖注入是一种设计思想，它最早源于Java Spring框架设计中的机制，所以身边如果有做Java开发的小伙伴~简单聊聊就能明白许多。</p>
-<h3 id="1-依赖注入"><a href="#1-依赖注入" class="headerlink" title="1.依赖注入"></a>1.依赖注入</h3><p>依赖注入（Dependency Injection），通俗的解释是当我们构建对象时需要的参数，只要不是手动创建而是以实例对象的形式注入都可以称为依赖注入。</p>
-<p>举个例子，一个小游戏中玩家可以创建不同的职业。</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 职业接口</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Role</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 获取职业名</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getName</span>(<span class="params"></span>)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dh</span> <span class="keyword">implements</span> <span class="title">Role</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 职业名</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$name</span> = <span class="string">&#x27;猎魔人&#x27;</span>;</span><br><span class="line">    <span class="comment">// 攻击成长</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$attack</span>;</span><br><span class="line">    <span class="comment">// 速度成长</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$speed</span>;</span><br><span class="line">    <span class="comment">// 气血成长</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$hp</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$attack</span>,<span class="variable">$speed</span>,<span class="variable">$hp</span></span>) </span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;attack = <span class="variable">$attack</span>;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;speed = <span class="variable">$speed</span>;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;hp = <span class="variable">$hp</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getName</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 玩家类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Player</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 职业</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$role</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$role</span></span>) </span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;role = <span class="variable">$role</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 猎魔人</span></span><br><span class="line"><span class="variable">$dh</span> = <span class="keyword">new</span> <span class="title class_">Dh</span>(<span class="number">100</span>, <span class="number">100</span>, <span class="number">60</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 玩家1-&gt;猎魔人</span></span><br><span class="line"><span class="variable">$player1</span> = <span class="keyword">new</span> <span class="title class_">Player</span>(<span class="variable">$dh</span>);</span><br></pre></td></tr></table></figure>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">design</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/10/18/design-ioc-di/">More >></a>
         </p>
       
 
@@ -1138,7 +1154,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1150,15 +1170,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1182,11 +1206,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1231,18 +1259,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

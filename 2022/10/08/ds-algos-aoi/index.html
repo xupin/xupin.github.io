@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>数据结构与算法 - AOI | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="AOI（Area Of Interest）翻译过来称为“感兴趣的区域”，用于计算玩家与玩家（或其他 Entity）之间彼此进入、离开、移动视野的算法。通俗的解释比如，玩家离开某个地图时，计算出需要通知的其他玩家。 AOI 模块是多人联机游戏服务器中很重要的功能模块之一，AOI 模块的“好”与“坏”会很大程度上影响服务器的性能。 思路当一个玩家进入场景后，首先要计算出场景中的其他所有玩家并放进对象集">
+  <meta name="description" content="AOI（Area Of Interest）翻译过来称为“感兴趣的区域”，用于计算玩家与玩家（或其他 Entity）之间彼此进入、离开、移动视野的算法。通俗的解释比如，玩家离开某个地图时，计算出需要通知的其他玩家。 AOI 模块是多人联机游戏服务器中很重要的功能模块之一，AOI 模块的“好”与“坏”会很大程度上影响服务器的性能。 思路 当一个玩家进入场景后，首先要计算出场景中的其他所有玩家并放进对象">
 <meta property="og:type" content="article">
 <meta property="og:title" content="数据结构与算法 - AOI">
 <meta property="og:url" content="http://xupin.im/2022/10/08/ds-algos-aoi/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="AOI（Area Of Interest）翻译过来称为“感兴趣的区域”，用于计算玩家与玩家（或其他 Entity）之间彼此进入、离开、移动视野的算法。通俗的解释比如，玩家离开某个地图时，计算出需要通知的其他玩家。 AOI 模块是多人联机游戏服务器中很重要的功能模块之一，AOI 模块的“好”与“坏”会很大程度上影响服务器的性能。 思路当一个玩家进入场景后，首先要计算出场景中的其他所有玩家并放进对象集">
+<meta property="og:description" content="AOI（Area Of Interest）翻译过来称为“感兴趣的区域”，用于计算玩家与玩家（或其他 Entity）之间彼此进入、离开、移动视野的算法。通俗的解释比如，玩家离开某个地图时，计算出需要通知的其他玩家。 AOI 模块是多人联机游戏服务器中很重要的功能模块之一，AOI 模块的“好”与“坏”会很大程度上影响服务器的性能。 思路 当一个玩家进入场景后，首先要计算出场景中的其他所有玩家并放进对象">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://xupin.im/assets/aoi/grid9.png">
 <meta property="og:image" content="http://xupin.im/assets/aoi/tower.png">
@@ -32,6 +32,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -233,52 +234,48 @@ var _hmt = _hmt || [];
       
         <p>AOI（Area Of Interest）翻译过来称为“感兴趣的区域”，用于计算玩家与玩家（或其他 Entity）之间彼此进入、离开、移动视野的算法。通俗的解释比如，玩家离开某个地图时，计算出需要通知的其他玩家。</p>
 <p>AOI 模块是多人联机游戏服务器中很重要的功能模块之一，AOI 模块的“好”与“坏”会很大程度上影响服务器的性能。</p>
-<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>当一个玩家进入场景后，首先要计算出场景中的其他所有玩家并放进对象集合（又称观察者集合），之后该玩家的进入、移动、离开或其他行为都将会一一通知该集合内的玩家，并且每个玩家都需要维护这样一个对象集合。</p>
+<h3 id="思路">思路</h3>
+<p>当一个玩家进入场景后，首先要计算出场景中的其他所有玩家并放进对象集合（又称观察者集合），之后该玩家的进入、移动、离开或其他行为都将会一一通知该集合内的玩家，并且每个玩家都需要维护这样一个对象集合。</p>
 <blockquote>
 <p>Watchers 观察者集合，即能够看到我的其他玩家或实体。</p>
 </blockquote>
 <p>需要注意的是，<code>该对象集合内的玩家列表会随着玩家的行为发生变化，在玩家离开场景后清空对象集合</code>。</p>
 <span id="more"></span>
-
-<h3 id="全场景同步"><a href="#全场景同步" class="headerlink" title="全场景同步"></a>全场景同步</h3><p>即每个玩家都能看到进入该场景的所有玩家，那么所有进入该场景的玩家发生行为，AOI 场景管理器都会通知其他玩家。比如，我从地图 0,0 移动至地图 10,10 这样的行为。</p>
+<h3 id="全场景同步">全场景同步</h3>
+<p>即每个玩家都能看到进入该场景的所有玩家，那么所有进入该场景的玩家发生行为，AOI 场景管理器都会通知其他玩家。比如，我从地图 0,0 移动至地图 10,10 这样的行为。</p>
 <ul>
 <li>进入</li>
 </ul>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">玩家[pp]进入地图 0,0</span><br><span class="line">玩家[wl]进入地图 2,20</span><br><span class="line">       通知玩家[pp]进入视野</span><br><span class="line">玩家[sd]进入地图 0,4</span><br><span class="line">       通知玩家[pp]进入视野</span><br><span class="line">       通知玩家[wl]进入视野</span><br></pre></td></tr></table></figure>
-
 <ul>
 <li>移动</li>
 </ul>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">玩家[sd]进行移动 0,4 -&gt; 0,5</span><br><span class="line">       通知玩家[pp]进行移动</span><br><span class="line">       通知玩家[wl]进行移动</span><br></pre></td></tr></table></figure>
-
 <ul>
 <li>离开</li>
 </ul>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">玩家[sd]离开地图</span><br><span class="line">       通知玩家[pp]离开地图</span><br><span class="line">       通知玩家[wl]离开地图</span><br></pre></td></tr></table></figure>
-
 <p>但如果地图场景大、玩家数量多的场景下问题就凸显出来，服务器通信量将会十分巨大（玩家与玩家之间）。比如，在一款叫《绝地求生》的游戏中最大的地图是 8km*8km，假如两个玩家相距 6km，这两个玩家彼此之间还需要通信吗？</p>
-<h3 id="限制玩家视野"><a href="#限制玩家视野" class="headerlink" title="限制玩家视野"></a>限制玩家视野</h3><p>为了提高服务器运行效率，所以需要对玩家的可视范围（视野）进行一定限制，从而减少通信量。即每个玩家都只能看到视野内的其他玩家，当发生行为时也只会同步信息给这些玩家。</p>
+<h3 id="限制玩家视野">限制玩家视野</h3>
+<p>为了提高服务器运行效率，所以需要对玩家的可视范围（视野）进行一定限制，从而减少通信量。即每个玩家都只能看到视野内的其他玩家，当发生行为时也只会同步信息给这些玩家。</p>
 <p>比如，当每个玩家都只有 5 视野单位时：</p>
 <ul>
 <li>进入</li>
 </ul>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">玩家[pp]进入地图 0,0</span><br><span class="line">玩家[wl]进入地图 2,20</span><br><span class="line">玩家[sd]进入地图 0,4</span><br><span class="line">       通知玩家[pp]进入视野</span><br></pre></td></tr></table></figure>
-
 <ul>
 <li>移动</li>
 </ul>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">玩家[sd]进行移动 0,4 -&gt; 1,20</span><br><span class="line">       通知玩家[pp]离开视野</span><br><span class="line">       通知玩家[wl]进入视野</span><br></pre></td></tr></table></figure>
-
 <ul>
 <li>离开</li>
 </ul>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">玩家[sd]离开地图</span><br><span class="line">       通知玩家[wl]离开地图</span><br></pre></td></tr></table></figure>
-
 <p>对玩家进行了视野限制后，消息量会大幅下降。但因为会对场景内所有玩家进行暴力查找，所以检索效率并不高。</p>
-<h3 id="九宫格"><a href="#九宫格" class="headerlink" title="九宫格"></a>九宫格</h3><p>把地图网格化后，限制玩家的视野范围为 9 个格子。如图：</p>
+<h3 id="九宫格">九宫格</h3>
+<p>把地图网格化后，限制玩家的视野范围为 9 个格子。如图：</p>
 <img src="/assets/aoi/grid9.png" width="160" height="160"/>
-
-<p>一般设计是玩家的手机屏幕显示为 4&#x2F;9 格子，但真实视野为 1 ～ 9 网格，所以服务器只需要同步消息给玩家可视范围内的 9 个网格其他玩家。</p>
+<p>一般设计是玩家的手机屏幕显示为 4/9 格子，但真实视野为 1 ～ 9 网格，所以服务器只需要同步消息给玩家可视范围内的 9 个网格其他玩家。</p>
 <ul>
 <li>进入</li>
 </ul>
@@ -289,7 +286,8 @@ var _hmt = _hmt || [];
 <li>移动</li>
 </ul>
 <blockquote>
-<p>格子无变化，仅通知移动行为给九宫格内的玩家。<br>格子有变化，对格子进行交集、并集运算。并集，离开格子并通知格子内玩家离开行为，加入新格子并通知格子内玩家进入行为。交集，仅通知移动行为。</p>
+<p>格子无变化，仅通知移动行为给九宫格内的玩家。<br>
+格子有变化，对格子进行交集、并集运算。并集，离开格子并通知格子内玩家离开行为，加入新格子并通知格子内玩家进入行为。交集，仅通知移动行为。</p>
 </blockquote>
 <ul>
 <li>离开</li>
@@ -297,9 +295,9 @@ var _hmt = _hmt || [];
 <blockquote>
 <p>根据玩家坐标计算格子，把玩家从格子移除。通知九宫格内的玩家，有玩家离开场景。</p>
 </blockquote>
-<h3 id="灯塔"><a href="#灯塔" class="headerlink" title="灯塔"></a>灯塔</h3><p>灯塔是在九宫格的基础上进行优化，在把地图网格化的基础上划分区域（比如 4 个网格组成一个区域），每个区域有一个管理者：灯塔，这个管理者知晓当前区域的全部玩家。如图：</p>
+<h3 id="灯塔">灯塔</h3>
+<p>灯塔是在九宫格的基础上进行优化，在把地图网格化的基础上划分区域（比如 4 个网格组成一个区域），每个区域有一个管理者：灯塔，这个管理者知晓当前区域的全部玩家。如图：</p>
 <img src="/assets/aoi/tower.png" width="240" height="240"/>
-
 <p>每个灯塔维护两个对象集合：Watchers（观察者集合）、Markers（被观察者集合）。</p>
 <ul>
 <li>进入</li>
@@ -311,28 +309,29 @@ var _hmt = _hmt || [];
 <li>移动</li>
 </ul>
 <blockquote>
-<p>灯塔无变化，仅通知移动行为给玩家视野列表内的玩家。<br>灯塔有变化，对灯塔列表进行交集、并集运算。并集，从离开灯塔的 Watchers、Markers 移除该玩家，新进入灯塔的 Watchers、Markers 添加该玩家。 交集，仅通知移动行为。<br>对移动前后灯塔的 Watchers 进行并集运算。从离开的 Watchers 互相从对方的视野列表内移除，新进入的 Watchers 互相加进对方的视野列表。</p>
+<p>灯塔无变化，仅通知移动行为给玩家视野列表内的玩家。<br>
+灯塔有变化，对灯塔列表进行交集、并集运算。并集，从离开灯塔的 Watchers、Markers 移除该玩家，新进入灯塔的 Watchers、Markers 添加该玩家。 交集，仅通知移动行为。<br>
+对移动前后灯塔的 Watchers 进行并集运算。从离开的 Watchers 互相从对方的视野列表内移除，新进入的 Watchers 互相加进对方的视野列表。</p>
 </blockquote>
 <ul>
 <li>离开</li>
 </ul>
 <blockquote>
-<p>根据玩家坐标计算出灯塔，把玩家从该灯塔的 Markers 中移除。通知该灯塔所有 Watchers，有玩家离开场景。<br>找出该玩家视野内所有灯塔，把玩家从这些灯塔的 Watchers 中移除，同时把该玩家和视野列表内的所有玩家互相把对方从视野列表内移除。</p>
+<p>根据玩家坐标计算出灯塔，把玩家从该灯塔的 Markers 中移除。通知该灯塔所有 Watchers，有玩家离开场景。<br>
+找出该玩家视野内所有灯塔，把玩家从这些灯塔的 Watchers 中移除，同时把该玩家和视野列表内的所有玩家互相把对方从视野列表内移除。</p>
 </blockquote>
 <p>一般设计上灯塔坐标是需要转换的，类似于 Redis Cluster 的 slot 机制，通过转换玩家坐标来判断灯塔归属。</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Aoi)</span></span> transPos(x, y <span class="type">uint</span>) (<span class="type">uint</span>, <span class="type">uint</span>) &#123;</span><br><span class="line">    x = <span class="type">uint</span>(math.Floor(<span class="type">float64</span>(x) / <span class="type">float64</span>(r.TowerWidth)))</span><br><span class="line">    y = <span class="type">uint</span>(math.Floor(<span class="type">float64</span>(y) / <span class="type">float64</span>(r.TowerHeight)))</span><br><span class="line">    <span class="keyword">return</span> x, y</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Aoi)</span></span> getTower(x, y <span class="type">uint</span>) *Tower &#123;</span><br><span class="line">    x, y = r.transPos(x, y)</span><br><span class="line">    tower, ok := r.Towers[x][y]</span><br><span class="line">    <span class="keyword">if</span> !ok &#123;</span><br><span class="line">        fmt.Printf(<span class="string">&quot;灯塔[异常]不存在的灯塔: %d,%d \n&quot;</span>, x, y)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> tower</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="十字链表"><a href="#十字链表" class="headerlink" title="十字链表"></a>十字链表</h3><p>把 X、Y 轴分别以链表的形式存储，将玩家的坐标分别写入 X、Y 链表。需要注意的是：<code>两个链表的排序方式必须一致，比如都按照X、Y从小到大</code>。当玩家进入场景后根据当前坐标分别取出 X、Y 链表视距内的玩家列表取交集，这就是当前玩家视野范围内的其他玩家们。至于是进入、移动还是离开这些逻辑都和九宫格、灯塔其实是一样的。</p>
+<h3 id="十字链表">十字链表</h3>
+<p>把 X、Y 轴分别以链表的形式存储，将玩家的坐标分别写入 X、Y 链表。需要注意的是：<code>两个链表的排序方式必须一致，比如都按照X、Y从小到大</code>。当玩家进入场景后根据当前坐标分别取出 X、Y 链表视距内的玩家列表取交集，这就是当前玩家视野范围内的其他玩家们。至于是进入、移动还是离开这些逻辑都和九宫格、灯塔其实是一样的。</p>
 <p>定义 2 个链表</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Aoi <span class="keyword">struct</span> &#123;</span><br><span class="line">    list         <span class="keyword">map</span>[<span class="type">uint32</span>]*node</span><br><span class="line">    xList        *node</span><br><span class="line">    yList        *node</span><br><span class="line">    VisibleRange <span class="type">uint</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> node <span class="keyword">struct</span> &#123;</span><br><span class="line">    Id     <span class="type">uint32</span></span><br><span class="line">    xPrev  *node</span><br><span class="line">    xNext  *node</span><br><span class="line">    yPrev  *node</span><br><span class="line">    yNext  *node</span><br><span class="line">    x, y   <span class="type">uint</span></span><br><span class="line">    player *entity.Player</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>查找邻居节点</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Aoi)</span></span> findNeighbors(targetNode *node, model <span class="type">string</span>) <span class="keyword">map</span>[<span class="type">uint32</span>]*node &#123;</span><br><span class="line">    <span class="comment">// 感兴趣的邻居</span></span><br><span class="line">    neighbors := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="type">uint32</span>]*node, <span class="number">0</span>)</span><br><span class="line">    <span class="comment">// 向后找</span></span><br><span class="line">    <span class="keyword">for</span> cur := targetNode.xNext; cur != <span class="literal">nil</span>; cur = cur.xNext &#123;</span><br><span class="line">        <span class="comment">// 当前节点已经超出范围</span></span><br><span class="line">        <span class="keyword">if</span> cur.x-targetNode.x &gt; r.VisibleRange &#123;</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// y轴不符合</span></span><br><span class="line">        <span class="keyword">if</span> abs(<span class="type">int</span>(cur.y-targetNode.y)) &gt; <span class="type">int</span>(r.VisibleRange) &#123;</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        &#125;</span><br><span class="line">        neighbors[cur.Id] = cur</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 向前找</span></span><br><span class="line">    <span class="keyword">for</span> cur := targetNode.xPrev; cur != <span class="literal">nil</span>; cur = cur.xPrev &#123;</span><br><span class="line">        <span class="comment">// 当前节点已经超出范围</span></span><br><span class="line">        <span class="keyword">if</span> targetNode.x-cur.x &gt; r.VisibleRange &#123;</span><br><span class="line">            fmt.Println(targetNode.x, cur.x)</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// y轴不符合</span></span><br><span class="line">        <span class="keyword">if</span> abs(<span class="type">int</span>(targetNode.y-cur.y)) &gt; <span class="type">int</span>(r.VisibleRange) &#123;</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 已存在</span></span><br><span class="line">        <span class="keyword">if</span> _, ok := neighbors[cur.Id]; ok &#123;</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        &#125;</span><br><span class="line">        neighbors[cur.Id] = cur</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> neighbors</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>进入、移动及离开地图与其他方式一样</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Aoi)</span></span> addX(newNode *node) &#123;</span><br><span class="line">    <span class="keyword">var</span> (</span><br><span class="line">        prev *node</span><br><span class="line">        cur  *node</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">for</span> cur = r.xList; cur != <span class="literal">nil</span>; cur = cur.xNext &#123;</span><br><span class="line">        <span class="comment">// 插入cur之前</span></span><br><span class="line">        <span class="keyword">if</span> cur.x &gt; newNode.x &#123;</span><br><span class="line">            <span class="comment">// 根节点</span></span><br><span class="line">            <span class="keyword">if</span> cur.xPrev == <span class="literal">nil</span> &#123;</span><br><span class="line">                r.xList = newNode</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                newNode.xPrev = cur.xPrev <span class="comment">// 当前节点的前置节点作为新节点的前置节点</span></span><br><span class="line">                cur.xPrev.xNext = newNode <span class="comment">// 新节点成为当前节点的前置节点的后置节点</span></span><br><span class="line">            &#125;</span><br><span class="line">            cur.xPrev = newNode <span class="comment">// 新节点作为当前节点的前置节点</span></span><br><span class="line">            newNode.xNext = cur <span class="comment">// 当前节点作为新节点的后置节点</span></span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        &#125;</span><br><span class="line">        prev = cur</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 插入尾部</span></span><br><span class="line">    <span class="keyword">if</span> prev != <span class="literal">nil</span> &amp;&amp; cur == <span class="literal">nil</span> &#123;</span><br><span class="line">        prev.xNext = newNode</span><br><span class="line">        newNode.xPrev = prev</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Aoi)</span></span> addY(newNode *node) &#123;</span><br><span class="line">    <span class="keyword">var</span> (</span><br><span class="line">        prev *node</span><br><span class="line">        cur  *node</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">for</span> cur = r.yList; cur != <span class="literal">nil</span>; cur = cur.yNext &#123;</span><br><span class="line">        <span class="comment">// 插入cur之前</span></span><br><span class="line">        <span class="keyword">if</span> cur.y &gt; newNode.y &#123;</span><br><span class="line">            <span class="comment">// 根节点</span></span><br><span class="line">            <span class="keyword">if</span> cur.yPrev == <span class="literal">nil</span> &#123;</span><br><span class="line">                r.yList = newNode</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                newNode.yPrev = cur.yPrev <span class="comment">// 当前节点的前置节点作为新节点的前置节点</span></span><br><span class="line">                cur.yPrev.yNext = newNode <span class="comment">// 新节点成为当前节点的前置节点的后置节点</span></span><br><span class="line">            &#125;</span><br><span class="line">            cur.yPrev = newNode <span class="comment">// 新节点作为当前节点的前置节点</span></span><br><span class="line">            newNode.yNext = cur <span class="comment">// 当前节点作为新节点的后置节点</span></span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        &#125;</span><br><span class="line">        prev = cur</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 插入尾部</span></span><br><span class="line">    <span class="keyword">if</span> prev != <span class="literal">nil</span> &amp;&amp; cur == <span class="literal">nil</span> &#123;</span><br><span class="line">        prev.yNext = newNode</span><br><span class="line">        newNode.yPrev = prev</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>附上示例：<a href="https://github.com/xupin/aoi">aoi</a></p>
+<h3 id="最后">最后</h3>
+<p>附上示例：<a href="https://github.com/xupin/aoi">aoi</a></p>
 
       
 
@@ -605,7 +604,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -617,15 +620,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -649,11 +656,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -698,18 +709,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

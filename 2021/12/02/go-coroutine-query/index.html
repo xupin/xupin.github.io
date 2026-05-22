@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Go学习笔记 - 并发查询单表 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="最近接触一个项目，需要每天定时把PgSql一张数据量超大的数据表同步到ClickHouse 思考这种场景下怎么提高同步速度。 按主键分页思路  按照主键排序分区间查询">
+  <meta name="description" content="最近接触一个项目，需要每天定时把PgSql一张数据量超大的数据表同步到ClickHouse 思考这种场景下怎么提高同步速度。 按主键分页 思路  按照主键排序分区间查询">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Go学习笔记 - 并发查询单表">
 <meta property="og:url" content="http://xupin.im/2021/12/02/go-coroutine-query/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="最近接触一个项目，需要每天定时把PgSql一张数据量超大的数据表同步到ClickHouse 思考这种场景下怎么提高同步速度。 按主键分页思路  按照主键排序分区间查询">
+<meta property="og:description" content="最近接触一个项目，需要每天定时把PgSql一张数据量超大的数据表同步到ClickHouse 思考这种场景下怎么提高同步速度。 按主键分页 思路  按照主键排序分区间查询">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-12-01T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-07-15T02:59:17.750Z">
@@ -28,6 +28,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -209,7 +210,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">512字</span>
+        <span class="post-count">513字</span>
       </span>
     </span>
 
@@ -228,47 +229,47 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>最近接触一个项目，需要每天定时把PgSql一张数据量超大的数据表同步到ClickHouse 思考这种场景下怎么提高同步速度。</p>
-<h3 id="按主键分页"><a href="#按主键分页" class="headerlink" title="按主键分页"></a>按主键分页</h3><p>思路</p>
+<h3 id="按主键分页">按主键分页</h3>
+<p>思路</p>
 <blockquote>
 <p>按照主键排序分区间查询</p>
 </blockquote>
 <span id="more"></span>
-
 <p>代码</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;math&quot;</span></span><br><span class="line">	<span class="string">&quot;strconv&quot;</span></span><br><span class="line">	<span class="string">&quot;sync&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	maxId := <span class="number">203202</span></span><br><span class="line">	pageNum := <span class="number">1500</span></span><br><span class="line">	num, _ := strconv.ParseFloat(fmt.Sprintf(<span class="string">&quot;%.2f&quot;</span>, <span class="type">float64</span>(maxId)/<span class="type">float64</span>(pageNum)), <span class="number">64</span>)</span><br><span class="line">	maxPage := <span class="type">int</span>(math.Ceil(num))</span><br><span class="line"></span><br><span class="line">	wg := &amp;sync.WaitGroup&#123;&#125;</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; maxPage; i++ &#123;</span><br><span class="line">		wg.Add(<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(i <span class="type">int</span>)</span></span> &#123;</span><br><span class="line">			<span class="keyword">defer</span> wg.Done()</span><br><span class="line"></span><br><span class="line">			startId := (i * pageNum)</span><br><span class="line">			endId := startId + pageNum</span><br><span class="line">			<span class="keyword">if</span> endId &gt; maxId &#123;</span><br><span class="line">				endId = maxId</span><br><span class="line">			&#125;</span><br><span class="line">			sql := fmt.Sprintf(<span class="string">&quot;select * from logs where id &gt;= %d and id &lt;= %d&quot;</span>, startId, endId)</span><br><span class="line"></span><br><span class="line">			fmt.Printf(<span class="string">&quot;第 %d 页 SQL: %s\n&quot;</span>, i+<span class="number">1</span>, sql)</span><br><span class="line">		&#125;(i)</span><br><span class="line">	&#125;</span><br><span class="line">	wg.Wait()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <ul>
-<li><p>优点</p>
+<li>优点</li>
+</ul>
 <blockquote>
 <p>命中索引查询</p>
 </blockquote>
-</li>
-<li><p>缺点</p>
+<ul>
+<li>缺点</li>
+</ul>
 <blockquote>
 <p>PgSql设置主键会影响插入和查询速度，这也是为什么PgSql数据表一般不设置主键的原因</p>
 </blockquote>
-</li>
-</ul>
-<h3 id="游标"><a href="#游标" class="headerlink" title="游标"></a>游标</h3><p>思路</p>
+<h3 id="游标">游标</h3>
+<p>思路</p>
 <blockquote>
 <p>多个协程获取同一个游标的数据</p>
 </blockquote>
 <p>代码</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;project/postgresql&quot;</span></span><br><span class="line">	<span class="string">&quot;math&quot;</span></span><br><span class="line">	<span class="string">&quot;strconv&quot;</span></span><br><span class="line">	<span class="string">&quot;sync&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// pgSql client</span></span><br><span class="line">	cli := postgresql.GetClient()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// trx</span></span><br><span class="line">	tx, err := cli.Begin()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 计算多少个coroutine</span></span><br><span class="line">	cnt := <span class="number">0</span></span><br><span class="line">	cli.QueryRow(<span class="string">&quot;select count(*) from logs&quot;</span>).Scan(&amp;cnt)</span><br><span class="line">	pageNum := <span class="number">1500</span></span><br><span class="line">	num, _ := strconv.ParseFloat(fmt.Sprintf(<span class="string">&quot;%.2f&quot;</span>, <span class="type">float64</span>(cnt)/<span class="type">float64</span>(pageNum)), <span class="number">64</span>)</span><br><span class="line">	maxPage := <span class="type">int</span>(math.Ceil(num))</span><br><span class="line"></span><br><span class="line">	<span class="comment">// cursor</span></span><br><span class="line">	cursorName := <span class="string">&quot;cursor_name&quot;</span></span><br><span class="line">	cursorQuery := <span class="string">&quot;select * from logs&quot;</span></span><br><span class="line">	tx.Query(<span class="string">&quot;DECLARE &quot;</span> + cursorName + <span class="string">&quot; CURSOR FOR &quot;</span> + cursorQuery)</span><br><span class="line"></span><br><span class="line">	wg := &amp;sync.WaitGroup&#123;&#125;</span><br><span class="line">	lock := &amp;sync.Mutex&#123;&#125;</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">1</span>; i &lt;= maxPage; i++ &#123;</span><br><span class="line">		wg.Add(<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(i <span class="type">int</span>)</span></span> &#123;</span><br><span class="line">			<span class="keyword">defer</span> wg.Done()</span><br><span class="line"></span><br><span class="line">			<span class="comment">// 互斥锁</span></span><br><span class="line">			lock.Lock()</span><br><span class="line"></span><br><span class="line">			<span class="comment">// 每次取&#123;pageNum&#125;条</span></span><br><span class="line">			rows, err := tx.Query(<span class="string">&quot;FETCH FORWARD &quot;</span> + strconv.Itoa(pageNum) + <span class="string">&quot; FROM &quot;</span> + cursorName)</span><br><span class="line">			<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">				<span class="built_in">panic</span>(err)</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">defer</span> rows.Close()</span><br><span class="line"></span><br><span class="line">			<span class="comment">// 处理迭代逻辑</span></span><br><span class="line">			<span class="comment">// for rows.Next() &#123;</span></span><br><span class="line"></span><br><span class="line">			<span class="comment">// &#125;</span></span><br><span class="line">			fmt.Printf(<span class="string">&quot;第 %d 页 结果: %v\n&quot;</span>, i, rows)</span><br><span class="line"></span><br><span class="line">			<span class="comment">// 解锁</span></span><br><span class="line">			<span class="comment">// TODO 一定要迭代完成后再解锁</span></span><br><span class="line">			lock.Unlock()</span><br><span class="line">		&#125;(i)</span><br><span class="line">	&#125;</span><br><span class="line">	wg.Wait()</span><br><span class="line">	tx.Commit()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <ul>
-<li><p>优点</p>
+<li>优点</li>
+</ul>
 <blockquote>
 <p>能保证数据的完整，可靠性较高</p>
 </blockquote>
-</li>
-<li><p>缺点</p>
+<ul>
+<li>缺点</li>
+</ul>
 <blockquote>
 <p>必须等待结果集迭代完成后才能处理下一个</p>
 </blockquote>
-</li>
-</ul>
-<h3 id="为啥不用-offset-limit"><a href="#为啥不用-offset-limit" class="headerlink" title="为啥不用 offset, limit"></a>为啥不用 offset, limit</h3><p>因为<code>offset, limit</code>会扫全表 233</p>
+<h3 id="为啥不用-offset-limit">为啥不用 offset, limit</h3>
+<p>因为<code>offset, limit</code>会扫全表 233</p>
 
       
 
@@ -537,7 +538,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -549,15 +554,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -581,11 +590,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -630,18 +643,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

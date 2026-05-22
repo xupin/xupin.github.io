@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>数据结构与算法 - JPS | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="JPS 寻路算法是基于 A*计算过程中查找节点冗余、效率较低等问题优化的一种算法。 背景A*是比较常见的寻路算法，但存在一个较为明显的问题，当移动到新的节点总是会把相邻节点（4、8）加入到待查找列表。这样带来两个问题  在多条移动路径成本相同时，冗余查找。  待查找节点过多，内存使用率过高。">
+  <meta name="description" content="JPS 寻路算法是基于 A*计算过程中查找节点冗余、效率较低等问题优化的一种算法。 背景 A*是比较常见的寻路算法，但存在一个较为明显的问题，当移动到新的节点总是会把相邻节点（4、8）加入到待查找列表。这样带来两个问题   在多条移动路径成本相同时，冗余查找。   待查找节点过多，内存使用率过高。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="数据结构与算法 - JPS">
 <meta property="og:url" content="http://xupin.im/2022/08/12/ds-algos-jps/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="JPS 寻路算法是基于 A*计算过程中查找节点冗余、效率较低等问题优化的一种算法。 背景A*是比较常见的寻路算法，但存在一个较为明显的问题，当移动到新的节点总是会把相邻节点（4、8）加入到待查找列表。这样带来两个问题  在多条移动路径成本相同时，冗余查找。  待查找节点过多，内存使用率过高。">
+<meta property="og:description" content="JPS 寻路算法是基于 A*计算过程中查找节点冗余、效率较低等问题优化的一种算法。 背景 A*是比较常见的寻路算法，但存在一个较为明显的问题，当移动到新的节点总是会把相邻节点（4、8）加入到待查找列表。这样带来两个问题   在多条移动路径成本相同时，冗余查找。   待查找节点过多，内存使用率过高。">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://xupin.im/assets/jps/forced-neighbour/diagonal.jpg">
 <meta property="og:image" content="http://xupin.im/assets/jps/forced-neighbour/vertical.jpg">
@@ -35,6 +35,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -235,25 +236,31 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>JPS 寻路算法是基于 A*计算过程中查找节点冗余、效率较低等问题优化的一种算法。</p>
-<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>A*是比较常见的寻路算法，但存在一个较为明显的问题，当移动到新的节点总是会把相邻节点（4、8）加入到待查找列表。这样带来两个问题</p>
+<h3 id="背景">背景</h3>
+<p>A*是比较常见的寻路算法，但存在一个较为明显的问题，当移动到新的节点总是会把相邻节点（4、8）加入到待查找列表。这样带来两个问题</p>
 <ol>
-<li><p>在多条移动路径成本相同时，冗余查找。</p>
+<li>
+<p>在多条移动路径成本相同时，冗余查找。</p>
 </li>
-<li><p>待查找节点过多，内存使用率过高。</p>
+<li>
+<p>待查找节点过多，内存使用率过高。</p>
 </li>
 </ol>
 <span id="more"></span>
-
-<h3 id="JPS"><a href="#JPS" class="headerlink" title="JPS"></a>JPS</h3><p>JPS 全称“Jump search point”，又称“跳点搜索”、“拐点搜索”，由两位澳大利亚教授 2011 年提出（<a href="https://ojs.aaai.org/index.php/AAAI/article/view/7994">论文</a>）。</p>
+<h3 id="JPS">JPS</h3>
+<p>JPS 全称“Jump search point”，又称“跳点搜索”、“拐点搜索”，由两位澳大利亚教授 2011 年提出（<a href="https://ojs.aaai.org/index.php/AAAI/article/view/7994">论文</a>）。</p>
 <p>JPS 寻路算法保留 A*的主体逻辑，不一样的是 JPS 只会把感兴趣的节点加入到待查找列表，怎样计算出感兴趣的节点呢？以下 2 个概念眼熟一下</p>
 <ol>
-<li><p>强迫邻居</p>
+<li>
+<p>强迫邻居</p>
 </li>
-<li><p>跳点（拐点）</p>
+<li>
+<p>跳点（拐点）</p>
 </li>
 </ol>
 <p>通过有没有强迫邻居判断当前节点是否跳点，也就是感兴趣的节点。</p>
-<h3 id="强迫邻居"><a href="#强迫邻居" class="headerlink" title="强迫邻居"></a>强迫邻居</h3><p>强迫邻居的定义：</p>
+<h3 id="强迫邻居">强迫邻居</h3>
+<p>强迫邻居的定义：</p>
 <blockquote>
 <p>节点 x 的 8 个邻居中有障碍，且 x 的父节点 p 经过 x 到达 n 的距离代价比不经过 x 到达的 n 的任意路径的距离代价小，则称 n 是 x 的强迫邻居。</p>
 </blockquote>
@@ -262,59 +269,65 @@ var _hmt = _hmt || [];
 <li>对角移动</li>
 </ul>
 <img src="/assets/jps/forced-neighbour/diagonal.jpg" width="300" height="300"/>
-
 <ul>
 <li>垂直移动</li>
 </ul>
 <img src="/assets/jps/forced-neighbour/vertical.jpg" width="300" height="300"/>
-
 <ol start="3">
 <li>水平移动</li>
 </ol>
 <img src="/assets/jps/forced-neighbour/horizontal.jpg" width="300" height="300"/>
-
 <p>绿色是<code>父节点</code>，红色是<code>障碍物</code>，x 是<code>当前节点</code>，n 是<code>强迫邻居</code>。</p>
 <p>通俗的解释就是，在指定移动方向上“强迫”当前节点改变移动方向的节点就是当前节点的强迫邻居，同时当前节点也是跳点，跳点和强迫邻居都相邻障碍节点。</p>
-<h3 id="跳点（拐点）"><a href="#跳点（拐点）" class="headerlink" title="跳点（拐点）"></a>跳点（拐点）</h3><p>知道如果有强迫邻居改变当前节点移动方向，那么当前节点就被视为跳点，这是判断跳点的条件之一。判断当前节点是否跳点的任一条件：</p>
+<h3 id="跳点（拐点）">跳点（拐点）</h3>
+<p>知道如果有强迫邻居改变当前节点移动方向，那么当前节点就被视为跳点，这是判断跳点的条件之一。判断当前节点是否跳点的任一条件：</p>
 <ol>
-<li><p>当前节点是起点或终点。</p>
+<li>
+<p>当前节点是起点或终点。</p>
 </li>
-<li><p>当前节点拥有强迫邻居。</p>
+<li>
+<p>当前节点拥有强迫邻居。</p>
 </li>
-<li><p>如果移动方向是对角移动，当前节点的垂直、水平方向上的节点满足条件 1 或条件 2，当前节点一样被视为跳点。</p>
+<li>
+<p>如果移动方向是对角移动，当前节点的垂直、水平方向上的节点满足条件 1 或条件 2，当前节点一样被视为跳点。</p>
 </li>
 </ol>
 <p>条件 3 可能有些难理解，示意图:</p>
 <img src="/assets/jps/jump-point.jpg" width="400" height="250"/>
-
 <p>黄色网格 1、2、3 都是<code>跳点</code>，网格 1 因为满足“当前节点的垂直、水平方向上的节点满足条件 1 或条件 2，当前节点一样被视为跳点”条件（网格 2 是跳点），所以也是跳点。</p>
-<h3 id="寻路思路"><a href="#寻路思路" class="headerlink" title="寻路思路"></a>寻路思路</h3><ol>
-<li><p>把起点放进待查找节点列表。</p>
+<h3 id="寻路思路">寻路思路</h3>
+<ol>
+<li>
+<p>把起点放进待查找节点列表。</p>
 </li>
-<li><p>从待查找节点列表里面取出一个，判断该节点是否是终点，如果不是则查找该节点的相邻节点。</p>
+<li>
+<p>从待查找节点列表里面取出一个，判断该节点是否是终点，如果不是则查找该节点的相邻节点。</p>
 </li>
-<li><p>遍历相邻节点，判断节点是否已查找过，否则对相邻节点进行跳点查找并对跳点进行估价，同时把当前节点设为跳点到父节点，如果跳点是终点则返回，否则把跳点加入到待查找节点列表。</p>
+<li>
+<p>遍历相邻节点，判断节点是否已查找过，否则对相邻节点进行跳点查找并对跳点进行估价，同时把当前节点设为跳点到父节点，如果跳点是终点则返回，否则把跳点加入到待查找节点列表。</p>
 </li>
-<li><p>对待查找节点列表按 <code>f</code> 值进行排序，取最小值。重复 2、3、4 步骤，直至找到终点坐标（最终的跳点）。</p>
+<li>
+<p>对待查找节点列表按 <code>f</code> 值进行排序，取最小值。重复 2、3、4 步骤，直至找到终点坐标（最终的跳点）。</p>
 </li>
 </ol>
 <p>完整的寻路过程：</p>
 <img src="/assets/jps/full.jpg" width="400" height="250"/>
-
 <p>以上寻路过程，JPS 和 A*寻路过程的区别在于跳点查找：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 跳点函数</span></span><br><span class="line"><span class="comment">// 判断当前点是否满足跳点条件</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Jps)</span></span> jump(node, parent *Node) *Node &#123;</span><br><span class="line">	<span class="comment">// 是终点，直接返回</span></span><br><span class="line">	<span class="keyword">if</span> r.isEnd(node) &#123;</span><br><span class="line">		<span class="keyword">return</span> node</span><br><span class="line">	&#125;</span><br><span class="line">	x, y := node.X, node.Y</span><br><span class="line">	dx, dy := r.direction(node, parent)</span><br><span class="line">	<span class="comment">// 对角移动</span></span><br><span class="line">	<span class="keyword">if</span> dx != <span class="number">0</span> &amp;&amp; dy != <span class="number">0</span> &#123;</span><br><span class="line">		<span class="comment">// [左|右]不能走 &amp;&amp; [左上|左下|右上|右下]能走</span></span><br><span class="line">		<span class="keyword">if</span> !r.isWalkable(x-dx, y) &amp;&amp; r.isWalkable(x-dx, y+dy) &#123;</span><br><span class="line">			<span class="keyword">return</span> node</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// [上|下]不能走 &amp;&amp; [左上|右上|左下|右下]能走</span></span><br><span class="line">		<span class="keyword">if</span> !r.isWalkable(x, y-dy) &amp;&amp; r.isWalkable(x+dx, y-dy) &#123;</span><br><span class="line">			<span class="keyword">return</span> node</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 递归查找方向[上|下]继续查找</span></span><br><span class="line">		<span class="keyword">if</span> r.isWalkable(x+dx, y) &amp;&amp; r.jump(r.nodes[x+dx][y], node) != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> node</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 递归查找方向[左|右]继续查找</span></span><br><span class="line">		<span class="keyword">if</span> r.isWalkable(x, y+dy) &amp;&amp; r.jump(r.nodes[x][y+dy], node) != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> node</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> dx == <span class="number">0</span> &#123; <span class="comment">// 垂直移动</span></span><br><span class="line">		<span class="comment">// 右不能走 &amp;&amp; [右下|右上]能走</span></span><br><span class="line">		<span class="keyword">if</span> !r.isWalkable(x+<span class="number">1</span>, y) &amp;&amp; r.isWalkable(x+<span class="number">1</span>, y+dy) &#123;</span><br><span class="line">			<span class="keyword">return</span> node</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 左不能走 &amp;&amp; [左上|左下]能走</span></span><br><span class="line">		<span class="keyword">if</span> !r.isWalkable(x<span class="number">-1</span>, y) &amp;&amp; r.isWalkable(x<span class="number">-1</span>, y+dy) &#123;</span><br><span class="line">			<span class="keyword">return</span> node</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123; <span class="comment">// 水平移动</span></span><br><span class="line">		<span class="comment">// 下不能走 &amp;&amp; [左下|右下]能走</span></span><br><span class="line">		<span class="keyword">if</span> !r.isWalkable(x, y+<span class="number">1</span>) &amp;&amp; r.isWalkable(x+dx, y+<span class="number">1</span>) &#123;</span><br><span class="line">			<span class="keyword">return</span> node</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 上不能走 &amp;&amp; [左上|右上]能走</span></span><br><span class="line">		<span class="keyword">if</span> !r.isWalkable(x, y<span class="number">-1</span>) &amp;&amp; r.isWalkable(x+dx, y<span class="number">-1</span>) &#123;</span><br><span class="line">			<span class="keyword">return</span> node</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 递归查找方向[左上|左下|右上|右下]继续查找</span></span><br><span class="line">	<span class="keyword">if</span> r.isWalkable(x+dx, y+dy) &#123;</span><br><span class="line">		<span class="keyword">if</span> next := r.jump(r.nodes[x+dx][y+dy], node); next != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> next</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 无强迫邻居（当前节点不是跳点）或到达边界</span></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>同时，为了减少查找不必要的节点，查找相邻节点的函数也有优化</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 查找相邻节点位置</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Jps)</span></span> findNeighbors(node *Node) []*Node &#123;</span><br><span class="line">	neighbors := <span class="built_in">make</span>([]*Node, <span class="number">0</span>)</span><br><span class="line">	<span class="comment">// 第一次移动</span></span><br><span class="line">	<span class="keyword">if</span> node.Parent == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">for</span> _, v := <span class="keyword">range</span> r.neighborPos &#123;</span><br><span class="line">			x, y := node.X+v[<span class="number">0</span>], node.Y+v[<span class="number">1</span>]</span><br><span class="line">			<span class="comment">// 检测节点是否非法</span></span><br><span class="line">			<span class="keyword">if</span> !r.isWalkable(x, y) &#123;</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			&#125;</span><br><span class="line">			neighbors = <span class="built_in">append</span>(neighbors, r.nodes[x][y])</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="comment">// 计算当前节点位于父节点的方向：水平、垂直和对角方向</span></span><br><span class="line">		x, y := node.X, node.Y</span><br><span class="line">		dx, dy := r.direction(node, node.Parent)</span><br><span class="line">		<span class="comment">// 移动方向上的下一个</span></span><br><span class="line">		<span class="keyword">if</span> r.isWalkable(x+dx, y+dy) &#123;</span><br><span class="line">			neighbors = <span class="built_in">append</span>(neighbors, r.nodes[x+dx][y+dy])</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 对角移动</span></span><br><span class="line">		<span class="keyword">if</span> dx != <span class="number">0</span> &amp;&amp; dy != <span class="number">0</span> &#123;</span><br><span class="line">			<span class="comment">// [左|右]能走</span></span><br><span class="line">			<span class="keyword">if</span> r.isWalkable(x+dx, y) &#123;</span><br><span class="line">				neighbors = <span class="built_in">append</span>(neighbors, r.nodes[x+dx][y])</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">// [上|下]能走</span></span><br><span class="line">			<span class="keyword">if</span> r.isWalkable(x, y+dy) &#123;</span><br><span class="line">				neighbors = <span class="built_in">append</span>(neighbors, r.nodes[x][y+dy])</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">// [左|右]不能走 &amp;&amp; [左上|左下|右上|右下]能走</span></span><br><span class="line">			<span class="keyword">if</span> !r.isWalkable(x-dx, y) &amp;&amp; r.isWalkable(x-dx, y+dy) &#123;</span><br><span class="line">				neighbors = <span class="built_in">append</span>(neighbors, r.nodes[x-dx][y+dy])</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">// [上|下]不能走 &amp;&amp; [左上|右上|左下|右下]能走</span></span><br><span class="line">			<span class="keyword">if</span> !r.isWalkable(x, y-dy) &amp;&amp; r.isWalkable(x+dx, y-dy) &#123;</span><br><span class="line">				neighbors = <span class="built_in">append</span>(neighbors, r.nodes[x+dx][y-dy])</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">else</span> <span class="keyword">if</span> dx == <span class="number">0</span> &#123; <span class="comment">// 垂直移动</span></span><br><span class="line">			<span class="comment">// 右不能走 &amp;&amp; [右下|右上]能走</span></span><br><span class="line">			<span class="keyword">if</span> !r.isWalkable(x+<span class="number">1</span>, y) &amp;&amp; r.isWalkable(x+<span class="number">1</span>, y+dy) &#123;</span><br><span class="line">				neighbors = <span class="built_in">append</span>(neighbors, r.nodes[x+<span class="number">1</span>][y+dy])</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">// 左不能走 &amp;&amp; [左上|左下]能走</span></span><br><span class="line">			<span class="keyword">if</span> !r.isWalkable(x<span class="number">-1</span>, y) &amp;&amp; r.isWalkable(x<span class="number">-1</span>, y+dy) &#123;</span><br><span class="line">				neighbors = <span class="built_in">append</span>(neighbors, r.nodes[x<span class="number">-1</span>][y+dy])</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123; <span class="comment">// 水平移动</span></span><br><span class="line">			<span class="comment">// 下不能走 &amp;&amp; [左下|右下]能走</span></span><br><span class="line">			<span class="keyword">if</span> !r.isWalkable(x, y+<span class="number">1</span>) &amp;&amp; r.isWalkable(x+dx, y+<span class="number">1</span>) &#123;</span><br><span class="line">				neighbors = <span class="built_in">append</span>(neighbors, r.nodes[x+dx][y+<span class="number">1</span>])</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">// 上不能走 &amp;&amp; [左上|右上]能走</span></span><br><span class="line">			<span class="keyword">if</span> !r.isWalkable(x, y<span class="number">-1</span>) &amp;&amp; r.isWalkable(x+dx, y<span class="number">-1</span>) &#123;</span><br><span class="line">				neighbors = <span class="built_in">append</span>(neighbors, r.nodes[x+dx][y<span class="number">-1</span>])</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> neighbors</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>完整代码：<a href="https://github.com/xupin/jps">jps</a></p>
-<h3 id="关于其他优化点"><a href="#关于其他优化点" class="headerlink" title="关于其他优化点"></a>关于其他优化点</h3><p>有很多值得优化的细节，</p>
+<h3 id="关于其他优化点">关于其他优化点</h3>
+<p>有很多值得优化的细节，</p>
 <ol>
-<li><p>因为是网格寻路，客户端角色走路会出现拐直角的表现（平滑路径，比如：弗洛伊德算法）。</p>
+<li>
+<p>因为是网格寻路，客户端角色走路会出现拐直角的表现（平滑路径，比如：弗洛伊德算法）。</p>
 </li>
-<li><p>待查找节点列表可以用二叉堆实现，插入和弹出效率都很高。</p>
+<li>
+<p>待查找节点列表可以用二叉堆实现，插入和弹出效率都很高。</p>
 </li>
-<li><p>地图节点使用数组存储，检索效率较高。</p>
+<li>
+<p>地图节点使用数组存储，检索效率较高。</p>
 </li>
 </ol>
 
@@ -589,7 +602,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -601,15 +618,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -633,11 +654,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -682,18 +707,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>游戏开发笔记 - 链表优化（快慢指针） | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="优化链表查询效率 前言链表在操作的时候需要从头节点遍历到目标节点，如果数据量大比较耗时。当链表应用在 AOI 算法（十字链表，双有序链表）时这个效率问题更会凸显，最坏的情况是遍历 x*y*{v}个节点。 优化方案常见的 2 种优化方式：  快慢针   创建 2 个指针同时指向头节点，快指针移动步长大、慢指针移动步长小，查询时通过快慢指针确定目标节点的范围。   跳表   链表每固定步长的节点为索引">
+  <meta name="description" content="优化链表查询效率 前言 链表在操作的时候需要从头节点遍历到目标节点，如果数据量大比较耗时。当链表应用在 AOI 算法（十字链表，双有序链表）时这个效率问题更会凸显，最坏的情况是遍历 x*y*{v}个节点。 优化方案 常见的 2 种优化方式：  快慢针   创建 2 个指针同时指向头节点，快指针移动步长大、慢指针移动步长小，查询时通过快慢指针确定目标节点的范围。   跳表   链表每固定步长的节点为">
 <meta property="og:type" content="article">
 <meta property="og:title" content="游戏开发笔记 - 链表优化（快慢指针）">
 <meta property="og:url" content="http://xupin.im/2023/11/21/game-aoi-list-fast/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="优化链表查询效率 前言链表在操作的时候需要从头节点遍历到目标节点，如果数据量大比较耗时。当链表应用在 AOI 算法（十字链表，双有序链表）时这个效率问题更会凸显，最坏的情况是遍历 x*y*{v}个节点。 优化方案常见的 2 种优化方式：  快慢针   创建 2 个指针同时指向头节点，快指针移动步长大、慢指针移动步长小，查询时通过快慢指针确定目标节点的范围。   跳表   链表每固定步长的节点为索引">
+<meta property="og:description" content="优化链表查询效率 前言 链表在操作的时候需要从头节点遍历到目标节点，如果数据量大比较耗时。当链表应用在 AOI 算法（十字链表，双有序链表）时这个效率问题更会凸显，最坏的情况是遍历 x*y*{v}个节点。 优化方案 常见的 2 种优化方式：  快慢针   创建 2 个指针同时指向头节点，快指针移动步长大、慢指针移动步长小，查询时通过快慢指针确定目标节点的范围。   跳表   链表每固定步长的节点为">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-11-20T16:00:00.000Z">
 <meta property="article:modified_time" content="2025-09-18T08:13:22.725Z">
@@ -28,6 +28,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -228,8 +229,10 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>优化链表查询效率</p>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>链表在操作的时候需要从头节点遍历到目标节点，如果数据量大比较耗时。当链表应用在 AOI 算法（十字链表，双有序链表）时这个效率问题更会凸显，最坏的情况是遍历 x*y*{v}个节点。</p>
-<h3 id="优化方案"><a href="#优化方案" class="headerlink" title="优化方案"></a>优化方案</h3><p>常见的 2 种优化方式：</p>
+<h3 id="前言">前言</h3>
+<p>链表在操作的时候需要从头节点遍历到目标节点，如果数据量大比较耗时。当链表应用在 AOI 算法（十字链表，双有序链表）时这个效率问题更会凸显，最坏的情况是遍历 x*y*{v}个节点。</p>
+<h3 id="优化方案">优化方案</h3>
+<p>常见的 2 种优化方式：</p>
 <ol>
 <li>快慢针</li>
 </ol>
@@ -244,18 +247,23 @@ var _hmt = _hmt || [];
 </blockquote>
 <p>原理类似 ClickHouse 的<code>跳数索引</code>，可以存在多个索引链表。</p>
 <span id="more"></span>
-
-<h3 id="快慢针"><a href="#快慢针" class="headerlink" title="快慢针"></a>快慢针</h3><p>假设一个从小到大的有序链表，检索流程</p>
+<h3 id="快慢针">快慢针</h3>
+<p>假设一个从小到大的有序链表，检索流程</p>
 <ol>
-<li><p>创建 2 个指针同时指向头节点</p>
+<li>
+<p>创建 2 个指针同时指向头节点</p>
 </li>
-<li><p>快指针移动一次</p>
+<li>
+<p>快指针移动一次</p>
 </li>
-<li><p>检查目标节点值是否小于快指针的节点值</p>
+<li>
+<p>检查目标节点值是否小于快指针的节点值</p>
 <ul>
-<li><p>小于，把慢指针的位置移动到快指针的位置，从步骤 2 继续执行。</p>
+<li>
+<p>小于，把慢指针的位置移动到快指针的位置，从步骤 2 继续执行。</p>
 </li>
-<li><p>大于，说明目标节点值在慢指针的节点位置和快指针的节点位置中间，从慢指针开始遍历。</p>
+<li>
+<p>大于，说明目标节点值在慢指针的节点位置和快指针的节点位置中间，从慢指针开始遍历。</p>
 </li>
 </ul>
 </li>
@@ -263,7 +271,6 @@ var _hmt = _hmt || [];
 <p>快慢针实现简单，且不需要修改链表结构。但查询效率不够稳定，与链表数据大小、快慢针步长的设计有一定关系。</p>
 <p>链表结构</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Aoi <span class="keyword">struct</span> &#123;</span><br><span class="line">    nodes        <span class="keyword">map</span>[<span class="type">uint32</span>]*node</span><br><span class="line">    xList        *list</span><br><span class="line">    yList        *list</span><br><span class="line">    visibleRange <span class="type">uint</span></span><br><span class="line">    step         <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> list <span class="keyword">struct</span> &#123;</span><br><span class="line">    head *node</span><br><span class="line">    tail *node</span><br><span class="line">    size <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> node <span class="keyword">struct</span> &#123;</span><br><span class="line">    Id     <span class="type">uint32</span></span><br><span class="line">    xPrev  *node</span><br><span class="line">    xNext  *node</span><br><span class="line">    yPrev  *node</span><br><span class="line">    yNext  *node</span><br><span class="line">    x, y   <span class="type">uint</span></span><br><span class="line">    player *entity.Player</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>x 轴插入节点（y 轴逻辑一致）</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Aoi)</span></span> addX(targetNode *node) &#123;</span><br><span class="line">    <span class="comment">// 直接插入尾部</span></span><br><span class="line">    <span class="keyword">if</span> r.xList.tail.x &lt;= targetNode.x &#123;</span><br><span class="line">        r.xList.tail.xNext = targetNode</span><br><span class="line">        targetNode.xPrev = r.xList.tail</span><br><span class="line">        r.xList.tail = targetNode</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">var</span> (</span><br><span class="line">        prev *node</span><br><span class="line">        slow = r.xList.head</span><br><span class="line">        skip = <span class="type">int</span>(math.Ceil(<span class="type">float64</span>(r.xList.size) / <span class="type">float64</span>(r.step)))</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; r.step; i++ &#123;</span><br><span class="line">        <span class="comment">// 移动快指针</span></span><br><span class="line">        fast := r.xFastMove(slow, skip)</span><br><span class="line">        <span class="comment">// 快指针的坐标小于插入坐标，移动慢指针至快指针位置</span></span><br><span class="line">        <span class="keyword">if</span> fast.x &lt; targetNode.x &#123;</span><br><span class="line">            slow = fast</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> ; slow != <span class="literal">nil</span>; slow = slow.xNext &#123;</span><br><span class="line">            <span class="comment">// 插入cur之前</span></span><br><span class="line">            <span class="keyword">if</span> slow.x &gt;= targetNode.x &#123;</span><br><span class="line">                <span class="comment">// 根节点</span></span><br><span class="line">                <span class="keyword">if</span> slow.xPrev == <span class="literal">nil</span> &#123;</span><br><span class="line">                    r.xList.head = targetNode</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    targetNode.xPrev = slow.xPrev <span class="comment">// 当前节点的前置节点作为新节点的前置节点</span></span><br><span class="line">                    slow.xPrev.xNext = targetNode <span class="comment">// 新节点成为当前节点的前置节点的后置节点</span></span><br><span class="line">                &#125;</span><br><span class="line">                slow.xPrev = targetNode <span class="comment">// 新节点作为当前节点的前置节点</span></span><br><span class="line">                targetNode.xNext = slow <span class="comment">// 当前节点作为新节点的后置节点</span></span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            &#125;</span><br><span class="line">            prev = slow</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 插入尾部</span></span><br><span class="line">        <span class="keyword">if</span> prev != <span class="literal">nil</span> &amp;&amp; slow == <span class="literal">nil</span> &#123;</span><br><span class="line">            prev.xNext = targetNode</span><br><span class="line">            targetNode.xPrev = prev</span><br><span class="line">            r.xList.tail = targetNode</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *AoiMgr)</span></span> removeX(delNode *aoiNode) &#123;</span><br><span class="line">    <span class="comment">// 根节点</span></span><br><span class="line">    <span class="keyword">if</span> delNode.xPrev == <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> delNode.xNext == <span class="literal">nil</span> &#123;</span><br><span class="line">            r.xList.head, r.xList.tail = <span class="literal">nil</span>, <span class="literal">nil</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            r.xList.head = delNode.xNext</span><br><span class="line">            r.xList.head.xPrev = <span class="literal">nil</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> delNode.xNext == <span class="literal">nil</span> &#123; <span class="comment">// 尾节点</span></span><br><span class="line">        delNode.xPrev.xNext = <span class="literal">nil</span></span><br><span class="line">        r.xList.tail = delNode.xPrev</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> delNode.xNext != <span class="literal">nil</span> &#123;</span><br><span class="line">        delNode.xPrev.xNext = delNode.xNext</span><br><span class="line">        delNode.xNext.xPrev = delNode.xPrev</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        delNode.xPrev.xNext = <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">    delNode.xPrev, delNode.xNext = <span class="literal">nil</span>, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Aoi)</span></span> xFastMove(cur *node, skip <span class="type">int</span>) *node &#123;</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">1</span>; i &lt;= skip; i++ &#123;</span><br><span class="line">        <span class="keyword">if</span> cur.xNext == <span class="literal">nil</span> &#123;</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        &#125;</span><br><span class="line">        cur = cur.xNext</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> cur</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -534,7 +541,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -546,15 +557,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -578,11 +593,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -627,18 +646,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

@@ -25,6 +25,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -183,6 +184,133 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-redis-replication" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <!-- 标题 -->
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/25/redis-replication/">Redis学习笔记 - 主从复制</a>
+    </h1>
+  
+
+        <!-- 发布日期 -->
+        
+        <a href="/2020/03/25/redis-replication/" class="archive-article-date">
+  	<time datetime="2020-03-24T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-25</time>
+</a>
+        
+        <!-- 字数统计 -->
+        
+          <div style="margin-top:10px;">
+    <span class="post-time">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-keyboard-o"></i>
+        <span class="post-meta-item-text">  全文 ≈</span>
+        <span class="post-count">1.6k字</span>
+      </span>
+    </span>
+
+    <span class="post-time">
+      &nbsp; | &nbsp;
+      <span class="post-meta-item-icon">
+        <i class="fa fa-hourglass-half"></i>
+        <span class="post-meta-item-text">  预计阅读时长</span>
+        <span class="post-count">5分钟</span>
+      </span>
+    </span>
+</div>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Redis单点配置的情况下如果服务出现故障宕机，那么服务也就处于不可用状态，假如是生产环境那么带来的后果会有很严重，所以出现了高可用方案：集群策略。</p>
+<h3 id="1-三种集群策略">1.三种集群策略</h3>
+<p>Redis提供了三种集群策略，它们分别是：</p>
+<ul>
+<li>主从复制（Replication）</li>
+<li>哨兵（Sentinel）</li>
+<li>集群（Cluster）</li>
+</ul>
+<p>这三种策略会逐一学习，本篇主要学习策略之一主从复制（Replication）。</p>
+<h3 id="2-主从复制的概念">2.主从复制的概念</h3>
+<p>在主从复制（Replication）策略中，服务分为两类：Master节点、Slave节点。</p>
+<ul>
+<li>
+<p>特点</p>
+<ol>
+<li>Master节点可以拥有多个Slave节点，但Slave节点只能服务一个Master节点。</li>
+<li>数据复制方向只能是Master节点-&gt;Slave节点。</li>
+</ol>
+</li>
+<li>
+<p>优点</p>
+<ol>
+<li>实现了多机热数据备份，提高了面对宕机数据恢复的灾备能力。</li>
+<li>在主从复制的基础上实现读写分离提高服务吞吐量，即：Master节点提供写服务，Slave节点提供读服务。</li>
+<li>如果Master节点宕机可以快速切换使用Slave节点提供服务。</li>
+</ol>
+</li>
+</ul>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/03/25/redis-replication/">More >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-mysql-sharding-partition" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -227,8 +355,10 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>之前在复习Mysql主从知识的同时，小伙伴考了我一个问题，分片和分区有什么差别 … 乍一听可能只是名词上的不同，但其实它们俩的确不是同一个东西。</p>
-<h3 id="1-什么是分片（Sharding）？"><a href="#1-什么是分片（Sharding）？" class="headerlink" title="1.什么是分片（Sharding）？"></a>1.什么是分片（Sharding）？</h3><p>我们举个例子，一张文章表。<br>结构如下：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `mark`.`article`  (</span><br><span class="line">  `id` <span class="type">int</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  `type` <span class="type">varchar</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;类型&#x27;</span>,</span><br><span class="line">  `title` <span class="type">varchar</span>(<span class="number">255</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;标题&#x27;</span>,</span><br><span class="line">  `content` longtext <span class="keyword">NOT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;内容&#x27;</span>,</span><br><span class="line">  `author` <span class="type">varchar</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;作者&#x27;</span>,</span><br><span class="line">  `<span class="type">date</span>` datetime <span class="keyword">NOT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;日期&#x27;</span>,</span><br><span class="line">  <span class="keyword">PRIMARY</span> KEY (`id`)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<h3 id="1-什么是分片（Sharding）？">1.什么是分片（Sharding）？</h3>
+<p>我们举个例子，一张文章表。<br>
+结构如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE TABLE</span> `mark`.`article`  (</span><br><span class="line">  `id` <span class="type">int</span> <span class="keyword">NOT NULL</span> AUTO_INCREMENT,</span><br><span class="line">  `type` <span class="type">varchar</span>(<span class="number">20</span>) <span class="keyword">NOT NULL</span> COMMENT <span class="string">&#x27;类型&#x27;</span>,</span><br><span class="line">  `title` <span class="type">varchar</span>(<span class="number">255</span>) <span class="keyword">NOT NULL</span> COMMENT <span class="string">&#x27;标题&#x27;</span>,</span><br><span class="line">  `content` longtext <span class="keyword">NOT NULL</span> COMMENT <span class="string">&#x27;内容&#x27;</span>,</span><br><span class="line">  `author` <span class="type">varchar</span>(<span class="number">20</span>) <span class="keyword">NOT NULL</span> COMMENT <span class="string">&#x27;作者&#x27;</span>,</span><br><span class="line">  `<span class="type">date</span>` datetime <span class="keyword">NOT NULL</span> COMMENT <span class="string">&#x27;日期&#x27;</span>,</span><br><span class="line">  <span class="keyword">PRIMARY KEY</span> (`id`)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
 <p>需求如下：</p>
 <ol>
 <li>用户打开app会直接展示文章列表（类型，标题，作者，日期）</li>
@@ -336,17 +466,20 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>之前学习了LRU算法和Mysql缓冲池使用的LRU变体算法，其中有个共同点就是当LRU链表写满以后如果再有新数据进来会淘汰尾部的数据，那么Mysql淘汰这些尾部数据的时候是否会进行什么操作呢？这就是我们在最后提到了一个参数<code>Modified db pages</code>，即脏页。</p>
-<h3 id="1-什么是脏页？"><a href="#1-什么是脏页？" class="headerlink" title="1.什么是脏页？"></a>1.什么是脏页？</h3><ul>
+<h3 id="1-什么是脏页？">1.什么是脏页？</h3>
+<ul>
 <li>脏页，这个名词很抽象从字面意思去看可能很不解，脏页是当内存中的数据页和磁盘中的数据页内容不一致时，这个数据页称之为脏页。因为从操作系统的角度来讲，自己读入的数据被外部所修改等于被污染，所以叫脏页。</li>
 <li>当内存中的数据页和磁盘中的数据页数据一致，叫干净页。</li>
 </ul>
-<h3 id="2-脏页什么时候会刷新？"><a href="#2-脏页什么时候会刷新？" class="headerlink" title="2.脏页什么时候会刷新？"></a>2.脏页什么时候会刷新？</h3><ol>
+<h3 id="2-脏页什么时候会刷新？">2.脏页什么时候会刷新？</h3>
+<ol>
 <li>缓冲池（buffer pool）空间不足，也就是LRU链表写满时，新数据进来时淘汰掉的尾部数据脏页。</li>
 <li>redo log不可用时，需要强制将脏页列表中的一些数据页刷入磁盘。</li>
 <li>Mysql在服务器负载较小时，会主动进行刷脏操作。</li>
 <li>Mysql服务正常关闭，会刷新所有脏页。</li>
 </ol>
-<h3 id="3-什么是redo-log？"><a href="#3-什么是redo-log？" class="headerlink" title="3.什么是redo log？"></a>3.什么是redo log？</h3><p>InnoDB中两块非常重要的日志，一个是undo log，另外一个就是我们接下来要学习的redo log。前者用来保证事务的原子性以及InnoDB的MVCC（Mutil-Version Concurrency Control），后者用来保证事务的持久性。</p>
+<h3 id="3-什么是redo-log？">3.什么是redo log？</h3>
+<p>InnoDB中两块非常重要的日志，一个是undo log，另外一个就是我们接下来要学习的redo log。前者用来保证事务的原子性以及InnoDB的MVCC（Mutil-Version Concurrency Control），后者用来保证事务的持久性。</p>
 <p>那么什么时候写redo log呢？当数据库对数据做修改的时候，需要把数据页从磁盘读到缓冲池中，然后在缓冲池中进行修改。但是InnoDB采用的是WAL（Write Ahead Log）策略来防止数据丢失，也就是事务提交时，先写redo log才会再去修改内存数据页。</p>
 <p>redo log的文件名默认以ib_logfile{NUM}，存储在my.cnf中datadir目录下面，受以下两个参数控制</p>
 <ul>
@@ -457,20 +590,23 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="1-什么是LRU？"><a href="#1-什么是LRU？" class="headerlink" title="1.什么是LRU？"></a>1.什么是LRU？</h3><p>LRU（Least recently used，最近最少使用）算法根据数据的历史访问记录来进行淘汰数据，其核心思想是“最近使用的页面数据会在未来一段时期内仍然被使用,已经很久没有使用的页面很有可能在未来较长的一段时间内仍然不会被使用”。</p>
-<h3 id="2-LRU的实现"><a href="#2-LRU的实现" class="headerlink" title="2.LRU的实现"></a>2.LRU的实现</h3><p>LRU算法最常见的实现是使用链表来保存数据，该链表是双向链表，然后利用先进先出的特性，最新写入的数据会最快被获取。</p>
+        <h3 id="1-什么是LRU？">1.什么是LRU？</h3>
+<p>LRU（Least recently used，最近最少使用）算法根据数据的历史访问记录来进行淘汰数据，其核心思想是“最近使用的页面数据会在未来一段时期内仍然被使用,已经很久没有使用的页面很有可能在未来较长的一段时间内仍然不会被使用”。</p>
+<h3 id="2-LRU的实现">2.LRU的实现</h3>
+<p>LRU算法最常见的实现是使用链表来保存数据，该链表是双向链表，然后利用先进先出的特性，最新写入的数据会最快被获取。</p>
 <ul>
 <li>访问不存在的数据时，缓存数据则会写入链表的头部，链表写满时会淘汰掉尾部的缓存数据。</li>
 <li>当缓存数据被访问时，则将该缓存数据向链表头部移动。</li>
 </ul>
-<p><img src="/assets/lru/struct.png"></p>
+<p><img src="/assets/lru/struct.png" alt=""></p>
 <blockquote>
 <p>优点：面对频繁访问的热点数据，查询效率高</p>
 </blockquote>
 <blockquote>
 <p>缺点：如果一次查询扫描全表，那么LRU列表会被污染</p>
 </blockquote>
-<h3 id="3-Mysql-LRU算法有何不同？"><a href="#3-Mysql-LRU算法有何不同？" class="headerlink" title="3.Mysql LRU算法有何不同？"></a>3.Mysql LRU算法有何不同？</h3><p>Mysql（InnoDB）的缓冲池（buffer pool）使用了LRU算法的变体，将链表分为三个部分：young、midpoint、old。链表比例(5、3)分配给young、old。其中young占据5&#x2F;8，old占据3&#x2F;8，此比例受参数innodb_old_blocks_pct控制。</p>
+<h3 id="3-Mysql-LRU算法有何不同？">3.Mysql LRU算法有何不同？</h3>
+<p>Mysql（InnoDB）的缓冲池（buffer pool）使用了LRU算法的变体，将链表分为三个部分：young、midpoint、old。链表比例(5、3)分配给young、old。其中young占据5/8，old占据3/8，此比例受参数innodb_old_blocks_pct控制。</p>
 <blockquote>
 <p>young是链表中最近访问过的新子表。</p>
 </blockquote>
@@ -561,7 +697,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">407字</span>
+        <span class="post-count">409字</span>
       </span>
     </span>
 
@@ -580,22 +716,25 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>创建数据表的时候我们总是要考虑存储数据的字段该用哪种类型、多少长度比较合适，不过在Mysql中如果字段类型是Int，此时长度是不生效的。</p>
-<h3 id="1-Int类型的长度问题"><a href="#1-Int类型的长度问题" class="headerlink" title="1.Int类型的长度问题"></a>1.Int类型的长度问题</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `test` (</span><br><span class="line">  `id` int(3) NOT NULL,</span><br><span class="line">  `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,</span><br><span class="line">  PRIMARY KEY (`id`)</span><br><span class="line">) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci</span><br></pre></td></tr></table></figure>
+<h3 id="1-Int类型的长度问题">1.Int类型的长度问题</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `test` (</span><br><span class="line">  `id` int(3) NOT NULL,</span><br><span class="line">  `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,</span><br><span class="line">  PRIMARY KEY (`id`)</span><br><span class="line">) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci</span><br></pre></td></tr></table></figure>
 <p>有这样一张表，<code>id</code>是Int类型长度3的字段，那么理论上是不能存储长度超过3的值，比如：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO `test`(`id`, `name`) VALUES (1000000, &#x27;name&#x27;);</span><br></pre></td></tr></table></figure>
 <p>不过结果是意外的，这条数据可以正常写入。</p>
-<h3 id="2-Int类型的长度为什么不生效"><a href="#2-Int类型的长度为什么不生效" class="headerlink" title="2.Int类型的长度为什么不生效"></a>2.Int类型的长度为什么不生效</h3><p>翻了一下Mysql的<a href="https://dev.mysql.com/doc/refman/5.6/en/data-types.html">数据类型文档</a>，发现这么一句话：</p>
+<h3 id="2-Int类型的长度为什么不生效">2.Int类型的长度为什么不生效</h3>
+<p>翻了一下Mysql的<a href="https://dev.mysql.com/doc/refman/5.6/en/data-types.html">数据类型文档</a>，发现这么一句话：</p>
 <blockquote>
 <p>对于整数类型，M表示最大显示宽度。 对于浮点和定点类型，M是可以存储的总位数（精度）。 对于字符串类型，M是最大长度。 M的最大允许值取决于数据类型。</p>
 </blockquote>
 <p>所以这个Int类型的“长度”其实叫宽度，也可以理解为显示长度。</p>
-<h3 id="3-如果存储的数据长度低于显示宽度会怎样？"><a href="#3-如果存储的数据长度低于显示宽度会怎样？" class="headerlink" title="3.如果存储的数据长度低于显示宽度会怎样？"></a>3.如果存储的数据长度低于显示宽度会怎样？</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO `test`(`id`, `name`) VALUES (1, &#x27;name&#x27;);</span><br></pre></td></tr></table></figure>
+<h3 id="3-如果存储的数据长度低于显示宽度会怎样？">3.如果存储的数据长度低于显示宽度会怎样？</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO `test`(`id`, `name`) VALUES (1, &#x27;name&#x27;);</span><br></pre></td></tr></table></figure>
 <p>当然是可以写入的，但是好像并没有什么特别的不一样，不过我们再执行一条SQL</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE `test` MODIFY COLUMN `id` int(3) UNSIGNED ZEROFILL;</span><br></pre></td></tr></table></figure>
 <p>这次数据产生变化了，变成了这样</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">id      |   name</span><br><span class="line">001     |   name</span><br><span class="line">1000000 |   name</span><br></pre></td></tr></table></figure>
-
-<h3 id="4-为什么要设计显示宽度？"><a href="#4-为什么要设计显示宽度？" class="headerlink" title="4.为什么要设计显示宽度？"></a>4.为什么要设计显示宽度？</h3><p>我也没有得出明确的答案，和小伙伴讨论这个问题~ta觉得是为了方便<code>排序</code>，你觉得呢？</p>
+<h3 id="4-为什么要设计显示宽度？">4.为什么要设计显示宽度？</h3>
+<p>我也没有得出明确的答案，和小伙伴讨论这个问题~ta觉得是为了方便<code>排序</code>，你觉得呢？</p>
 
       
 
@@ -677,7 +816,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">434字</span>
+        <span class="post-count">435字</span>
       </span>
     </span>
 
@@ -696,8 +835,10 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>每一个任务都需要编写一个Crontab命令，这是件很麻烦且很不友好的事情。 任务调度器允许你以代码的形式定义调度命令，并且服务器上只需要一个Crontab命令即可, 任务调度又是我们俗称的 “计划任务”</p>
-<h3 id="1-工欲善其事，必先利其器"><a href="#1-工欲善其事，必先利其器" class="headerlink" title="1.工欲善其事，必先利其器"></a>1.工欲善其事，必先利其器</h3><p>Github一番搜索，发现Golang有个cron包（<a href="https://github.com/robfig/cron">robfig&#x2F;cron</a>）大概满足需求，于是学习一下。</p>
-<h3 id="2-介绍"><a href="#2-介绍" class="headerlink" title="2.介绍"></a>2.介绍</h3><p>看了一遍文档，cron包支持的已经很全面了~~~不用自己造轮子了。</p>
+<h3 id="1-工欲善其事，必先利其器">1.工欲善其事，必先利其器</h3>
+<p>Github一番搜索，发现Golang有个cron包（<a href="https://github.com/robfig/cron">robfig/cron</a>）大概满足需求，于是学习一下。</p>
+<h3 id="2-介绍">2.介绍</h3>
+<p>看了一遍文档，cron包支持的已经很全面了~~~不用自己造轮子了。</p>
 <p>表达式</p>
 <blockquote>
 <p>兼容Linux的crontab表达式（支持分钟级别）。</p>
@@ -819,10 +960,11 @@ var _hmt = _hmt || [];
       
         <p>PHP 项目在数据库迁移使用 ADB（aliyundb）时发现这个问题，具体错误描述是：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SQLSTATE</span>[HY000]: General error: <span class="number">1815</span> [<span class="number">15022</span>, <span class="number">2020010711034801025210201503151413416</span>] statement type: class com.alibaba.fastsql.sql.ast.statement.SQLSetStatement <span class="keyword">is</span> <span class="keyword">NOT</span> supported<span class="operator">!</span> (<span class="keyword">SQL</span>: <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> `users`)</span><br></pre></td></tr></table></figure>
-
 <p>在排查该问题的过程中，尝试了各种方式，降版本、使用原生语句等，甚至查找 ADB 手册和 Issue 还是无法解决。</p>
-<h3 id="1-原因"><a href="#1-原因" class="headerlink" title="1.原因"></a>1.原因</h3><p>因为 ADB 兼容 Mysql 但是有些机制还是略有不同，阅读源码后发现比如：ADB 就不能很好的支持本地预处理语句，这也是该异常的原因。</p>
-<h3 id="2-解决方案"><a href="#2-解决方案" class="headerlink" title="2.解决方案"></a>2.解决方案</h3><p>PHP PDO 链接的属性值<code>PDO::ATTR_EMULATE_PREPARES</code>需要设置为<code>true</code></p>
+<h3 id="1-原因">1.原因</h3>
+<p>因为 ADB 兼容 Mysql 但是有些机制还是略有不同，阅读源码后发现比如：ADB 就不能很好的支持本地预处理语句，这也是该异常的原因。</p>
+<h3 id="2-解决方案">2.解决方案</h3>
+<p>PHP PDO 链接的属性值<code>PDO::ATTR_EMULATE_PREPARES</code>需要设置为<code>true</code></p>
 <figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PDO::<span class="function"><span class="params">ATTR_EMULATE_PREPARES</span> =&gt;</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
 
       
@@ -924,7 +1066,8 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p><a href="https://github.com/gin-gonic/gin">Gin</a> 是一个用 Go (Golang) 编写的 HTTP web 框架。 它是一个类似于 martini 但拥有更好性能的 API 框架, 由于 httprouter，速度提高了近 40 倍。</p>
-<h3 id="1-有哪些优点"><a href="#1-有哪些优点" class="headerlink" title="1.有哪些优点"></a>1.有哪些优点</h3><blockquote>
+<h3 id="1-有哪些优点">1.有哪些优点</h3>
+<blockquote>
 <p>较高的性能（<a href="https://github.com/julienschmidt/go-http-routing-benchmark">Golang Web框架比对数据</a>）</p>
 </blockquote>
 <blockquote>
@@ -968,140 +1111,6 @@ var _hmt = _hmt || [];
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/12/31/go-gin/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-elasticsearch-group" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/17/elasticsearch-group/">ES学习笔记 - 实现列分组统计</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2019/12/17/elasticsearch-group/" class="archive-article-date">
-  	<time datetime="2019-12-16T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-17</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">705字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">3分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Elasticsearch是Elastic Stack核心的分布式搜索和分析引擎。</p>
-<h3 id="1-背景"><a href="#1-背景" class="headerlink" title="1.背景"></a>1.背景</h3><p>因为业务调整采用了ES作为数据库，所以需要了解ES对于这一块的设计如何实现类似Mysql中Group By的查询的效果。</p>
-<h3 id="2-实现方式"><a href="#2-实现方式" class="headerlink" title="2.实现方式"></a>2.实现方式</h3><p>ES实现Group By有两种方式：TermsAgg、CompositeAgg，它们也具有不同程度的优缺点。</p>
-<p>TermsAgg的使用方式非常粗暴，直接进行桶嵌套即可，如下:</p>
-<p>TermsAgg请求DSL语句</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">	<span class="attr">&quot;aggregations&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">		<span class="attr">&quot;group_app&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">			<span class="attr">&quot;terms&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">				<span class="attr">&quot;field&quot;</span><span class="punctuation">:</span> <span class="string">&quot;app&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;size&quot;</span><span class="punctuation">:</span> <span class="number">1000000</span></span><br><span class="line">			<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;aggregations&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">				<span class="attr">&quot;group_campaign_id&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">					<span class="attr">&quot;terms&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">						<span class="attr">&quot;field&quot;</span><span class="punctuation">:</span> <span class="string">&quot;campaign_id&quot;</span><span class="punctuation">,</span></span><br><span class="line">						<span class="attr">&quot;size&quot;</span><span class="punctuation">:</span> <span class="number">1000000</span></span><br><span class="line">					<span class="punctuation">&#125;</span></span><br><span class="line">				<span class="punctuation">&#125;</span></span><br><span class="line">			<span class="punctuation">&#125;</span></span><br><span class="line">		<span class="punctuation">&#125;</span></span><br><span class="line">	<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;size&quot;</span><span class="punctuation">:</span> <span class="number">0</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-
-<p>TermsAgg执行结果</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;took&quot;</span><span class="punctuation">:</span> <span class="number">142</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;timed_out&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;_shards&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;total&quot;</span><span class="punctuation">:</span> <span class="number">5</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;successful&quot;</span><span class="punctuation">:</span> <span class="number">5</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;skipped&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;failed&quot;</span><span class="punctuation">:</span> <span class="number">0</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hits&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;total&quot;</span><span class="punctuation">:</span> <span class="number">175033</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;max_score&quot;</span><span class="punctuation">:</span> <span class="number">0.0</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;hits&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;aggregations&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;group_app&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;doc_count_error_upper_bound&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;sum_other_doc_count&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;buckets&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;com.aa.bb.cc&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;doc_count&quot;</span><span class="punctuation">:</span> <span class="number">59929</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;group_campaign_id&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                        <span class="attr">&quot;doc_count_error_upper_bound&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">                        <span class="attr">&quot;sum_other_doc_count&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">                        <span class="attr">&quot;buckets&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                            <span class="punctuation">&#123;</span></span><br><span class="line">                                <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Campaign_118&quot;</span><span class="punctuation">,</span></span><br><span class="line">                                <span class="attr">&quot;doc_count&quot;</span><span class="punctuation">:</span> <span class="number">56466</span></span><br><span class="line">                            <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">                            <span class="punctuation">&#123;</span></span><br><span class="line">                                <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Campaign_119&quot;</span><span class="punctuation">,</span></span><br><span class="line">                                <span class="attr">&quot;doc_count&quot;</span><span class="punctuation">:</span> <span class="number">1937</span></span><br><span class="line">                            <span class="punctuation">&#125;</span></span><br><span class="line">                        <span class="punctuation">]</span></span><br><span class="line">                    <span class="punctuation">&#125;</span></span><br><span class="line">                <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;com.dd.ee.ff&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;doc_count&quot;</span><span class="punctuation">:</span> <span class="number">23231</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;group_campaign_id&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                        <span class="attr">&quot;doc_count_error_upper_bound&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">                        <span class="attr">&quot;sum_other_doc_count&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">                        <span class="attr">&quot;buckets&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                            <span class="punctuation">&#123;</span></span><br><span class="line">                                <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Campaign_120&quot;</span><span class="punctuation">,</span></span><br><span class="line">                                <span class="attr">&quot;doc_count&quot;</span><span class="punctuation">:</span> <span class="number">16692</span></span><br><span class="line">                            <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">                            <span class="punctuation">&#123;</span></span><br><span class="line">                                <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Campaign_121&quot;</span><span class="punctuation">,</span></span><br><span class="line">                                <span class="attr">&quot;doc_count&quot;</span><span class="punctuation">:</span> <span class="number">5336</span></span><br><span class="line">                            <span class="punctuation">&#125;</span></span><br><span class="line">                        <span class="punctuation">]</span></span><br><span class="line">                    <span class="punctuation">&#125;</span></span><br><span class="line">                <span class="punctuation">&#125;</span></span><br><span class="line">            <span class="punctuation">]</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-
-<p>CompositeAgg的使用方式略微有一些不同，下面：</p>
-<p>CompositeAgg请求DSL语句</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">	<span class="attr">&quot;aggregations&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">		<span class="attr">&quot;group_by&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">			<span class="attr">&quot;composite&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">				<span class="attr">&quot;sources&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">					<span class="punctuation">&#123;</span></span><br><span class="line">					    <span class="attr">&quot;app&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">					        <span class="attr">&quot;terms&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">					            <span class="attr">&quot;field&quot;</span><span class="punctuation">:</span> <span class="string">&quot;app&quot;</span></span><br><span class="line">					        <span class="punctuation">&#125;</span></span><br><span class="line">					    <span class="punctuation">&#125;</span></span><br><span class="line">					<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">					<span class="punctuation">&#123;</span></span><br><span class="line">					    <span class="attr">&quot;campaign_id&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">						    <span class="attr">&quot;terms&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">						        <span class="attr">&quot;field&quot;</span><span class="punctuation">:</span> <span class="string">&quot;campaign_id&quot;</span></span><br><span class="line">						    <span class="punctuation">&#125;</span></span><br><span class="line">					    <span class="punctuation">&#125;</span></span><br><span class="line">					<span class="punctuation">&#125;</span></span><br><span class="line">				<span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;size&quot;</span><span class="punctuation">:</span> <span class="number">1000</span></span><br><span class="line">			<span class="punctuation">&#125;</span></span><br><span class="line">		<span class="punctuation">&#125;</span></span><br><span class="line">	<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;size&quot;</span><span class="punctuation">:</span> <span class="number">0</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-
-<p>CompositeAgg执行结果</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;took&quot;</span><span class="punctuation">:</span> <span class="number">14</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;timed_out&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;_shards&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;total&quot;</span><span class="punctuation">:</span> <span class="number">5</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;successful&quot;</span><span class="punctuation">:</span> <span class="number">5</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;skipped&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;failed&quot;</span><span class="punctuation">:</span> <span class="number">0</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hits&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;total&quot;</span><span class="punctuation">:</span> <span class="number">175033</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;max_score&quot;</span><span class="punctuation">:</span> <span class="number">0.0</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;hits&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;aggregations&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;group_by&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;after_key&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;app&quot;</span><span class="punctuation">:</span> <span class="string">&quot;com.dd.ee.ff&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;campaign_id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Campaign_120&quot;</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;buckets&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                        <span class="attr">&quot;app&quot;</span><span class="punctuation">:</span> <span class="string">&quot;com.aa.bb.cc&quot;</span><span class="punctuation">,</span></span><br><span class="line">                        <span class="attr">&quot;campaign_id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Campaign_119&quot;</span></span><br><span class="line">                    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;doc_count&quot;</span><span class="punctuation">:</span> <span class="number">182</span></span><br><span class="line">                <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                        <span class="attr">&quot;app&quot;</span><span class="punctuation">:</span> <span class="string">&quot;com.dd.ee.ff&quot;</span><span class="punctuation">,</span></span><br><span class="line">                        <span class="attr">&quot;campaign_id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Campaign_120&quot;</span></span><br><span class="line">                    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;doc_count&quot;</span><span class="punctuation">:</span> <span class="number">40</span></span><br><span class="line">                <span class="punctuation">&#125;</span></span><br><span class="line">            <span class="punctuation">]</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="3-优缺点"><a href="#3-优缺点" class="headerlink" title="3.优缺点"></a>3.优缺点</h3><p>TermsAgg</p>
-<blockquote>
-<p>优点：使用简单、没有数据量限制。</p>
-</blockquote>
-<blockquote>
-<p>缺点：数据结构层次深、不支持分页。</p>
-</blockquote>
-<p>CompositeAgg</p>
-<blockquote>
-<p>优点：使用简单、数据结构清晰可读，支持分页。</p>
-</blockquote>
-<blockquote>
-<p>缺点：有数据量限制。</p>
-</blockquote>
-<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>至于ES这两种分组方式的<code>性能方面还没有研究，后续学习笔记会更新性能上面的差异。</code></p>
-<blockquote>
-<p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-composite-aggregation.html">https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-composite-aggregation.html</a> &#x2F;&#x2F; 附上ES官方文档</p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">elasticsearch</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/17/elasticsearch-group/">More >></a>
         </p>
       
 
@@ -1227,7 +1236,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1239,15 +1252,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1271,11 +1288,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1320,18 +1341,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

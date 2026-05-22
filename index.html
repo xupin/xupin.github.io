@@ -25,6 +25,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -183,6 +184,115 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-ds-glgos-rvo" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <!-- 标题 -->
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2026/05/21/ds-glgos-rvo/">数据结构与算法 - RVO</a>
+    </h1>
+  
+
+        <!-- 发布日期 -->
+        
+        <a href="/2026/05/21/ds-glgos-rvo/" class="archive-article-date">
+  	<time datetime="2026-05-20T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-05-21</time>
+</a>
+        
+        <!-- 字数统计 -->
+        
+          <div style="margin-top:10px;">
+    <span class="post-time">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-keyboard-o"></i>
+        <span class="post-meta-item-text">  全文 ≈</span>
+        <span class="post-count">1.7k字</span>
+      </span>
+    </span>
+
+    <span class="post-time">
+      &nbsp; | &nbsp;
+      <span class="post-meta-item-icon">
+        <i class="fa fa-hourglass-half"></i>
+        <span class="post-meta-item-text">  预计阅读时长</span>
+        <span class="post-count">6分钟</span>
+      </span>
+    </span>
+</div>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>RVO（Reciprocal Velocity Obstacles，互惠速度障碍）是一种多人动态避障算法。</p>
+<p>「<a href="/2022/08/12/ds-algos-jps/" title="数据结构与算法 - JPS">数据结构与算法 - JPS</a> 」兄弟篇</p>
+<h3 id="前言">前言</h3>
+<p>如果 A*、JPS 等寻路算法解决的是“如何到达目的地”，那么 RVO 解决的就是“在移动过程中，如何避免与动态目标发生碰撞”。常用于游戏中多单位在移动过程中实现自动避让，比如：红警、星际争霸等RTS游戏。</p>
+<p>可以通俗的理解为：每个移动的单位都会主动互相让一点，避免路径撞车。</p>
+<p>这类动态避障算法的核心思想是：“按照当前速度继续移动，未来会不会发生碰撞？”，也就是 Velocity Obstacle（速度障碍）。</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">data structures</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2026/05/21/ds-glgos-rvo/">More >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-rust-tokio-axum" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -227,10 +337,11 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>Axum 是由 Tokio 官方团队开发的一个高性能、设计优雅的现代化 Web 框架。</p>
-<h3 id="为什么选择Axum？"><a href="#为什么选择Axum？" class="headerlink" title="为什么选择Axum？"></a>为什么选择Axum？</h3><p>Tokio 是 Rust 社区中最流行的异步编程框架之一（在区块链和智能合约圈子比较受欢迎），而Axum是由Tokio官方开发、且深度集成的Web框架。</p>
-<h3 id="快速使用"><a href="#快速使用" class="headerlink" title="快速使用"></a>快速使用</h3><p>假设已经安装了Rust开发环境</p>
+<h3 id="为什么选择Axum？">为什么选择Axum？</h3>
+<p>Tokio 是 Rust 社区中最流行的异步编程框架之一（在区块链和智能合约圈子比较受欢迎），而Axum是由Tokio官方开发、且深度集成的Web框架。</p>
+<h3 id="快速使用">快速使用</h3>
+<p>假设已经安装了Rust开发环境</p>
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// main.rs</span></span><br><span class="line"><span class="keyword">use</span> axum::&#123;Router, routing&#125;;</span><br><span class="line"><span class="keyword">use</span> tokio::net::TcpListener;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[tokio::main]</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">router</span> = Router::<span class="title function_ invoke__">new</span>().<span class="title function_ invoke__">route</span>(<span class="string">&quot;/&quot;</span>, routing::<span class="title function_ invoke__">get</span>(<span class="keyword">async</span> || <span class="string">&quot;Hi, Rust!&quot;</span>));</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">addr</span> = <span class="string">&quot;0.0.0.0:8000&quot;</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">listener</span> = TcpListener::<span class="title function_ invoke__">bind</span>(&amp;addr).<span class="keyword">await</span>.<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;listening on &#123;&#125;&quot;</span>, addr);</span><br><span class="line">    axum::<span class="title function_ invoke__">serve</span>(listener, router).<span class="keyword">await</span>.<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ curl -X GET <span class="string">&#x27;http://127.0.0.1:8000&#x27;</span></span><br><span class="line">Hi, Rust!</span><br></pre></td></tr></table></figure>
         
       
@@ -313,7 +424,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">565字</span>
+        <span class="post-count">563字</span>
       </span>
     </span>
 
@@ -333,8 +444,10 @@ var _hmt = _hmt || [];
       
         <p>记一次半吊子逆向工程的…不那么艰难的过程。</p>
 <p>「<a href="/2024/04/08/reverse-cocos2dlua/" title="逆向学习笔记 - Cocos2d Lua逆向提取资源">逆向学习笔记 - Cocos2d Lua逆向提取资源</a> 」难弟篇</p>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>最近刷到一款某道换皮手游，玩法和美术风格都是我喜欢的类型。于是想着做点逆向学习，顺便捞一手美术资源。</p>
-<h3 id="动手"><a href="#动手" class="headerlink" title="动手"></a>动手</h3><p>一个某道换皮手游，解压安装包：</p>
+<h3 id="前言">前言</h3>
+<p>最近刷到一款某道换皮手游，玩法和美术风格都是我喜欢的类型。于是想着做点逆向学习，顺便捞一手美术资源。</p>
+<h3 id="动手">动手</h3>
+<p>一个某道换皮手游，解压安装包：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">├── AndroidManifest.xml</span><br><span class="line">├── assets</span><br><span class="line">│   ├── assets</span><br><span class="line">│   ├── jsb-adapter</span><br><span class="line">│   ├── main.js</span><br><span class="line">│   ├── project.json</span><br><span class="line">│   └── src</span><br><span class="line">├── classes.dex</span><br><span class="line">├── kotlin</span><br><span class="line">│   └── ...</span><br><span class="line">├── lib</span><br><span class="line">│   ├── arm64-v8a</span><br><span class="line">│   ├── armeabi-v7a</span><br><span class="line">│   ├── x86</span><br><span class="line">│   └── x86_64</span><br><span class="line">├── META-INF</span><br><span class="line">│   ├── CERT.RSA</span><br><span class="line">│   ├── CERT.SF</span><br><span class="line">│   ├── com</span><br><span class="line">│   └── MANIFEST.MF</span><br><span class="line">├── org</span><br><span class="line">│   └── cocos2dx</span><br><span class="line">├── res</span><br><span class="line">│   └── ...</span><br><span class="line">└── resources.arsc</span><br></pre></td></tr></table></figure>
         
       
@@ -436,8 +549,10 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>有向无环图（Directed Acyclic Graph，简称 DAG）是一种图结构，由若干顶点和带方向的边组成。与普通有向图不同的是，DAG 中不存在环路——也就是说，不可能从某个顶点出发，沿着边的方向走一圈，最终又回到原点。</p>
-<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>项目<code>QueryBuilder</code>模块初始指标依赖层级相对固定，但版本多次迭代后，指标之间逐渐形成了复杂的依赖路径。原有的逻辑已无法支持，所以引入有向无环图（DAG），用于对指标依赖关系进行建模和解析。</p>
-<h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>DAG 中的每个节点只关心两类关系：我依赖的 和 依赖我的。</p>
+<h3 id="背景">背景</h3>
+<p>项目<code>QueryBuilder</code>模块初始指标依赖层级相对固定，但版本多次迭代后，指标之间逐渐形成了复杂的依赖路径。原有的逻辑已无法支持，所以引入有向无环图（DAG），用于对指标依赖关系进行建模和解析。</p>
+<h3 id="定义">定义</h3>
+<p>DAG 中的每个节点只关心两类关系：我依赖的 和 依赖我的。</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Node <span class="keyword">struct</span> &#123;</span><br><span class="line">    dependencies []*Node <span class="comment">// 当前节点依赖的前置节点</span></span><br><span class="line">    dependents   []*Node <span class="comment">// 依赖当前节点的后置节点</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
         
       
@@ -543,8 +658,10 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>两次随机选择法（Power of Two Choices，简称 P2C）是一种高效的负载均衡算法。</p>
-<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>实现连接池负载均衡</p>
-<h3 id="实现思路"><a href="#实现思路" class="headerlink" title="实现思路"></a>实现思路</h3><p>连接池</p>
+<h3 id="背景">背景</h3>
+<p>实现连接池负载均衡</p>
+<h3 id="实现思路">实现思路</h3>
+<p>连接池</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> ConnPool <span class="keyword">struct</span> &#123;</span><br><span class="line">    conns []*conn</span><br><span class="line">    i     <span class="type">uint32</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> conn <span class="keyword">struct</span> &#123;</span><br><span class="line">    clientConn *grpc.ClientConn</span><br><span class="line">    streams    <span class="type">int32</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
         
       
@@ -631,7 +748,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">642字</span>
+        <span class="post-count">641字</span>
       </span>
     </span>
 
@@ -650,8 +767,10 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>记一次截图应用接口的实现</p>
-<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>对不同文件类型生成缩略图，视频使用<code>ffmpeg</code>抽帧，html 文件则需要运行才能截图。</p>
-<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>模拟浏览器访问并截图，需要工具：google-chrome、<a href="https://github.com/go-rod/rod">go-rod</a></p>
+<h3 id="背景">背景</h3>
+<p>对不同文件类型生成缩略图，视频使用<code>ffmpeg</code>抽帧，html 文件则需要运行才能截图。</p>
+<h3 id="思路">思路</h3>
+<p>模拟浏览器访问并截图，需要工具：google-chrome、<a href="https://github.com/go-rod/rod">go-rod</a></p>
         
       
 
@@ -752,7 +871,8 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>服务器在保存玩家数据时的频次和触发机制怎么设计</p>
-<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><ol>
+<h3 id="思路">思路</h3>
+<ol>
 <li>定时保存</li>
 </ol>
 <p>定时保存可以通过设置定时器来实现，但也有两种方式：服务器定时、玩家定时。</p>
@@ -860,11 +980,11 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>记一次 Cocos Creator3.x 的 Protobuf 使用</p>
-<h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><ul>
+<h3 id="环境">环境</h3>
+<ul>
 <li>安装依赖</li>
 </ul>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ npm i long</span><br><span class="line">$ npm i protobufjs</span><br><span class="line">$ npm i protobufjs-cli</span><br></pre></td></tr></table></figure>
-
 <ul>
 <li>tsconfig</li>
 </ul>
@@ -882,15 +1002,15 @@ var _hmt = _hmt || [];
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">biscuits</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">protobuf</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
         		</li>
       		
 		</ul>
@@ -901,135 +1021,6 @@ var _hmt = _hmt || [];
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2024/08/29/ccc-protobuf/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-game-gateway" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2024/08/08/game-gateway/">游戏开发笔记 - gRPC网关服务器</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2024/08/08/game-gateway/" class="archive-article-date">
-  	<time datetime="2024-08-07T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-08-08</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">797字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">3分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>因为客户端直连服务器会出现很多潜在的风险，比如暴露服务器 IP 地址导致被攻击等问题，所以增加一个网关服务器。</p>
-<h3 id="网关服务器"><a href="#网关服务器" class="headerlink" title="网关服务器"></a>网关服务器</h3><p>网关服务器是介于客户端与游戏服务器之间的服务，包含以下功能：</p>
-<ul>
-<li>客户端连接管理</li>
-</ul>
-<blockquote>
-<p>维护游戏客户端的连接。</p>
-</blockquote>
-<ul>
-<li>负载均衡</li>
-</ul>
-<blockquote>
-<p>负责将客户端的请求分配到空闲的游戏服务器。</p>
-</blockquote>
-<ul>
-<li>协议检查转换</li>
-</ul>
-<blockquote>
-<p>检查协议格式，如有多协议服务器也可以做协议格式转换。</p>
-</blockquote>
-<ul>
-<li>安全控制</li>
-</ul>
-<blockquote>
-<p>拦截非法请求，隐藏游戏服务器 IP 地址（避免 DDOS 攻击）。</p>
-</blockquote>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">game</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">gRPC</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2024/08/08/game-gateway/">More >></a>
         </p>
       
 
@@ -1155,7 +1146,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1167,15 +1162,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1199,11 +1198,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1248,18 +1251,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

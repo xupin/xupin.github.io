@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Mysql学习笔记 - 数据迁移 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="之前项目数据表有分表设计，现在因为业务量增长数据表数据量膨胀数倍导致单表性能不理想 … 所以希望在不影响用户使用的情况下扩展数据表（迁移） 数据迁移方案基本分为热迁移和冷迁移两种方式  冷迁移  通俗的来说就是停机迁移，比如某些游戏合服维护等  优点: 操作可靠性高、数据一致性有保证、数据回滚方便   缺点: 用户体验差">
+  <meta name="description" content="之前项目数据表有分表设计，现在因为业务量增长数据表数据量膨胀数倍导致单表性能不理想 … 所以希望在不影响用户使用的情况下扩展数据表（迁移） 数据迁移方案 基本分为热迁移和冷迁移两种方式  冷迁移  通俗的来说就是停机迁移，比如某些游戏合服维护等  优点: 操作可靠性高、数据一致性有保证、数据回滚方便   缺点: 用户体验差">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Mysql学习笔记 - 数据迁移">
 <meta property="og:url" content="http://xupin.im/2021/11/12/mysql-migrate/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="之前项目数据表有分表设计，现在因为业务量增长数据表数据量膨胀数倍导致单表性能不理想 … 所以希望在不影响用户使用的情况下扩展数据表（迁移） 数据迁移方案基本分为热迁移和冷迁移两种方式  冷迁移  通俗的来说就是停机迁移，比如某些游戏合服维护等  优点: 操作可靠性高、数据一致性有保证、数据回滚方便   缺点: 用户体验差">
+<meta property="og:description" content="之前项目数据表有分表设计，现在因为业务量增长数据表数据量膨胀数倍导致单表性能不理想 … 所以希望在不影响用户使用的情况下扩展数据表（迁移） 数据迁移方案 基本分为热迁移和冷迁移两种方式  冷迁移  通俗的来说就是停机迁移，比如某些游戏合服维护等  优点: 操作可靠性高、数据一致性有保证、数据回滚方便   缺点: 用户体验差">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://xupin.im/assets/migrate/cold-migrate.jpg">
 <meta property="og:image" content="http://xupin.im/assets/migrate/hot-migrate.jpg">
@@ -31,6 +31,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -231,7 +232,8 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>之前项目数据表有分表设计，现在因为业务量增长数据表数据量膨胀数倍导致单表性能不理想 … 所以希望在不影响用户使用的情况下扩展数据表（迁移）</p>
-<h3 id="数据迁移方案"><a href="#数据迁移方案" class="headerlink" title="数据迁移方案"></a>数据迁移方案</h3><p>基本分为<code>热迁移</code>和<code>冷迁移</code>两种方式</p>
+<h3 id="数据迁移方案">数据迁移方案</h3>
+<p>基本分为<code>热迁移</code>和<code>冷迁移</code>两种方式</p>
 <ul>
 <li>冷迁移</li>
 </ul>
@@ -243,9 +245,7 @@ var _hmt = _hmt || [];
 <p>缺点: 用户体验差</p>
 </blockquote>
 <span id="more"></span>
-
 <img src="/assets/migrate/cold-migrate.jpg" width="400" height="400"/>
-
 <ul>
 <li>热迁移</li>
 </ul>
@@ -257,7 +257,6 @@ var _hmt = _hmt || [];
 <p>缺点: 容易丢失数据、数据一致性不好保证</p>
 </blockquote>
 <img src="/assets/migrate/hot-migrate.jpg" width="400" height="400"/>
-
 <p>这种热迁移方式是不依赖第三方服务，纯靠DB完成迁移，极端场景下可靠性不确定。</p>
 
       
@@ -527,7 +526,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -539,15 +542,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -571,11 +578,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -620,18 +631,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Mysql学习笔记 - 悲观锁/乐观锁 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="什么是锁？在多进程（线程）编程中为了数据的一致性、有效性，如果一资源被某进程（线程）上锁，那么在释放锁之前其他进程（线程）无法进行操作或者等待获取（上）锁。 一、悲观锁悲观锁（Pessimistic locking），顾名思义对待任何事务都持悲观态度，做任何事情都会认为会有竞抢行为~所以在进行任何操作之前都要做好万全准备（上锁）才会继续执行后续的操作。通常是利用系统提供的锁机制来实现。比如： 12">
+  <meta name="description" content="什么是锁？在多进程（线程）编程中为了数据的一致性、有效性，如果一资源被某进程（线程）上锁，那么在释放锁之前其他进程（线程）无法进行操作或者等待获取（上）锁。 一、悲观锁 悲观锁（Pessimistic locking），顾名思义对待任何事务都持悲观态度，做任何事情都会认为会有竞抢行为~所以在进行任何操作之前都要做好万全准备（上锁）才会继续执行后续的操作。通常是利用系统提供的锁机制来实现。 比如：">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Mysql学习笔记 - 悲观锁&#x2F;乐观锁">
 <meta property="og:url" content="http://xupin.im/2019/12/04/mysql-locking/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="什么是锁？在多进程（线程）编程中为了数据的一致性、有效性，如果一资源被某进程（线程）上锁，那么在释放锁之前其他进程（线程）无法进行操作或者等待获取（上）锁。 一、悲观锁悲观锁（Pessimistic locking），顾名思义对待任何事务都持悲观态度，做任何事情都会认为会有竞抢行为~所以在进行任何操作之前都要做好万全准备（上锁）才会继续执行后续的操作。通常是利用系统提供的锁机制来实现。比如： 12">
+<meta property="og:description" content="什么是锁？在多进程（线程）编程中为了数据的一致性、有效性，如果一资源被某进程（线程）上锁，那么在释放锁之前其他进程（线程）无法进行操作或者等待获取（上）锁。 一、悲观锁 悲观锁（Pessimistic locking），顾名思义对待任何事务都持悲观态度，做任何事情都会认为会有竞抢行为~所以在进行任何操作之前都要做好万全准备（上锁）才会继续执行后续的操作。通常是利用系统提供的锁机制来实现。 比如：">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-12-04T11:30:00.000Z">
 <meta property="article:modified_time" content="2024-04-09T08:14:41.166Z">
@@ -28,6 +28,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -228,13 +229,16 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>什么是锁？在多进程（线程）编程中为了数据的一致性、有效性，如果一资源被某进程（线程）上锁，那么在释放锁之前其他进程（线程）无法进行操作或者等待获取（上）锁。</p>
-<h3 id="一、悲观锁"><a href="#一、悲观锁" class="headerlink" title="一、悲观锁"></a>一、悲观锁</h3><p>悲观锁（Pessimistic locking），顾名思义对待任何事务都持悲观态度，做任何事情都会认为会有竞抢行为~所以在进行任何操作之前都要做好万全准备（上锁）才会继续执行后续的操作。通常是利用系统提供的锁机制来实现。<br>比如：</p>
+<h3 id="一、悲观锁">一、悲观锁</h3>
+<p>悲观锁（Pessimistic locking），顾名思义对待任何事务都持悲观态度，做任何事情都会认为会有竞抢行为~所以在进行任何操作之前都要做好万全准备（上锁）才会继续执行后续的操作。通常是利用系统提供的锁机制来实现。<br>
+比如：</p>
 <figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Mysql中的上锁命令：<span class="keyword">for</span> <span class="keyword">update</span>、<span class="keyword">lock</span> <span class="keyword">in</span> <span class="keyword">share mode</span>等</span><br><span class="line">Redis中的一些操作命令：setnx、getset等（原子操作）</span><br></pre></td></tr></table></figure>
-
-<h3 id="二、乐观锁"><a href="#二、乐观锁" class="headerlink" title="二、乐观锁"></a>二、乐观锁</h3><p>乐观锁（Optimistic locking），和悲观锁相反对待任何事务都持乐观态度，只会在最后即将执行操作的时刻前才会进行验证。通常是通过程序配合来实现。<br>比如：</p>
+<h3 id="二、乐观锁">二、乐观锁</h3>
+<p>乐观锁（Optimistic locking），和悲观锁相反对待任何事务都持乐观态度，只会在最后即将执行操作的时刻前才会进行验证。通常是通过程序配合来实现。<br>
+比如：</p>
 <figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">update</span> `orders` <span class="keyword">set</span> hash = md5(now()) <span class="keyword">where</span> uid = <span class="number">1</span> <span class="keyword">and</span> hash = &#123;lastHash&#125;;</span><br></pre></td></tr></table></figure>
-
-<h3 id="三、优缺点"><a href="#三、优缺点" class="headerlink" title="三、优缺点"></a>三、优缺点</h3><p>悲观锁优点很鲜明，因为每次执行的操作都是独占的，数据的一致性、有效性、安全性较高。但缺点同样突出，每次操作都会产生上锁的开销，在并发请求比较密集的情况下容易阻塞或者驳回请求，甚至是造成死锁，也大大降低了系统的性能。</p>
+<h3 id="三、优缺点">三、优缺点</h3>
+<p>悲观锁优点很鲜明，因为每次执行的操作都是独占的，数据的一致性、有效性、安全性较高。但缺点同样突出，每次操作都会产生上锁的开销，在并发请求比较密集的情况下容易阻塞或者驳回请求，甚至是造成死锁，也大大降低了系统的性能。</p>
 <p>乐观锁优点是省去了锁的开销，能较高的提高系统吞吐量，缺点是如果出现在并发高且竟抢（冲突）行为比较多的场景下数据的一致性很难保证。</p>
 
       
@@ -504,7 +508,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -516,15 +524,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -548,11 +560,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -597,18 +613,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

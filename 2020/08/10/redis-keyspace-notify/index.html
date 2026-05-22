@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Redis学习笔记 - Key事件通知 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="网上购物看到自己喜欢的东西加入购物车然后付款，但是在付款的突然不想要了 … 往往这个订单会给一个30分钟的支付时间，时间一到就自动关闭了 所以这是怎么做到的呢？ 1.实现方式 轮询  1脚本每隔一定时间就去数据表检查一下状态，是否过期需要关闭。 定时器  1创建订单时开始计时，计时结束后直接处理关闭订单。 数据库事件+存储过程  1数据库建立检查事件，每隔一定时间去执行一次存储过程。 Key事件通">
+  <meta name="description" content="网上购物看到自己喜欢的东西加入购物车然后付款，但是在付款的突然不想要了 … 往往这个订单会给一个30分钟的支付时间，时间一到就自动关闭了 所以这是怎么做到的呢？ 1.实现方式  轮询  1脚本每隔一定时间就去数据表检查一下状态，是否过期需要关闭。  定时器  1创建订单时开始计时，计时结束后直接处理关闭订单。  数据库事件+存储过程  1数据库建立检查事件，每隔一定时间去执行一次存储过程。  Ke">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redis学习笔记 - Key事件通知">
 <meta property="og:url" content="http://xupin.im/2020/08/10/redis-keyspace-notify/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="网上购物看到自己喜欢的东西加入购物车然后付款，但是在付款的突然不想要了 … 往往这个订单会给一个30分钟的支付时间，时间一到就自动关闭了 所以这是怎么做到的呢？ 1.实现方式 轮询  1脚本每隔一定时间就去数据表检查一下状态，是否过期需要关闭。 定时器  1创建订单时开始计时，计时结束后直接处理关闭订单。 数据库事件+存储过程  1数据库建立检查事件，每隔一定时间去执行一次存储过程。 Key事件通">
+<meta property="og:description" content="网上购物看到自己喜欢的东西加入购物车然后付款，但是在付款的突然不想要了 … 往往这个订单会给一个30分钟的支付时间，时间一到就自动关闭了 所以这是怎么做到的呢？ 1.实现方式  轮询  1脚本每隔一定时间就去数据表检查一下状态，是否过期需要关闭。  定时器  1创建订单时开始计时，计时结束后直接处理关闭订单。  数据库事件+存储过程  1数据库建立检查事件，每隔一定时间去执行一次存储过程。  Ke">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-08-09T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-07-15T02:59:17.756Z">
@@ -28,6 +28,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -209,7 +210,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">703字</span>
+        <span class="post-count">702字</span>
       </span>
     </span>
 
@@ -228,35 +229,45 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>网上购物看到自己喜欢的东西加入购物车然后付款，但是在付款的突然不想要了 … 往往这个订单会给一个30分钟的支付时间，时间一到就自动关闭了 所以这是怎么做到的呢？</p>
-<h3 id="1-实现方式"><a href="#1-实现方式" class="headerlink" title="1.实现方式"></a>1.实现方式</h3><ul>
-<li>轮询  <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">脚本每隔一定时间就去数据表检查一下状态，是否过期需要关闭。</span><br></pre></td></tr></table></figure></li>
-<li>定时器  <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">创建订单时开始计时，计时结束后直接处理关闭订单。</span><br></pre></td></tr></table></figure></li>
-<li>数据库事件+存储过程  <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">数据库建立检查事件，每隔一定时间去执行一次存储过程。</span><br></pre></td></tr></table></figure></li>
-<li>Key事件通知  <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">对于更改任何Redis Key的每个操作，都可以配置Redis将消息发布到Pub/Sub，然后订阅这些通知。</span><br></pre></td></tr></table></figure></li>
+<h3 id="1-实现方式">1.实现方式</h3>
+<ul>
+<li>轮询  <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">脚本每隔一定时间就去数据表检查一下状态，是否过期需要关闭。</span><br></pre></td></tr></table></figure>
+</li>
+<li>定时器  <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">创建订单时开始计时，计时结束后直接处理关闭订单。</span><br></pre></td></tr></table></figure>
+</li>
+<li>数据库事件+存储过程  <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">数据库建立检查事件，每隔一定时间去执行一次存储过程。</span><br></pre></td></tr></table></figure>
+</li>
+<li>Key事件通知  <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">对于更改任何Redis Key的每个操作，都可以配置Redis将消息发布到Pub/Sub，然后订阅这些通知。</span><br></pre></td></tr></table></figure>
+</li>
 </ul>
-<h3 id="2-数据库事件-存储过程"><a href="#2-数据库事件-存储过程" class="headerlink" title="2.数据库事件+存储过程"></a>2.数据库事件+存储过程</h3><p>不多说，直接上SQL</p>
+<h3 id="2-数据库事件-存储过程">2.数据库事件+存储过程</h3>
+<p>不多说，直接上SQL</p>
 <span id="more"></span>
-
 <ol>
-<li><p>订单表</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `orders`  (</span><br><span class="line">  `id` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  `good_id` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `status` tinyint(<span class="number">1</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;0:待付款，1:已付款，-1:订单关闭&#x27;</span>,</span><br><span class="line">  `created_at` datetime <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  <span class="keyword">PRIMARY</span> KEY (`id`) <span class="keyword">USING</span> BTREE</span><br><span class="line">) ENGINE <span class="operator">=</span> InnoDB AUTO_INCREMENT <span class="operator">=</span> <span class="number">1</span> <span class="type">CHARACTER</span> <span class="keyword">SET</span> <span class="operator">=</span> utf8mb4 <span class="keyword">COLLATE</span> <span class="operator">=</span> utf8mb4_unicode_ci ROW_FORMAT <span class="operator">=</span> Compact;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>创建存储过程，处理关闭订单。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">PROCEDURE</span> job_proce()</span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line">	 <span class="keyword">update</span> orders <span class="keyword">set</span> status <span class="operator">=</span> <span class="number">-1</span> <span class="keyword">where</span> time_to_sec(timediff(now(), created_at)) <span class="operator">&gt;</span> <span class="number">1800</span> <span class="keyword">and</span> status <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"><span class="keyword">END</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>创建事件，调用存储过程。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> <span class="keyword">GLOBAL</span> event_scheduler <span class="operator">=</span> <span class="number">1</span>; </span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE</span> EVENT IF <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> job_event</span><br><span class="line"><span class="keyword">ON</span> SCHEDULE <span class="keyword">EVERY</span> <span class="number">1</span> <span class="keyword">SECOND</span> # <span class="number">1</span>秒检查一次</span><br><span class="line"><span class="keyword">ON</span> COMPLETION PRESERVE  </span><br><span class="line">DO <span class="keyword">CALL</span> job_proce();</span><br></pre></td></tr></table></figure></li>
-<li><p>开启事件。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> EVENT job_event <span class="keyword">ON</span>  COMPLETION PRESERVE ENABLE; </span><br></pre></td></tr></table></figure>
-<p>这样<code>job_event</code>事件就会以1秒&#x2F;次的频率去执行<code>job_proce</code>存储过程执行数据检查。</p>
-</li>
+<li>订单表</li>
 </ol>
-<h3 id="3-Key事件通知"><a href="#3-Key事件通知" class="headerlink" title="3. Key事件通知"></a>3. Key事件通知</h3><p>Key事件通知（Redis Keyspace Notifications）机制自2.8版本以后出现，该机制默认是关闭的。可通过配置<code>redis.conf</code>进行开启</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE TABLE</span> `orders`  (</span><br><span class="line">  `id` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT NULL</span> AUTO_INCREMENT,</span><br><span class="line">  `good_id` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT NULL</span>,</span><br><span class="line">  `status` tinyint(<span class="number">1</span>) <span class="keyword">NOT NULL</span> COMMENT <span class="string">&#x27;0:待付款，1:已付款，-1:订单关闭&#x27;</span>,</span><br><span class="line">  `created_at` datetime <span class="keyword">NOT NULL</span>,</span><br><span class="line">  <span class="keyword">PRIMARY KEY</span> (`id`) <span class="keyword">USING</span> BTREE</span><br><span class="line">) ENGINE <span class="operator">=</span> InnoDB AUTO_INCREMENT <span class="operator">=</span> <span class="number">1</span> <span class="keyword">CHARACTER SET</span> <span class="operator">=</span> utf8mb4 <span class="keyword">COLLATE</span> <span class="operator">=</span> utf8mb4_unicode_ci ROW_FORMAT <span class="operator">=</span> Compact;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>创建存储过程，处理关闭订单。</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">PROCEDURE</span> job_proce()</span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line">	 <span class="keyword">update</span> orders <span class="keyword">set</span> status <span class="operator">=</span> <span class="number">-1</span> <span class="keyword">where</span> time_to_sec(timediff(now(), created_at)) <span class="operator">&gt;</span> <span class="number">1800</span> <span class="keyword">and</span> status <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"><span class="keyword">END</span></span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>创建事件，调用存储过程。</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> <span class="keyword">GLOBAL</span> event_scheduler <span class="operator">=</span> <span class="number">1</span>; </span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE</span> EVENT IF <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> job_event</span><br><span class="line"><span class="keyword">ON</span> SCHEDULE <span class="keyword">EVERY</span> <span class="number">1</span> <span class="keyword">SECOND</span> # <span class="number">1</span>秒检查一次</span><br><span class="line"><span class="keyword">ON</span> COMPLETION PRESERVE  </span><br><span class="line">DO <span class="keyword">CALL</span> job_proce();</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>开启事件。</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> EVENT job_event <span class="keyword">ON</span>  COMPLETION PRESERVE ENABLE; </span><br></pre></td></tr></table></figure>
+<p>这样<code>job_event</code>事件就会以1秒/次的频率去执行<code>job_proce</code>存储过程执行数据检查。</p>
+<h3 id="3-Key事件通知">3. Key事件通知</h3>
+<p>Key事件通知（Redis Keyspace Notifications）机制自2.8版本以后出现，该机制默认是关闭的。可通过配置<code>redis.conf</code>进行开启</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">notify-keyspace-events Ex # E表示Key事件通知，x代表Key过期行为。</span><br><span class="line"></span><br><span class="line"># notify-keyspace-events可配置参数</span><br><span class="line"># K 键空间事件，以__keyspace@&lt;db&gt;__前缀发布。</span><br><span class="line"># E 键事件事件，以__keyevent@&lt;db&gt;__前缀发布。</span><br><span class="line"># g 通用命令（非类型特定），如DEL，EXPIRE，RENAME等等</span><br><span class="line"># $ 字符串命令</span><br><span class="line"># l 列表命令</span><br><span class="line"># s 集合命令</span><br><span class="line"># h 哈希命令</span><br><span class="line"># z 有序集合命令</span><br><span class="line"># x 过期事件（每次键到期时生成的事件）</span><br><span class="line"># e 被驱逐的事件（当一个键由于达到最大内存而被驱逐时产生的事件）</span><br><span class="line"># A g$lshzxe的别名，因此字符串AKE表示所有的事件。</span><br></pre></td></tr></table></figure>
-<p>修改配置开启Key事件通知以后，当Redis在删除过期Key的时候会向指定channel（过期行为的channel：<code>__keyevent@0__:expired</code>） publish消息，该消息可以使用subscribe&#x2F;psubscribe进行订阅。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; PSUBSCRIBE __keyevent@<span class="number">0</span>__:expired</span><br><span class="line">Reading messages... (press Ctrl-C to quit)</span><br><span class="line"><span class="number">1</span>) <span class="string">&quot;psubscribe&quot;</span></span><br><span class="line"><span class="number">2</span>) <span class="string">&quot;__keyevent@0__:expired&quot;</span></span><br><span class="line"><span class="number">3</span>) (integer) <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>修改配置开启Key事件通知以后，当Redis在删除过期Key的时候会向指定channel（过期行为的channel：<code>__keyevent@0__:expired</code>） publish消息，该消息可以使用subscribe/psubscribe进行订阅。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">6379</span>&gt; PSUBSCRIBE __keyevent@<span class="number">0</span>__:expired</span><br><span class="line">Reading messages... (press Ctrl-C to quit)</span><br><span class="line"><span class="number">1</span>) <span class="string">&quot;psubscribe&quot;</span></span><br><span class="line"><span class="number">2</span>) <span class="string">&quot;__keyevent@0__:expired&quot;</span></span><br><span class="line"><span class="number">3</span>) (integer) <span class="number">1</span></span><br></pre></td></tr></table></figure>
 <p>所以我们只需要写个程序执行redis-&gt;psubscribe()进行监听即可。</p>
-<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>emmmm…</p>
+<h3 id="最后">最后</h3>
+<p>emmmm…</p>
 
       
 
@@ -525,7 +536,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -537,15 +552,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -569,11 +588,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -618,18 +641,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

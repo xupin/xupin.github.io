@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>数据结构与算法 - AST | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="AST（Abstract syntax tree）抽象语法树，用于表示编程语言源代码的一种抽象语法的结构，树的每个节点都对应源代码中的一个结构。 前言计算机如何生成 AST 结构？一般来说顺序如下：  词法分析   扫描源代码，生成标记（token）   语法分析   解析 tokens，构造 AST 结构">
+  <meta name="description" content="AST（Abstract syntax tree）抽象语法树，用于表示编程语言源代码的一种抽象语法的结构，树的每个节点都对应源代码中的一个结构。 前言 计算机如何生成 AST 结构？一般来说顺序如下：  词法分析   扫描源代码，生成标记（token）   语法分析   解析 tokens，构造 AST 结构">
 <meta property="og:type" content="article">
 <meta property="og:title" content="数据结构与算法 - AST">
 <meta property="og:url" content="http://xupin.im/2022/12/13/ds-algos-ast/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="AST（Abstract syntax tree）抽象语法树，用于表示编程语言源代码的一种抽象语法的结构，树的每个节点都对应源代码中的一个结构。 前言计算机如何生成 AST 结构？一般来说顺序如下：  词法分析   扫描源代码，生成标记（token）   语法分析   解析 tokens，构造 AST 结构">
+<meta property="og:description" content="AST（Abstract syntax tree）抽象语法树，用于表示编程语言源代码的一种抽象语法的结构，树的每个节点都对应源代码中的一个结构。 前言 计算机如何生成 AST 结构？一般来说顺序如下：  词法分析   扫描源代码，生成标记（token）   语法分析   解析 tokens，构造 AST 结构">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://xupin.im/assets/ast/process.png">
 <meta property="og:image" content="http://xupin.im/assets/ast/ast.png">
@@ -33,6 +33,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -223,7 +224,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-hourglass-half"></i>
         <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">9分钟</span>
+        <span class="post-count">8分钟</span>
       </span>
     </span>
 </div>
@@ -233,7 +234,8 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>AST（Abstract syntax tree）抽象语法树，用于表示编程语言源代码的一种抽象语法的结构，树的每个节点都对应源代码中的一个结构。</p>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>计算机如何生成 AST 结构？一般来说顺序如下：</p>
+<h3 id="前言">前言</h3>
+<p>计算机如何生成 AST 结构？一般来说顺序如下：</p>
 <ol>
 <li>词法分析</li>
 </ol>
@@ -247,62 +249,69 @@ var _hmt = _hmt || [];
 <p>解析 tokens，构造 AST 结构</p>
 </blockquote>
 <span id="more"></span>
-
-<p>分析过程：<br><img src="/assets/ast/process.png" width="400" height="150"/></p>
-<p>AST 结构：<br><img src="/assets/ast/ast.png" width="400" height="420"/></p>
-<h3 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h3><p>AST 应用场景比较广泛，比如：</p>
+<p>分析过程：<br>
+<img src="/assets/ast/process.png" width="400" height="150"/></p>
+<p>AST 结构：<br>
+<img src="/assets/ast/ast.png" width="400" height="420"/></p>
+<h3 id="应用场景">应用场景</h3>
+<p>AST 应用场景比较广泛，比如：</p>
 <ul>
-<li><p>Typescript 编译 Javascript 文件</p>
+<li>
+<p>Typescript 编译 Javascript 文件</p>
 </li>
-<li><p>格式化插件</p>
+<li>
+<p>格式化插件</p>
 </li>
-<li><p>代码混淆&#x2F;压缩</p>
+<li>
+<p>代码混淆/压缩</p>
 </li>
-<li><p>类型检查&#x2F;推导</p>
+<li>
+<p>类型检查/推导</p>
 </li>
 </ul>
 <p>等等…诸多应用场景。</p>
-<h3 id="词法分析"><a href="#词法分析" class="headerlink" title="词法分析"></a>词法分析</h3><p>如何读入源代码，扫描、解析以及生成 AST？下面尝试用一个可以计算<code>+</code>、<code>-</code>、<code>*</code>、<code>/</code>公式的小程序来学习和实验。</p>
+<h3 id="词法分析">词法分析</h3>
+<p>如何读入源代码，扫描、解析以及生成 AST？下面尝试用一个可以计算<code>+</code>、<code>-</code>、<code>*</code>、<code>/</code>公式的小程序来学习和实验。</p>
 <p>假设，给定的源码是<code>1+2+3</code>，应该怎样去扫描？扫描原理很简单，通俗的说就是按字符读取记录为 Token。</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 首先定义存储标记的结构</span></span><br><span class="line"><span class="keyword">type</span> Token <span class="keyword">struct</span> &#123;</span><br><span class="line">	Str   <span class="type">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 扫描源码</span></span><br><span class="line">s := <span class="string">&quot;1+2+3&quot;</span></span><br><span class="line">tokens := []Token&#123;&#125;</span><br><span class="line"><span class="keyword">for</span> _, c := <span class="keyword">range</span> s &#123;</span><br><span class="line">	tokens = <span class="built_in">append</span>(tokens, Token&#123;</span><br><span class="line">		Str: <span class="type">string</span>(c),</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br><span class="line">fmt.Printf(<span class="string">&quot;%+v\n&quot;</span>, tokens)</span><br><span class="line"><span class="comment">// [&#123;Str:1&#125; &#123;Str:+&#125; &#123;Str:2&#125; &#123;Str:+&#125; &#123;Str:3&#125;]</span></span><br></pre></td></tr></table></figure>
-
 <p>以上，扫描工作就完成了！</p>
 <p>但词法分析一般没有这么简单，比如数字<code>1</code>和操作符<code>+</code>也不应该是同一种类型。所以我们需要改造词法分析器！在生成 Token 的同时记录类型，方便进一步处理。这里我们使用状态机的设计思路：</p>
 <ol>
 <li>读入一个字符</li>
-<li>判断字符类型，数字 or 操作符<br>&nbsp;&nbsp;&nbsp;&nbsp;1. 是数字，记录当前字符位置，继续读取下一个字符，直至非数字或者字符边界，记录完整的数值。<br>&nbsp;&nbsp;&nbsp;&nbsp;2. 不是数字，直接记录操作符。</li>
+<li>判断字符类型，数字 or 操作符<br>
+    1. 是数字，记录当前字符位置，继续读取下一个字符，直至非数字或者字符边界，记录完整的数值。<br>
+    2. 不是数字，直接记录操作符。</li>
 <li>返回 token</li>
 </ol>
 <p>详细扫描逻辑，如下：</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Lexer <span class="keyword">struct</span> &#123;</span><br><span class="line">	Expression <span class="type">string</span></span><br><span class="line">	Char    <span class="type">byte</span></span><br><span class="line">	Pos     <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Token <span class="keyword">struct</span> &#123;</span><br><span class="line">	Str   <span class="type">string</span></span><br><span class="line">	Type  <span class="type">int</span></span><br><span class="line">	Start <span class="type">int</span></span><br><span class="line">	End   <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Lexer)</span></span> Lex() ([]*Token, <span class="type">error</span>) &#123;</span><br><span class="line">	tokens := <span class="built_in">make</span>([]*Token, <span class="number">0</span>)</span><br><span class="line">	r.Char = r.Expression[<span class="number">0</span>]</span><br><span class="line">	<span class="keyword">for</span> r.Pos &lt; <span class="built_in">len</span>(r.Expression) &#123;</span><br><span class="line">		token := r.Scan()</span><br><span class="line">		<span class="keyword">if</span> token.Type == enums.ILLEGAL &#123;</span><br><span class="line">			<span class="keyword">return</span> []*Token&#123;&#125;, fmt.Errorf(<span class="string">&quot;&#x27;%s&#x27; is not supported&quot;</span>, token.Str)</span><br><span class="line">		&#125;</span><br><span class="line">		tokens = <span class="built_in">append</span>(tokens, token)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> tokens, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Lexer)</span></span> Scan() *Token &#123;</span><br><span class="line">	<span class="keyword">var</span> token *Token</span><br><span class="line">	pos := r.Pos</span><br><span class="line">	<span class="keyword">switch</span> r.Char &#123;</span><br><span class="line">	<span class="keyword">case</span></span><br><span class="line">		<span class="string">&#x27;0&#x27;</span>,</span><br><span class="line">		<span class="string">&#x27;1&#x27;</span>,</span><br><span class="line">		<span class="string">&#x27;2&#x27;</span>,</span><br><span class="line">		<span class="string">&#x27;3&#x27;</span>,</span><br><span class="line">		<span class="string">&#x27;4&#x27;</span>,</span><br><span class="line">		<span class="string">&#x27;5&#x27;</span>,</span><br><span class="line">		<span class="string">&#x27;6&#x27;</span>,</span><br><span class="line">		<span class="string">&#x27;7&#x27;</span>,</span><br><span class="line">		<span class="string">&#x27;8&#x27;</span>,</span><br><span class="line">		<span class="string">&#x27;9&#x27;</span>:</span><br><span class="line">		<span class="keyword">for</span> r.IsDigit() &#123;</span><br><span class="line">			<span class="keyword">if</span> !r.NextChar() &#123;</span><br><span class="line">				<span class="keyword">break</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		token = &amp;Token&#123;</span><br><span class="line">			Str:   <span class="type">string</span>(r.Expression[pos:r.Pos]),</span><br><span class="line">			Type:  enums.NUMBER,</span><br><span class="line">			Start: pos,</span><br><span class="line">			End:   r.Pos,</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;+&#x27;</span>:</span><br><span class="line">		token = &amp;Token&#123;</span><br><span class="line">			Str:   <span class="type">string</span>(r.Char),</span><br><span class="line">			Type:  enums.ADD,</span><br><span class="line">			Start: pos,</span><br><span class="line">			End:   pos,</span><br><span class="line">		&#125;</span><br><span class="line">		r.NextChar()</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;-&#x27;</span>:</span><br><span class="line">		token = &amp;Token&#123;</span><br><span class="line">			Str:   <span class="type">string</span>(r.Char),</span><br><span class="line">			Type:  enums.SUB,</span><br><span class="line">			Start: pos,</span><br><span class="line">			End:   pos,</span><br><span class="line">		&#125;</span><br><span class="line">		r.NextChar()</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;*&#x27;</span>:</span><br><span class="line">		token = &amp;Token&#123;</span><br><span class="line">			Str:   <span class="type">string</span>(r.Char),</span><br><span class="line">			Type:  enums.MUL,</span><br><span class="line">			Start: pos,</span><br><span class="line">			End:   pos,</span><br><span class="line">		&#125;</span><br><span class="line">		r.NextChar()</span><br><span class="line">		<span class="keyword">if</span> r.Char == <span class="string">&#x27;*&#x27;</span> &#123;</span><br><span class="line">			token = &amp;Token&#123;</span><br><span class="line">				Str:   <span class="string">&quot;**&quot;</span>,</span><br><span class="line">				Type:  enums.XOR,</span><br><span class="line">				Start: pos,</span><br><span class="line">				End:   pos,</span><br><span class="line">			&#125;</span><br><span class="line">			r.NextChar()</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;/&#x27;</span>:</span><br><span class="line">		token = &amp;Token&#123;</span><br><span class="line">			Str:   <span class="type">string</span>(r.Char),</span><br><span class="line">			Type:  enums.QUO,</span><br><span class="line">			Start: pos,</span><br><span class="line">			End:   pos,</span><br><span class="line">		&#125;</span><br><span class="line">		r.NextChar()</span><br><span class="line">	<span class="keyword">default</span>:</span><br><span class="line">		token = &amp;Token&#123;</span><br><span class="line">			Str:   <span class="type">string</span>(r.Char),</span><br><span class="line">			Type:  enums.ILLEGAL,</span><br><span class="line">			Start: pos,</span><br><span class="line">			End:   r.Pos,</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> token</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>现在，我们调用词法分析器解析<code>1+2+3</code></p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">lexer := lexer.Lexer&#123;</span><br><span class="line">	Expression: <span class="string">&quot;1+2+3&quot;</span>,</span><br><span class="line">&#125;</span><br><span class="line">tokens, err := lexer.Lex()</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">	fmt.Println(err)</span><br><span class="line">	<span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">for</span> _, token := <span class="keyword">range</span> tokens &#123;</span><br><span class="line">	fmt.Printf(<span class="string">&quot;%+v \n&quot;</span>, token)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// &amp;&#123;Str:1 Type:9 Start:0 End:0&#125;</span></span><br><span class="line"><span class="comment">// &amp;&#123;Str:+ Type:10 Start:1 End:1&#125;</span></span><br><span class="line"><span class="comment">// &amp;&#123;Str:2 Type:9 Start:2 End:2&#125;</span></span><br><span class="line"><span class="comment">// &amp;&#123;Str:+ Type:10 Start:3 End:3&#125;</span></span><br><span class="line"><span class="comment">// &amp;&#123;Str:3 Type:9 Start:4 End:4&#125;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="语法分析"><a href="#语法分析" class="headerlink" title="语法分析"></a>语法分析</h3><p>生成 tokens 是第一步，这一串 token 又要怎样去解析呢？</p>
-<p>已知+-*&#x2F;均属于二元运算，二元运算三元素：运算符、左变量、右变量。所以我们需要的结构大概是这样：Number{1} Op{+} Number{2} Op{+} Number{3}，用二叉树来表示：</p>
+<h3 id="语法分析">语法分析</h3>
+<p>生成 tokens 是第一步，这一串 token 又要怎样去解析呢？</p>
+<p>已知±*/均属于二元运算，二元运算三元素：运算符、左变量、右变量。所以我们需要的结构大概是这样：Number{1} Op{+} Number{2} Op{+} Number{3}，用二叉树来表示：</p>
 <img src="/assets/ast/binary-tree.png" alt="drawing">
-
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 首先定义一个语法分析器</span></span><br><span class="line"><span class="keyword">type</span> Parser <span class="keyword">struct</span> &#123;</span><br><span class="line">	Tokens   []*lexer.Token <span class="comment">// tokens</span></span><br><span class="line">	CurToken *lexer.Token 	<span class="comment">// 当前token</span></span><br><span class="line">	Index      <span class="type">int</span>			<span class="comment">// 下标</span></span><br><span class="line">	Err      <span class="type">error</span>			<span class="comment">// error</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 数值结构</span></span><br><span class="line"><span class="keyword">type</span> Number <span class="keyword">struct</span> &#123;</span><br><span class="line">	Val <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 二元运算结构</span></span><br><span class="line"><span class="keyword">type</span> Stmt <span class="keyword">struct</span> &#123;</span><br><span class="line">	Type  <span class="type">int</span></span><br><span class="line">	Left  Node</span><br><span class="line">	Right Node</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>处理逻辑如下：</p>
 <ol>
 <li>顺序取出一个 token。</li>
-<li>ParseExpr()判定 token 类型，返回对应结构，下标+1（处理下一个 token，应当是运算符 token）。<br>&nbsp;&nbsp;&nbsp;&nbsp;1. 如果是数值类型，则直接返回 Number{}结构。<br>&nbsp;&nbsp;&nbsp;&nbsp;2. 如果是运算符类型，则递归处理返回 Stmt{}结构。</li>
+<li>ParseExpr()判定 token 类型，返回对应结构，下标+1（处理下一个 token，应当是运算符 token）。<br>
+    1. 如果是数值类型，则直接返回 Number{}结构。<br>
+    2. 如果是运算符类型，则递归处理返回 Stmt{}结构。</li>
 <li>ParseRight()处理右侧变量，把左侧变量传入函数。</li>
 <li>根据运算符判断变量优先级问题，如果当前运算符小于传入变量优先级，则直接返回传入变量，处理结束。</li>
 <li>记录当前运算符（类型），下标+1，处理当前操作符右侧变量（步骤 2）。</li>
-<li>再次判断传入变量优先级是否低于当前运算符。<br>&nbsp;&nbsp;&nbsp;&nbsp;1. 是，则把右侧变量（步骤 4）当成左侧变量传入递归处理。<br>&nbsp;&nbsp;&nbsp;&nbsp;2. 不是，则构造二元运算表达式 Stmt{Type: 运算符类型, Left: 左侧变量, Right: 右侧变量}。</li>
+<li>再次判断传入变量优先级是否低于当前运算符。<br>
+    1. 是，则把右侧变量（步骤 4）当成左侧变量传入递归处理。<br>
+    2. 不是，则构造二元运算表达式 Stmt{Type: 运算符类型, Left: 左侧变量, Right: 右侧变量}。</li>
 <li>当前循环结束，回到步骤 4。</li>
 </ol>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Parser)</span></span> Parse() (Node, <span class="type">error</span>) &#123;</span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(r.Tokens) == <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, errors.New(<span class="string">&quot;the token list is empty&quot;</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> r.CurToken == <span class="literal">nil</span> &#123;</span><br><span class="line">		r.CurToken = r.Tokens[<span class="number">0</span>]</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> r.Compile(), r.Err</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Parser)</span></span> Compile() Node &#123;</span><br><span class="line">	left := r.ParseExpr()</span><br><span class="line">	right := r.ParseRight(<span class="number">1</span>, left)</span><br><span class="line">	<span class="keyword">return</span> right</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Parser)</span></span> ParseExpr() Node &#123;</span><br><span class="line">	<span class="keyword">switch</span> r.CurToken.Type &#123;</span><br><span class="line">	<span class="keyword">case</span> enums.NUMBER:</span><br><span class="line">		<span class="keyword">return</span> r.ParseNumber()</span><br><span class="line">	<span class="keyword">case</span> enums.ADD:</span><br><span class="line">		<span class="keyword">return</span> r.ParseNumber()</span><br><span class="line">	<span class="keyword">case</span> enums.SUB:</span><br><span class="line">		<span class="keyword">if</span> t := r.NextToken(); t.Type == enums.EOF &#123;</span><br><span class="line">			r.Err = errors.New(<span class="string">&quot;expects to be number, eof given&quot;</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> &amp;Stmt&#123;</span><br><span class="line">			Type:  enums.SUB,</span><br><span class="line">			Left:  &amp;Number&#123;&#125;,</span><br><span class="line">			Right: r.ParseExpr(),</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">case</span> enums.MUL:</span><br><span class="line">		<span class="keyword">return</span> r.ParseNumber()</span><br><span class="line">	<span class="keyword">case</span> enums.QUO:</span><br><span class="line">		<span class="keyword">return</span> r.ParseNumber()</span><br><span class="line">	<span class="keyword">default</span>:</span><br><span class="line">		r.Err = fmt.Errorf(<span class="string">&quot;expects to be number, &#x27;%s&#x27; given&quot;</span>, r.CurToken.Str)</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Parser)</span></span> ParseRight(precedence <span class="type">int</span>, left Node) Node &#123;</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		curPrec := r.Precedence()</span><br><span class="line">		<span class="keyword">if</span> curPrec &lt; precedence &#123;</span><br><span class="line">			<span class="keyword">return</span> left</span><br><span class="line">		&#125;</span><br><span class="line">		tokenType := r.CurToken.Type</span><br><span class="line">		r.NextToken()</span><br><span class="line">		right := r.ParseExpr()</span><br><span class="line">		<span class="keyword">if</span> right == <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> curPrec &lt; r.Precedence() &#123;</span><br><span class="line">			right = r.ParseRight(curPrec, right)</span><br><span class="line">			<span class="keyword">if</span> right == <span class="literal">nil</span> &#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		left = &amp;Stmt&#123;</span><br><span class="line">			Type:  tokenType,</span><br><span class="line">			Left:  left,</span><br><span class="line">			Right: right,</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Parser)</span></span> ParseNumber() *Number &#123;</span><br><span class="line">	f, err := strconv.ParseFloat(r.CurToken.Str, <span class="number">64</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> &amp;Number&#123;&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	node := &amp;Number&#123;</span><br><span class="line">		Val: f,</span><br><span class="line">	&#125;</span><br><span class="line">	r.NextToken()</span><br><span class="line">	<span class="keyword">return</span> node</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Parser)</span></span> Precedence() <span class="type">int</span> &#123;</span><br><span class="line">	<span class="keyword">switch</span> r.CurToken.Type &#123;</span><br><span class="line">	<span class="keyword">case</span> enums.ADD, enums.SUB:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">	<span class="keyword">case</span> enums.MUL, enums.QUO:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">2</span></span><br><span class="line">	<span class="keyword">default</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>看看效果：</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">lexer := lexer.Lexer&#123;</span><br><span class="line">	Expression: <span class="string">&quot;1+2-3*4&quot;</span>,</span><br><span class="line">&#125;</span><br><span class="line">tokens, err := lexer.Lex()</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">	fmt.Println(err)</span><br><span class="line">	<span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line">p := &amp;parser.Parser&#123;</span><br><span class="line">	Tokens: tokens,</span><br><span class="line">&#125;</span><br><span class="line">ast, err := p.Parse()</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">	fmt.Println(err)</span><br><span class="line">	<span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line">fmt.Printf(<span class="string">&quot;%+v \n&quot;</span>, ast)</span><br><span class="line"><span class="comment">// &#123;Type: 10, Left: &#123;Type: 10, Left: &#123;Type: 9, Val: 1&#125;, Right: &#123;Type: 9, Val: 2&#125;&#125;, Right: &#123;Type: 9, Val: 3&#125;&#125;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>有了 AST 结构，我们就可以开始进行计算啦～这样一个支持+-*&#x2F;的小程序就完成了！计算逻辑相对比较简单，这里直接贴代码:</p>
+<h3 id="最后">最后</h3>
+<p>有了 AST 结构，我们就可以开始进行计算啦～这样一个支持±*/的小程序就完成了！计算逻辑相对比较简单，这里直接贴代码:</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 数值类型</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Number)</span></span> Evaluate() <span class="type">float64</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> r.Val</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 二元运算类型</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Stmt)</span></span> Evaluate() <span class="type">float64</span> &#123;</span><br><span class="line">	left := r.Left.Evaluate()</span><br><span class="line">	right := r.Right.Evaluate()</span><br><span class="line">	<span class="keyword">switch</span> r.Type &#123;</span><br><span class="line">	<span class="keyword">case</span> enums.ADD:</span><br><span class="line">		<span class="keyword">return</span> left + right</span><br><span class="line">	<span class="keyword">case</span> enums.SUB:</span><br><span class="line">		<span class="keyword">return</span> left - right</span><br><span class="line">	<span class="keyword">case</span> enums.MUL:</span><br><span class="line">		<span class="keyword">return</span> left * right</span><br><span class="line">	<span class="keyword">case</span> enums.QUO:</span><br><span class="line">		<span class="keyword">if</span> right == <span class="number">0</span> &#123;</span><br><span class="line">			fmt.Printf(<span class="string">&quot;expr[%g/%g]exception, division by zero \n&quot;</span>, left, right)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> left / right</span><br><span class="line">	<span class="keyword">default</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>附上完整代码：<a href="https://github.com/xupin/math-evaluate">math-evaluate</a></p>
 
       
@@ -576,7 +585,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -588,15 +601,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -620,11 +637,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -669,18 +690,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

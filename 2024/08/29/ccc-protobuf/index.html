@@ -8,19 +8,19 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Cocos Creator小知识 - 3.x项目如何使用Protobuf | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="记一次 Cocos Creator3.x 的 Protobuf 使用 环境 安装依赖  123$ npm i long$ npm i protobufjs$ npm i protobufjs-cli   tsconfig  123456789101112131415&#123;    &quot;compilerOptions&quot;: &#123;        &quot;target&amp;q">
+  <meta name="description" content="记一次 Cocos Creator3.x 的 Protobuf 使用 环境  安装依赖  123$ npm i long$ npm i protobufjs$ npm i protobufjs-cli  tsconfig  123456789101112131415&#123;    &quot;compilerOptions&quot;: &#123;        &quot;target&amp;q">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Cocos Creator小知识 - 3.x项目如何使用Protobuf">
 <meta property="og:url" content="http://xupin.im/2024/08/29/ccc-protobuf/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="记一次 Cocos Creator3.x 的 Protobuf 使用 环境 安装依赖  123$ npm i long$ npm i protobufjs$ npm i protobufjs-cli   tsconfig  123456789101112131415&#123;    &quot;compilerOptions&quot;: &#123;        &quot;target&amp;q">
+<meta property="og:description" content="记一次 Cocos Creator3.x 的 Protobuf 使用 环境  安装依赖  123$ npm i long$ npm i protobufjs$ npm i protobufjs-cli  tsconfig  123456789101112131415&#123;    &quot;compilerOptions&quot;: &#123;        &quot;target&amp;q">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-08-28T16:00:00.000Z">
 <meta property="article:modified_time" content="2025-01-16T06:13:09.720Z">
 <meta property="article:author" content="Mark">
-<meta property="article:tag" content="develop">
 <meta property="article:tag" content="biscuits">
 <meta property="article:tag" content="protobuf">
+<meta property="article:tag" content="develop">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
@@ -29,6 +29,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -229,39 +230,34 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>记一次 Cocos Creator3.x 的 Protobuf 使用</p>
-<h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><ul>
+<h3 id="环境">环境</h3>
+<ul>
 <li>安装依赖</li>
 </ul>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ npm i long</span><br><span class="line">$ npm i protobufjs</span><br><span class="line">$ npm i protobufjs-cli</span><br></pre></td></tr></table></figure>
-
 <ul>
 <li>tsconfig</li>
 </ul>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;compilerOptions&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;target&quot;</span><span class="punctuation">:</span> <span class="string">&quot;es6&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;lib&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;es2015&quot;</span><span class="punctuation">,</span> <span class="string">&quot;es2017&quot;</span><span class="punctuation">,</span> <span class="string">&quot;dom&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;module&quot;</span><span class="punctuation">:</span> <span class="string">&quot;commonjs&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;strict&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;experimentalDecorators&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;skipLibCheck&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;isolatedModules&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;moduleResolution&quot;</span><span class="punctuation">:</span> <span class="string">&quot;node&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="comment">// &quot;noEmit&quot;: true,</span></span><br><span class="line">        <span class="attr">&quot;forceConsistentCasingInFileNames&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;allowSyntheticDefaultImports&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-
 <span id="more"></span>
-
 <ul>
 <li>jsconfig</li>
 </ul>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;compilerOptions&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;target&quot;</span><span class="punctuation">:</span> <span class="string">&quot;es6&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;module&quot;</span><span class="punctuation">:</span> <span class="string">&quot;commonjs&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;experimentalDecorators&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="protobuf-协议文件"><a href="#protobuf-协议文件" class="headerlink" title="protobuf 协议文件"></a>protobuf 协议文件</h3><figure class="highlight proto"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">syntax = <span class="string">&quot;proto3&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> xproto;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 进入游戏</span></span><br><span class="line"><span class="keyword">message </span><span class="title class_">C2S_EnterGame</span>&#123;&#125;</span><br><span class="line"><span class="keyword">message </span><span class="title class_">S2C_EnterGame</span>&#123;&#125;</span><br></pre></td></tr></table></figure>
-
+<h3 id="protobuf-协议文件">protobuf 协议文件</h3>
+<figure class="highlight proto"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">syntax = <span class="string">&quot;proto3&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> xproto;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 进入游戏</span></span><br><span class="line"><span class="keyword">message </span><span class="title class_">C2S_EnterGame</span>&#123;&#125;</span><br><span class="line"><span class="keyword">message </span><span class="title class_">S2C_EnterGame</span>&#123;&#125;</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ pbjs -t static-module -w commonjs -o ./assets/scripts/Protos/ProtoData.js &#123;your-proto-path&#125;/*.proto</span><br><span class="line">$ pbts -o ./assets/scripts/Protos/ProtoData.d.ts ./assets/scripts/Protos/*.js</span><br></pre></td></tr></table></figure>
-
-<h3 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h3><ol>
+<h3 id="使用示例">使用示例</h3>
+<ol>
 <li>直接使用</li>
 </ol>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; _decorator, <span class="title class_">Component</span> &#125; <span class="keyword">from</span> <span class="string">&quot;cc&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> proto <span class="keyword">from</span> <span class="string">&quot;./Protos/ProtoData.js&quot;</span>; <span class="comment">// 注意这里的.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> &#123; ccclass, property &#125; = _decorator;</span><br><span class="line"><span class="meta">@ccclass</span>(<span class="string">&quot;Test&quot;</span>)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> <span class="title class_">Test</span> <span class="keyword">extends</span> <span class="title class_ inherited__">Component</span> &#123;</span><br><span class="line">    <span class="title function_">start</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> req = proto.<span class="property">xproto</span>.<span class="property">C2S_EnterGame</span>.<span class="title function_">create</span>(&#123;&#125;);</span><br><span class="line">        <span class="keyword">let</span> payload = proto.<span class="property">xproto</span>.<span class="property">C2S_EnterGame</span>.<span class="title function_">encode</span>(req).<span class="title function_">finish</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">update</span>(<span class="params">deltaTime: <span class="built_in">number</span></span>) &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; _decorator, <span class="title class_">Component</span> &#125; <span class="keyword">from</span> <span class="string">&quot;cc&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> proto <span class="keyword">from</span> <span class="string">&quot;./Protos/ProtoData.js&quot;</span>; <span class="comment">// 注意这里的.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> &#123; ccclass, property &#125; = _decorator;</span><br><span class="line"><span class="meta">@ccclass</span>(<span class="string">&quot;Test&quot;</span>)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> <span class="title class_">Test</span> <span class="keyword">extends</span> <span class="title class_ inherited__">Component</span> &#123;</span><br><span class="line">    <span class="title function_">start</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> req = proto.<span class="property">xproto</span>.<span class="property">C2S_EnterGame</span>.<span class="title function_">create</span>(&#123;&#125;);</span><br><span class="line">        <span class="keyword">let</span> payload = proto.<span class="property">xproto</span>.<span class="property">C2S_EnterGame</span>.<span class="title function_">encode</span>(req).<span class="title function_">finish</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">update</span>(<span class="params"><span class="attr">deltaTime</span>: <span class="built_in">number</span></span>) &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ol start="2">
 <li>套娃使用</li>
 </ol>
 <p>ProtoUtils.ts</p>
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> proto <span class="keyword">from</span> <span class="string">&quot;./ProtoData.js&quot;</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> proto.<span class="property">xproto</span>;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; _decorator, <span class="title class_">Component</span> &#125; <span class="keyword">from</span> <span class="string">&quot;cc&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> xproto <span class="keyword">from</span> <span class="string">&quot;./Protos/ProtoUtils&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> &#123; ccclass, property &#125; = _decorator;</span><br><span class="line"><span class="meta">@ccclass</span>(<span class="string">&quot;Test&quot;</span>)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> <span class="title class_">Test</span> <span class="keyword">extends</span> <span class="title class_ inherited__">Component</span> &#123;</span><br><span class="line">    <span class="title function_">start</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> req = xproto.<span class="property">C2S_EnterGame</span>.<span class="title function_">create</span>(&#123;&#125;);</span><br><span class="line">        <span class="keyword">let</span> payload = xproto.<span class="property">C2S_EnterGame</span>.<span class="title function_">encode</span>(req).<span class="title function_">finish</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">update</span>(<span class="params">deltaTime: <span class="built_in">number</span></span>) &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; _decorator, <span class="title class_">Component</span> &#125; <span class="keyword">from</span> <span class="string">&quot;cc&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> xproto <span class="keyword">from</span> <span class="string">&quot;./Protos/ProtoUtils&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> &#123; ccclass, property &#125; = _decorator;</span><br><span class="line"><span class="meta">@ccclass</span>(<span class="string">&quot;Test&quot;</span>)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> <span class="title class_">Test</span> <span class="keyword">extends</span> <span class="title class_ inherited__">Component</span> &#123;</span><br><span class="line">    <span class="title function_">start</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> req = xproto.<span class="property">C2S_EnterGame</span>.<span class="title function_">create</span>(&#123;&#125;);</span><br><span class="line">        <span class="keyword">let</span> payload = xproto.<span class="property">C2S_EnterGame</span>.<span class="title function_">encode</span>(req).<span class="title function_">finish</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">update</span>(<span class="params"><span class="attr">deltaTime</span>: <span class="built_in">number</span></span>) &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
       
 
@@ -275,15 +271,15 @@ var _hmt = _hmt || [];
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">biscuits</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">protobuf</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
         		</li>
       		
 		</ul>
@@ -534,7 +530,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -546,15 +546,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -578,11 +582,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -627,18 +635,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

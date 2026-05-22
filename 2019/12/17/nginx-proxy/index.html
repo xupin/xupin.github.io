@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Nginx学习笔记 - 代理 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="代理通常用于在几台服务器之间分配负载，无缝显示来自不同网站的内容或通过除 HTTP 之外的协议将处理请求传递给应用服务器。 1.代理的常用场景及优点正向代理  gfw 科学上网。   客户端访问鉴权。  反向代理  负载均衡。   保证内网的安全，阻止 web 攻击。  2.正向代理和反向代理有什么不同比较通俗的来解释：正向代理代理的是客户端，服务端不知道实际发起请求的客户端、反向代理代理的是服务">
+  <meta name="description" content="代理通常用于在几台服务器之间分配负载，无缝显示来自不同网站的内容或通过除 HTTP 之外的协议将处理请求传递给应用服务器。 1.代理的常用场景及优点 正向代理  gfw 科学上网。   客户端访问鉴权。  反向代理  负载均衡。   保证内网的安全，阻止 web 攻击。  2.正向代理和反向代理有什么不同 比较通俗的来解释：正向代理代理的是客户端，服务端不知道实际发起请求的客户端、反向代理代理的是">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Nginx学习笔记 - 代理">
 <meta property="og:url" content="http://xupin.im/2019/12/17/nginx-proxy/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="代理通常用于在几台服务器之间分配负载，无缝显示来自不同网站的内容或通过除 HTTP 之外的协议将处理请求传递给应用服务器。 1.代理的常用场景及优点正向代理  gfw 科学上网。   客户端访问鉴权。  反向代理  负载均衡。   保证内网的安全，阻止 web 攻击。  2.正向代理和反向代理有什么不同比较通俗的来解释：正向代理代理的是客户端，服务端不知道实际发起请求的客户端、反向代理代理的是服务">
+<meta property="og:description" content="代理通常用于在几台服务器之间分配负载，无缝显示来自不同网站的内容或通过除 HTTP 之外的协议将处理请求传递给应用服务器。 1.代理的常用场景及优点 正向代理  gfw 科学上网。   客户端访问鉴权。  反向代理  负载均衡。   保证内网的安全，阻止 web 攻击。  2.正向代理和反向代理有什么不同 比较通俗的来解释：正向代理代理的是客户端，服务端不知道实际发起请求的客户端、反向代理代理的是">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://xupin.im/assets/nginx-proxy/relation.jpg">
 <meta property="article:published_time" content="2019-12-16T16:00:00.000Z">
@@ -30,6 +30,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -230,7 +231,8 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>代理通常用于在几台服务器之间分配负载，无缝显示来自不同网站的内容或通过除 HTTP 之外的协议将处理请求传递给应用服务器。</p>
-<h3 id="1-代理的常用场景及优点"><a href="#1-代理的常用场景及优点" class="headerlink" title="1.代理的常用场景及优点"></a>1.代理的常用场景及优点</h3><p>正向代理</p>
+<h3 id="1-代理的常用场景及优点">1.代理的常用场景及优点</h3>
+<p>正向代理</p>
 <blockquote>
 <p>gfw 科学上网。</p>
 </blockquote>
@@ -244,8 +246,10 @@ var _hmt = _hmt || [];
 <blockquote>
 <p>保证内网的安全，阻止 web 攻击。</p>
 </blockquote>
-<h3 id="2-正向代理和反向代理有什么不同"><a href="#2-正向代理和反向代理有什么不同" class="headerlink" title="2.正向代理和反向代理有什么不同"></a>2.正向代理和反向代理有什么不同</h3><p>比较通俗的来解释：正向代理代理的是客户端，服务端不知道实际发起请求的客户端、反向代理代理的是服务端，客户端不知道实际接收请求的服务端。</p>
-<p>一张图表示（来源：<a href="https://zhuanlan.zhihu.com/p/82300486">知乎 wplulala</a>）<br><img src="/assets/nginx-proxy/relation.jpg"></p>
+<h3 id="2-正向代理和反向代理有什么不同">2.正向代理和反向代理有什么不同</h3>
+<p>比较通俗的来解释：正向代理代理的是客户端，服务端不知道实际发起请求的客户端、反向代理代理的是服务端，客户端不知道实际接收请求的服务端。</p>
+<p>一张图表示（来源：<a href="https://zhuanlan.zhihu.com/p/82300486">知乎 wplulala</a>）<br>
+<img src="/assets/nginx-proxy/relation.jpg" alt=""></p>
 
       
 
@@ -514,7 +518,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -526,15 +534,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -558,11 +570,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -607,18 +623,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

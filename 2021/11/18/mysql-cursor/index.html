@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Mysql学习笔记 - cursor | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="游标（cursor）是可以从数据库检索结果集中每次提取一行记录的机制，游标的作用就是对结果集进行遍历，方便对记录进行操作。 特性三种特性：  只读 不能更新它   非滚动 根据SQL语句确定顺序，不能向后获取记录和跳过记录   敏感&#x2F;不敏感 敏感游标指向的是数据表，不敏感游标指向的则是临时数据表。（Mysql使用的是敏感游标）    声明游标游标使用的变量必须在声明游标之前声明">
+  <meta name="description" content="游标（cursor）是可以从数据库检索结果集中每次提取一行记录的机制，游标的作用就是对结果集进行遍历，方便对记录进行操作。 特性 三种特性：  只读   不能更新它   非滚动   根据SQL语句确定顺序，不能向后获取记录和跳过记录   敏感&#x2F;不敏感   敏感游标指向的是数据表，不敏感游标指向的则是临时数据表。（Mysql使用的是敏感游标）  声明游标 游标使用的变量必须在声明游标之前声明">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Mysql学习笔记 - cursor">
 <meta property="og:url" content="http://xupin.im/2021/11/18/mysql-cursor/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="游标（cursor）是可以从数据库检索结果集中每次提取一行记录的机制，游标的作用就是对结果集进行遍历，方便对记录进行操作。 特性三种特性：  只读 不能更新它   非滚动 根据SQL语句确定顺序，不能向后获取记录和跳过记录   敏感&#x2F;不敏感 敏感游标指向的是数据表，不敏感游标指向的则是临时数据表。（Mysql使用的是敏感游标）    声明游标游标使用的变量必须在声明游标之前声明">
+<meta property="og:description" content="游标（cursor）是可以从数据库检索结果集中每次提取一行记录的机制，游标的作用就是对结果集进行遍历，方便对记录进行操作。 特性 三种特性：  只读   不能更新它   非滚动   根据SQL语句确定顺序，不能向后获取记录和跳过记录   敏感&#x2F;不敏感   敏感游标指向的是数据表，不敏感游标指向的则是临时数据表。（Mysql使用的是敏感游标）  声明游标 游标使用的变量必须在声明游标之前声明">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-11-17T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-07-15T02:59:17.752Z">
@@ -28,6 +28,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -228,31 +229,37 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>游标（cursor）是可以从数据库检索结果集中每次提取一行记录的机制，游标的作用就是对结果集进行遍历，方便对记录进行操作。</p>
-<h3 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h3><p>三种特性：</p>
+<h3 id="特性">特性</h3>
+<p>三种特性：</p>
 <ul>
-<li>只读<blockquote>
+<li>只读</li>
+</ul>
+<blockquote>
 <p>不能更新它</p>
 </blockquote>
-</li>
-<li>非滚动<blockquote>
+<ul>
+<li>非滚动</li>
+</ul>
+<blockquote>
 <p>根据SQL语句确定顺序，不能向后获取记录和跳过记录</p>
 </blockquote>
-</li>
-<li>敏感&#x2F;不敏感<blockquote>
+<ul>
+<li>敏感/不敏感</li>
+</ul>
+<blockquote>
 <p>敏感游标指向的是数据表，不敏感游标指向的则是临时数据表。（Mysql使用的是敏感游标）</p>
 </blockquote>
-</li>
-</ul>
-<h3 id="声明游标"><a href="#声明游标" class="headerlink" title="声明游标"></a>声明游标</h3><p>游标使用的变量必须在声明游标之前声明</p>
+<h3 id="声明游标">声明游标</h3>
+<p>游标使用的变量必须在声明游标之前声明</p>
 <span id="more"></span>
-
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator">/</span><span class="operator">/</span> Mysql</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span> 不同于其他数据库，Mysql的游标必须声明在存储过程<span class="operator">/</span>函数中。</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">procedure</span> cur_func()</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">declare</span> &#123;...VARs&#125; <span class="operator">/</span><span class="operator">/</span> e.g. <span class="keyword">declare</span> email <span class="type">varchar</span>(<span class="number">50</span>)</span><br><span class="line">    <span class="keyword">declare</span> &#123;CUR_NAME&#125; <span class="keyword">cursor</span> <span class="keyword">for</span> &#123;STATEMENT&#125;;</span><br><span class="line">    <span class="keyword">open</span> &#123;CUR_NAME&#125;;</span><br><span class="line">    <span class="keyword">fetch</span> &#123;CUR_NAME&#125; <span class="keyword">into</span> &#123;...VARs&#125; <span class="operator">/</span><span class="operator">/</span> e.g. <span class="keyword">fetch</span> cur1 <span class="keyword">into</span> email,name <span class="operator">/</span><span class="operator">/</span> 取出<span class="number">1</span>行记录 <span class="operator">&amp;</span> 把值赋给变量email、name</span><br><span class="line">    <span class="keyword">close</span> &#123;CUR_NAME&#125;;</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line"><span class="operator">/</span><span class="operator">/</span> PgSql</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">declare</span> &#123;CUR_NAME&#125; <span class="keyword">cursor</span> <span class="keyword">for</span> &#123;STATEMENT&#125;;</span><br><span class="line">    <span class="keyword">fetch</span> &#123;STATEMENT&#125; <span class="keyword">from</span> &#123;CUR_NAME&#125; <span class="operator">/</span><span class="operator">/</span> e.g. <span class="keyword">fetch</span> forward <span class="number">10</span> <span class="keyword">from</span> cur1 取出<span class="number">10</span>行记录</span><br><span class="line">    <span class="keyword">close</span> &#123;CUR_NAME&#125;;</span><br><span class="line"><span class="keyword">end</span>;</span><br></pre></td></tr></table></figure>
-
-<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>游标有着类似指针的作用，它是遍历容器的一套接口（迭代器），简单实现（golang）:</p>
+<h3 id="原理">原理</h3>
+<p>游标有着类似指针的作用，它是遍历容器的一套接口（迭代器），简单实现（golang）:</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> CustomArray []<span class="keyword">interface</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Iterator <span class="keyword">struct</span> &#123;</span><br><span class="line">	data  CustomArray</span><br><span class="line">	index <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	cusArr := CustomArray&#123;<span class="string">&quot;1_1&quot;</span>, <span class="number">22</span>, <span class="number">3.3</span>&#125;</span><br><span class="line">	<span class="keyword">for</span> iter := cusArr.iterator(); iter.hasNext(); &#123;</span><br><span class="line">		fmt.Println(iter.key(), iter.next())</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 迭代器</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(arr CustomArray)</span></span> iterator() *Iterator &#123;</span><br><span class="line">	<span class="keyword">return</span> &amp;Iterator&#123;</span><br><span class="line">		data:  arr,</span><br><span class="line">		index: <span class="number">0</span>,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 游标</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(iter *Iterator)</span></span> key() <span class="type">int</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> iter.index</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 下一个元素是否存在</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(iter *Iterator)</span></span> hasNext() <span class="type">bool</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> iter.index &lt; <span class="built_in">len</span>(iter.data)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 取出数据&amp;移动游标</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(iter *Iterator)</span></span> next() <span class="keyword">interface</span>&#123;&#125; &#123;</span><br><span class="line">	val := iter.data[iter.index]</span><br><span class="line">	iter.index += <span class="number">1</span></span><br><span class="line">	<span class="keyword">return</span> val</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>简单的说：游标返回一个数据集合迭代器，当你取一行记录同时游标指向下一个元素。</p>
-<p>举例使用游标的DB库，以下：<br><a href="https://github.com/PyMySQL/PyMySQL/blob/46d17402af/pymysql/cursors.py#L278">https://github.com/PyMySQL/PyMySQL/blob/46d17402af/pymysql/cursors.py#L278</a><br><a href="https://github.com/golang/go/blob/master/src/database/sql/sql.go#L2983">https://github.com/golang/go/blob/master/src/database/sql/sql.go#L2983</a></p>
+<p>举例使用游标的DB库，以下：<br>
+<a href="https://github.com/PyMySQL/PyMySQL/blob/46d17402af/pymysql/cursors.py#L278">https://github.com/PyMySQL/PyMySQL/blob/46d17402af/pymysql/cursors.py#L278</a><br>
+<a href="https://github.com/golang/go/blob/master/src/database/sql/sql.go#L2983">https://github.com/golang/go/blob/master/src/database/sql/sql.go#L2983</a></p>
 
       
 
@@ -521,7 +528,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -533,15 +544,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -565,11 +580,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -614,18 +633,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

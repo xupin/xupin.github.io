@@ -25,6 +25,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -183,6 +184,111 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-design-ioc-di" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <!-- 标题 -->
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/10/18/design-ioc-di/">设计模式 - 控制反转/依赖注入</a>
+    </h1>
+  
+
+        <!-- 发布日期 -->
+        
+        <a href="/2020/10/18/design-ioc-di/" class="archive-article-date">
+  	<time datetime="2020-10-17T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-10-18</time>
+</a>
+        
+        <!-- 字数统计 -->
+        
+          <div style="margin-top:10px;">
+    <span class="post-time">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-keyboard-o"></i>
+        <span class="post-meta-item-text">  全文 ≈</span>
+        <span class="post-count">722字</span>
+      </span>
+    </span>
+
+    <span class="post-time">
+      &nbsp; | &nbsp;
+      <span class="post-meta-item-icon">
+        <i class="fa fa-hourglass-half"></i>
+        <span class="post-meta-item-text">  预计阅读时长</span>
+        <span class="post-count">3分钟</span>
+      </span>
+    </span>
+</div>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Laravel框架中控制反转和依赖注入功能是怎么实现的？<br>
+其实控制反转和依赖注入是一种设计思想，它最早源于Java Spring框架设计中的机制，所以身边如果有做Java开发的小伙伴~简单聊聊就能明白许多。</p>
+<h3 id="1-依赖注入">1.依赖注入</h3>
+<p>依赖注入（Dependency Injection），通俗的解释是当我们构建对象时需要的参数，只要不是手动创建而是以实例对象的形式注入都可以称为依赖注入。</p>
+<p>举个例子，一个小游戏中玩家可以创建不同的职业。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 职业接口</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Role</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 获取职业名</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getName</span>(<span class="params"></span>)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dh</span> <span class="keyword">implements</span> <span class="title">Role</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 职业名</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$name</span> = <span class="string">&#x27;猎魔人&#x27;</span>;</span><br><span class="line">    <span class="comment">// 攻击成长</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$attack</span>;</span><br><span class="line">    <span class="comment">// 速度成长</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$speed</span>;</span><br><span class="line">    <span class="comment">// 气血成长</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$hp</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$attack</span>,<span class="variable">$speed</span>,<span class="variable">$hp</span></span>) </span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;attack = <span class="variable">$attack</span>;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;speed = <span class="variable">$speed</span>;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;hp = <span class="variable">$hp</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getName</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 玩家类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Player</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 职业</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$role</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$role</span></span>) </span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;role = <span class="variable">$role</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 猎魔人</span></span><br><span class="line"><span class="variable">$dh</span> = <span class="keyword">new</span> <span class="title class_">Dh</span>(<span class="number">100</span>, <span class="number">100</span>, <span class="number">60</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 玩家1-&gt;猎魔人</span></span><br><span class="line"><span class="variable">$player1</span> = <span class="keyword">new</span> <span class="title class_">Player</span>(<span class="variable">$dh</span>);</span><br></pre></td></tr></table></figure>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">design</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/10/18/design-ioc-di/">More >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-mysql-clustered-index" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -227,9 +333,10 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>之前简单了解过Mysql的索引，今天来学习一下Mysql（InnoDB）的聚簇索引以及SQL为什么会产生回表查询？</p>
-<h3 id="1-什么是回表查询？"><a href="#1-什么是回表查询？" class="headerlink" title="1. 什么是回表查询？"></a>1. 什么是回表查询？</h3><p>都知道Mysql存储的数据结构是B+Tree，所以当查询数据的时候能最快找到叶子节点的检索方式时是最快的。比如：主键直接定位行记录，而有些查询需要先检索索引树找到叶子节点的主键值，再通过主键值定位行记录这种扫描2次索引树的方式就叫做回表查询。</p>
+<h3 id="1-什么是回表查询？">1. 什么是回表查询？</h3>
+<p>都知道Mysql存储的数据结构是B+Tree，所以当查询数据的时候能最快找到叶子节点的检索方式时是最快的。比如：主键直接定位行记录，而有些查询需要先检索索引树找到叶子节点的主键值，再通过主键值定位行记录这种扫描2次索引树的方式就叫做回表查询。</p>
 <p>如何确定SQL语句会不会造成回表查询？如下表：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `users`  (</span><br><span class="line">  `id` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  `<span class="keyword">user</span>` <span class="type">varchar</span>(<span class="number">125</span>) <span class="type">CHARACTER</span> <span class="keyword">SET</span> utf8mb4 <span class="keyword">COLLATE</span> utf8mb4_unicode_ci <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `name` <span class="type">varchar</span>(<span class="number">50</span>) <span class="type">CHARACTER</span> <span class="keyword">SET</span> utf8mb4 <span class="keyword">COLLATE</span> utf8mb4_unicode_ci <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `status` tinyint(<span class="number">4</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `created_at` datetime <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  <span class="keyword">PRIMARY</span> KEY (`id`) <span class="keyword">USING</span> BTREE,</span><br><span class="line">  <span class="keyword">UNIQUE</span> INDEX `<span class="keyword">user</span>`(`<span class="keyword">user</span>`) <span class="keyword">USING</span> BTREE,</span><br><span class="line">  INDEX `name`(`name`) <span class="keyword">USING</span> BTREE</span><br><span class="line">) ENGINE <span class="operator">=</span> InnoDB AUTO_INCREMENT <span class="operator">=</span> <span class="number">1</span> <span class="type">CHARACTER</span> <span class="keyword">SET</span> <span class="operator">=</span> utf8mb4 <span class="keyword">COLLATE</span> <span class="operator">=</span> utf8mb4_unicode_ci ROW_FORMAT <span class="operator">=</span> Compact;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE TABLE</span> `users`  (</span><br><span class="line">  `id` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT NULL</span> AUTO_INCREMENT,</span><br><span class="line">  `<span class="keyword">user</span>` <span class="type">varchar</span>(<span class="number">125</span>) <span class="keyword">CHARACTER SET</span> utf8mb4 <span class="keyword">COLLATE</span> utf8mb4_unicode_ci <span class="keyword">NOT NULL</span>,</span><br><span class="line">  `name` <span class="type">varchar</span>(<span class="number">50</span>) <span class="keyword">CHARACTER SET</span> utf8mb4 <span class="keyword">COLLATE</span> utf8mb4_unicode_ci <span class="keyword">NOT NULL</span>,</span><br><span class="line">  `status` tinyint(<span class="number">4</span>) <span class="keyword">NOT NULL</span>,</span><br><span class="line">  `created_at` datetime <span class="keyword">NOT NULL</span>,</span><br><span class="line">  <span class="keyword">PRIMARY KEY</span> (`id`) <span class="keyword">USING</span> BTREE,</span><br><span class="line">  <span class="keyword">UNIQUE</span> INDEX `<span class="keyword">user</span>`(`<span class="keyword">user</span>`) <span class="keyword">USING</span> BTREE,</span><br><span class="line">  INDEX `name`(`name`) <span class="keyword">USING</span> BTREE</span><br><span class="line">) ENGINE <span class="operator">=</span> InnoDB AUTO_INCREMENT <span class="operator">=</span> <span class="number">1</span> <span class="keyword">CHARACTER SET</span> <span class="operator">=</span> utf8mb4 <span class="keyword">COLLATE</span> <span class="operator">=</span> utf8mb4_unicode_ci ROW_FORMAT <span class="operator">=</span> Compact;</span><br></pre></td></tr></table></figure>
 <p>2种查询方式：</p>
         
       
@@ -312,7 +419,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">703字</span>
+        <span class="post-count">702字</span>
       </span>
     </span>
 
@@ -331,13 +438,19 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>网上购物看到自己喜欢的东西加入购物车然后付款，但是在付款的突然不想要了 … 往往这个订单会给一个30分钟的支付时间，时间一到就自动关闭了 所以这是怎么做到的呢？</p>
-<h3 id="1-实现方式"><a href="#1-实现方式" class="headerlink" title="1.实现方式"></a>1.实现方式</h3><ul>
-<li>轮询  <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">脚本每隔一定时间就去数据表检查一下状态，是否过期需要关闭。</span><br></pre></td></tr></table></figure></li>
-<li>定时器  <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">创建订单时开始计时，计时结束后直接处理关闭订单。</span><br></pre></td></tr></table></figure></li>
-<li>数据库事件+存储过程  <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">数据库建立检查事件，每隔一定时间去执行一次存储过程。</span><br></pre></td></tr></table></figure></li>
-<li>Key事件通知  <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">对于更改任何Redis Key的每个操作，都可以配置Redis将消息发布到Pub/Sub，然后订阅这些通知。</span><br></pre></td></tr></table></figure></li>
+<h3 id="1-实现方式">1.实现方式</h3>
+<ul>
+<li>轮询  <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">脚本每隔一定时间就去数据表检查一下状态，是否过期需要关闭。</span><br></pre></td></tr></table></figure>
+</li>
+<li>定时器  <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">创建订单时开始计时，计时结束后直接处理关闭订单。</span><br></pre></td></tr></table></figure>
+</li>
+<li>数据库事件+存储过程  <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">数据库建立检查事件，每隔一定时间去执行一次存储过程。</span><br></pre></td></tr></table></figure>
+</li>
+<li>Key事件通知  <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">对于更改任何Redis Key的每个操作，都可以配置Redis将消息发布到Pub/Sub，然后订阅这些通知。</span><br></pre></td></tr></table></figure>
+</li>
 </ul>
-<h3 id="2-数据库事件-存储过程"><a href="#2-数据库事件-存储过程" class="headerlink" title="2.数据库事件+存储过程"></a>2.数据库事件+存储过程</h3><p>不多说，直接上SQL</p>
+<h3 id="2-数据库事件-存储过程">2.数据库事件+存储过程</h3>
+<p>不多说，直接上SQL</p>
         
       
 
@@ -419,7 +532,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">152字</span>
+        <span class="post-count">147字</span>
       </span>
     </span>
 
@@ -437,14 +550,15 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>碰上github网络抽风的时候，恰巧你又需要拉取github上托管的项目，这个时候看着2kb&#x2F;s的下载速度是不是很抓狂？</p>
-<h3 id="粗暴的解决方式"><a href="#粗暴的解决方式" class="headerlink" title="粗暴的解决方式"></a>粗暴的解决方式</h3><p>打开<a href="https://www.ipaddress.com/">ipaddress</a>查询以下三个域名的ip，写到hosts文件中。</p>
+        <p>碰上github网络抽风的时候，恰巧你又需要拉取github上托管的项目，这个时候看着2kb/s的下载速度是不是很抓狂？</p>
+<h3 id="粗暴的解决方式">粗暴的解决方式</h3>
+<p>打开<a href="https://www.ipaddress.com">ipaddress</a>查询以下三个域名的ip，写到hosts文件中。</p>
 <ul>
-<li>github.com</li>
-<li>github.global.ssl.fastly.net</li>
-<li>codeload.github.com</li>
+<li><a href="http://github.com">github.com</a></li>
+<li><a href="http://github.global.ssl.fastly.net">github.global.ssl.fastly.net</a></li>
+<li><a href="http://codeload.github.com">codeload.github.com</a></li>
 </ul>
-<h3 id="进阶的方式"><a href="#进阶的方式" class="headerlink" title="进阶的方式"></a>进阶的方式</h3>
+<h3 id="进阶的方式">进阶的方式</h3>
         
       
 
@@ -458,15 +572,15 @@ var _hmt = _hmt || [];
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">biscuits</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">github</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">biscuits</a>
         		</li>
       		
 		</ul>
@@ -548,16 +662,20 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>在现在大数据、高并发，到处都充斥着流量的互联网时代，能不能应对高并发俨然已经发展成一个衡量服务端架构是否合格的标准，作为程序媛我们思考如何利用语言在代码层面最优设计能应对并发的程序去并行处理任务。在程序中对于任务并行处理一般趋于使用：进程、线程，以及另外一种：<code>协程</code>。支持协程的语言有很多，比如：C&#x2F;C++、Ruby、 Python（2.5+）、Golang等等，它们有些是本身语言支持协程，有些则是需要引入第三方包来使用。不过，我们主要来学习一下Golang这门语言（简称Go），它是如何理解以及实现协程的。</p>
-<h3 id="一、进程、线程和协程的前世今生"><a href="#一、进程、线程和协程的前世今生" class="headerlink" title="一、进程、线程和协程的前世今生"></a>一、进程、线程和协程的前世今生</h3><p>都知道一台计算机的核心是CPU，它承担着所有的运算。而计算机承载的操作系统（内核）则是负责所有任务的处理和调度CPU以及资源的分配。如果用人类来比喻，大脑是CPU，思维则是操作系统（内核）。</p>
-<h4 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h4><p>最早的计算机每次只能运行一个程序，如果还有其他程序需要执行则要排队等待。后来CPU运算能力提高了，这种方式过于原始有些浪费性能，于是尝试让多个程序可以并行执行，但是这样面临一个新的问题：跑在同一个CPU中的程序都会使用计算机资源，那程序的运行状态和数据怎么保障？<code>进程</code>。</p>
+        <p>在现在大数据、高并发，到处都充斥着流量的互联网时代，能不能应对高并发俨然已经发展成一个衡量服务端架构是否合格的标准，作为程序媛我们思考如何利用语言在代码层面最优设计能应对并发的程序去并行处理任务。在程序中对于任务并行处理一般趋于使用：进程、线程，以及另外一种：<code>协程</code>。支持协程的语言有很多，比如：C/C++、Ruby、 Python（2.5+）、Golang等等，它们有些是本身语言支持协程，有些则是需要引入第三方包来使用。不过，我们主要来学习一下Golang这门语言（简称Go），它是如何理解以及实现协程的。</p>
+<h3 id="一、进程、线程和协程的前世今生">一、进程、线程和协程的前世今生</h3>
+<p>都知道一台计算机的核心是CPU，它承担着所有的运算。而计算机承载的操作系统（内核）则是负责所有任务的处理和调度CPU以及资源的分配。如果用人类来比喻，大脑是CPU，思维则是操作系统（内核）。</p>
+<h4 id="进程">进程</h4>
+<p>最早的计算机每次只能运行一个程序，如果还有其他程序需要执行则要排队等待。后来CPU运算能力提高了，这种方式过于原始有些浪费性能，于是尝试让多个程序可以并行执行，但是这样面临一个新的问题：跑在同一个CPU中的程序都会使用计算机资源，那程序的运行状态和数据怎么保障？<code>进程</code>。</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">进程是内核资源管理分配的最小单位，每个进程都有独立的虚拟地址空间。内核中的每个程序都运行在独立进程的上下文中，上下文是由程序正常运行需要的一系列参数组成，参数包括存储器中的代码和数据，寄存器中的内容以及进程打开的文件描述符（文件句柄）等。可以把上下文通俗理解为：`环境`。</span><br></pre></td></tr></table></figure>
 <p>如果程序在运行过程中需要进行IO操作，IO操作阻塞了程序后面的计算，这时候CPU属于空闲状态，那内核会把CPU切换到其他进程去处理。不过当进程数量变高以后，计算机的大部分资源都被进程切换这个操作消耗掉了。为什么说进程切换操作消耗资源代价比较高？</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">所谓进程切换其实就是上下文切换，需要切换新的页表并加载新的虚拟地址空间、切换内核栈以及硬件上下文等。只要发生进程切换操作就得反复进入内核，加载切换一系列状态。</span><br></pre></td></tr></table></figure>
-<h4 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h4><p>为了减少这种开销，<code>线程</code>应运而生。</p>
+<h4 id="线程">线程</h4>
+<p>为了减少这种开销，<code>线程</code>应运而生。</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">线程是内核调度CPU执行的最小单位，线程是运行在进程上下文的逻辑流，线程是具体执行程序的单位。一个进程至少包含一个主线程（可以拥有多个子线程），但是一个线程只能存在于一个进程中。</span><br></pre></td></tr></table></figure>
 <p>线程切换相比进程切换开销就小了很多，线程切换只需要把寄存器刷新即可。</p>
-<h4 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h4><p>后面程序媛们发现线程这样还是有性能瓶颈（IO阻塞），无论是进程还是线程因为涉及到大量的计算机资源，所以都是由内核调度管理。能不能开发一种由代码控制的线程呢？这就是<code>协程</code>。</p>
+<h4 id="协程">协程</h4>
+<p>后面程序媛们发现线程这样还是有性能瓶颈（IO阻塞），无论是进程还是线程因为涉及到大量的计算机资源，所以都是由内核调度管理。能不能开发一种由代码控制的线程呢？这就是<code>协程</code>。</p>
         
       
 
@@ -639,7 +757,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">557字</span>
+        <span class="post-count">555字</span>
       </span>
     </span>
 
@@ -658,15 +776,16 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>在和小伙伴讨论问题的时候，小伙伴突然问了我这样一个小问题，数据库中如何查找连续编号中的缺失编号？</p>
-<h3 id="1-描述"><a href="#1-描述" class="headerlink" title="1.描述"></a>1.描述</h3><p>场景大概是这样，有一份连续数据ID：1 … 27，其中ID：6，7，14的数据丢了。结构如下：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `letter`  (</span><br><span class="line">  `id` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  `name` <span class="type">varchar</span>(<span class="number">50</span>) <span class="type">CHARACTER</span> <span class="keyword">SET</span> utf8mb4 <span class="keyword">COLLATE</span> utf8mb4_unicode_ci <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  <span class="keyword">PRIMARY</span> KEY (`id`) <span class="keyword">USING</span> BTREE</span><br><span class="line">) ENGINE <span class="operator">=</span> InnoDB AUTO_INCREMENT <span class="operator">=</span> <span class="number">27</span> <span class="type">CHARACTER</span> <span class="keyword">SET</span> <span class="operator">=</span> utf8mb4 <span class="keyword">COLLATE</span> <span class="operator">=</span> utf8mb4_unicode_ci ROW_FORMAT <span class="operator">=</span> Compact;</span><br><span class="line"></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">1</span>, <span class="string">&#x27;A&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">2</span>, <span class="string">&#x27;B&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">3</span>, <span class="string">&#x27;C&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">4</span>, <span class="string">&#x27;D&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">5</span>, <span class="string">&#x27;E&#x27;</span>);</span><br><span class="line"># <span class="keyword">INSERT</span> <span class="keyword">INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">6</span>, <span class="string">&#x27;F&#x27;</span>);</span><br><span class="line"># <span class="keyword">INSERT</span> <span class="keyword">INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">7</span>, <span class="string">&#x27;J&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">8</span>, <span class="string">&#x27;H&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">9</span>, <span class="string">&#x27;I&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">10</span>, <span class="string">&#x27;J&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">11</span>, <span class="string">&#x27;K&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">12</span>, <span class="string">&#x27;L&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">13</span>, <span class="string">&#x27;M&#x27;</span>);</span><br><span class="line"># <span class="keyword">INSERT</span> <span class="keyword">INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">14</span>, <span class="string">&#x27;N&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">15</span>, <span class="string">&#x27;O&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">16</span>, <span class="string">&#x27;P&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">17</span>, <span class="string">&#x27;Q&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">18</span>, <span class="string">&#x27;R&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">19</span>, <span class="string">&#x27;S&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">20</span>, <span class="string">&#x27;T&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">21</span>, <span class="string">&#x27;U&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">22</span>, <span class="string">&#x27;V&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">23</span>, <span class="string">&#x27;W&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">24</span>, <span class="string">&#x27;X&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">25</span>, <span class="string">&#x27;Y&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">26</span>, <span class="string">&#x27;Z&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="1-描述">1.描述</h3>
+<p>场景大概是这样，有一份连续数据ID：1 … 27，其中ID：6，7，14的数据丢了。结构如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE TABLE</span> `letter`  (</span><br><span class="line">  `id` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT NULL</span> AUTO_INCREMENT,</span><br><span class="line">  `name` <span class="type">varchar</span>(<span class="number">50</span>) <span class="keyword">CHARACTER SET</span> utf8mb4 <span class="keyword">COLLATE</span> utf8mb4_unicode_ci <span class="keyword">NOT NULL</span>,</span><br><span class="line">  <span class="keyword">PRIMARY KEY</span> (`id`) <span class="keyword">USING</span> BTREE</span><br><span class="line">) ENGINE <span class="operator">=</span> InnoDB AUTO_INCREMENT <span class="operator">=</span> <span class="number">27</span> <span class="keyword">CHARACTER SET</span> <span class="operator">=</span> utf8mb4 <span class="keyword">COLLATE</span> <span class="operator">=</span> utf8mb4_unicode_ci ROW_FORMAT <span class="operator">=</span> Compact;</span><br><span class="line"></span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">1</span>, <span class="string">&#x27;A&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">2</span>, <span class="string">&#x27;B&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">3</span>, <span class="string">&#x27;C&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">4</span>, <span class="string">&#x27;D&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">5</span>, <span class="string">&#x27;E&#x27;</span>);</span><br><span class="line"># <span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">6</span>, <span class="string">&#x27;F&#x27;</span>);</span><br><span class="line"># <span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">7</span>, <span class="string">&#x27;J&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">8</span>, <span class="string">&#x27;H&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">9</span>, <span class="string">&#x27;I&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">10</span>, <span class="string">&#x27;J&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">11</span>, <span class="string">&#x27;K&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">12</span>, <span class="string">&#x27;L&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">13</span>, <span class="string">&#x27;M&#x27;</span>);</span><br><span class="line"># <span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">14</span>, <span class="string">&#x27;N&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">15</span>, <span class="string">&#x27;O&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">16</span>, <span class="string">&#x27;P&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">17</span>, <span class="string">&#x27;Q&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">18</span>, <span class="string">&#x27;R&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">19</span>, <span class="string">&#x27;S&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">20</span>, <span class="string">&#x27;T&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">21</span>, <span class="string">&#x27;U&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">22</span>, <span class="string">&#x27;V&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">23</span>, <span class="string">&#x27;W&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">24</span>, <span class="string">&#x27;X&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">25</span>, <span class="string">&#x27;Y&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">26</span>, <span class="string">&#x27;Z&#x27;</span>);</span><br></pre></td></tr></table></figure>
 <p>怎么把6，7，14这三条数据找出来？方法有很多种哈，今天我们说一下如何利用SQL快速查询出来。大概思路是把ID+1，然后查询ID+1这个值是否存在ID列表中，如果不存在那肯定就是缺失的。SQL如下：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	id <span class="operator">+</span> <span class="number">1</span> <span class="keyword">AS</span> id </span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	`letter` </span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	id <span class="operator">+</span> <span class="number">1</span> <span class="keyword">NOT</span> <span class="keyword">IN</span> ( <span class="keyword">SELECT</span> id <span class="keyword">FROM</span> `letter` )</span><br></pre></td></tr></table></figure>
 <p>但是这样会有一个小问题，就是MAX(id)+1（27）也会被查询出来，所以：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	id <span class="operator">+</span> <span class="number">1</span> <span class="keyword">AS</span> id </span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	`letter` </span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	id <span class="operator">+</span> <span class="number">1</span> <span class="keyword">NOT</span> <span class="keyword">IN</span> ( <span class="keyword">SELECT</span> id <span class="keyword">FROM</span> `letter` ) </span><br><span class="line">	<span class="keyword">AND</span> id <span class="operator">&lt;</span>(</span><br><span class="line">	<span class="keyword">SELECT</span></span><br><span class="line">		<span class="built_in">max</span>( id ) </span><br><span class="line">	<span class="keyword">FROM</span></span><br><span class="line">	`letter` </span><br><span class="line">	)</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-优化"><a href="#2-优化" class="headerlink" title="2.优化"></a>2.优化</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	start_id,</span><br><span class="line">	( <span class="keyword">SELECT</span> <span class="built_in">MIN</span>(id)<span class="operator">-</span> <span class="number">1</span> <span class="keyword">FROM</span> `letter` <span class="keyword">WHERE</span> id <span class="operator">&gt;</span> start_id ) <span class="keyword">AS</span> end_id </span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	(</span><br><span class="line">	<span class="keyword">SELECT</span></span><br><span class="line">		id <span class="operator">+</span> <span class="number">1</span> <span class="keyword">AS</span> start_id </span><br><span class="line">	<span class="keyword">FROM</span></span><br><span class="line">		`letter` </span><br><span class="line">	<span class="keyword">WHERE</span></span><br><span class="line">		id <span class="operator">+</span> <span class="number">1</span> <span class="keyword">NOT</span> <span class="keyword">IN</span> ( <span class="keyword">SELECT</span> id <span class="keyword">FROM</span> `letter` ) </span><br><span class="line">		<span class="keyword">AND</span> id <span class="operator">&lt;</span>(</span><br><span class="line">		<span class="keyword">SELECT</span></span><br><span class="line">			<span class="built_in">max</span>(id) </span><br><span class="line">		<span class="keyword">FROM</span></span><br><span class="line">			`letter` </span><br><span class="line">		) </span><br><span class="line">	) <span class="keyword">AS</span> max_id </span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span></span><br><span class="line">	start_id</span><br></pre></td></tr></table></figure>
-<p>这种情况适用于查找整数类型的连续编号，那么如果编号是string类型的呢？后面有机会再补充进来&#x3D;,&#x3D;。</p>
+<h3 id="2-优化">2.优化</h3>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	start_id,</span><br><span class="line">	( <span class="keyword">SELECT</span> <span class="built_in">MIN</span>(id)<span class="operator">-</span> <span class="number">1</span> <span class="keyword">FROM</span> `letter` <span class="keyword">WHERE</span> id <span class="operator">&gt;</span> start_id ) <span class="keyword">AS</span> end_id </span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	(</span><br><span class="line">	<span class="keyword">SELECT</span></span><br><span class="line">		id <span class="operator">+</span> <span class="number">1</span> <span class="keyword">AS</span> start_id </span><br><span class="line">	<span class="keyword">FROM</span></span><br><span class="line">		`letter` </span><br><span class="line">	<span class="keyword">WHERE</span></span><br><span class="line">		id <span class="operator">+</span> <span class="number">1</span> <span class="keyword">NOT</span> <span class="keyword">IN</span> ( <span class="keyword">SELECT</span> id <span class="keyword">FROM</span> `letter` ) </span><br><span class="line">		<span class="keyword">AND</span> id <span class="operator">&lt;</span>(</span><br><span class="line">		<span class="keyword">SELECT</span></span><br><span class="line">			<span class="built_in">max</span>(id) </span><br><span class="line">		<span class="keyword">FROM</span></span><br><span class="line">			`letter` </span><br><span class="line">		) </span><br><span class="line">	) <span class="keyword">AS</span> max_id </span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span></span><br><span class="line">	start_id</span><br></pre></td></tr></table></figure>
+<p>这种情况适用于查找整数类型的连续编号，那么如果编号是string类型的呢？后面有机会再补充进来=,=。</p>
 
       
 
@@ -680,11 +799,11 @@ var _hmt = _hmt || [];
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">biscuits</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">biscuits</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -771,14 +890,17 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>之前粗浅的学习了Redis三种集群策略的主从复制和哨兵策略，现在最后这篇来学习一下Redis Cluster也就是最后一个集群策略。</p>
-<h3 id="1-什么是集群？"><a href="#1-什么是集群？" class="headerlink" title="1.什么是集群？"></a>1.什么是集群？</h3><p>集群（Cluster），Redis2.6版本（正式版本是3.0）推出的分布式解决方案，有效解决了单Master节点写操作的压力并且分布式存储数据，大大提高了负载能力。</p>
+<h3 id="1-什么是集群？">1.什么是集群？</h3>
+<p>集群（Cluster），Redis2.6版本（正式版本是3.0）推出的分布式解决方案，有效解决了单Master节点写操作的压力并且分布式存储数据，大大提高了负载能力。</p>
 <blockquote>
 <p>在Redis发布3.0正式版本前，一般使用代理中间件来实现分布式集群策略。这里不展开学习了，有兴趣的小伙伴自行研究。</p>
 </blockquote>
 <ul>
-<li><p>特点</p>
+<li>
+<p>特点</p>
 <ol>
-<li>Cluster策略是分布式部署，节点间相互协调工作。<blockquote>
+<li>Cluster策略是分布式部署，节点间相互协调工作。
+<blockquote>
 <p>因为对主从复制和哨兵策略都称为集群策略，所以为了防止误解在下文中提及的集群（Cluster）策略，直接用Cluster称呼。</p>
 </blockquote>
 </li>
@@ -787,7 +909,8 @@ var _hmt = _hmt || [];
 <li>数据的分布式存储不需要指定，Cluster会自动完成。</li>
 </ol>
 </li>
-<li><p>优点</p>
+<li>
+<p>优点</p>
 <ol>
 <li>Cluster策略拥有主从复制和哨兵策略的优点。</li>
 <li>解决了单Master节点写操作的压力。</li>
@@ -896,16 +1019,19 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>现在这篇来学习一下Redis Sentinel即哨兵策略的相关知识。</p>
-<h3 id="1-什么是哨兵？"><a href="#1-什么是哨兵？" class="headerlink" title="1.什么是哨兵？"></a>1.什么是哨兵？</h3><p>哨兵（Sentinel），Redis2.6版本（正式版本是2.8，现2.6版本已被废弃）开始提供的一种集群策略，核心思想是解决了主从复制（Replication）在Master节点故障，无法自动切换Slave节点为新Master节点的问题。</p>
+<h3 id="1-什么是哨兵？">1.什么是哨兵？</h3>
+<p>哨兵（Sentinel），Redis2.6版本（正式版本是2.8，现2.6版本已被废弃）开始提供的一种集群策略，核心思想是解决了主从复制（Replication）在Master节点故障，无法自动切换Slave节点为新Master节点的问题。</p>
 <ul>
-<li><p>特点</p>
+<li>
+<p>特点</p>
 <ol>
 <li>哨兵策略是分布式部署，节点间相互协调工作。</li>
 <li>哨兵集群至少要3个节点。</li>
 <li>可以把哨兵看作是一种特殊的Redis服务。</li>
 </ol>
 </li>
-<li><p>优点</p>
+<li>
+<p>优点</p>
 <ol>
 <li>哨兵策略拥有主从复制的优点。</li>
 <li>哨兵策略解决了Master节点故障，无法自动切换Slave节点为新Master节点的问题。</li>
@@ -940,129 +1066,6 @@ var _hmt = _hmt || [];
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2020/03/26/redis-sentinel/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-redis-replication" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/03/25/redis-replication/">Redis学习笔记 - 主从复制</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2020/03/25/redis-replication/" class="archive-article-date">
-  	<time datetime="2020-03-24T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-25</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">1.6k字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">5分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Redis单点配置的情况下如果服务出现故障宕机，那么服务也就处于不可用状态，假如是生产环境那么带来的后果会有很严重，所以出现了高可用方案：集群策略。</p>
-<h3 id="1-三种集群策略"><a href="#1-三种集群策略" class="headerlink" title="1.三种集群策略"></a>1.三种集群策略</h3><p>Redis提供了三种集群策略，它们分别是：</p>
-<ul>
-<li>主从复制（Replication）</li>
-<li>哨兵（Sentinel）</li>
-<li>集群（Cluster）</li>
-</ul>
-<p>这三种策略会逐一学习，本篇主要学习策略之一主从复制（Replication）。</p>
-<h3 id="2-主从复制的概念"><a href="#2-主从复制的概念" class="headerlink" title="2.主从复制的概念"></a>2.主从复制的概念</h3><p>在主从复制（Replication）策略中，服务分为两类：Master节点、Slave节点。</p>
-<ul>
-<li><p>特点</p>
-<ol>
-<li>Master节点可以拥有多个Slave节点，但Slave节点只能服务一个Master节点。</li>
-<li>数据复制方向只能是Master节点-&gt;Slave节点。</li>
-</ol>
-</li>
-<li><p>优点</p>
-<ol>
-<li>实现了多机热数据备份，提高了面对宕机数据恢复的灾备能力。</li>
-<li>在主从复制的基础上实现读写分离提高服务吞吐量，即：Master节点提供写服务，Slave节点提供读服务。</li>
-<li>如果Master节点宕机可以快速切换使用Slave节点提供服务。</li>
-</ol>
-</li>
-</ul>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/03/25/redis-replication/">More >></a>
         </p>
       
 
@@ -1188,7 +1191,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1200,15 +1207,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1232,11 +1243,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1281,18 +1296,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

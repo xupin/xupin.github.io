@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>Mysql学习笔记 - Int长度的问题 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="创建数据表的时候我们总是要考虑存储数据的字段该用哪种类型、多少长度比较合适，不过在Mysql中如果字段类型是Int，此时长度是不生效的。 1.Int类型的长度问题12345CREATE TABLE &#96;test&#96; (  &#96;id&#96; int(3) NOT NULL,  &#96;name&#96; varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,  PRIMARY KEY">
+  <meta name="description" content="创建数据表的时候我们总是要考虑存储数据的字段该用哪种类型、多少长度比较合适，不过在Mysql中如果字段类型是Int，此时长度是不生效的。 1.Int类型的长度问题 12345CREATE TABLE &#96;test&#96; (  &#96;id&#96; int(3) NOT NULL,  &#96;name&#96; varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,  PRIMARY KE">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Mysql学习笔记 - Int长度的问题">
 <meta property="og:url" content="http://xupin.im/2020/03/15/mysql-int-length/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="创建数据表的时候我们总是要考虑存储数据的字段该用哪种类型、多少长度比较合适，不过在Mysql中如果字段类型是Int，此时长度是不生效的。 1.Int类型的长度问题12345CREATE TABLE &#96;test&#96; (  &#96;id&#96; int(3) NOT NULL,  &#96;name&#96; varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,  PRIMARY KEY">
+<meta property="og:description" content="创建数据表的时候我们总是要考虑存储数据的字段该用哪种类型、多少长度比较合适，不过在Mysql中如果字段类型是Int，此时长度是不生效的。 1.Int类型的长度问题 12345CREATE TABLE &#96;test&#96; (  &#96;id&#96; int(3) NOT NULL,  &#96;name&#96; varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,  PRIMARY KE">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-03-15T11:30:00.000Z">
 <meta property="article:modified_time" content="2022-07-15T02:59:17.753Z">
@@ -28,6 +28,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -209,7 +210,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">407字</span>
+        <span class="post-count">409字</span>
       </span>
     </span>
 
@@ -228,22 +229,25 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>创建数据表的时候我们总是要考虑存储数据的字段该用哪种类型、多少长度比较合适，不过在Mysql中如果字段类型是Int，此时长度是不生效的。</p>
-<h3 id="1-Int类型的长度问题"><a href="#1-Int类型的长度问题" class="headerlink" title="1.Int类型的长度问题"></a>1.Int类型的长度问题</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `test` (</span><br><span class="line">  `id` int(3) NOT NULL,</span><br><span class="line">  `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,</span><br><span class="line">  PRIMARY KEY (`id`)</span><br><span class="line">) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci</span><br></pre></td></tr></table></figure>
+<h3 id="1-Int类型的长度问题">1.Int类型的长度问题</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `test` (</span><br><span class="line">  `id` int(3) NOT NULL,</span><br><span class="line">  `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,</span><br><span class="line">  PRIMARY KEY (`id`)</span><br><span class="line">) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci</span><br></pre></td></tr></table></figure>
 <p>有这样一张表，<code>id</code>是Int类型长度3的字段，那么理论上是不能存储长度超过3的值，比如：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO `test`(`id`, `name`) VALUES (1000000, &#x27;name&#x27;);</span><br></pre></td></tr></table></figure>
 <p>不过结果是意外的，这条数据可以正常写入。</p>
-<h3 id="2-Int类型的长度为什么不生效"><a href="#2-Int类型的长度为什么不生效" class="headerlink" title="2.Int类型的长度为什么不生效"></a>2.Int类型的长度为什么不生效</h3><p>翻了一下Mysql的<a href="https://dev.mysql.com/doc/refman/5.6/en/data-types.html">数据类型文档</a>，发现这么一句话：</p>
+<h3 id="2-Int类型的长度为什么不生效">2.Int类型的长度为什么不生效</h3>
+<p>翻了一下Mysql的<a href="https://dev.mysql.com/doc/refman/5.6/en/data-types.html">数据类型文档</a>，发现这么一句话：</p>
 <blockquote>
 <p>对于整数类型，M表示最大显示宽度。 对于浮点和定点类型，M是可以存储的总位数（精度）。 对于字符串类型，M是最大长度。 M的最大允许值取决于数据类型。</p>
 </blockquote>
 <p>所以这个Int类型的“长度”其实叫宽度，也可以理解为显示长度。</p>
-<h3 id="3-如果存储的数据长度低于显示宽度会怎样？"><a href="#3-如果存储的数据长度低于显示宽度会怎样？" class="headerlink" title="3.如果存储的数据长度低于显示宽度会怎样？"></a>3.如果存储的数据长度低于显示宽度会怎样？</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO `test`(`id`, `name`) VALUES (1, &#x27;name&#x27;);</span><br></pre></td></tr></table></figure>
+<h3 id="3-如果存储的数据长度低于显示宽度会怎样？">3.如果存储的数据长度低于显示宽度会怎样？</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO `test`(`id`, `name`) VALUES (1, &#x27;name&#x27;);</span><br></pre></td></tr></table></figure>
 <p>当然是可以写入的，但是好像并没有什么特别的不一样，不过我们再执行一条SQL</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE `test` MODIFY COLUMN `id` int(3) UNSIGNED ZEROFILL;</span><br></pre></td></tr></table></figure>
 <p>这次数据产生变化了，变成了这样</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">id      |   name</span><br><span class="line">001     |   name</span><br><span class="line">1000000 |   name</span><br></pre></td></tr></table></figure>
-
-<h3 id="4-为什么要设计显示宽度？"><a href="#4-为什么要设计显示宽度？" class="headerlink" title="4.为什么要设计显示宽度？"></a>4.为什么要设计显示宽度？</h3><p>我也没有得出明确的答案，和小伙伴讨论这个问题~ta觉得是为了方便<code>排序</code>，你觉得呢？</p>
+<h3 id="4-为什么要设计显示宽度？">4.为什么要设计显示宽度？</h3>
+<p>我也没有得出明确的答案，和小伙伴讨论这个问题~ta觉得是为了方便<code>排序</code>，你觉得呢？</p>
 
       
 
@@ -512,7 +516,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -524,15 +532,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -556,11 +568,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -605,18 +621,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

@@ -25,6 +25,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -183,6 +184,140 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-elasticsearch-group" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <!-- 标题 -->
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/17/elasticsearch-group/">ES学习笔记 - 实现列分组统计</a>
+    </h1>
+  
+
+        <!-- 发布日期 -->
+        
+        <a href="/2019/12/17/elasticsearch-group/" class="archive-article-date">
+  	<time datetime="2019-12-16T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-17</time>
+</a>
+        
+        <!-- 字数统计 -->
+        
+          <div style="margin-top:10px;">
+    <span class="post-time">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-keyboard-o"></i>
+        <span class="post-meta-item-text">  全文 ≈</span>
+        <span class="post-count">703字</span>
+      </span>
+    </span>
+
+    <span class="post-time">
+      &nbsp; | &nbsp;
+      <span class="post-meta-item-icon">
+        <i class="fa fa-hourglass-half"></i>
+        <span class="post-meta-item-text">  预计阅读时长</span>
+        <span class="post-count">3分钟</span>
+      </span>
+    </span>
+</div>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Elasticsearch是Elastic Stack核心的分布式搜索和分析引擎。</p>
+<h3 id="1-背景">1.背景</h3>
+<p>因为业务调整采用了ES作为数据库，所以需要了解ES对于这一块的设计如何实现类似Mysql中Group By的查询的效果。</p>
+<h3 id="2-实现方式">2.实现方式</h3>
+<p>ES实现Group By有两种方式：TermsAgg、CompositeAgg，它们也具有不同程度的优缺点。</p>
+<p>TermsAgg的使用方式非常粗暴，直接进行桶嵌套即可，如下:</p>
+<p>TermsAgg请求DSL语句</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">	<span class="attr">&quot;aggregations&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">		<span class="attr">&quot;group_app&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">			<span class="attr">&quot;terms&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">				<span class="attr">&quot;field&quot;</span><span class="punctuation">:</span> <span class="string">&quot;app&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;size&quot;</span><span class="punctuation">:</span> <span class="number">1000000</span></span><br><span class="line">			<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;aggregations&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">				<span class="attr">&quot;group_campaign_id&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">					<span class="attr">&quot;terms&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">						<span class="attr">&quot;field&quot;</span><span class="punctuation">:</span> <span class="string">&quot;campaign_id&quot;</span><span class="punctuation">,</span></span><br><span class="line">						<span class="attr">&quot;size&quot;</span><span class="punctuation">:</span> <span class="number">1000000</span></span><br><span class="line">					<span class="punctuation">&#125;</span></span><br><span class="line">				<span class="punctuation">&#125;</span></span><br><span class="line">			<span class="punctuation">&#125;</span></span><br><span class="line">		<span class="punctuation">&#125;</span></span><br><span class="line">	<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;size&quot;</span><span class="punctuation">:</span> <span class="number">0</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>TermsAgg执行结果</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;took&quot;</span><span class="punctuation">:</span> <span class="number">142</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;timed_out&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;_shards&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;total&quot;</span><span class="punctuation">:</span> <span class="number">5</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;successful&quot;</span><span class="punctuation">:</span> <span class="number">5</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;skipped&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;failed&quot;</span><span class="punctuation">:</span> <span class="number">0</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hits&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;total&quot;</span><span class="punctuation">:</span> <span class="number">175033</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;max_score&quot;</span><span class="punctuation">:</span> <span class="number">0.0</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;hits&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;aggregations&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;group_app&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;doc_count_error_upper_bound&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;sum_other_doc_count&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;buckets&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;com.aa.bb.cc&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;doc_count&quot;</span><span class="punctuation">:</span> <span class="number">59929</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;group_campaign_id&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                        <span class="attr">&quot;doc_count_error_upper_bound&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">                        <span class="attr">&quot;sum_other_doc_count&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">                        <span class="attr">&quot;buckets&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                            <span class="punctuation">&#123;</span></span><br><span class="line">                                <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Campaign_118&quot;</span><span class="punctuation">,</span></span><br><span class="line">                                <span class="attr">&quot;doc_count&quot;</span><span class="punctuation">:</span> <span class="number">56466</span></span><br><span class="line">                            <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">                            <span class="punctuation">&#123;</span></span><br><span class="line">                                <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Campaign_119&quot;</span><span class="punctuation">,</span></span><br><span class="line">                                <span class="attr">&quot;doc_count&quot;</span><span class="punctuation">:</span> <span class="number">1937</span></span><br><span class="line">                            <span class="punctuation">&#125;</span></span><br><span class="line">                        <span class="punctuation">]</span></span><br><span class="line">                    <span class="punctuation">&#125;</span></span><br><span class="line">                <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;com.dd.ee.ff&quot;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;doc_count&quot;</span><span class="punctuation">:</span> <span class="number">23231</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;group_campaign_id&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                        <span class="attr">&quot;doc_count_error_upper_bound&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">                        <span class="attr">&quot;sum_other_doc_count&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">                        <span class="attr">&quot;buckets&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                            <span class="punctuation">&#123;</span></span><br><span class="line">                                <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Campaign_120&quot;</span><span class="punctuation">,</span></span><br><span class="line">                                <span class="attr">&quot;doc_count&quot;</span><span class="punctuation">:</span> <span class="number">16692</span></span><br><span class="line">                            <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">                            <span class="punctuation">&#123;</span></span><br><span class="line">                                <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Campaign_121&quot;</span><span class="punctuation">,</span></span><br><span class="line">                                <span class="attr">&quot;doc_count&quot;</span><span class="punctuation">:</span> <span class="number">5336</span></span><br><span class="line">                            <span class="punctuation">&#125;</span></span><br><span class="line">                        <span class="punctuation">]</span></span><br><span class="line">                    <span class="punctuation">&#125;</span></span><br><span class="line">                <span class="punctuation">&#125;</span></span><br><span class="line">            <span class="punctuation">]</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>CompositeAgg的使用方式略微有一些不同，下面：</p>
+<p>CompositeAgg请求DSL语句</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">	<span class="attr">&quot;aggregations&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">		<span class="attr">&quot;group_by&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">			<span class="attr">&quot;composite&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">				<span class="attr">&quot;sources&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">					<span class="punctuation">&#123;</span></span><br><span class="line">					    <span class="attr">&quot;app&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">					        <span class="attr">&quot;terms&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">					            <span class="attr">&quot;field&quot;</span><span class="punctuation">:</span> <span class="string">&quot;app&quot;</span></span><br><span class="line">					        <span class="punctuation">&#125;</span></span><br><span class="line">					    <span class="punctuation">&#125;</span></span><br><span class="line">					<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">					<span class="punctuation">&#123;</span></span><br><span class="line">					    <span class="attr">&quot;campaign_id&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">						    <span class="attr">&quot;terms&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">						        <span class="attr">&quot;field&quot;</span><span class="punctuation">:</span> <span class="string">&quot;campaign_id&quot;</span></span><br><span class="line">						    <span class="punctuation">&#125;</span></span><br><span class="line">					    <span class="punctuation">&#125;</span></span><br><span class="line">					<span class="punctuation">&#125;</span></span><br><span class="line">				<span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;size&quot;</span><span class="punctuation">:</span> <span class="number">1000</span></span><br><span class="line">			<span class="punctuation">&#125;</span></span><br><span class="line">		<span class="punctuation">&#125;</span></span><br><span class="line">	<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;size&quot;</span><span class="punctuation">:</span> <span class="number">0</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>CompositeAgg执行结果</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;took&quot;</span><span class="punctuation">:</span> <span class="number">14</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;timed_out&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;_shards&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;total&quot;</span><span class="punctuation">:</span> <span class="number">5</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;successful&quot;</span><span class="punctuation">:</span> <span class="number">5</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;skipped&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;failed&quot;</span><span class="punctuation">:</span> <span class="number">0</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;hits&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;total&quot;</span><span class="punctuation">:</span> <span class="number">175033</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;max_score&quot;</span><span class="punctuation">:</span> <span class="number">0.0</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;hits&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;aggregations&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;group_by&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;after_key&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;app&quot;</span><span class="punctuation">:</span> <span class="string">&quot;com.dd.ee.ff&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;campaign_id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Campaign_120&quot;</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;buckets&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                        <span class="attr">&quot;app&quot;</span><span class="punctuation">:</span> <span class="string">&quot;com.aa.bb.cc&quot;</span><span class="punctuation">,</span></span><br><span class="line">                        <span class="attr">&quot;campaign_id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Campaign_119&quot;</span></span><br><span class="line">                    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;doc_count&quot;</span><span class="punctuation">:</span> <span class="number">182</span></span><br><span class="line">                <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="punctuation">&#123;</span></span><br><span class="line">                    <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                        <span class="attr">&quot;app&quot;</span><span class="punctuation">:</span> <span class="string">&quot;com.dd.ee.ff&quot;</span><span class="punctuation">,</span></span><br><span class="line">                        <span class="attr">&quot;campaign_id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Campaign_120&quot;</span></span><br><span class="line">                    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">                    <span class="attr">&quot;doc_count&quot;</span><span class="punctuation">:</span> <span class="number">40</span></span><br><span class="line">                <span class="punctuation">&#125;</span></span><br><span class="line">            <span class="punctuation">]</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<h3 id="3-优缺点">3.优缺点</h3>
+<p>TermsAgg</p>
+<blockquote>
+<p>优点：使用简单、没有数据量限制。</p>
+</blockquote>
+<blockquote>
+<p>缺点：数据结构层次深、不支持分页。</p>
+</blockquote>
+<p>CompositeAgg</p>
+<blockquote>
+<p>优点：使用简单、数据结构清晰可读，支持分页。</p>
+</blockquote>
+<blockquote>
+<p>缺点：有数据量限制。</p>
+</blockquote>
+<h3 id="最后">最后</h3>
+<p>至于ES这两种分组方式的<code>性能方面还没有研究，后续学习笔记会更新性能上面的差异。</code></p>
+<blockquote>
+<p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-composite-aggregation.html">https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-composite-aggregation.html</a> // 附上ES官方文档</p>
+</blockquote>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">elasticsearch</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/12/17/elasticsearch-group/">More >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-nginx-proxy" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -227,7 +362,8 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>代理通常用于在几台服务器之间分配负载，无缝显示来自不同网站的内容或通过除 HTTP 之外的协议将处理请求传递给应用服务器。</p>
-<h3 id="1-代理的常用场景及优点"><a href="#1-代理的常用场景及优点" class="headerlink" title="1.代理的常用场景及优点"></a>1.代理的常用场景及优点</h3><p>正向代理</p>
+<h3 id="1-代理的常用场景及优点">1.代理的常用场景及优点</h3>
+<p>正向代理</p>
 <blockquote>
 <p>gfw 科学上网。</p>
 </blockquote>
@@ -241,8 +377,10 @@ var _hmt = _hmt || [];
 <blockquote>
 <p>保证内网的安全，阻止 web 攻击。</p>
 </blockquote>
-<h3 id="2-正向代理和反向代理有什么不同"><a href="#2-正向代理和反向代理有什么不同" class="headerlink" title="2.正向代理和反向代理有什么不同"></a>2.正向代理和反向代理有什么不同</h3><p>比较通俗的来解释：正向代理代理的是客户端，服务端不知道实际发起请求的客户端、反向代理代理的是服务端，客户端不知道实际接收请求的服务端。</p>
-<p>一张图表示（来源：<a href="https://zhuanlan.zhihu.com/p/82300486">知乎 wplulala</a>）<br><img src="/assets/nginx-proxy/relation.jpg"></p>
+<h3 id="2-正向代理和反向代理有什么不同">2.正向代理和反向代理有什么不同</h3>
+<p>比较通俗的来解释：正向代理代理的是客户端，服务端不知道实际发起请求的客户端、反向代理代理的是服务端，客户端不知道实际接收请求的服务端。</p>
+<p>一张图表示（来源：<a href="https://zhuanlan.zhihu.com/p/82300486">知乎 wplulala</a>）<br>
+<img src="/assets/nginx-proxy/relation.jpg" alt=""></p>
 
       
 
@@ -324,7 +462,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">752字</span>
+        <span class="post-count">753字</span>
       </span>
     </span>
 
@@ -342,8 +480,10 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>索引用于快速查找具有特定列值的行。没有索引，MySQL必须从第一行开始，然后通读整个表以找到相关的行。如果表中有相关​​列的索引，MySQL可以快速确定要在数据文件中间查找的位置，而不必查看所有数据。这比顺序读取每一行要快得多。<br>InnoDB和MyIsam只支持Btree，因此默认均是Btree，Memory和Heap支持Hash和Btree，如无明确声明，则默认索引均是Hash（包括主键）。</p>
-<h3 id="1-Mysql有哪些常用的索引"><a href="#1-Mysql有哪些常用的索引" class="headerlink" title="1.Mysql有哪些常用的索引"></a>1.Mysql有哪些常用的索引</h3><blockquote>
+        <p>索引用于快速查找具有特定列值的行。没有索引，MySQL必须从第一行开始，然后通读整个表以找到相关的行。如果表中有相关​​列的索引，MySQL可以快速确定要在数据文件中间查找的位置，而不必查看所有数据。这比顺序读取每一行要快得多。<br>
+InnoDB和MyIsam只支持Btree，因此默认均是Btree，Memory和Heap支持Hash和Btree，如无明确声明，则默认索引均是Hash（包括主键）。</p>
+<h3 id="1-Mysql有哪些常用的索引">1.Mysql有哪些常用的索引</h3>
+<blockquote>
 <p>主键索引：数据列不允许重复，不允许为null，一个表只能有一个主键。</p>
 </blockquote>
 <blockquote>
@@ -355,7 +495,8 @@ var _hmt = _hmt || [];
 <blockquote>
 <p>全文索引：全文索引是目前实现大数据搜索的关键技术。</p>
 </blockquote>
-<h3 id="2-Mysql索引的建立原则"><a href="#2-Mysql索引的建立原则" class="headerlink" title="2.Mysql索引的建立原则"></a>2.Mysql索引的建立原则</h3><p>Mysql的索引遵循最左原则，在创建多列索引时，要根据业务需求，where条件中使用最频繁的一列放在最左边。</p>
+<h3 id="2-Mysql索引的建立原则">2.Mysql索引的建立原则</h3>
+<p>Mysql的索引遵循最左原则，在创建多列索引时，要根据业务需求，where条件中使用最频繁的一列放在最左边。</p>
         
       
 
@@ -437,7 +578,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">770字</span>
+        <span class="post-count">768字</span>
       </span>
     </span>
 
@@ -457,44 +598,41 @@ var _hmt = _hmt || [];
       
         <p>什么是事务？事务（Transaction）一般是指要做的或所做的事情。在计算机术语中是指访问并可能更新数据库中各种数据项的一个程序执行单元(unit)，具有4个特性：原子性、一致性、隔离性、持久性，简称ACID。</p>
 <p>那么Mysql的事务隔离级别又是什么呢？Mysql的事务隔离级别分别是4种：未提交读（Read Uncommitted）、已提交读（Read Committed）、Repeatable Read（可重复读）、Serializable（可串行化）。可以简单理解为Mysql事务的4种执行标准。</p>
-<h3 id="一、ACID特性"><a href="#一、ACID特性" class="headerlink" title="一、ACID特性"></a>一、ACID特性</h3><blockquote>
+<h3 id="一、ACID特性">一、ACID特性</h3>
+<blockquote>
 <p>原子性（Atomicity）：一个事务是一个不可分割的工作单位，事务中包括的诸操作要么都做，要么都不做。</p>
 </blockquote>
 <br/>
-
 <blockquote>
 <p>一致性（Consistency）：事务必须是使数据库从一个一致性状态变到另一个一致性状态。一致性与原子性是密切相关的。</p>
 </blockquote>
 <br/>
-
 <blockquote>
 <p>隔离性（Isolation）：一个事务的执行不能被其他事务干扰。即一个事务内部的操作及使用的数据对并发的其他事务是隔离的，并发执行的各个事务之间不能互相干扰。</p>
 </blockquote>
 <br/>
-
 <blockquote>
 <p>持久性（Durability）：指一个事务一旦提交，它对数据库中数据的改变就应该是永久性的。接下来的其他操作或故障不应该对其有任何影响。</p>
 </blockquote>
-<h3 id="二、Mysql事务隔离级别"><a href="#二、Mysql事务隔离级别" class="headerlink" title="二、Mysql事务隔离级别"></a>二、Mysql事务隔离级别</h3><blockquote>
+<h3 id="二、Mysql事务隔离级别">二、Mysql事务隔离级别</h3>
+<blockquote>
 <p>未提交读（Read Uncommitted），指当前事务可以读取到其他事务还未提交的数据变化，最容易带来的问题是脏读（Dirty Read），很少应用到生产环境。</p>
 </blockquote>
 <br/>
-
 <blockquote>
 <p>已提交读（Read Committed），大部分数据库默认隔离级别但不包括Mysql，指当前事务可以读取其他事务已提交的数据变化，具有隔离性的基本标准，但是在出现交叉事务的并发操作场景中会发生两次读取的数据结果集不一致的问题，即不可重复读（Nonrepeatable Read）。</p>
 </blockquote>
 <br/>
-
 <blockquote>
 <p>Repeatable Read（可重复读），Mysql数据库的默认隔离级别，这里顺便解释一下为什么Mysql的隔离级别不是Read Committed，因为在Mysql5.0之前日志格式只有statement这一种，这种格式导致主从复制一致性很难得到保证。这种隔离级别可以解决Nonrepeatable Read的问题，但如果也出现在交叉事务的并发操作场景会出现幻读（Phantom Read）的现象，这一行为状态是当前事务不能及时有效的读取其他事务的数据变化。</p>
 </blockquote>
 <br/>
-
 <blockquote>
 <p>Serializable（可串行化），Mysql事务隔离最高级别，望文生义大概意思是事务的执行是有序（串行化顺序）的，不存在事务交叉执行的场景从而解决了Phantom Read的问题，但是在高并发的业务场景下请求会出现阻塞、超时、锁竟抢的问题，系统的可用性也随之降低。</p>
 </blockquote>
-<h3 id="收尾"><a href="#收尾" class="headerlink" title="收尾"></a>收尾</h3><blockquote>
-<p><a href="https://dev.mysql.com/doc/refman/5.7/en/innodb-transaction-isolation-levels.html">https://dev.mysql.com/doc/refman/5.7/en/innodb-transaction-isolation-levels.html</a> &#x2F;&#x2F; Mysql事务官方文档</p>
+<h3 id="收尾">收尾</h3>
+<blockquote>
+<p><a href="https://dev.mysql.com/doc/refman/5.7/en/innodb-transaction-isolation-levels.html">https://dev.mysql.com/doc/refman/5.7/en/innodb-transaction-isolation-levels.html</a> // Mysql事务官方文档</p>
 </blockquote>
 
       
@@ -596,13 +734,16 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>什么是锁？在多进程（线程）编程中为了数据的一致性、有效性，如果一资源被某进程（线程）上锁，那么在释放锁之前其他进程（线程）无法进行操作或者等待获取（上）锁。</p>
-<h3 id="一、悲观锁"><a href="#一、悲观锁" class="headerlink" title="一、悲观锁"></a>一、悲观锁</h3><p>悲观锁（Pessimistic locking），顾名思义对待任何事务都持悲观态度，做任何事情都会认为会有竞抢行为~所以在进行任何操作之前都要做好万全准备（上锁）才会继续执行后续的操作。通常是利用系统提供的锁机制来实现。<br>比如：</p>
+<h3 id="一、悲观锁">一、悲观锁</h3>
+<p>悲观锁（Pessimistic locking），顾名思义对待任何事务都持悲观态度，做任何事情都会认为会有竞抢行为~所以在进行任何操作之前都要做好万全准备（上锁）才会继续执行后续的操作。通常是利用系统提供的锁机制来实现。<br>
+比如：</p>
 <figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Mysql中的上锁命令：<span class="keyword">for</span> <span class="keyword">update</span>、<span class="keyword">lock</span> <span class="keyword">in</span> <span class="keyword">share mode</span>等</span><br><span class="line">Redis中的一些操作命令：setnx、getset等（原子操作）</span><br></pre></td></tr></table></figure>
-
-<h3 id="二、乐观锁"><a href="#二、乐观锁" class="headerlink" title="二、乐观锁"></a>二、乐观锁</h3><p>乐观锁（Optimistic locking），和悲观锁相反对待任何事务都持乐观态度，只会在最后即将执行操作的时刻前才会进行验证。通常是通过程序配合来实现。<br>比如：</p>
+<h3 id="二、乐观锁">二、乐观锁</h3>
+<p>乐观锁（Optimistic locking），和悲观锁相反对待任何事务都持乐观态度，只会在最后即将执行操作的时刻前才会进行验证。通常是通过程序配合来实现。<br>
+比如：</p>
 <figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">update</span> `orders` <span class="keyword">set</span> hash = md5(now()) <span class="keyword">where</span> uid = <span class="number">1</span> <span class="keyword">and</span> hash = &#123;lastHash&#125;;</span><br></pre></td></tr></table></figure>
-
-<h3 id="三、优缺点"><a href="#三、优缺点" class="headerlink" title="三、优缺点"></a>三、优缺点</h3><p>悲观锁优点很鲜明，因为每次执行的操作都是独占的，数据的一致性、有效性、安全性较高。但缺点同样突出，每次操作都会产生上锁的开销，在并发请求比较密集的情况下容易阻塞或者驳回请求，甚至是造成死锁，也大大降低了系统的性能。</p>
+<h3 id="三、优缺点">三、优缺点</h3>
+<p>悲观锁优点很鲜明，因为每次执行的操作都是独占的，数据的一致性、有效性、安全性较高。但缺点同样突出，每次操作都会产生上锁的开销，在并发请求比较密集的情况下容易阻塞或者驳回请求，甚至是造成死锁，也大大降低了系统的性能。</p>
 <p>乐观锁优点是省去了锁的开销，能较高的提高系统吞吐量，缺点是如果出现在并发高且竟抢（冲突）行为比较多的场景下数据的一致性很难保证。</p>
 
       
@@ -685,7 +826,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">939字</span>
+        <span class="post-count">944字</span>
       </span>
     </span>
 
@@ -704,9 +845,10 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>Redis是一个开放源代码（BSD许可）的内存中数据结构存储，用作数据库，缓存和消息代理。</p>
-<h3 id="一、Redis数据存储的方式有两种"><a href="#一、Redis数据存储的方式有两种" class="headerlink" title="一、Redis数据存储的方式有两种"></a>一、Redis数据存储的方式有两种</h3><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">单纯的缓存模式, 整个数据的生命周期随着Redis <span class="built_in">Server</span>的停止而消失。</span><br><span class="line">persistence模式, 数据会持续备份到磁盘文件。</span><br></pre></td></tr></table></figure>
-
-<h3 id="二、Redis如何实现持久化存储？Redis提供了两种方式。"><a href="#二、Redis如何实现持久化存储？Redis提供了两种方式。" class="headerlink" title="二、Redis如何实现持久化存储？Redis提供了两种方式。"></a>二、Redis如何实现持久化存储？Redis提供了两种方式。</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">RDB</span><span class="params">(Redis DataBase)</span></span></span><br><span class="line"><span class="function"><span class="title">AOF</span><span class="params">(Append-only file)</span></span></span><br></pre></td></tr></table></figure>
+<h3 id="一、Redis数据存储的方式有两种">一、Redis数据存储的方式有两种</h3>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">单纯的缓存模式, 整个数据的生命周期随着Redis <span class="built_in">Server</span>的停止而消失。</span><br><span class="line">persistence模式, 数据会持续备份到磁盘文件。</span><br></pre></td></tr></table></figure>
+<h3 id="二、Redis如何实现持久化存储？Redis提供了两种方式。">二、Redis如何实现持久化存储？Redis提供了两种方式。</h3>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">RDB</span><span class="params">(Redis DataBase)</span></span></span><br><span class="line"><span class="function"><span class="title">AOF</span><span class="params">(Append-only file)</span></span></span><br></pre></td></tr></table></figure>
         
       
 
@@ -788,7 +930,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">349字</span>
+        <span class="post-count">347字</span>
       </span>
     </span>
 
@@ -807,14 +949,16 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>Firebase 是一个移动平台，可以帮助您快速开发高品质应用，扩大用户群，并赚取更多收益。Firebase 由多种互补功能组成，您可以自行组合和匹配这些功能以满足自己的需求。</p>
-<h3 id="1-获取-Google-推送的-KEY-Google-应用后台"><a href="#1-获取-Google-推送的-KEY-Google-应用后台" class="headerlink" title="1.获取 Google 推送的 KEY(Google 应用后台)"></a>1.获取 Google 推送的 KEY(Google 应用后台)</h3><blockquote>
-<p>AIzaSyCm5Vufc1FAtWE1kupGhVDRb0ThkCoWC7d &#x2F;&#x2F; 这个是我的</p>
+<h3 id="1-获取-Google-推送的-KEY-Google-应用后台">1.获取 Google 推送的 KEY(Google 应用后台)</h3>
+<blockquote>
+<p>AIzaSyCm5Vufc1FAtWE1kupGhVDRb0ThkCoWC7d // 这个是我的</p>
 </blockquote>
-<h3 id="2-PHP-推送代码"><a href="#2-PHP-推送代码" class="headerlink" title="2.PHP 推送代码"></a>2.PHP 推送代码</h3><figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化环境</span></span><br><span class="line"><span class="variable">$url</span> = <span class="string">&#x27;https://fcm.googleapis.com/fcm/send&#x27;</span>;</span><br><span class="line"><span class="variable">$ch</span> = curl_init(<span class="variable">$url</span>);</span><br><span class="line">curl_setopt(<span class="variable">$ch</span>, CURLOPT_SSL_VERIFYPEER, <span class="literal">false</span>);</span><br><span class="line">curl_setopt(<span class="variable">$ch</span>, CURLOPT_RETURNTRANSFER,<span class="number">1</span>);</span><br><span class="line">curl_setopt(<span class="variable">$ch</span>, CURLOPT_POST, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable">$header</span> = array(</span><br><span class="line">	<span class="string">&#x27;Content-Type: application/json&#x27;</span>,</span><br><span class="line">	<span class="string">&#x27;Authorization: key=AIzaSyCm5Vufc1FAtWE1kupGhVDRb0ThkCoWC7d&#x27;</span> <span class="comment">// 这里是刚才的KEY</span></span><br><span class="line">);</span><br><span class="line">curl_setopt(<span class="variable">$ch</span>, CURLOPT_HTTPHEADER, <span class="variable">$header</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 构建消息体,json编码</span></span><br><span class="line"><span class="variable">$content</span> = json_encode([</span><br><span class="line"><span class="string">&#x27;notification&#x27;</span>=&gt;[</span><br><span class="line">	<span class="string">&#x27;title&#x27;</span> =&gt; <span class="string">&#x27;这里是标题&#x27;</span>,</span><br><span class="line">	<span class="string">&#x27;body&#x27;</span> =&gt; <span class="string">&#x27;这里是内容&#x27;</span>,</span><br><span class="line">	<span class="string">&#x27;icon&#x27;</span> =&gt; <span class="string">&#x27;这里是后台设置的iconName&#x27;</span></span><br><span class="line">],</span><br><span class="line"><span class="string">&#x27;to&#x27;</span>=&gt;<span class="string">&#x27;设备标识(Google SDK可以获取)&#x27;</span>,</span><br><span class="line"><span class="string">&#x27;registration_ids&#x27;</span>=&gt;[<span class="string">&#x27;设备标识&#x27;</span>,<span class="string">&#x27;设备标识&#x27;</span>] <span class="comment">// 如果要推送多台设备,可以使用此字段,最多支持1000台设备</span></span><br><span class="line">]);</span><br><span class="line"></span><br><span class="line">curl_setopt(<span class="variable">$ch</span>, CURLOPT_POSTFIELDS, <span class="variable">$content</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable">$ret</span> = json_decode(curl_exec(<span class="variable">$ch</span>), <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable">$ret</span>[<span class="string">&#x27;success&#x27;</span>]; <span class="comment">// 推送成功数</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$ret</span>[<span class="string">&#x27;failure&#x27;</span>]; <span class="comment">// 推送失败数</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="3-返回值示例"><a href="#3-返回值示例" class="headerlink" title="3.返回值示例"></a>3.返回值示例</h3><figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;multicast_id&quot;</span>: <span class="number">7669649331143639654</span>,</span><br><span class="line">    <span class="string">&quot;success&quot;</span>: <span class="number">3</span>,</span><br><span class="line">    <span class="string">&quot;failure&quot;</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="string">&quot;canonical_ids&quot;</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="string">&quot;results&quot;</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">&quot;message_id&quot;</span>: <span class="string">&quot;0:1488360060090224%6490a2d16490a2d1&quot;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">&quot;message_id&quot;</span>: <span class="string">&quot;0:1488360060095871%6490a2d16490a2d1&quot;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">&quot;message_id&quot;</span>: <span class="string">&quot;0:1488360060090765%6490a2d16490a2d1&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="4-Google-FCM-文档"><a href="#4-Google-FCM-文档" class="headerlink" title="4.Google(FCM) 文档"></a>4.Google(FCM) 文档</h3><blockquote>
+<h3 id="2-PHP-推送代码">2.PHP 推送代码</h3>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化环境</span></span><br><span class="line"><span class="variable">$url</span> = <span class="string">&#x27;https://fcm.googleapis.com/fcm/send&#x27;</span>;</span><br><span class="line"><span class="variable">$ch</span> = curl_init(<span class="variable">$url</span>);</span><br><span class="line">curl_setopt(<span class="variable">$ch</span>, CURLOPT_SSL_VERIFYPEER, <span class="literal">false</span>);</span><br><span class="line">curl_setopt(<span class="variable">$ch</span>, CURLOPT_RETURNTRANSFER,<span class="number">1</span>);</span><br><span class="line">curl_setopt(<span class="variable">$ch</span>, CURLOPT_POST, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable">$header</span> = array(</span><br><span class="line">	<span class="string">&#x27;Content-Type: application/json&#x27;</span>,</span><br><span class="line">	<span class="string">&#x27;Authorization: key=AIzaSyCm5Vufc1FAtWE1kupGhVDRb0ThkCoWC7d&#x27;</span> <span class="comment">// 这里是刚才的KEY</span></span><br><span class="line">);</span><br><span class="line">curl_setopt(<span class="variable">$ch</span>, CURLOPT_HTTPHEADER, <span class="variable">$header</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 构建消息体,json编码</span></span><br><span class="line"><span class="variable">$content</span> = json_encode([</span><br><span class="line"><span class="string">&#x27;notification&#x27;</span>=&gt;[</span><br><span class="line">	<span class="string">&#x27;title&#x27;</span> =&gt; <span class="string">&#x27;这里是标题&#x27;</span>,</span><br><span class="line">	<span class="string">&#x27;body&#x27;</span> =&gt; <span class="string">&#x27;这里是内容&#x27;</span>,</span><br><span class="line">	<span class="string">&#x27;icon&#x27;</span> =&gt; <span class="string">&#x27;这里是后台设置的iconName&#x27;</span></span><br><span class="line">],</span><br><span class="line"><span class="string">&#x27;to&#x27;</span>=&gt;<span class="string">&#x27;设备标识(Google SDK可以获取)&#x27;</span>,</span><br><span class="line"><span class="string">&#x27;registration_ids&#x27;</span>=&gt;[<span class="string">&#x27;设备标识&#x27;</span>,<span class="string">&#x27;设备标识&#x27;</span>] <span class="comment">// 如果要推送多台设备,可以使用此字段,最多支持1000台设备</span></span><br><span class="line">]);</span><br><span class="line"></span><br><span class="line">curl_setopt(<span class="variable">$ch</span>, CURLOPT_POSTFIELDS, <span class="variable">$content</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable">$ret</span> = json_decode(curl_exec(<span class="variable">$ch</span>), <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable">$ret</span>[<span class="string">&#x27;success&#x27;</span>]; <span class="comment">// 推送成功数</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$ret</span>[<span class="string">&#x27;failure&#x27;</span>]; <span class="comment">// 推送失败数</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="3-返回值示例">3.返回值示例</h3>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;multicast_id&quot;</span>: <span class="number">7669649331143639654</span>,</span><br><span class="line">    <span class="string">&quot;success&quot;</span>: <span class="number">3</span>,</span><br><span class="line">    <span class="string">&quot;failure&quot;</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="string">&quot;canonical_ids&quot;</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="string">&quot;results&quot;</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">&quot;message_id&quot;</span>: <span class="string">&quot;0:1488360060090224<span class="variable">%6490a2d16490a2d1</span>&quot;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">&quot;message_id&quot;</span>: <span class="string">&quot;0:1488360060095871<span class="variable">%6490a2d16490a2d1</span>&quot;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">&quot;message_id&quot;</span>: <span class="string">&quot;0:1488360060090765<span class="variable">%6490a2d16490a2d1</span>&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="4-Google-FCM-文档">4.Google(FCM) 文档</h3>
+<blockquote>
 <p><a href="https://firebase.google.com/docs">https://firebase.google.com/docs</a></p>
 </blockquote>
 
@@ -898,7 +1042,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">290字</span>
+        <span class="post-count">288字</span>
       </span>
     </span>
 
@@ -916,14 +1060,15 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="1-合成证书-需要两个文件-cer-p12-苹果开发者后台获取"><a href="#1-合成证书-需要两个文件-cer-p12-苹果开发者后台获取" class="headerlink" title="1.合成证书(需要两个文件*.cer,*.p12,苹果开发者后台获取)"></a>1.合成证书(需要两个文件*.cer,*.p12,苹果开发者后台获取)</h3><blockquote>
-<p>ios.cer,ios.p12 &#x2F;&#x2F; 我这里的文件名</p>
+        <h3 id="1-合成证书-需要两个文件-cer-p12-苹果开发者后台获取">1.合成证书(需要两个文件*.cer,*.p12,苹果开发者后台获取)</h3>
+<blockquote>
+<p>ios.cer,ios.p12 // 我这里的文件名</p>
 </blockquote>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ openssl x509 -<span class="keyword">in</span> ios.cer -inform der -out ios_cer.pem</span><br><span class="line">$ openssl pkcs12 -nocerts -out ios_p12.pem -<span class="keyword">in</span> ios.p12</span><br><span class="line">Enter Import Password: // 这里输入Apple后台文件导出时的密码</span><br><span class="line">MAC verified OK</span><br><span class="line">Enter PEM pass phrase: // 这里输入新的pem密码(用于代码中),我输入的是123456789</span><br><span class="line">$ <span class="built_in">cat</span> ios_cer.pem ios_p12.pem &gt; key.pem</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-PHP-推送代码"><a href="#2-PHP-推送代码" class="headerlink" title="2.PHP 推送代码"></a>2.PHP 推送代码</h3><figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化环境</span></span><br><span class="line"><span class="symbol">$ct</span>x = stream_context_create();</span><br><span class="line"></span><br><span class="line">stream_context_set_option(<span class="symbol">$ct</span>x, <span class="string">&#x27;ssl&#x27;</span>, <span class="string">&#x27;local_cert&#x27;</span>, <span class="string">&#x27;assets/key/key.pem&#x27;</span>); <span class="comment">// key文件的路径</span></span><br><span class="line">stream_context_set_option(<span class="symbol">$ct</span>x, <span class="string">&#x27;ssl&#x27;</span>, <span class="string">&#x27;passphrase&#x27;</span>, <span class="string">&#x27;123456789&#x27;</span>); <span class="comment">// 生成pem输入的密码</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 建立APNS连接</span></span><br><span class="line"><span class="symbol">$fp</span> = stream_socket_client( <span class="string">&#x27;ssl://gateway.push.apple.com:2195&#x27;</span>, <span class="symbol">$err</span>, <span class="symbol">$errstr</span>, <span class="number">60</span>, STREAM_CLIENT_CONNECT|STREAM_CLIENT_PERSISTENT, <span class="symbol">$ct</span>x);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 构建消息体,json编码</span></span><br><span class="line"><span class="symbol">$payload</span> = json_encode( <span class="built_in">array</span>( <span class="string">&#x27;aps&#x27;</span>=&gt;<span class="built_in">array</span>(<span class="string">&#x27;alert&#x27;</span> =&gt; <span class="string">&#x27;这里是内容&#x27;</span>, <span class="string">&#x27;sound&#x27;</span> =&gt; <span class="string">&#x27;这里是提示声音&#x27;</span>)));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 转换二进制</span></span><br><span class="line"><span class="symbol">$msg</span> = chr(<span class="number">0</span>) . pack(<span class="string">&#x27;n&#x27;</span>, <span class="number">32</span>) . pack(<span class="string">&#x27;H*&#x27;</span>, <span class="string">&#x27;设备标识(Apple SDK可以获取)&#x27;</span>) . pack(<span class="string">&#x27;n&#x27;</span>, strlen(<span class="symbol">$payload</span>)) . <span class="symbol">$payload</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 发送消息</span></span><br><span class="line"><span class="symbol">$result</span> = fwrite(<span class="symbol">$fp</span>, <span class="symbol">$msg</span>, strlen(<span class="symbol">$msg</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!<span class="symbol">$result</span>)&#123;</span><br><span class="line">	<span class="comment">// 推送失败</span></span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	<span class="comment">// 推送成功</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fclose(<span class="symbol">$fp</span>);</span><br></pre></td></tr></table></figure>
-
-<h3 id="3-APNS-文档"><a href="#3-APNS-文档" class="headerlink" title="3.APNS 文档"></a>3.APNS 文档</h3><blockquote>
+<h3 id="2-PHP-推送代码">2.PHP 推送代码</h3>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化环境</span></span><br><span class="line">$ctx = stream_context_create();</span><br><span class="line"></span><br><span class="line">stream_context_set_option($ctx, <span class="string">&#x27;ssl&#x27;</span>, <span class="string">&#x27;local_cert&#x27;</span>, <span class="string">&#x27;assets/key/key.pem&#x27;</span>); <span class="comment">// key文件的路径</span></span><br><span class="line">stream_context_set_option($ctx, <span class="string">&#x27;ssl&#x27;</span>, <span class="string">&#x27;passphrase&#x27;</span>, <span class="string">&#x27;123456789&#x27;</span>); <span class="comment">// 生成pem输入的密码</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 建立APNS连接</span></span><br><span class="line">$fp = stream_socket_client( <span class="string">&#x27;ssl://gateway.push.apple.com:2195&#x27;</span>, $err, $errstr, <span class="number">60</span>, STREAM_CLIENT_CONNECT|STREAM_CLIENT_PERSISTENT, $ctx);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 构建消息体,json编码</span></span><br><span class="line">$payload = json_encode( <span class="built_in">array</span>( <span class="string">&#x27;aps&#x27;</span>=&gt;<span class="built_in">array</span>(<span class="string">&#x27;alert&#x27;</span> =&gt; <span class="string">&#x27;这里是内容&#x27;</span>, <span class="string">&#x27;sound&#x27;</span> =&gt; <span class="string">&#x27;这里是提示声音&#x27;</span>)));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 转换二进制</span></span><br><span class="line">$msg = chr(<span class="number">0</span>) . pack(<span class="string">&#x27;n&#x27;</span>, <span class="number">32</span>) . pack(<span class="string">&#x27;H*&#x27;</span>, <span class="string">&#x27;设备标识(Apple SDK可以获取)&#x27;</span>) . pack(<span class="string">&#x27;n&#x27;</span>, strlen($payload)) . $payload;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 发送消息</span></span><br><span class="line">$result = fwrite($fp, $msg, strlen($msg));</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!$result)&#123;</span><br><span class="line">	<span class="comment">// 推送失败</span></span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	<span class="comment">// 推送成功</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fclose($fp);</span><br></pre></td></tr></table></figure>
+<h3 id="3-APNS-文档">3.APNS 文档</h3>
+<blockquote>
 <p><a href="https://developer.apple.com/notifications/">https://developer.apple.com/notifications/</a></p>
 </blockquote>
 
@@ -1079,7 +1224,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1091,15 +1240,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1123,11 +1276,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1172,18 +1329,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

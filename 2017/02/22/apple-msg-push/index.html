@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>PHP学习笔记 - Apple APNS | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="1.合成证书(需要两个文件*.cer,*.p12,苹果开发者后台获取) ios.cer,ios.p12 &#x2F;&#x2F; 我这里的文件名  123456$ openssl x509 -in ios.cer -inform der -out ios_cer.pem$ openssl pkcs12 -nocerts -out ios_p12.pem -in ios.p12Enter Impor">
+  <meta name="description" content="1.合成证书(需要两个文件*.cer,*.p12,苹果开发者后台获取)  ios.cer,ios.p12 &#x2F;&#x2F; 我这里的文件名  123456$ openssl x509 -in ios.cer -inform der -out ios_cer.pem$ openssl pkcs12 -nocerts -out ios_p12.pem -in ios.p12Enter Import Passwor">
 <meta property="og:type" content="article">
 <meta property="og:title" content="PHP学习笔记 - Apple APNS">
 <meta property="og:url" content="http://xupin.im/2017/02/22/apple-msg-push/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="1.合成证书(需要两个文件*.cer,*.p12,苹果开发者后台获取) ios.cer,ios.p12 &#x2F;&#x2F; 我这里的文件名  123456$ openssl x509 -in ios.cer -inform der -out ios_cer.pem$ openssl pkcs12 -nocerts -out ios_p12.pem -in ios.p12Enter Impor">
+<meta property="og:description" content="1.合成证书(需要两个文件*.cer,*.p12,苹果开发者后台获取)  ios.cer,ios.p12 &#x2F;&#x2F; 我这里的文件名  123456$ openssl x509 -in ios.cer -inform der -out ios_cer.pem$ openssl pkcs12 -nocerts -out ios_p12.pem -in ios.p12Enter Import Passwor">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2017-02-21T16:00:00.000Z">
 <meta property="article:modified_time" content="2024-04-09T08:01:43.474Z">
@@ -28,6 +28,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -209,7 +210,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">290字</span>
+        <span class="post-count">288字</span>
       </span>
     </span>
 
@@ -227,14 +228,15 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="1-合成证书-需要两个文件-cer-p12-苹果开发者后台获取"><a href="#1-合成证书-需要两个文件-cer-p12-苹果开发者后台获取" class="headerlink" title="1.合成证书(需要两个文件*.cer,*.p12,苹果开发者后台获取)"></a>1.合成证书(需要两个文件*.cer,*.p12,苹果开发者后台获取)</h3><blockquote>
-<p>ios.cer,ios.p12 &#x2F;&#x2F; 我这里的文件名</p>
+        <h3 id="1-合成证书-需要两个文件-cer-p12-苹果开发者后台获取">1.合成证书(需要两个文件*.cer,*.p12,苹果开发者后台获取)</h3>
+<blockquote>
+<p>ios.cer,ios.p12 // 我这里的文件名</p>
 </blockquote>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ openssl x509 -<span class="keyword">in</span> ios.cer -inform der -out ios_cer.pem</span><br><span class="line">$ openssl pkcs12 -nocerts -out ios_p12.pem -<span class="keyword">in</span> ios.p12</span><br><span class="line">Enter Import Password: // 这里输入Apple后台文件导出时的密码</span><br><span class="line">MAC verified OK</span><br><span class="line">Enter PEM pass phrase: // 这里输入新的pem密码(用于代码中),我输入的是123456789</span><br><span class="line">$ <span class="built_in">cat</span> ios_cer.pem ios_p12.pem &gt; key.pem</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-PHP-推送代码"><a href="#2-PHP-推送代码" class="headerlink" title="2.PHP 推送代码"></a>2.PHP 推送代码</h3><figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化环境</span></span><br><span class="line"><span class="symbol">$ct</span>x = stream_context_create();</span><br><span class="line"></span><br><span class="line">stream_context_set_option(<span class="symbol">$ct</span>x, <span class="string">&#x27;ssl&#x27;</span>, <span class="string">&#x27;local_cert&#x27;</span>, <span class="string">&#x27;assets/key/key.pem&#x27;</span>); <span class="comment">// key文件的路径</span></span><br><span class="line">stream_context_set_option(<span class="symbol">$ct</span>x, <span class="string">&#x27;ssl&#x27;</span>, <span class="string">&#x27;passphrase&#x27;</span>, <span class="string">&#x27;123456789&#x27;</span>); <span class="comment">// 生成pem输入的密码</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 建立APNS连接</span></span><br><span class="line"><span class="symbol">$fp</span> = stream_socket_client( <span class="string">&#x27;ssl://gateway.push.apple.com:2195&#x27;</span>, <span class="symbol">$err</span>, <span class="symbol">$errstr</span>, <span class="number">60</span>, STREAM_CLIENT_CONNECT|STREAM_CLIENT_PERSISTENT, <span class="symbol">$ct</span>x);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 构建消息体,json编码</span></span><br><span class="line"><span class="symbol">$payload</span> = json_encode( <span class="built_in">array</span>( <span class="string">&#x27;aps&#x27;</span>=&gt;<span class="built_in">array</span>(<span class="string">&#x27;alert&#x27;</span> =&gt; <span class="string">&#x27;这里是内容&#x27;</span>, <span class="string">&#x27;sound&#x27;</span> =&gt; <span class="string">&#x27;这里是提示声音&#x27;</span>)));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 转换二进制</span></span><br><span class="line"><span class="symbol">$msg</span> = chr(<span class="number">0</span>) . pack(<span class="string">&#x27;n&#x27;</span>, <span class="number">32</span>) . pack(<span class="string">&#x27;H*&#x27;</span>, <span class="string">&#x27;设备标识(Apple SDK可以获取)&#x27;</span>) . pack(<span class="string">&#x27;n&#x27;</span>, strlen(<span class="symbol">$payload</span>)) . <span class="symbol">$payload</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 发送消息</span></span><br><span class="line"><span class="symbol">$result</span> = fwrite(<span class="symbol">$fp</span>, <span class="symbol">$msg</span>, strlen(<span class="symbol">$msg</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!<span class="symbol">$result</span>)&#123;</span><br><span class="line">	<span class="comment">// 推送失败</span></span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	<span class="comment">// 推送成功</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fclose(<span class="symbol">$fp</span>);</span><br></pre></td></tr></table></figure>
-
-<h3 id="3-APNS-文档"><a href="#3-APNS-文档" class="headerlink" title="3.APNS 文档"></a>3.APNS 文档</h3><blockquote>
+<h3 id="2-PHP-推送代码">2.PHP 推送代码</h3>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化环境</span></span><br><span class="line">$ctx = stream_context_create();</span><br><span class="line"></span><br><span class="line">stream_context_set_option($ctx, <span class="string">&#x27;ssl&#x27;</span>, <span class="string">&#x27;local_cert&#x27;</span>, <span class="string">&#x27;assets/key/key.pem&#x27;</span>); <span class="comment">// key文件的路径</span></span><br><span class="line">stream_context_set_option($ctx, <span class="string">&#x27;ssl&#x27;</span>, <span class="string">&#x27;passphrase&#x27;</span>, <span class="string">&#x27;123456789&#x27;</span>); <span class="comment">// 生成pem输入的密码</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 建立APNS连接</span></span><br><span class="line">$fp = stream_socket_client( <span class="string">&#x27;ssl://gateway.push.apple.com:2195&#x27;</span>, $err, $errstr, <span class="number">60</span>, STREAM_CLIENT_CONNECT|STREAM_CLIENT_PERSISTENT, $ctx);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 构建消息体,json编码</span></span><br><span class="line">$payload = json_encode( <span class="built_in">array</span>( <span class="string">&#x27;aps&#x27;</span>=&gt;<span class="built_in">array</span>(<span class="string">&#x27;alert&#x27;</span> =&gt; <span class="string">&#x27;这里是内容&#x27;</span>, <span class="string">&#x27;sound&#x27;</span> =&gt; <span class="string">&#x27;这里是提示声音&#x27;</span>)));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 转换二进制</span></span><br><span class="line">$msg = chr(<span class="number">0</span>) . pack(<span class="string">&#x27;n&#x27;</span>, <span class="number">32</span>) . pack(<span class="string">&#x27;H*&#x27;</span>, <span class="string">&#x27;设备标识(Apple SDK可以获取)&#x27;</span>) . pack(<span class="string">&#x27;n&#x27;</span>, strlen($payload)) . $payload;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 发送消息</span></span><br><span class="line">$result = fwrite($fp, $msg, strlen($msg));</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!$result)&#123;</span><br><span class="line">	<span class="comment">// 推送失败</span></span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	<span class="comment">// 推送成功</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fclose($fp);</span><br></pre></td></tr></table></figure>
+<h3 id="3-APNS-文档">3.APNS 文档</h3>
+<blockquote>
 <p><a href="https://developer.apple.com/notifications/">https://developer.apple.com/notifications/</a></p>
 </blockquote>
 
@@ -500,7 +502,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -512,15 +518,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -544,11 +554,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -593,18 +607,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">

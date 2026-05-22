@@ -8,20 +8,20 @@
   <link rel="dns-prefetch" href="http://xupin.im">
   <title>ClickHouse学习笔记 - MergeTree存储结构 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="ClickHouse 是这两年备受瞩目的开源列式数据库，主要应用场景是 OLAP（在线数据分析处理）场景。 背景之前因为遇见一些小问题，所以想通过存储结构和索引方式两个方面搞清楚它为什么可以这么快。 ClickHouse 是 OLAP 型的列式数据库，官方称比较行式数据库查询效率提升至少 100 倍，DB Benchmark显示 ClickHouse 比 Mysql 快 800 倍！">
+  <meta name="description" content="ClickHouse 是这两年备受瞩目的开源列式数据库，主要应用场景是 OLAP（在线数据分析处理）场景。 背景 之前因为遇见一些小问题，所以想通过存储结构和索引方式两个方面搞清楚它为什么可以这么快。 ClickHouse 是 OLAP 型的列式数据库，官方称比较行式数据库查询效率提升至少 100 倍，DB Benchmark显示 ClickHouse 比 Mysql 快 800 倍！">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ClickHouse学习笔记 - MergeTree存储结构">
 <meta property="og:url" content="http://xupin.im/2022/01/26/clickhouse-mergetree/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="ClickHouse 是这两年备受瞩目的开源列式数据库，主要应用场景是 OLAP（在线数据分析处理）场景。 背景之前因为遇见一些小问题，所以想通过存储结构和索引方式两个方面搞清楚它为什么可以这么快。 ClickHouse 是 OLAP 型的列式数据库，官方称比较行式数据库查询效率提升至少 100 倍，DB Benchmark显示 ClickHouse 比 Mysql 快 800 倍！">
+<meta property="og:description" content="ClickHouse 是这两年备受瞩目的开源列式数据库，主要应用场景是 OLAP（在线数据分析处理）场景。 背景 之前因为遇见一些小问题，所以想通过存储结构和索引方式两个方面搞清楚它为什么可以这么快。 ClickHouse 是 OLAP 型的列式数据库，官方称比较行式数据库查询效率提升至少 100 倍，DB Benchmark显示 ClickHouse 比 Mysql 快 800 倍！">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://clickhouse.com/docs/assets/images/row-oriented-3e6fd5aa48e3075202d242b4799da8fa.gif">
 <meta property="og:image" content="https://clickhouse.com/docs/assets/images/column-oriented-d082e49b7743d4ded32c7952bfdb028f.gif">
 <meta property="article:published_time" content="2022-01-25T16:00:00.000Z">
 <meta property="article:modified_time" content="2024-04-09T08:13:17.320Z">
 <meta property="article:author" content="Mark">
-<meta property="article:tag" content="clickhouse">
 <meta property="article:tag" content="develop">
+<meta property="article:tag" content="clickhouse">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://clickhouse.com/docs/assets/images/row-oriented-3e6fd5aa48e3075202d242b4799da8fa.gif">
   
@@ -31,6 +31,7 @@
     <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" type="text/css" href="/./main.0cf68a.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
   <style type="text/css">
   
     #container.show {
@@ -231,11 +232,12 @@ var _hmt = _hmt || [];
     <div class="article-entry" itemprop="articleBody">
       
         <p>ClickHouse 是这两年备受瞩目的开源列式数据库，主要应用场景是 OLAP（在线数据分析处理）场景。</p>
-<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>之前因为遇见一些小问题，所以想通过存储结构和索引方式两个方面搞清楚它为什么可以这么快。</p>
-<p>ClickHouse 是 OLAP 型的列式数据库，官方称比较行式数据库查询效率提升至少 100 倍，<a href="https://clickhouse.com/benchmark/dbms/#[%22100000000%22,[%22ClickHouse%22,%22Vertica%22,%22MySQL%22,%22PostgreSQL%22],[%221%22,%222%22]]">DB Benchmark</a>显示 ClickHouse 比 Mysql 快 800 倍！</p>
+<h3 id="背景">背景</h3>
+<p>之前因为遇见一些小问题，所以想通过存储结构和索引方式两个方面搞清楚它为什么可以这么快。</p>
+<p>ClickHouse 是 OLAP 型的列式数据库，官方称比较行式数据库查询效率提升至少 100 倍，<a href="https://clickhouse.com/benchmark/dbms/#%5B%22100000000%22,%5B%22ClickHouse%22,%22Vertica%22,%22MySQL%22,%22PostgreSQL%22%5D,%5B%221%22,%222%22%5D%5D">DB Benchmark</a>显示 ClickHouse 比 Mysql 快 800 倍！</p>
 <span id="more"></span>
-
-<h3 id="什么是-OLAP-型列式数据库"><a href="#什么是-OLAP-型列式数据库" class="headerlink" title="什么是 OLAP 型列式数据库"></a>什么是 OLAP 型列式数据库</h3><p>OLAP 业务场景一般具有以下特征：</p>
+<h3 id="什么是-OLAP-型列式数据库">什么是 OLAP 型列式数据库</h3>
+<p>OLAP 业务场景一般具有以下特征：</p>
 <ol>
 <li>多数是查询请求，但请求不密集。</li>
 <li>数据写入不频繁，或者单次大批量写入数据。</li>
@@ -247,7 +249,8 @@ var _hmt = _hmt || [];
 <li>简单的查询，毫秒级别的响应。</li>
 <li>单次查询高吞吐量。</li>
 </ol>
-<h3 id="列式和行式数据库的区别"><a href="#列式和行式数据库的区别" class="headerlink" title="列式和行式数据库的区别"></a>列式和行式数据库的区别</h3><p>存储方式</p>
+<h3 id="列式和行式数据库的区别">列式和行式数据库的区别</h3>
+<p>存储方式</p>
 <ul>
 <li>行式</li>
 </ul>
@@ -262,7 +265,8 @@ var _hmt = _hmt || [];
 <th>EventTime</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>#0</td>
 <td>89354350662</td>
 <td>1</td>
@@ -294,7 +298,8 @@ var _hmt = _hmt || [];
 <td>…</td>
 <td>…</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <ul>
 <li>列式</li>
 </ul>
@@ -308,7 +313,8 @@ var _hmt = _hmt || [];
 <th>#N</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>WatchID:</td>
 <td>89354350662</td>
 <td>90329509958</td>
@@ -343,12 +349,17 @@ var _hmt = _hmt || [];
 <td>2016-05-18 07:38:00</td>
 <td>…</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p>检索方式（通过两张图感受一下）</p>
 <ul>
-<li><p>行式：<br><img src="https://clickhouse.com/docs/assets/images/row-oriented-3e6fd5aa48e3075202d242b4799da8fa.gif"></p>
+<li>
+<p>行式：<br>
+<img src="https://clickhouse.com/docs/assets/images/row-oriented-3e6fd5aa48e3075202d242b4799da8fa.gif" alt=""></p>
 </li>
-<li><p>列式：<br><img src="https://clickhouse.com/docs/assets/images/column-oriented-d082e49b7743d4ded32c7952bfdb028f.gif"></p>
+<li>
+<p>列式：<br>
+<img src="https://clickhouse.com/docs/assets/images/column-oriented-d082e49b7743d4ded32c7952bfdb028f.gif" alt=""></p>
 </li>
 </ul>
 <p>列式数据库的优势</p>
@@ -356,7 +367,8 @@ var _hmt = _hmt || [];
 <li>查询请求时只读取需要的列，而不是像行式数据库需要读取符合条件的所有 block（即使是行式数据库也不是按行读取数据而是块，有些数据库也称页）。需要读取数据量的减少，意味着 IO 操作会更快。</li>
 <li>同一列的数据类型一致，可以使用最适用的压缩算法（更高的压缩比），节省存储空间。</li>
 </ol>
-<h3 id="ClickHouse-的优缺点"><a href="#ClickHouse-的优缺点" class="headerlink" title="ClickHouse 的优缺点"></a>ClickHouse 的优缺点</h3><ul>
+<h3 id="ClickHouse-的优缺点">ClickHouse 的优缺点</h3>
+<ul>
 <li>优点</li>
 </ul>
 <ol>
@@ -377,49 +389,53 @@ var _hmt = _hmt || [];
 <li>不支持高并发，官方默认 QPS：100（可以通过配置修改）</li>
 </ol>
 <p>简单的列举了优缺点，这只是冰山一角。实际上 ClickHouse 值得深入探讨的太多太多。</p>
-<h3 id="MergeTree-的特性"><a href="#MergeTree-的特性" class="headerlink" title="MergeTree 的特性"></a>MergeTree 的特性</h3><p>ClickHouse 是真正的列式存储数据库，不同于内存计算引擎（比如 SparkSQL、Presto），它有自己的数据存储机制和索引方式。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> [IF <span class="keyword">NOT</span> <span class="keyword">EXISTS</span>] [db.]table_name [<span class="keyword">ON</span> CLUSTER cluster]</span><br><span class="line">(</span><br><span class="line">    name1 [type1] [<span class="keyword">DEFAULT</span><span class="operator">|</span>MATERIALIZED<span class="operator">|</span>ALIAS expr1] [TTL expr1],</span><br><span class="line">    name2 [type2] [<span class="keyword">DEFAULT</span><span class="operator">|</span>MATERIALIZED<span class="operator">|</span>ALIAS expr2] [TTL expr2],</span><br><span class="line">    ...</span><br><span class="line">    INDEX index_name1 expr1 TYPE type1(...) GRANULARITY value1,</span><br><span class="line">    INDEX index_name2 expr2 TYPE type2(...) GRANULARITY value2</span><br><span class="line">) ENGINE <span class="operator">=</span> MergeTree()</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> expr</span><br><span class="line">[<span class="keyword">PARTITION</span> <span class="keyword">BY</span> expr]</span><br><span class="line">[<span class="keyword">PRIMARY</span> KEY expr]</span><br><span class="line">[SAMPLE <span class="keyword">BY</span> expr]</span><br><span class="line">[TTL expr [<span class="keyword">DELETE</span><span class="operator">|</span><span class="keyword">TO</span> DISK <span class="string">&#x27;xxx&#x27;</span><span class="operator">|</span><span class="keyword">TO</span> VOLUME <span class="string">&#x27;xxx&#x27;</span>], ...]</span><br><span class="line">[SETTINGS name<span class="operator">=</span><span class="keyword">value</span>, ...]</span><br></pre></td></tr></table></figure>
-
+<h3 id="MergeTree-的特性">MergeTree 的特性</h3>
+<p>ClickHouse 是真正的列式存储数据库，不同于内存计算引擎（比如 SparkSQL、Presto），它有自己的数据存储机制和索引方式。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE TABLE</span> [IF <span class="keyword">NOT</span> <span class="keyword">EXISTS</span>] [db.]table_name [<span class="keyword">ON</span> CLUSTER cluster]</span><br><span class="line">(</span><br><span class="line">    name1 [type1] [<span class="keyword">DEFAULT</span><span class="operator">|</span>MATERIALIZED<span class="operator">|</span>ALIAS expr1] [TTL expr1],</span><br><span class="line">    name2 [type2] [<span class="keyword">DEFAULT</span><span class="operator">|</span>MATERIALIZED<span class="operator">|</span>ALIAS expr2] [TTL expr2],</span><br><span class="line">    ...</span><br><span class="line">    INDEX index_name1 expr1 TYPE type1(...) GRANULARITY value1,</span><br><span class="line">    INDEX index_name2 expr2 TYPE type2(...) GRANULARITY value2</span><br><span class="line">) ENGINE <span class="operator">=</span> MergeTree()</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> expr</span><br><span class="line">[<span class="keyword">PARTITION</span> <span class="keyword">BY</span> expr]</span><br><span class="line">[<span class="keyword">PRIMARY KEY</span> expr]</span><br><span class="line">[SAMPLE <span class="keyword">BY</span> expr]</span><br><span class="line">[TTL expr [<span class="keyword">DELETE</span><span class="operator">|</span><span class="keyword">TO</span> DISK <span class="string">&#x27;xxx&#x27;</span><span class="operator">|</span><span class="keyword">TO</span> VOLUME <span class="string">&#x27;xxx&#x27;</span>], ...]</span><br><span class="line">[SETTINGS name<span class="operator">=</span><span class="keyword">value</span>, ...]</span><br></pre></td></tr></table></figure>
 <ul>
-<li><p>ORDER BY</p>
+<li>
+<p>ORDER BY</p>
 <blockquote>
 <p>排序字段，数据存储时按照排序字段（排序字段可以是一个字段，也可以是元组）进行有序存储。</p>
 </blockquote>
 </li>
-<li><p>PARTITION BY</p>
+<li>
+<p>PARTITION BY</p>
 <blockquote>
 <p>ClickHouse 支持按列值进行数据分区，也支持以表达式进行分区（比如<code>toYear(date)</code>），分区字段值不可以过多，否则会报错（比如按照 user_id 分区）。主要作用是分区裁剪，过滤非必要的查询数据。</p>
 </blockquote>
 </li>
-<li><p>PRIMARY KEY</p>
+<li>
+<p>PRIMARY KEY</p>
 <blockquote>
 <p>ClickHouse 的 MergeTree 引擎可以定义主键，但不同于行式数据库。主键不做唯一约束，可以是多个字段。默认不定义主键，会将排序键作为主键。如果定义主键（排序键过大，为了控制主键文件大小），则尽量保证是排序键的前部分键。</p>
 </blockquote>
 </li>
-<li><p>SAMPLE BY</p>
+<li>
+<p>SAMPLE BY</p>
 <blockquote>
-<p>ClickHouse 提供的抽样表达式机制，查询请求时通过采样子句进行数据采样功能。<br>建表时需要声明采样表达式（通过哪个字段采样），该字段必须是<code>UInt类型</code>且必须出现在主键或排序键中（如果不是 UInt 类型可以声明，但使用会报错）。</p>
+<p>ClickHouse 提供的抽样表达式机制，查询请求时通过采样子句进行数据采样功能。<br>
+建表时需要声明采样表达式（通过哪个字段采样），该字段必须是<code>UInt类型</code>且必须出现在主键或排序键中（如果不是 UInt 类型可以声明，但使用会报错）。</p>
 </blockquote>
 </li>
 </ul>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> example</span><br><span class="line">(</span><br><span class="line">    user_id UInt64,</span><br><span class="line">    name String</span><br><span class="line">)</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> intHash32(user_id)</span><br><span class="line">SAMPLE <span class="keyword">BY</span> intHash32(user_id)</span><br></pre></td></tr></table></figure>
-
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create table</span> example</span><br><span class="line">(</span><br><span class="line">    user_id UInt64,</span><br><span class="line">    name String</span><br><span class="line">)</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> intHash32(user_id)</span><br><span class="line">SAMPLE <span class="keyword">BY</span> intHash32(user_id)</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>查询请求时，通过<code>sample</code>关键字进行伪随机数据采样。</p>
 </blockquote>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> example sample <span class="number">1</span><span class="operator">/</span><span class="number">10</span> # 数据的<span class="number">10</span><span class="operator">%</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> example sample <span class="number">10</span> # <span class="number">10</span>行数据</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> example sample <span class="number">1</span><span class="operator">/</span><span class="number">10</span> <span class="keyword">offset</span> <span class="number">1</span><span class="operator">/</span><span class="number">2</span> # 从数据表<span class="number">50</span><span class="operator">%</span>部分中取出<span class="number">10</span><span class="operator">%</span>的数据</span><br></pre></td></tr></table></figure>
-
 <blockquote>
 <p>可以通过字段<code>_sample_factor</code>查询采样系数，该字段是虚拟的。</p>
 </blockquote>
 <ul>
-<li>TTL<blockquote>
-<p>ClickHouse 原生支持的数据生命周期管理的机制，在 MergeTree 中可以为列、表 2 个级别设置 TTL，当时间到期后触发相应级别的数据删除操作。<br>无论是哪种级别的 TTL，字段必须为<code>Datetime</code>或<code>Date</code>类型，因为依赖 INTERVAL 设置生命周期。</p>
+<li>TTL
+<blockquote>
+<p>ClickHouse 原生支持的数据生命周期管理的机制，在 MergeTree 中可以为列、表 2 个级别设置 TTL，当时间到期后触发相应级别的数据删除操作。<br>
+无论是哪种级别的 TTL，字段必须为<code>Datetime</code>或<code>Date</code>类型，因为依赖 INTERVAL 设置生命周期。</p>
 </blockquote>
 </li>
 </ul>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> example</span><br><span class="line">(</span><br><span class="line">    <span class="type">date</span> <span class="type">Date</span>,</span><br><span class="line">    login_ip String TTL <span class="type">date</span> <span class="operator">+</span> <span class="type">INTERVAL</span> <span class="number">1</span> <span class="keyword">DAY</span></span><br><span class="line">)</span><br><span class="line">TTL <span class="type">date</span> <span class="operator">+</span> <span class="type">INTERVAL</span> <span class="number">1</span> <span class="keyword">MONTH</span> # [<span class="keyword">DELETE</span>,<span class="keyword">TO</span> VOLUME,<span class="keyword">TO</span> DISK] 默认值: <span class="keyword">DELETE</span></span><br></pre></td></tr></table></figure>
-
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create table</span> example</span><br><span class="line">(</span><br><span class="line">    <span class="type">date</span> <span class="type">Date</span>,</span><br><span class="line">    login_ip String TTL <span class="type">date</span> <span class="operator">+</span> <span class="type">INTERVAL</span> <span class="number">1</span> <span class="keyword">DAY</span></span><br><span class="line">)</span><br><span class="line">TTL <span class="type">date</span> <span class="operator">+</span> <span class="type">INTERVAL</span> <span class="number">1</span> <span class="keyword">MONTH</span> # [<span class="keyword">DELETE</span>,<span class="keyword">TO</span> VOLUME,<span class="keyword">TO</span> DISK] 默认值: <span class="keyword">DELETE</span></span><br></pre></td></tr></table></figure>
 <blockquote>
 <ol>
 <li>当列级 TTL 触发时，会把对应值修改为列类型的默认值，如果该列数据全部过期则会<code>删除该列</code>。</li>
@@ -428,22 +444,23 @@ var _hmt = _hmt || [];
 </ol>
 </blockquote>
 <ul>
-<li>SETTINGS<blockquote>
+<li>SETTINGS
+<blockquote>
 <p>控制 MergeTree 行为的额外参数，可选项：</p>
 </blockquote>
 </li>
 </ul>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">index_granularity <span class="comment"># 索引粒度。索引中相邻的『标记』间的数据行数。默认值8192 。</span></span><br></pre></td></tr></table></figure>
-
 <p>其他更多参数，可以查阅<a href="https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/mergetree/#mergetree-query-clauses">官方文档</a><code>SETTINGS</code>部分。</p>
-<h3 id="存储结构"><a href="#存储结构" class="headerlink" title="存储结构"></a>存储结构</h3><p>使用 MergeTree 引擎，一张数据表会分成 N 个数据分区，每个数据分区对应一个文件目录。<br>可以通过 SQL 查询到分区信息：</p>
+<h3 id="存储结构">存储结构</h3>
+<p>使用 MergeTree 引擎，一张数据表会分成 N 个数据分区，每个数据分区对应一个文件目录。<br>
+可以通过 SQL 查询到分区信息：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> system.parts <span class="keyword">WHERE</span> `<span class="keyword">table</span>` <span class="operator">=</span> <span class="string">&#x27;&#123;table&#125;&#x27;</span> <span class="comment">-- path字段是数据分区的存储位置</span></span><br></pre></td></tr></table></figure>
-
 <p>或者在 ClickHouse 数据存储目录查看</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /data/clickhouse/data</span><br><span class="line">$ tree -d</span><br><span class="line">.</span><br><span class="line">├── default</span><br><span class="line">│   ├── test_a -&gt; /data/clickhouse/store/adf/adf66eb8-4f34-4a9c-adf6-6eb84f346a9c/</span><br><span class="line">│   └── test_b -&gt; /data/clickhouse/store/ed9/ed96975a-4048-4846-ad96-975a40484846/</span><br><span class="line">└── system</span><br><span class="line">    ├── asynchronous_metric_log -&gt; /data/clickhouse/store/507/5075436a-cb6c-4fac-9075-436acb6ccfac/</span><br><span class="line">    ├── metric_log -&gt; /data/clickhouse/store/86c/86cd831c-1bd4-4df2-86cd-831c1bd43df2/</span><br><span class="line">    ├── query_log -&gt; /data/clickhouse/store/986/9860fbbb-e965-476f-9860-fbbbe965776f/</span><br><span class="line">    ├── query_thread_log -&gt; /data/clickhouse/store/c1b/c1b39615-68ee-4fb7-81b3-961568eeafb7/</span><br><span class="line">    └── trace_log -&gt; /data/clickhouse/store/b6d/b6d34f2c-1580-411b-b6d3-4f2c1580911b/</span><br><span class="line">$ <span class="built_in">cd</span> /data/clickhouse/store/adf/adf66eb8-4f34-4a9c-adf6-6eb84f346a9c/</span><br><span class="line">$ tree</span><br><span class="line">.</span><br><span class="line">├── 20220101_1_3_0</span><br><span class="line">│   ├── checksums.txt</span><br><span class="line">│   ├── columns.txt</span><br><span class="line">│   ├── &#123;column&#125;.bin</span><br><span class="line">│   ├── &#123;column&#125;.mrk</span><br><span class="line">│   ├── count.txt</span><br><span class="line">│   ├── primary.idx</span><br><span class="line">│   ├── partition.dat</span><br><span class="line">│   ├── minmax_&#123;column&#125;.idx</span><br><span class="line">│   ├── skp_idx_&#123;column&#125;.idx</span><br><span class="line">│   └── skp_idx_&#123;column&#125;.mrk</span><br><span class="line">├── detached</span><br><span class="line">├── format_version.txt</span><br><span class="line">└── mutation_&#123;key&#125;.txt</span><br></pre></td></tr></table></figure>
-
 <ul>
-<li>20220101_1_3_0<blockquote>
+<li>20220101_1_3_0
+<blockquote>
 <p>数据分区的名称，由 4 部分组成。</p>
 </blockquote>
 </li>
@@ -455,74 +472,88 @@ var _hmt = _hmt || [];
 <li>数据块级别：0（即在由块组成的合并树中，该块在树中的深度）</li>
 </ol>
 <ul>
-<li><p>checksums.txt</p>
+<li>
+<p>checksums.txt</p>
 <blockquote>
 <p>校验文件，使用二进制存储数据目录的文件信息，保证安全性和完整性。</p>
 </blockquote>
 </li>
-<li><p>columns.txt</p>
+<li>
+<p>columns.txt</p>
 <blockquote>
 <p>明文存储列信息（列名，列类型）</p>
 </blockquote>
 </li>
-<li><p>{column}.bin</p>
+<li>
+<p>{column}.bin</p>
 <blockquote>
-<p>核心数据文件（二进制存储），分区字段<code>part_type</code>为<code>Wide</code>时会为每列创建对应的数据文件，如果是<code>Compact</code>则所有列存储在一个数据文件。该值受配置<code>min_bytes_for_wide_part</code>、<code>min_rows_for_wide_part</code>影响。<br>该文件的内容以数据 Block 存储（也称页），数据是否压缩受配置<code>max_compress_block_size</code>、<code>min_compress_block_size</code>影响。默认压缩格式：<a href="https://github.com/lz4/lz4#lz4---extremely-fast-compression">lz4</a>。<br>Block 数据块分为两部分：头信息和数据。头信息固定占 9 字节：压缩方式 1 字节、压缩后大小 4 字节、压缩前大小 4 字节。</p>
+<p>核心数据文件（二进制存储），分区字段<code>part_type</code>为<code>Wide</code>时会为每列创建对应的数据文件，如果是<code>Compact</code>则所有列存储在一个数据文件。该值受配置<code>min_bytes_for_wide_part</code>、<code>min_rows_for_wide_part</code>影响。<br>
+该文件的内容以数据 Block 存储（也称页），数据是否压缩受配置<code>max_compress_block_size</code>、<code>min_compress_block_size</code>影响。默认压缩格式：<a href="https://github.com/lz4/lz4#lz4---extremely-fast-compression">lz4</a>。<br>
+Block 数据块分为两部分：头信息和数据。头信息固定占 9 字节：压缩方式 1 字节、压缩后大小 4 字节、压缩前大小 4 字节。</p>
 </blockquote>
 </li>
-<li><p>{column}.mrk</p>
+<li>
+<p>{column}.mrk</p>
 <blockquote>
 <p>列字段标记文件（二进制存储），文件中记录{column}.bin 文件中数据 Block 的偏移量。</p>
 </blockquote>
 </li>
-<li><p>count.txt</p>
+<li>
+<p>count.txt</p>
 <blockquote>
 <p>该数据分区的数据行数。</p>
 </blockquote>
 </li>
-<li><p>primary.idx</p>
+<li>
+<p>primary.idx</p>
 <blockquote>
 <p>主键索引文件（二进制存储），每<code>index_granularity</code>行取主键值作为稀疏索引。</p>
 </blockquote>
 </li>
-<li><p>partition.dat</p>
+<li>
+<p>partition.dat</p>
 <blockquote>
 <p>当前数据分区的编号。</p>
 </blockquote>
 </li>
-<li><p>minmax_{column}.idx</p>
+<li>
+<p>minmax_{column}.idx</p>
 <blockquote>
 <p>列索引文件，存储列的最大值和最小值。</p>
 </blockquote>
 </li>
-<li><p>skp<em>idx</em>{column}.idx</p>
+<li>
+<p>skp<em>idx</em>{column}.idx</p>
 <blockquote>
 <p>跳数索引（又称二级索引）文件，受<code>allow_experimental_data_skipping_indices</code>参数控制，默认不开启。</p>
 </blockquote>
 </li>
-<li><p>skp<em>idx</em>{column}.mrk</p>
+<li>
+<p>skp<em>idx</em>{column}.mrk</p>
 <blockquote>
 <p>跳数索引标记文件。</p>
 </blockquote>
 </li>
-<li><p>detached</p>
+<li>
+<p>detached</p>
 <blockquote>
 <p>执行<code>ALTER TABLE table_name DETACH PARTITION|PART partition_expr</code>命令后，会将对应的数据分离至该目录并“遗忘”。</p>
 </blockquote>
 </li>
-<li><p>format_version.txt</p>
+<li>
+<p>format_version.txt</p>
 <blockquote>
 <p>记录存储的格式。</p>
 </blockquote>
 </li>
-<li><p>mutation_{key}.txt</p>
+<li>
+<p>mutation_{key}.txt</p>
 <blockquote>
 <p>不同于行式数据库，ClickHouse 对于 mutation 操作（Update、Delete）是异步执行的，同时会生成<code>mutation_&#123;key&#125;.txt</code>文件记录操作和生成新的数据目录<code>20220101_1_3_0_&#123;key&#125;</code>。可以通过 SQL 查询:</p>
 </blockquote>
 </li>
 </ul>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> system.mutations <span class="keyword">WHERE</span> `<span class="keyword">table</span>`  <span class="operator">=</span> <span class="string">&#x27;&#123;table&#125;&#x27;</span></span><br></pre></td></tr></table></figure>
-
 <p>因为使用类 LSM 架构，该类操作尽量少执行（埋个坑，后面再去研究）</p>
 
       
@@ -537,11 +568,11 @@ var _hmt = _hmt || [];
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">clickhouse</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">clickhouse</a>
         		</li>
       		
 		</ul>
@@ -792,7 +823,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -804,15 +839,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">data structures</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">algorithms</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -836,11 +875,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">github</a>
+                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">biscuits</a>
+                <a href="javascript:void(0)" class="js-tag color1">spine</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">github</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -885,18 +928,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">reverse engineering</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spine</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">gRPC</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protobuf</a>
               </li>
              
               <li class="article-tag-list-item">
