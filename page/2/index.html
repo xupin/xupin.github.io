@@ -184,6 +184,119 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-ccc-protobuf" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <!-- 标题 -->
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2024/08/29/ccc-protobuf/">Cocos Creator小知识 - 3.x项目如何使用Protobuf</a>
+    </h1>
+  
+
+        <!-- 发布日期 -->
+        
+        <a href="/2024/08/29/ccc-protobuf/" class="archive-article-date">
+  	<time datetime="2024-08-28T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-08-29</time>
+</a>
+        
+        <!-- 字数统计 -->
+        
+          <div style="margin-top:10px;">
+    <span class="post-time">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-keyboard-o"></i>
+        <span class="post-meta-item-text">  全文 ≈</span>
+        <span class="post-count">316字</span>
+      </span>
+    </span>
+
+    <span class="post-time">
+      &nbsp; | &nbsp;
+      <span class="post-meta-item-icon">
+        <i class="fa fa-hourglass-half"></i>
+        <span class="post-meta-item-text">  预计阅读时长</span>
+        <span class="post-count">1分钟</span>
+      </span>
+    </span>
+</div>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>记一次 Cocos Creator3.x 的 Protobuf 使用</p>
+<h3 id="环境">环境</h3>
+<ul>
+<li>安装依赖</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ npm i long</span><br><span class="line">$ npm i protobufjs</span><br><span class="line">$ npm i protobufjs-cli</span><br></pre></td></tr></table></figure>
+<ul>
+<li>tsconfig</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;compilerOptions&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;target&quot;</span><span class="punctuation">:</span> <span class="string">&quot;es6&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;lib&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;es2015&quot;</span><span class="punctuation">,</span> <span class="string">&quot;es2017&quot;</span><span class="punctuation">,</span> <span class="string">&quot;dom&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;module&quot;</span><span class="punctuation">:</span> <span class="string">&quot;commonjs&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;strict&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;experimentalDecorators&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;skipLibCheck&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;isolatedModules&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;moduleResolution&quot;</span><span class="punctuation">:</span> <span class="string">&quot;node&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="comment">// &quot;noEmit&quot;: true,</span></span><br><span class="line">        <span class="attr">&quot;forceConsistentCasingInFileNames&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;allowSyntheticDefaultImports&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">biscuits</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">protobuf</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2024/08/29/ccc-protobuf/">More >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-game-gateway" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -986,125 +1099,9 @@ var _hmt = _hmt || [];
 
 
   
-    <article id="post-game-aoi-cut" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2023/11/08/game-aoi-cut/">游戏开发笔记 - 同屏人数裁剪</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2023/11/08/game-aoi-cut/" class="archive-article-date">
-  	<time datetime="2023-11-07T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-11-08</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">939字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">4分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>简单优化下AOI模块</p>
-<h3 id="前言">前言</h3>
-<p>当游戏开启活动让大量玩家聚集在指定地图范围内时，给服务器和客户端带来最直接的麻烦就是：</p>
-<ol>
-<li>服务器带宽占用率高</li>
-</ol>
-<blockquote>
-<p>假设同屏有1000个玩家，那么任意一个玩家移动一次需要同步其他999个玩家。这导致服务器消息数量指数级增长，带宽承受压力极高。</p>
-</blockquote>
-<ol start="2">
-<li>客户端渲染卡顿</li>
-</ol>
-<blockquote>
-<p>因为同屏人数越多，客户端需要渲染的模型就越多。这样在一些普通的硬件设备下会直接导致卡顿、发热。</p>
-</blockquote>
-<h3 id="思路">思路</h3>
-<p>除了升级硬件，还可以在以下两个方面进行优化:</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">game</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2023/11/08/game-aoi-cut/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 

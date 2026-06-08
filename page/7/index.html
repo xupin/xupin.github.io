@@ -184,6 +184,125 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-redis-sentinel" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <!-- 标题 -->
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/26/redis-sentinel/">Redis学习笔记 - 哨兵</a>
+    </h1>
+  
+
+        <!-- 发布日期 -->
+        
+        <a href="/2020/03/26/redis-sentinel/" class="archive-article-date">
+  	<time datetime="2020-03-25T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-26</time>
+</a>
+        
+        <!-- 字数统计 -->
+        
+          <div style="margin-top:10px;">
+    <span class="post-time">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-keyboard-o"></i>
+        <span class="post-meta-item-text">  全文 ≈</span>
+        <span class="post-count">2k字</span>
+      </span>
+    </span>
+
+    <span class="post-time">
+      &nbsp; | &nbsp;
+      <span class="post-meta-item-icon">
+        <i class="fa fa-hourglass-half"></i>
+        <span class="post-meta-item-text">  预计阅读时长</span>
+        <span class="post-count">7分钟</span>
+      </span>
+    </span>
+</div>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>现在这篇来学习一下Redis Sentinel即哨兵策略的相关知识。</p>
+<h3 id="1-什么是哨兵？">1.什么是哨兵？</h3>
+<p>哨兵（Sentinel），Redis2.6版本（正式版本是2.8，现2.6版本已被废弃）开始提供的一种集群策略，核心思想是解决了主从复制（Replication）在Master节点故障，无法自动切换Slave节点为新Master节点的问题。</p>
+<ul>
+<li>
+<p>特点</p>
+<ol>
+<li>哨兵策略是分布式部署，节点间相互协调工作。</li>
+<li>哨兵集群至少要3个节点。</li>
+<li>可以把哨兵看作是一种特殊的Redis服务。</li>
+</ol>
+</li>
+<li>
+<p>优点</p>
+<ol>
+<li>哨兵策略拥有主从复制的优点。</li>
+<li>哨兵策略解决了Master节点故障，无法自动切换Slave节点为新Master节点的问题。</li>
+</ol>
+</li>
+</ul>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/03/26/redis-sentinel/">More >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-redis-replication" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1022,126 +1141,9 @@ var _hmt = _hmt || [];
 
 
   
-    <article id="post-go-gin" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/31/go-gin/">Go学习笔记 - Gin</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2019/12/31/go-gin/" class="archive-article-date">
-  	<time datetime="2019-12-30T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-31</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">832字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">4分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://github.com/gin-gonic/gin">Gin</a> 是一个用 Go (Golang) 编写的 HTTP web 框架。 它是一个类似于 martini 但拥有更好性能的 API 框架, 由于 httprouter，速度提高了近 40 倍。</p>
-<h3 id="1-有哪些优点">1.有哪些优点</h3>
-<blockquote>
-<p>较高的性能（<a href="https://github.com/julienschmidt/go-http-routing-benchmark">Golang Web框架比对数据</a>）</p>
-</blockquote>
-<blockquote>
-<p>简单易用的中间件</p>
-</blockquote>
-<blockquote>
-<p>使用了性能高可扩展的HTTP路由<a href="https://github.com/julienschmidt/httprouter">httprouter</a></p>
-</blockquote>
-<blockquote>
-<p>社区长期有着很高的活跃度</p>
-</blockquote>
-<blockquote>
-<p>Github星星多（Orz）</p>
-</blockquote>
-<p>…等</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">golang</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/31/go-gin/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
     </nav>
   
 
