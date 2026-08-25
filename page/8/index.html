@@ -184,6 +184,113 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-php-aliyundb" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <!-- 标题 -->
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/01/07/php-aliyundb/">PHP学习笔记 - aliyundb SQLSetStatement is NOT supported</a>
+    </h1>
+  
+
+        <!-- 发布日期 -->
+        
+        <a href="/2020/01/07/php-aliyundb/" class="archive-article-date">
+  	<time datetime="2020-01-06T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-07</time>
+</a>
+        
+        <!-- 字数统计 -->
+        
+          <div style="margin-top:10px;">
+    <span class="post-time">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-keyboard-o"></i>
+        <span class="post-meta-item-text">  全文 ≈</span>
+        <span class="post-count">172字</span>
+      </span>
+    </span>
+
+    <span class="post-time">
+      &nbsp; | &nbsp;
+      <span class="post-meta-item-icon">
+        <i class="fa fa-hourglass-half"></i>
+        <span class="post-meta-item-text">  预计阅读时长</span>
+        <span class="post-count">1分钟</span>
+      </span>
+    </span>
+</div>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>PHP 项目在数据库迁移使用 ADB（aliyundb）时发现这个问题，具体错误描述是：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SQLSTATE</span>[HY000]: General error: <span class="number">1815</span> [<span class="number">15022</span>, <span class="number">2020010711034801025210201503151413416</span>] statement type: class com.alibaba.fastsql.sql.ast.statement.SQLSetStatement <span class="keyword">is</span> <span class="keyword">NOT</span> supported<span class="operator">!</span> (<span class="keyword">SQL</span>: <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> `users`)</span><br></pre></td></tr></table></figure>
+<p>在排查该问题的过程中，尝试了各种方式，降版本、使用原生语句等，甚至查找 ADB 手册和 Issue 还是无法解决。</p>
+<h3 id="1-原因">1.原因</h3>
+<p>因为 ADB 兼容 Mysql 但是有些机制还是略有不同，阅读源码后发现比如：ADB 就不能很好的支持本地预处理语句，这也是该异常的原因。</p>
+<h3 id="2-解决方案">2.解决方案</h3>
+<p>PHP PDO 链接的属性值<code>PDO::ATTR_EMULATE_PREPARES</code>需要设置为<code>true</code></p>
+<figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PDO::<span class="function"><span class="params">ATTR_EMULATE_PREPARES</span> =&gt;</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">php</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/01/07/php-aliyundb/">More >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-go-gin" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -994,118 +1101,6 @@ InnoDB和MyIsam只支持Btree，因此默认均是Btree，Memory和Heap支持Has
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/12/03/redis-aof-rdb/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-google-msg-push" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/28/google-msg-push/">PHP学习笔记 - Google FCM</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2017/02/28/google-msg-push/" class="archive-article-date">
-  	<time datetime="2017-02-27T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-28</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">347字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">1分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Firebase 是一个移动平台，可以帮助您快速开发高品质应用，扩大用户群，并赚取更多收益。Firebase 由多种互补功能组成，您可以自行组合和匹配这些功能以满足自己的需求。</p>
-<h3 id="1-获取-Google-推送的-KEY-Google-应用后台">1.获取 Google 推送的 KEY(Google 应用后台)</h3>
-<blockquote>
-<p>AIzaSyCm5Vufc1FAtWE1kupGhVDRb0ThkCoWC7d // 这个是我的</p>
-</blockquote>
-<h3 id="2-PHP-推送代码">2.PHP 推送代码</h3>
-<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化环境</span></span><br><span class="line"><span class="variable">$url</span> = <span class="string">&#x27;https://fcm.googleapis.com/fcm/send&#x27;</span>;</span><br><span class="line"><span class="variable">$ch</span> = curl_init(<span class="variable">$url</span>);</span><br><span class="line">curl_setopt(<span class="variable">$ch</span>, CURLOPT_SSL_VERIFYPEER, <span class="literal">false</span>);</span><br><span class="line">curl_setopt(<span class="variable">$ch</span>, CURLOPT_RETURNTRANSFER,<span class="number">1</span>);</span><br><span class="line">curl_setopt(<span class="variable">$ch</span>, CURLOPT_POST, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable">$header</span> = array(</span><br><span class="line">	<span class="string">&#x27;Content-Type: application/json&#x27;</span>,</span><br><span class="line">	<span class="string">&#x27;Authorization: key=AIzaSyCm5Vufc1FAtWE1kupGhVDRb0ThkCoWC7d&#x27;</span> <span class="comment">// 这里是刚才的KEY</span></span><br><span class="line">);</span><br><span class="line">curl_setopt(<span class="variable">$ch</span>, CURLOPT_HTTPHEADER, <span class="variable">$header</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 构建消息体,json编码</span></span><br><span class="line"><span class="variable">$content</span> = json_encode([</span><br><span class="line"><span class="string">&#x27;notification&#x27;</span>=&gt;[</span><br><span class="line">	<span class="string">&#x27;title&#x27;</span> =&gt; <span class="string">&#x27;这里是标题&#x27;</span>,</span><br><span class="line">	<span class="string">&#x27;body&#x27;</span> =&gt; <span class="string">&#x27;这里是内容&#x27;</span>,</span><br><span class="line">	<span class="string">&#x27;icon&#x27;</span> =&gt; <span class="string">&#x27;这里是后台设置的iconName&#x27;</span></span><br><span class="line">],</span><br><span class="line"><span class="string">&#x27;to&#x27;</span>=&gt;<span class="string">&#x27;设备标识(Google SDK可以获取)&#x27;</span>,</span><br><span class="line"><span class="string">&#x27;registration_ids&#x27;</span>=&gt;[<span class="string">&#x27;设备标识&#x27;</span>,<span class="string">&#x27;设备标识&#x27;</span>] <span class="comment">// 如果要推送多台设备,可以使用此字段,最多支持1000台设备</span></span><br><span class="line">]);</span><br><span class="line"></span><br><span class="line">curl_setopt(<span class="variable">$ch</span>, CURLOPT_POSTFIELDS, <span class="variable">$content</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable">$ret</span> = json_decode(curl_exec(<span class="variable">$ch</span>), <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable">$ret</span>[<span class="string">&#x27;success&#x27;</span>]; <span class="comment">// 推送成功数</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$ret</span>[<span class="string">&#x27;failure&#x27;</span>]; <span class="comment">// 推送失败数</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="3-返回值示例">3.返回值示例</h3>
-<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;multicast_id&quot;</span>: <span class="number">7669649331143639654</span>,</span><br><span class="line">    <span class="string">&quot;success&quot;</span>: <span class="number">3</span>,</span><br><span class="line">    <span class="string">&quot;failure&quot;</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="string">&quot;canonical_ids&quot;</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="string">&quot;results&quot;</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">&quot;message_id&quot;</span>: <span class="string">&quot;0:1488360060090224<span class="variable">%6490a2d16490a2d1</span>&quot;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">&quot;message_id&quot;</span>: <span class="string">&quot;0:1488360060095871<span class="variable">%6490a2d16490a2d1</span>&quot;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">&quot;message_id&quot;</span>: <span class="string">&quot;0:1488360060090765<span class="variable">%6490a2d16490a2d1</span>&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="4-Google-FCM-文档">4.Google(FCM) 文档</h3>
-<blockquote>
-<p><a href="https://firebase.google.com/docs">https://firebase.google.com/docs</a></p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">google fcm</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/02/28/google-msg-push/">More >></a>
         </p>
       
 
