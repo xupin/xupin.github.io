@@ -184,6 +184,112 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-rust-mpsc" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <!-- 标题 -->
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2026/08/30/rust-mpsc/">Rust学习笔记 - mpsc与消息通信</a>
+    </h1>
+  
+
+        <!-- 发布日期 -->
+        
+        <a href="/2026/08/30/rust-mpsc/" class="archive-article-date">
+  	<time datetime="2026-08-29T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-08-30</time>
+</a>
+        
+        <!-- 字数统计 -->
+        
+          <div style="margin-top:10px;">
+    <span class="post-time">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-keyboard-o"></i>
+        <span class="post-meta-item-text">  全文 ≈</span>
+        <span class="post-count">1.2k字</span>
+      </span>
+    </span>
+
+    <span class="post-time">
+      &nbsp; | &nbsp;
+      <span class="post-meta-item-icon">
+        <i class="fa fa-hourglass-half"></i>
+        <span class="post-meta-item-text">  预计阅读时长</span>
+        <span class="post-count">5分钟</span>
+      </span>
+    </span>
+</div>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><code>mpsc</code> 是 <code>multiple producer, single consumer</code> 的缩写，表示多个发送端、一个接收端。它是一种常见的消息通信模型：多个地方可以把消息发送到同一个 channel 中，再由一个接收方按顺序取出并处理。</p>
+<h3 id="前言">前言</h3>
+<p>写服务端时，很多模块都可能需要给同一个客户端发消息。比如登录回包、消息广播、系统通知，甚至定时任务产生的推送。如果这些模块都直接操作连接对象，代码很容易碰到借用和并发访问的问题，连接本身也会变得难以维护。</p>
+<p>一种更自然的做法是，让连接只由一个地方持有，其他模块只负责投递消息，再由持有连接的任务统一写出。<code>mpsc</code> 适合解决的，正是这类“多处发送、单点处理”的通信问题。</p>
+<h3 id="标准库的-mpsc">标准库的 mpsc</h3>
+<p>先看一个简单的例子：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::sync::mpsc;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> (tx, rx) = mpsc::<span class="title function_ invoke__">channel</span>();</span><br><span class="line"></span><br><span class="line">    tx.<span class="title function_ invoke__">send</span>(<span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;hallo&quot;</span>)).<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">message</span> = rx.<span class="title function_ invoke__">recv</span>().<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;received: &#123;&#125;&quot;</span>, message);</span><br><span class="line">    <span class="comment">// received: hallo</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rust</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2026/08/30/rust-mpsc/">More >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-rust-arc-mutex-rwlock-refcell" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -402,7 +508,7 @@ var _hmt = _hmt || [];
 
 
   
-    <article id="post-ds-glgos-rvo" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-ds-algos-rvo" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
@@ -410,13 +516,13 @@ var _hmt = _hmt || [];
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2026/05/21/ds-glgos-rvo/">数据结构与算法 - RVO</a>
+      <a class="article-title" href="/2026/05/21/ds-algos-rvo/">数据结构与算法 - RVO</a>
     </h1>
   
 
         <!-- 发布日期 -->
         
-        <a href="/2026/05/21/ds-glgos-rvo/" class="archive-article-date">
+        <a href="/2026/05/21/ds-algos-rvo/" class="archive-article-date">
   	<time datetime="2026-05-20T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-05-21</time>
 </a>
         
@@ -482,7 +588,7 @@ var _hmt = _hmt || [];
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2026/05/21/ds-glgos-rvo/">More >></a>
+          <a class="article-more-a" href="/2026/05/21/ds-algos-rvo/">More >></a>
         </p>
       
 
@@ -913,110 +1019,6 @@ var _hmt = _hmt || [];
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2025/05/22/ds-algos-p2c/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-go-screenshot" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2025/03/19/go-screenshot/">Go学习笔记 - 截图API</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2025/03/19/go-screenshot/" class="archive-article-date">
-  	<time datetime="2025-03-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2025-03-19</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">641字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">3分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>记一次截图应用接口的实现</p>
-<h3 id="背景">背景</h3>
-<p>对不同文件类型生成缩略图，视频使用<code>ffmpeg</code>抽帧，html 文件则需要运行才能截图。</p>
-<h3 id="思路">思路</h3>
-<p>模拟浏览器访问并截图，需要工具：google-chrome、<a href="https://github.com/go-rod/rod">go-rod</a></p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">golang</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2025/03/19/go-screenshot/">More >></a>
         </p>
       
 

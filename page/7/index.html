@@ -184,6 +184,120 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-mysql-trick" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <!-- 标题 -->
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/13/mysql-trick/">Mysql小知识 - 查找连续编号中的缺失编号</a>
+    </h1>
+  
+
+        <!-- 发布日期 -->
+        
+        <a href="/2020/04/13/mysql-trick/" class="archive-article-date">
+  	<time datetime="2020-04-12T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-04-13</time>
+</a>
+        
+        <!-- 字数统计 -->
+        
+          <div style="margin-top:10px;">
+    <span class="post-time">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-keyboard-o"></i>
+        <span class="post-meta-item-text">  全文 ≈</span>
+        <span class="post-count">555字</span>
+      </span>
+    </span>
+
+    <span class="post-time">
+      &nbsp; | &nbsp;
+      <span class="post-meta-item-icon">
+        <i class="fa fa-hourglass-half"></i>
+        <span class="post-meta-item-text">  预计阅读时长</span>
+        <span class="post-count">2分钟</span>
+      </span>
+    </span>
+</div>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在和小伙伴讨论问题的时候，小伙伴突然问了我这样一个小问题，数据库中如何查找连续编号中的缺失编号？</p>
+<h3 id="1-描述">1.描述</h3>
+<p>场景大概是这样，有一份连续数据ID：1 … 27，其中ID：6，7，14的数据丢了。结构如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE TABLE</span> `letter`  (</span><br><span class="line">  `id` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT NULL</span> AUTO_INCREMENT,</span><br><span class="line">  `name` <span class="type">varchar</span>(<span class="number">50</span>) <span class="keyword">CHARACTER SET</span> utf8mb4 <span class="keyword">COLLATE</span> utf8mb4_unicode_ci <span class="keyword">NOT NULL</span>,</span><br><span class="line">  <span class="keyword">PRIMARY KEY</span> (`id`) <span class="keyword">USING</span> BTREE</span><br><span class="line">) ENGINE <span class="operator">=</span> InnoDB AUTO_INCREMENT <span class="operator">=</span> <span class="number">27</span> <span class="keyword">CHARACTER SET</span> <span class="operator">=</span> utf8mb4 <span class="keyword">COLLATE</span> <span class="operator">=</span> utf8mb4_unicode_ci ROW_FORMAT <span class="operator">=</span> Compact;</span><br><span class="line"></span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">1</span>, <span class="string">&#x27;A&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">2</span>, <span class="string">&#x27;B&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">3</span>, <span class="string">&#x27;C&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">4</span>, <span class="string">&#x27;D&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">5</span>, <span class="string">&#x27;E&#x27;</span>);</span><br><span class="line"># <span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">6</span>, <span class="string">&#x27;F&#x27;</span>);</span><br><span class="line"># <span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">7</span>, <span class="string">&#x27;J&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">8</span>, <span class="string">&#x27;H&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">9</span>, <span class="string">&#x27;I&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">10</span>, <span class="string">&#x27;J&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">11</span>, <span class="string">&#x27;K&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">12</span>, <span class="string">&#x27;L&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">13</span>, <span class="string">&#x27;M&#x27;</span>);</span><br><span class="line"># <span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">14</span>, <span class="string">&#x27;N&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">15</span>, <span class="string">&#x27;O&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">16</span>, <span class="string">&#x27;P&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">17</span>, <span class="string">&#x27;Q&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">18</span>, <span class="string">&#x27;R&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">19</span>, <span class="string">&#x27;S&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">20</span>, <span class="string">&#x27;T&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">21</span>, <span class="string">&#x27;U&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">22</span>, <span class="string">&#x27;V&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">23</span>, <span class="string">&#x27;W&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">24</span>, <span class="string">&#x27;X&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">25</span>, <span class="string">&#x27;Y&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT INTO</span> `letter` <span class="keyword">VALUES</span> (<span class="number">26</span>, <span class="string">&#x27;Z&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<p>怎么把6，7，14这三条数据找出来？方法有很多种哈，今天我们说一下如何利用SQL快速查询出来。大概思路是把ID+1，然后查询ID+1这个值是否存在ID列表中，如果不存在那肯定就是缺失的。SQL如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	id <span class="operator">+</span> <span class="number">1</span> <span class="keyword">AS</span> id </span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	`letter` </span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	id <span class="operator">+</span> <span class="number">1</span> <span class="keyword">NOT</span> <span class="keyword">IN</span> ( <span class="keyword">SELECT</span> id <span class="keyword">FROM</span> `letter` )</span><br></pre></td></tr></table></figure>
+<p>但是这样会有一个小问题，就是MAX(id)+1（27）也会被查询出来，所以：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	id <span class="operator">+</span> <span class="number">1</span> <span class="keyword">AS</span> id </span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	`letter` </span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	id <span class="operator">+</span> <span class="number">1</span> <span class="keyword">NOT</span> <span class="keyword">IN</span> ( <span class="keyword">SELECT</span> id <span class="keyword">FROM</span> `letter` ) </span><br><span class="line">	<span class="keyword">AND</span> id <span class="operator">&lt;</span>(</span><br><span class="line">	<span class="keyword">SELECT</span></span><br><span class="line">		<span class="built_in">max</span>( id ) </span><br><span class="line">	<span class="keyword">FROM</span></span><br><span class="line">	`letter` </span><br><span class="line">	)</span><br></pre></td></tr></table></figure>
+<h3 id="2-优化">2.优化</h3>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	start_id,</span><br><span class="line">	( <span class="keyword">SELECT</span> <span class="built_in">MIN</span>(id)<span class="operator">-</span> <span class="number">1</span> <span class="keyword">FROM</span> `letter` <span class="keyword">WHERE</span> id <span class="operator">&gt;</span> start_id ) <span class="keyword">AS</span> end_id </span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	(</span><br><span class="line">	<span class="keyword">SELECT</span></span><br><span class="line">		id <span class="operator">+</span> <span class="number">1</span> <span class="keyword">AS</span> start_id </span><br><span class="line">	<span class="keyword">FROM</span></span><br><span class="line">		`letter` </span><br><span class="line">	<span class="keyword">WHERE</span></span><br><span class="line">		id <span class="operator">+</span> <span class="number">1</span> <span class="keyword">NOT</span> <span class="keyword">IN</span> ( <span class="keyword">SELECT</span> id <span class="keyword">FROM</span> `letter` ) </span><br><span class="line">		<span class="keyword">AND</span> id <span class="operator">&lt;</span>(</span><br><span class="line">		<span class="keyword">SELECT</span></span><br><span class="line">			<span class="built_in">max</span>(id) </span><br><span class="line">		<span class="keyword">FROM</span></span><br><span class="line">			`letter` </span><br><span class="line">		) </span><br><span class="line">	) <span class="keyword">AS</span> max_id </span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span></span><br><span class="line">	start_id</span><br></pre></td></tr></table></figure>
+<p>这种情况适用于查找整数类型的连续编号，那么如果编号是string类型的呢？后面有机会再补充进来=,=。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">biscuits</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/04/13/mysql-trick/">More >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-redis-cluster" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1011,130 +1125,6 @@ var _hmt = _hmt || [];
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2020/03/15/mysql-int-length/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-go-console" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/01/19/go-console/">Go学习笔记 - 定时任务调度</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2020/01/19/go-console/" class="archive-article-date">
-  	<time datetime="2020-01-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-19</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">435字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">2分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>每一个任务都需要编写一个Crontab命令，这是件很麻烦且很不友好的事情。 任务调度器允许你以代码的形式定义调度命令，并且服务器上只需要一个Crontab命令即可, 任务调度又是我们俗称的 “计划任务”</p>
-<h3 id="1-工欲善其事，必先利其器">1.工欲善其事，必先利其器</h3>
-<p>Github一番搜索，发现Golang有个cron包（<a href="https://github.com/robfig/cron">robfig/cron</a>）大概满足需求，于是学习一下。</p>
-<h3 id="2-介绍">2.介绍</h3>
-<p>看了一遍文档，cron包支持的已经很全面了~~~不用自己造轮子了。</p>
-<p>表达式</p>
-<blockquote>
-<p>兼容Linux的crontab表达式（支持分钟级别）。</p>
-</blockquote>
-<p>日志</p>
-<blockquote>
-<p>可以很详细的记录调度的任务状态</p>
-</blockquote>
-<p>时区</p>
-<blockquote>
-<p>支持任务级别的时区配置</p>
-</blockquote>
-<p>预定义计划</p>
-<blockquote>
-<p>支持在未来指定的时间去运行</p>
-</blockquote>
-<p><code>线程安全问题</code></p>
-<blockquote>
-<p>该cron lib管理任务队列的slice没有做并发安全考虑，可能会出现任务竟抢行为。</p>
-</blockquote>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">golang</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/01/19/go-console/">More >></a>
         </p>
       
 

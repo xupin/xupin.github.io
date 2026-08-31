@@ -11,7 +11,7 @@
   <meta name="description" content="RVO（Reciprocal Velocity Obstacles，互惠速度障碍）是一种多人动态避障算法。 「数据结构与算法 - JPS 」兄弟篇 前言 如果 A*、JPS 等寻路算法解决的是“如何到达目的地”，那么 RVO 解决的就是“在移动过程中，如何避免与动态目标发生碰撞”。常用于游戏中多单位在移动过程中实现自动避让，比如：红警、星际争霸等RTS游戏。 可以通俗的理解为：每个移动的单位都会主">
 <meta property="og:type" content="article">
 <meta property="og:title" content="数据结构与算法 - RVO">
-<meta property="og:url" content="http://xupin.im/2026/05/21/ds-glgos-rvo/index.html">
+<meta property="og:url" content="http://xupin.im/2026/05/21/ds-algos-rvo/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
 <meta property="og:description" content="RVO（Reciprocal Velocity Obstacles，互惠速度障碍）是一种多人动态避障算法。 「数据结构与算法 - JPS 」兄弟篇 前言 如果 A*、JPS 等寻路算法解决的是“如何到达目的地”，那么 RVO 解决的就是“在移动过程中，如何避免与动态目标发生碰撞”。常用于游戏中多单位在移动过程中实现自动避让，比如：红警、星际争霸等RTS游戏。 可以通俗的理解为：每个移动的单位都会主">
 <meta property="og:locale" content="en_US">
@@ -21,7 +21,7 @@
 <meta property="og:image" content="http://xupin.im/assets/rvo/rvo_demo.gif">
 <meta property="og:image" content="http://xupin.im/assets/rvo/multi_rvo_demo.gif">
 <meta property="article:published_time" content="2026-05-20T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-05-22T09:12:05.647Z">
+<meta property="article:modified_time" content="2026-08-26T02:22:54.742Z">
 <meta property="article:author" content="Mark">
 <meta property="article:tag" content="develop">
 <meta property="article:tag" content="data structures">
@@ -192,7 +192,7 @@ var _hmt = _hmt || [];
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-ds-glgos-rvo" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-ds-algos-rvo" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
@@ -206,7 +206,7 @@ var _hmt = _hmt || [];
 
         <!-- 发布日期 -->
         
-        <a href="/2026/05/21/ds-glgos-rvo/" class="archive-article-date">
+        <a href="/2026/05/21/ds-algos-rvo/" class="archive-article-date">
   	<time datetime="2026-05-20T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-05-21</time>
 </a>
         
@@ -286,7 +286,7 @@ R = r_A + r_B
 <p>现在张三已经会自动避让了，但在一些场景下会出现抖动，甚至是反复横跳。</p>
 <p>这是因为 VO 的避障决策本质上是单边的：张三在选择新速度时，会假设路人甲保持当前速度不变，然后由自己单方面完成避让。</p>
 <p>但真实情况是，路人甲往往也在同时避让。这样一来，双方都可能按照“由我来避开对方”的思路做出决策，例如同时向左避让，又同时改为向右避让，结果就是运动轨迹抖动。</p>
-<p>要避免这种情况，就不能只让一方单方面避让，而是要让双方共同承担避让责任。这也正是 RVO 的核心思想。</p>
+<p>要避免这种情况，就不能只让一方单方面避让，而是要让双方共同承担避让责任。这也正是 RVO 的理论基础。</p>
 <h3 id="Reciprocal-Velocity-Obstacle">Reciprocal Velocity Obstacle</h3>
 <p>RVO 的核心思想并不复杂，可以概括成一句话：</p>
 <blockquote>
@@ -377,7 +377,7 @@ R = r_A + r_B
   <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
   <p>扫一扫，分享到微信</p>
   <div class="wx-qrcode">
-    <img src="https://api.pwmqr.com/qrcode/create/?url=http://xupin.im/2026/05/21/ds-glgos-rvo/" alt="微信分享二维码">
+    <img src="https://api.pwmqr.com/qrcode/create/?url=http://xupin.im/2026/05/21/ds-algos-rvo/" alt="微信分享二维码">
   </div>
 </div>
 

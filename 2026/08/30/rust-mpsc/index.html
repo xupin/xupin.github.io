@@ -6,17 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://xupin.im">
-  <title>Tag: develop | Mark&#39;s blog</title>
+  <title>Rust学习笔记 - mpsc与消息通信 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="安静的小屁屁">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Mark&#39;s blog">
-<meta property="og:url" content="http://xupin.im/tags/develop/index.html">
+  <meta name="description" content="mpsc 是 multiple producer, single consumer 的缩写，表示多个发送端、一个接收端。它是一种常见的消息通信模型：多个地方可以把消息发送到同一个 channel 中，再由一个接收方按顺序取出并处理。 前言 写服务端时，很多模块都可能需要给同一个客户端发消息。比如登录回包、消息广播、系统通知，甚至定时任务产生的推送。如果这些模块都直接操作连接对象，代码很容易碰到借用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust学习笔记 - mpsc与消息通信">
+<meta property="og:url" content="http://xupin.im/2026/08/30/rust-mpsc/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="安静的小屁屁">
+<meta property="og:description" content="mpsc 是 multiple producer, single consumer 的缩写，表示多个发送端、一个接收端。它是一种常见的消息通信模型：多个地方可以把消息发送到同一个 channel 中，再由一个接收方按顺序取出并处理。 前言 写服务端时，很多模块都可能需要给同一个客户端发消息。比如登录回包、消息广播、系统通知，甚至定时任务产生的推送。如果这些模块都直接操作连接对象，代码很容易碰到借用">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-08-29T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-31T06:00:11.116Z">
 <meta property="article:author" content="Mark">
-<meta property="article:tag" content="nginx,php,golang,memcached,redis,mysql,mariadb,php7,前端,js,jquery,javascript,html5,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验">
+<meta property="article:tag" content="develop">
+<meta property="article:tag" content="rust">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
@@ -182,36 +185,86 @@ var _hmt = _hmt || [];
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-rust-mpsc" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <!-- 标题 -->
+        
   
+    <h1 class="article-title" itemprop="name">
+      Rust学习笔记 - mpsc与消息通信
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2026" class="archive-year">2026</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2026/08/30/rust-mpsc/" class="archive-article-date">
+
+        <!-- 发布日期 -->
+        
+        <a href="/2026/08/30/rust-mpsc/" class="archive-article-date">
   	<time datetime="2026-08-29T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-08-30</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2026/08/30/rust-mpsc/">Rust学习笔记 - mpsc与消息通信</a>
-    </h1>
-  
+        
+        <!-- 字数统计 -->
+        
+          <div style="margin-top:10px;">
+    <span class="post-time">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-keyboard-o"></i>
+        <span class="post-meta-item-text">  全文 ≈</span>
+        <span class="post-count">1.2k字</span>
+      </span>
+    </span>
 
-        <div class="article-info info-on-right">
-          
+    <span class="post-time">
+      &nbsp; | &nbsp;
+      <span class="post-meta-item-icon">
+        <i class="fa fa-hourglass-half"></i>
+        <span class="post-meta-item-text">  预计阅读时长</span>
+        <span class="post-count">5分钟</span>
+      </span>
+    </span>
+</div>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><code>mpsc</code> 是 <code>multiple producer, single consumer</code> 的缩写，表示多个发送端、一个接收端。它是一种常见的消息通信模型：多个地方可以把消息发送到同一个 channel 中，再由一个接收方按顺序取出并处理。</p>
+<h3 id="前言">前言</h3>
+<p>写服务端时，很多模块都可能需要给同一个客户端发消息。比如登录回包、消息广播、系统通知，甚至定时任务产生的推送。如果这些模块都直接操作连接对象，代码很容易碰到借用和并发访问的问题，连接本身也会变得难以维护。</p>
+<p>一种更自然的做法是，让连接只由一个地方持有，其他模块只负责投递消息，再由持有连接的任务统一写出。<code>mpsc</code> 适合解决的，正是这类“多处发送、单点处理”的通信问题。</p>
+<h3 id="标准库的-mpsc">标准库的 mpsc</h3>
+<p>先看一个简单的例子：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::sync::mpsc;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> (tx, rx) = mpsc::<span class="title function_ invoke__">channel</span>();</span><br><span class="line"></span><br><span class="line">    tx.<span class="title function_ invoke__">send</span>(<span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;hallo&quot;</span>)).<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">message</span> = rx.<span class="title function_ invoke__">recv</span>().<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;received: &#123;&#125;&quot;</span>, message);</span><br><span class="line">    <span class="comment">// received: hallo</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<p>上述例子 tx 是发送端，负责将消息放入 channel；rx 是接收端，负责从 channel 中取出消息。</p>
+<p>现在只需要对其稍加改造，就可以变成多发送端：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> (tx, rx) = mpsc::<span class="title function_ invoke__">channel</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="variable">login_tx</span> = tx.<span class="title function_ invoke__">clone</span>();</span><br><span class="line"><span class="keyword">let</span> <span class="variable">login_task</span> = thread::<span class="title function_ invoke__">spawn</span>(<span class="keyword">move</span> || &#123;</span><br><span class="line">    login_tx.<span class="title function_ invoke__">send</span>(<span class="string">&quot;logined&quot;</span>).<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="variable">notice_tx</span> = tx.<span class="title function_ invoke__">clone</span>();</span><br><span class="line"><span class="keyword">let</span> <span class="variable">notice_task</span> = thread::<span class="title function_ invoke__">spawn</span>(<span class="keyword">move</span> || &#123;</span><br><span class="line">    notice_tx.<span class="title function_ invoke__">send</span>(<span class="string">&quot;notice&quot;</span>).<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 释放主任务的发送端</span></span><br><span class="line"><span class="title function_ invoke__">drop</span>(tx);</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> <span class="variable">message</span> <span class="keyword">in</span> rx &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;received: &#123;&#125;&quot;</span>, message);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">login_task.<span class="title function_ invoke__">join</span>().<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">notice_task.<span class="title function_ invoke__">join</span>().<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出顺序不固定</span></span><br><span class="line"><span class="comment">// received: notice</span></span><br><span class="line"><span class="comment">// received: logined</span></span><br></pre></td></tr></table></figure>
+<p><code>tx.clone()</code> 得到的是一个新的发送端，它与原始的 <code>tx</code> 指向同一个 channel。它们分别被移动到不同的线程中，两个子线程的执行顺序由系统调度决定，因此无法保证哪一条消息先到达接收端。</p>
+<p>这里需要注意 <code>drop(tx)</code>。如果不释放它，原始的 <code>tx</code> 仍然存活于主线程，<code>rx</code> 会认为后续仍可能有新的消息到来，因此在队列为空后继续等待，<code>for</code> 循环也不会结束。</p>
+<h3 id="Tokio-中的-mpsc">Tokio 中的 mpsc</h3>
+<p>前面的示例使用的是标准库提供的 <code>std::sync::mpsc</code>。它的 <code>recv()</code> 会阻塞当前线程，适合普通的多线程程序。</p>
+<p>当前重写的服务端运行在 Tokio 异步运行时中，因此更多使用 <code>tokio::sync::mpsc</code>。当没有消息时，<code>recv().await</code> 会挂起当前异步任务，而不会阻塞运行时线程，其他任务仍可以继续执行。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> tokio::sync::mpsc;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[tokio::main]</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> (tx, <span class="keyword">mut</span> rx) = mpsc::<span class="title function_ invoke__">channel</span>(<span class="number">32</span>);</span><br><span class="line"></span><br><span class="line">    tokio::<span class="title function_ invoke__">spawn</span>(<span class="keyword">async</span> <span class="keyword">move</span> &#123;</span><br><span class="line">        tx.<span class="title function_ invoke__">send</span>(<span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;hallo&quot;</span>)).<span class="keyword">await</span>.<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">let</span> <span class="variable">Some</span>(message) = rx.<span class="title function_ invoke__">recv</span>().<span class="keyword">await</span> &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;received: &#123;&#125;&quot;</span>, message);</span><br><span class="line">        <span class="comment">// received: hallo</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>与标准库的 <code>mpsc::channel()</code> 一样，Tokio 的 <code>mpsc::channel()</code> 也会创建一对发送端和接收端。不同之处在于，发送和接收都可能需要等待，因此使用 <code>await</code>：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tx.<span class="title function_ invoke__">send</span>(message).<span class="keyword">await</span>;</span><br><span class="line">rx.<span class="title function_ invoke__">recv</span>().<span class="keyword">await</span>;</span><br></pre></td></tr></table></figure>
+<p><code>recv()</code> 需要可变借用接收端，因此 <code>rx</code> 必须声明为 <code>mut</code>。当 channel 关闭且其中的消息已全部被接收后，<code>rx.recv().await</code> 会返回 <code>None</code>。</p>
+<p>最大的不同在于消息队列：<code>mpsc::channel(32)</code> 中的 <code>32</code> 是队列容量。当队列满时，<code>tx.send(message).await</code> 会等待接收端取走消息后再继续发送。这种设计通过背压限制队列长度，避免未处理消息在 channel 中无限堆积。</p>
+<h3 id="在服务端中的应用实例">在服务端中的应用实例</h3>
+<p>前面通过 <code>mpsc</code> 将消息的发送和接收分开处理。在当前项目中，客户端数据由外层任务负责读取和处理；需要向客户端发送消息时，只需通过发送端投递即可。</p>
+<p>定义 <code>Agent</code> 用于统一处理待发送消息：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> tokio::sync::mpsc;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Agent</span> &#123;</span><br><span class="line">    out_rx: mpsc::UnboundedReceiver&lt;<span class="type">String</span>&gt;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">Agent</span> &#123;</span><br><span class="line">    <span class="keyword">async</span> <span class="keyword">fn</span> <span class="title function_">run</span>(<span class="keyword">mut</span> <span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="keyword">while</span> <span class="keyword">let</span> <span class="variable">Some</span>(message) = <span class="keyword">self</span>.out_rx.<span class="title function_ invoke__">recv</span>().<span class="keyword">await</span> &#123;</span><br><span class="line">            <span class="comment">// 实际项目中，这里将消息写入客户端连接。</span></span><br><span class="line">            <span class="built_in">println!</span>(<span class="string">&quot;sent: &#123;&#125;&quot;</span>, message);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">handle</span>(message: &amp;<span class="type">str</span>, out_tx: &amp;mpsc::UnboundedSender&lt;<span class="type">String</span>&gt;) &#123;</span><br><span class="line">    <span class="keyword">match</span> message &#123;</span><br><span class="line">        <span class="string">&quot;login&quot;</span> =&gt; &#123;</span><br><span class="line">            out_tx.<span class="title function_ invoke__">send</span>(<span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;logined&quot;</span>)).<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        _ =&gt; &#123;</span><br><span class="line">            out_tx.<span class="title function_ invoke__">send</span>(<span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;unknown&quot;</span>)).<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[tokio::main]</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> (out_tx, out_rx) = mpsc::unbounded_channel::&lt;<span class="type">String</span>&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">agent</span> = Agent &#123; out_rx &#125;;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">agent_task</span> = tokio::<span class="title function_ invoke__">spawn</span>(agent.<span class="title function_ invoke__">run</span>());</span><br><span class="line"></span><br><span class="line">    <span class="title function_ invoke__">handle</span>(<span class="string">&quot;login&quot;</span>, &amp;out_tx);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 释放主任务的发送端</span></span><br><span class="line">    <span class="title function_ invoke__">drop</span>(out_tx);</span><br><span class="line"></span><br><span class="line">    agent_task.<span class="keyword">await</span>.<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>与前面的 <code>mpsc::channel(32)</code> 相比，<code>unbounded_channel()</code> 不限制消息队列的容量，发送消息时也不需要 <code>.await</code>。</p>
+<h3 id="最后">最后</h3>
+<p>实际业务中的 <code>Agent</code> 往往还需要处理连接状态、用户信息和协议编解码等问题；这里仅关注它通过 <code>mpsc</code> 统一处理出站消息的部分。</p>
+<p>至于 Tokio 异步运行时如何驱动 <code>Future</code>、任务如何被唤醒并重新调度，后续再继续学习（埋坑233）。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -227,342 +280,145 @@ var _hmt = _hmt || [];
 		</ul>
 	</div>
 
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2026/08/23/rust-arc-mutex-rwlock-refcell/" class="archive-article-date">
-  	<time datetime="2026-08-22T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-08-23</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2026/08/23/rust-arc-mutex-rwlock-refcell/">Rust学习笔记 - Arc、RwLock、Mutex及RefCell区别</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rust</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2026/06/07/ds-algos-deque/" class="archive-article-date">
-  	<time datetime="2026-06-06T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-06-07</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2026/06/07/ds-algos-deque/">数据结构与算法 - Deque</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">data structures</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2026/05/21/ds-algos-rvo/" class="archive-article-date">
-  	<time datetime="2026-05-20T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-05-21</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2026/05/21/ds-algos-rvo/">数据结构与算法 - RVO</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">data structures</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2026/05/10/rust-tokio-axum/" class="archive-article-date">
-  	<time datetime="2026-05-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-05-10</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2026/05/10/rust-tokio-axum/">Rust学习笔记 - Axum</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rust</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2026/01/14/reverse-cocos2djs/" class="archive-article-date">
-  	<time datetime="2026-01-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-01-14</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2026/01/14/reverse-cocos2djs/">逆向学习笔记 - Cocos2d JS逆向提取资源</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">reverse engineering</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
       
-        </div></section>
+
       
+
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2025" class="archive-year">2025</a>
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2025/12/30/ds-algos-dag/" class="archive-article-date">
-  	<time datetime="2025-12-29T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2025-12-30</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2025/12/30/ds-algos-dag/">数据结构与算法 - DAG</a>
-    </h1>
-  
+      </div>
+    </span>
+  </div>
+</div>
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">data structures</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
-        		</li>
-      		
-		</ul>
-	</div>
+<div class="page-modal wx-share js-wx-box">
+  <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+  <p>扫一扫，分享到微信</p>
+  <div class="wx-qrcode">
+    <img src="https://api.pwmqr.com/qrcode/create/?url=http://xupin.im/2026/08/30/rust-mpsc/" alt="微信分享二维码">
+  </div>
+</div>
 
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2025/05/22/ds-algos-p2c/" class="archive-article-date">
-  	<time datetime="2025-05-21T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2025-05-22</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2026/08/23/rust-arc-mutex-rwlock-refcell/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Rust学习笔记 - Arc、RwLock、Mutex及RefCell区别</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3201242774373382"
+     crossorigin="anonymous"></script>
+  <!-- 文章广告 -->
+  <ins class="adsbygoogle"
+      style="display:block"
+      data-ad-client="ca-pub-3201242774373382"
+      data-ad-slot="3704842143"
+      data-ad-format="auto"
+      data-full-width-responsive="true"></ins>
+  <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2025/05/22/ds-algos-p2c/">数据结构与算法 - Power of Two Choices</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">data structures</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%87%E5%87%86%E5%BA%93%E7%9A%84-mpsc"><span class="toc-number">2.</span> <span class="toc-text">标准库的 mpsc</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Tokio-%E4%B8%AD%E7%9A%84-mpsc"><span class="toc-number">3.</span> <span class="toc-text">Tokio 中的 mpsc</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8%E5%AE%9E%E4%BE%8B"><span class="toc-number">4.</span> <span class="toc-text">在服务端中的应用实例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E5%90%8E"><span class="toc-number">5.</span> <span class="toc-text">最后</span></a></li></ol>
+                    </div>
+                </span>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
+        
+    </div>
+</aside>
+
+
   
 
-    
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/tags/develop/page/2/">2</a><a class="page-number" href="/tags/develop/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/tags/develop/page/9/">9</a><a class="extend next" rel="next" href="/tags/develop/page/2/">Next &raquo;</a>
-    </nav>
+  
+  <div id="gitalk-container" style="padding: 0px 30px 0px 30px;"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    if (true) {
+        var gitalk = new Gitalk({
+            clientID: 'e3e84fb1a50e16e66f89',
+            clientSecret: '5690def96adce57dd5993ec671c2413afd60aa41',
+            repo: 'xupin.github.io',
+            owner: 'xupin',
+            admin: ['xupin'],
+            id: 'Rust学习笔记 - mpsc与消息通信',
+            distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')
+    }
+</script>
+  
+
+  
+
   
 
 
@@ -586,9 +442,9 @@ var _hmt = _hmt || [];
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
