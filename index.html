@@ -184,6 +184,111 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-rust-async-runtime" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <!-- 标题 -->
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2026/09/02/rust-async-runtime/">Rust学习笔记 - Future、Waker 与异步任务调度</a>
+    </h1>
+  
+
+        <!-- 发布日期 -->
+        
+        <a href="/2026/09/02/rust-async-runtime/" class="archive-article-date">
+  	<time datetime="2026-09-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-09-02</time>
+</a>
+        
+        <!-- 字数统计 -->
+        
+          <div style="margin-top:10px;">
+    <span class="post-time">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-keyboard-o"></i>
+        <span class="post-meta-item-text">  全文 ≈</span>
+        <span class="post-count">1.7k字</span>
+      </span>
+    </span>
+
+    <span class="post-time">
+      &nbsp; | &nbsp;
+      <span class="post-meta-item-icon">
+        <i class="fa fa-hourglass-half"></i>
+        <span class="post-meta-item-text">  预计阅读时长</span>
+        <span class="post-count">7分钟</span>
+      </span>
+    </span>
+</div>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>异步任务可以理解成一段能够暂停和继续执行的代码。在 Rust 中任务的暂停和恢复，主要和 <code>Future</code>、<code>poll</code>、<code>Waker</code> 这些概念有关。</p>
+<h3 id="前言">前言</h3>
+<p>很多语言都提供了异步编程的能力，本质上就是在“等结果”的这段时间里，不让线程白白挂住。像 C# 里有 <code>Task</code> 和 <code>async/await</code>，JavaScript 里有 <code>Promise</code> 和 <code>async/await</code>，目的都差不多，就是想让异步逻辑写起来不要那么蛋疼。</p>
+<p>Rust 也有 <code>async/await</code>，但它背后的实现思路和其他语言不完全一样。比如下面这个异步函数：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">fn</span> <span class="title function_">hallo</span>() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;hallo&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>调用 <code>hallo()</code> 时，并不会立刻执行完整个函数，而是先返回一个 <code>Future</code>。</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rust</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2026/09/02/rust-async-runtime/">More >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-rust-mpsc" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -192,7 +297,7 @@ var _hmt = _hmt || [];
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2026/08/30/rust-mpsc/">Rust学习笔记 - mpsc与消息通信</a>
+      <a class="article-title" href="/2026/08/30/rust-mpsc/">Rust学习笔记 - mpsc 与消息通信</a>
     </h1>
   
 
@@ -298,7 +403,7 @@ var _hmt = _hmt || [];
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2026/08/23/rust-arc-mutex-rwlock-refcell/">Rust学习笔记 - Arc、RwLock、Mutex及RefCell区别</a>
+      <a class="article-title" href="/2026/08/23/rust-arc-mutex-rwlock-refcell/">Rust学习笔记 - Arc、RwLock、Mutex 及 RefCell 的区别</a>
     </h1>
   
 
@@ -910,115 +1015,6 @@ var _hmt = _hmt || [];
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2025/12/30/ds-algos-dag/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-ds-algos-p2c" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2025/05/22/ds-algos-p2c/">数据结构与算法 - Power of Two Choices</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2025/05/22/ds-algos-p2c/" class="archive-article-date">
-  	<time datetime="2025-05-21T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2025-05-22</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">389字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">1分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>两次随机选择法（Power of Two Choices，简称 P2C）是一种高效的负载均衡算法。</p>
-<h3 id="背景">背景</h3>
-<p>实现连接池负载均衡</p>
-<h3 id="实现思路">实现思路</h3>
-<p>连接池</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> ConnPool <span class="keyword">struct</span> &#123;</span><br><span class="line">    conns []*conn</span><br><span class="line">    i     <span class="type">uint32</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> conn <span class="keyword">struct</span> &#123;</span><br><span class="line">    clientConn *grpc.ClientConn</span><br><span class="line">    streams    <span class="type">int32</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">data structures</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2025/05/22/ds-algos-p2c/">More >></a>
         </p>
       
 

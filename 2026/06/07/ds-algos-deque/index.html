@@ -20,7 +20,7 @@
 <meta property="og:image" content="http://xupin.im/assets/deque/multi-queue.png">
 <meta property="og:image" content="http://xupin.im/assets/deque/deque.png">
 <meta property="article:published_time" content="2026-06-06T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-06-09T10:11:58.951Z">
+<meta property="article:modified_time" content="2026-09-03T06:18:22.457Z">
 <meta property="article:author" content="Mark">
 <meta property="article:tag" content="develop">
 <meta property="article:tag" content="data structures">
@@ -261,7 +261,7 @@ var _hmt = _hmt || [];
 <li>worker A 和 worker B 会更频繁地竞争同一批任务，增加同步开销。</li>
 <li>worker A 可能拿到 worker B 即将处理的任务，从而进一步加剧访问冲突。</li>
 </ol>
-<p>如果可以从两端分别访问队列，就可以在一定程度上缓解这个问题：worker B 作为队列所有者，继续从尾部压入和消费本地任务；worker A 作为窃取者，则从头部窃取较早进入队列的任务。</p>
+<p>如果可以从两端分别访问队列，就可以在一定程度上缓解这个问题：worker B 作为队列所有者，继续从尾部压入和消费本地任务，worker A 作为窃取者，则从头部窃取较早进入队列的任务。</p>
 <p>也就是说，“主人”和“窃贼”对于同一个队列的访问方向并不一样。可以用访问模式来概括：</p>
 <blockquote>
 <p>Owner: LIFO</p>
@@ -435,7 +435,7 @@ push_back -&gt; pop_back</p>
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          Rust学习笔记 - Arc、RwLock、Mutex及RefCell区别
+          Rust学习笔记 - Arc、RwLock、Mutex 及 RefCell 的区别
         
       </div>
     </a>

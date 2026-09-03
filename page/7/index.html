@@ -184,6 +184,119 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-go-goroutine" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <!-- 标题 -->
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/06/12/go-goroutine/">Go学习笔记 - goroutine</a>
+    </h1>
+  
+
+        <!-- 发布日期 -->
+        
+        <a href="/2020/06/12/go-goroutine/" class="archive-article-date">
+  	<time datetime="2020-06-11T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-12</time>
+</a>
+        
+        <!-- 字数统计 -->
+        
+          <div style="margin-top:10px;">
+    <span class="post-time">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-keyboard-o"></i>
+        <span class="post-meta-item-text">  全文 ≈</span>
+        <span class="post-count">2.4k字</span>
+      </span>
+    </span>
+
+    <span class="post-time">
+      &nbsp; | &nbsp;
+      <span class="post-meta-item-icon">
+        <i class="fa fa-hourglass-half"></i>
+        <span class="post-meta-item-text">  预计阅读时长</span>
+        <span class="post-count">8分钟</span>
+      </span>
+    </span>
+</div>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在现在大数据、高并发，到处都充斥着流量的互联网时代，能不能应对高并发俨然已经发展成一个衡量服务端架构是否合格的标准，作为程序媛我们思考如何利用语言在代码层面最优设计能应对并发的程序去并行处理任务。在程序中对于任务并行处理一般趋于使用：进程、线程，以及另外一种：<code>协程</code>。支持协程的语言有很多，比如：C/C++、Ruby、 Python（2.5+）、Golang等等，它们有些是本身语言支持协程，有些则是需要引入第三方包来使用。不过，我们主要来学习一下Golang这门语言（简称Go），它是如何理解以及实现协程的。</p>
+<h3 id="一、进程、线程和协程的前世今生">一、进程、线程和协程的前世今生</h3>
+<p>都知道一台计算机的核心是CPU，它承担着所有的运算。而计算机承载的操作系统（内核）则是负责所有任务的处理和调度CPU以及资源的分配。如果用人类来比喻，大脑是CPU，思维则是操作系统（内核）。</p>
+<h4 id="进程">进程</h4>
+<p>最早的计算机每次只能运行一个程序，如果还有其他程序需要执行则要排队等待。后来CPU运算能力提高了，这种方式过于原始有些浪费性能，于是尝试让多个程序可以并行执行，但是这样面临一个新的问题：跑在同一个CPU中的程序都会使用计算机资源，那程序的运行状态和数据怎么保障？<code>进程</code>。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">进程是内核资源管理分配的最小单位，每个进程都有独立的虚拟地址空间。内核中的每个程序都运行在独立进程的上下文中，上下文是由程序正常运行需要的一系列参数组成，参数包括存储器中的代码和数据，寄存器中的内容以及进程打开的文件描述符（文件句柄）等。可以把上下文通俗理解为：`环境`。</span><br></pre></td></tr></table></figure>
+<p>如果程序在运行过程中需要进行IO操作，IO操作阻塞了程序后面的计算，这时候CPU属于空闲状态，那内核会把CPU切换到其他进程去处理。不过当进程数量变高以后，计算机的大部分资源都被进程切换这个操作消耗掉了。为什么说进程切换操作消耗资源代价比较高？</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">所谓进程切换其实就是上下文切换，需要切换新的页表并加载新的虚拟地址空间、切换内核栈以及硬件上下文等。只要发生进程切换操作就得反复进入内核，加载切换一系列状态。</span><br></pre></td></tr></table></figure>
+<h4 id="线程">线程</h4>
+<p>为了减少这种开销，<code>线程</code>应运而生。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">线程是内核调度CPU执行的最小单位，线程是运行在进程上下文的逻辑流，线程是具体执行程序的单位。一个进程至少包含一个主线程（可以拥有多个子线程），但是一个线程只能存在于一个进程中。</span><br></pre></td></tr></table></figure>
+<p>线程切换相比进程切换开销就小了很多，线程切换只需要把寄存器刷新即可。</p>
+<h4 id="协程">协程</h4>
+<p>后面程序媛们发现线程这样还是有性能瓶颈（IO阻塞），无论是进程还是线程因为涉及到大量的计算机资源，所以都是由内核调度管理。能不能开发一种由代码控制的线程呢？这就是<code>协程</code>。</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">goroutine</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/06/12/go-goroutine/">More >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-mysql-trick" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1006,125 +1119,6 @@ var _hmt = _hmt || [];
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2020/03/18/mysql-lru/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-mysql-int-length" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/03/15/mysql-int-length/">Mysql学习笔记 - Int长度的问题</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2020/03/15/mysql-int-length/" class="archive-article-date">
-  	<time datetime="2020-03-15T11:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-15</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">409字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">1分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>创建数据表的时候我们总是要考虑存储数据的字段该用哪种类型、多少长度比较合适，不过在Mysql中如果字段类型是Int，此时长度是不生效的。</p>
-<h3 id="1-Int类型的长度问题">1.Int类型的长度问题</h3>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `test` (</span><br><span class="line">  `id` int(3) NOT NULL,</span><br><span class="line">  `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,</span><br><span class="line">  PRIMARY KEY (`id`)</span><br><span class="line">) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci</span><br></pre></td></tr></table></figure>
-<p>有这样一张表，<code>id</code>是Int类型长度3的字段，那么理论上是不能存储长度超过3的值，比如：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO `test`(`id`, `name`) VALUES (1000000, &#x27;name&#x27;);</span><br></pre></td></tr></table></figure>
-<p>不过结果是意外的，这条数据可以正常写入。</p>
-<h3 id="2-Int类型的长度为什么不生效">2.Int类型的长度为什么不生效</h3>
-<p>翻了一下Mysql的<a href="https://dev.mysql.com/doc/refman/5.6/en/data-types.html">数据类型文档</a>，发现这么一句话：</p>
-<blockquote>
-<p>对于整数类型，M表示最大显示宽度。 对于浮点和定点类型，M是可以存储的总位数（精度）。 对于字符串类型，M是最大长度。 M的最大允许值取决于数据类型。</p>
-</blockquote>
-<p>所以这个Int类型的“长度”其实叫宽度，也可以理解为显示长度。</p>
-<h3 id="3-如果存储的数据长度低于显示宽度会怎样？">3.如果存储的数据长度低于显示宽度会怎样？</h3>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO `test`(`id`, `name`) VALUES (1, &#x27;name&#x27;);</span><br></pre></td></tr></table></figure>
-<p>当然是可以写入的，但是好像并没有什么特别的不一样，不过我们再执行一条SQL</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE `test` MODIFY COLUMN `id` int(3) UNSIGNED ZEROFILL;</span><br></pre></td></tr></table></figure>
-<p>这次数据产生变化了，变成了这样</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">id      |   name</span><br><span class="line">001     |   name</span><br><span class="line">1000000 |   name</span><br></pre></td></tr></table></figure>
-<h3 id="4-为什么要设计显示宽度？">4.为什么要设计显示宽度？</h3>
-<p>我也没有得出明确的答案，和小伙伴讨论这个问题~ta觉得是为了方便<code>排序</code>，你觉得呢？</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">mysql int length</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/03/15/mysql-int-length/">More >></a>
         </p>
       
 

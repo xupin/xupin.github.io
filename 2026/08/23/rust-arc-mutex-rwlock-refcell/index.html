@@ -6,17 +6,17 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://xupin.im">
-  <title>Rust学习笔记 - Arc、RwLock、Mutex及RefCell区别 | Mark&#39;s blog</title>
+  <title>Rust学习笔记 - Arc、RwLock、Mutex 及 RefCell 的区别 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="最近在使用 Rust 重写一些老项目时，经常会碰到 Arc、RwLock、Mutex 以及 RefCell 这些类型。它们都和“共享”或“可变”有关，这里简单整理一下它们的区别和常见使用场景。 前言 假设现在设计一个在线用户管理模块，并且需要支持通过编号获取对应的用户实例，看起来这个需求不复杂，但如果再往前走一步，就会发现后面很快会碰到共享所有权和内部状态修改的问题。 先看一个最简单的版本： 12">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Rust学习笔记 - Arc、RwLock、Mutex及RefCell区别">
+<meta property="og:title" content="Rust学习笔记 - Arc、RwLock、Mutex 及 RefCell 的区别">
 <meta property="og:url" content="http://xupin.im/2026/08/23/rust-arc-mutex-rwlock-refcell/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
 <meta property="og:description" content="最近在使用 Rust 重写一些老项目时，经常会碰到 Arc、RwLock、Mutex 以及 RefCell 这些类型。它们都和“共享”或“可变”有关，这里简单整理一下它们的区别和常见使用场景。 前言 假设现在设计一个在线用户管理模块，并且需要支持通过编号获取对应的用户实例，看起来这个需求不复杂，但如果再往前走一步，就会发现后面很快会碰到共享所有权和内部状态修改的问题。 先看一个最简单的版本： 12">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2026-08-22T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-08-25T09:04:41.144Z">
+<meta property="article:modified_time" content="2026-09-01T05:40:42.312Z">
 <meta property="article:author" content="Mark">
 <meta property="article:tag" content="develop">
 <meta property="article:tag" content="rust">
@@ -193,7 +193,7 @@ var _hmt = _hmt || [];
         
   
     <h1 class="article-title" itemprop="name">
-      Rust学习笔记 - Arc、RwLock、Mutex及RefCell区别
+      Rust学习笔记 - Arc、RwLock、Mutex 及 RefCell 的区别
     </h1>
   
 
@@ -370,7 +370,7 @@ var _hmt = _hmt || [];
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          Rust学习笔记 - mpsc与消息通信
+          Rust学习笔记 - mpsc 与消息通信
         
       </div>
     </a>
@@ -440,7 +440,7 @@ var _hmt = _hmt || [];
             repo: 'xupin.github.io',
             owner: 'xupin',
             admin: ['xupin'],
-            id: 'Rust学习笔记 - Arc、RwLock、Mutex及RefCell区别',
+            id: 'Rust学习笔记 - Arc、RwLock、Mutex 及 RefCell 的区别',
             distractionFreeMode: 'true'
         })
         gitalk.render('gitalk-container')

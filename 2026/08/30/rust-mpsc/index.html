@@ -6,17 +6,17 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://xupin.im">
-  <title>Rust学习笔记 - mpsc与消息通信 | Mark&#39;s blog</title>
+  <title>Rust学习笔记 - mpsc 与消息通信 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="mpsc 是 multiple producer, single consumer 的缩写，表示多个发送端、一个接收端。它是一种常见的消息通信模型：多个地方可以把消息发送到同一个 channel 中，再由一个接收方按顺序取出并处理。 前言 写服务端时，很多模块都可能需要给同一个客户端发消息。比如登录回包、消息广播、系统通知，甚至定时任务产生的推送。如果这些模块都直接操作连接对象，代码很容易碰到借用">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Rust学习笔记 - mpsc与消息通信">
+<meta property="og:title" content="Rust学习笔记 - mpsc 与消息通信">
 <meta property="og:url" content="http://xupin.im/2026/08/30/rust-mpsc/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
 <meta property="og:description" content="mpsc 是 multiple producer, single consumer 的缩写，表示多个发送端、一个接收端。它是一种常见的消息通信模型：多个地方可以把消息发送到同一个 channel 中，再由一个接收方按顺序取出并处理。 前言 写服务端时，很多模块都可能需要给同一个客户端发消息。比如登录回包、消息广播、系统通知，甚至定时任务产生的推送。如果这些模块都直接操作连接对象，代码很容易碰到借用">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2026-08-29T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-08-31T06:00:11.116Z">
+<meta property="article:modified_time" content="2026-09-03T06:19:22.155Z">
 <meta property="article:author" content="Mark">
 <meta property="article:tag" content="develop">
 <meta property="article:tag" content="rust">
@@ -193,7 +193,7 @@ var _hmt = _hmt || [];
         
   
     <h1 class="article-title" itemprop="name">
-      Rust学习笔记 - mpsc与消息通信
+      Rust学习笔记 - mpsc 与消息通信
     </h1>
   
 
@@ -236,7 +236,7 @@ var _hmt = _hmt || [];
 <p>先看一个简单的例子：</p>
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::sync::mpsc;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> (tx, rx) = mpsc::<span class="title function_ invoke__">channel</span>();</span><br><span class="line"></span><br><span class="line">    tx.<span class="title function_ invoke__">send</span>(<span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;hallo&quot;</span>)).<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">message</span> = rx.<span class="title function_ invoke__">recv</span>().<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;received: &#123;&#125;&quot;</span>, message);</span><br><span class="line">    <span class="comment">// received: hallo</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <span id="more"></span>
-<p>上述例子 tx 是发送端，负责将消息放入 channel；rx 是接收端，负责从 channel 中取出消息。</p>
+<p>上述例子中，tx 是发送端，负责将消息放入 channel。rx 是接收端，负责从 channel 中取出消息。</p>
 <p>现在只需要对其稍加改造，就可以变成多发送端：</p>
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> (tx, rx) = mpsc::<span class="title function_ invoke__">channel</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="variable">login_tx</span> = tx.<span class="title function_ invoke__">clone</span>();</span><br><span class="line"><span class="keyword">let</span> <span class="variable">login_task</span> = thread::<span class="title function_ invoke__">spawn</span>(<span class="keyword">move</span> || &#123;</span><br><span class="line">    login_tx.<span class="title function_ invoke__">send</span>(<span class="string">&quot;logined&quot;</span>).<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="variable">notice_tx</span> = tx.<span class="title function_ invoke__">clone</span>();</span><br><span class="line"><span class="keyword">let</span> <span class="variable">notice_task</span> = thread::<span class="title function_ invoke__">spawn</span>(<span class="keyword">move</span> || &#123;</span><br><span class="line">    notice_tx.<span class="title function_ invoke__">send</span>(<span class="string">&quot;notice&quot;</span>).<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 释放主任务的发送端</span></span><br><span class="line"><span class="title function_ invoke__">drop</span>(tx);</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> <span class="variable">message</span> <span class="keyword">in</span> rx &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;received: &#123;&#125;&quot;</span>, message);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">login_task.<span class="title function_ invoke__">join</span>().<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">notice_task.<span class="title function_ invoke__">join</span>().<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出顺序不固定</span></span><br><span class="line"><span class="comment">// received: notice</span></span><br><span class="line"><span class="comment">// received: logined</span></span><br></pre></td></tr></table></figure>
 <p><code>tx.clone()</code> 得到的是一个新的发送端，它与原始的 <code>tx</code> 指向同一个 channel。它们分别被移动到不同的线程中，两个子线程的执行顺序由系统调度决定，因此无法保证哪一条消息先到达接收端。</p>
@@ -344,9 +344,18 @@ var _hmt = _hmt || [];
   
 <nav id="article-nav">
   
+    <a href="/2026/09/02/rust-async-runtime/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Rust学习笔记 - Future、Waker 与异步任务调度
+        
+      </div>
+    </a>
+  
   
     <a href="/2026/08/23/rust-arc-mutex-rwlock-refcell/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Rust学习笔记 - Arc、RwLock、Mutex及RefCell区别</div>
+      <div class="article-nav-title">Rust学习笔记 - Arc、RwLock、Mutex 及 RefCell 的区别</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -409,7 +418,7 @@ var _hmt = _hmt || [];
             repo: 'xupin.github.io',
             owner: 'xupin',
             admin: ['xupin'],
-            id: 'Rust学习笔记 - mpsc与消息通信',
+            id: 'Rust学习笔记 - mpsc 与消息通信',
             distractionFreeMode: 'true'
         })
         gitalk.render('gitalk-container')
