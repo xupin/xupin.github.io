@@ -6,17 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://xupin.im">
-  <title>Mark&#39;s blog</title>
+  <title>Rust学习笔记 - Pin 与不可移动值 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="安静的小屁屁">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Mark&#39;s blog">
-<meta property="og:url" content="http://xupin.im/index.html">
+  <meta name="description" content="在「Rust学习笔记 - Future、Waker 与异步任务调度」中实现异步任务执行器 block_on 时，用到了 Pin 来保证某些值在内存中不被移动，想着展开学习一下。 什么是值的移动 Rust 中的值默认可以移动。移动通常发生在赋值、传参和从函数返回时，例如： 12345let name &#x3D; String::from(&quot;hallo&quot;);let other &#x3D; name">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust学习笔记 - Pin 与不可移动值">
+<meta property="og:url" content="http://xupin.im/2026/09/13/rust-pin/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="安静的小屁屁">
+<meta property="og:description" content="在「Rust学习笔记 - Future、Waker 与异步任务调度」中实现异步任务执行器 block_on 时，用到了 Pin 来保证某些值在内存中不被移动，想着展开学习一下。 什么是值的移动 Rust 中的值默认可以移动。移动通常发生在赋值、传参和从函数返回时，例如： 12345let name &#x3D; String::from(&quot;hallo&quot;);let other &#x3D; name">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-09-12T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-09-14T06:44:12.989Z">
 <meta property="article:author" content="Mark">
-<meta property="article:tag" content="nginx,php,golang,memcached,redis,mysql,mariadb,php7,前端,js,jquery,javascript,html5,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验">
+<meta property="article:tag" content="develop">
+<meta property="article:tag" content="rust">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
@@ -182,17 +185,15 @@ var _hmt = _hmt || [];
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-rust-pin" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-rust-pin" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         <!-- 标题 -->
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2026/09/13/rust-pin/">Rust学习笔记 - Pin 与不可移动值</a>
+    <h1 class="article-title" itemprop="name">
+      Rust学习笔记 - Pin 与不可移动值
     </h1>
   
 
@@ -232,7 +233,48 @@ var _hmt = _hmt || [];
 <p>Rust 中的值默认可以移动。移动通常发生在赋值、传参和从函数返回时，例如：</p>
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">name</span> = <span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;hallo&quot;</span>);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">other</span> = name;</span><br><span class="line"></span><br><span class="line"><span class="comment">// println!(&quot;&#123;&#125;&quot;, name); // error: borrow of moved value: `name`</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>, other);</span><br></pre></td></tr></table></figure>
 <p>这里不是把 <code>String</code> 中的文本复制了一份。<code>name</code> 持有的值被转移给 <code>other</code>，之后也不能再通过 <code>name</code> 访问它。对于 <code>String</code> 这类普通类型，移动通常不需要关心它在内存中的具体位置。只要所有权完成转移，内部管理的堆内存仍然可以正常释放和访问。</p>
-        
+<span id="more"></span>
+<p>不过，Rust 并不保证值在移动前后位于同一个内存地址。看下面的代码：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">value</span> = <span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;hallo&quot;</span>);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">old_address</span> = &amp;value <span class="keyword">as</span> *<span class="keyword">const</span> <span class="type">String</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="variable">other</span> = value;</span><br><span class="line"><span class="keyword">let</span> <span class="variable">new_address</span> = &amp;other <span class="keyword">as</span> *<span class="keyword">const</span> <span class="type">String</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;:p&#125;&quot;</span>, old_address);</span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;:p&#125;&quot;</span>, new_address);</span><br></pre></td></tr></table></figure>
+<p>多数时候，内存地址变化不会造成问题。但有些值的内部状态依赖自身所在的内存地址，如果值在不合适的时机被移动，原本成立的约束就可能被破坏。</p>
+<h3 id="什么样的值不能随意移动">什么样的值不能随意移动</h3>
+<p>有些值会在内部保存指向自身字段的指针，这类值一旦建立了内部指针，之后就不能再随意移动。</p>
+<p>例如，下面的 <code>Line</code> 除了保存文本，还想保存一个指向自身 <code>text</code> 字段的指针：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Line</span> &#123;</span><br><span class="line">    text: <span class="type">String</span>,</span><br><span class="line">    text_ptr: *<span class="keyword">const</span> <span class="type">String</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>假设 <code>Line</code> 位于地址 A，<code>text</code> 字段位于这块内存中的某个位置。初始化后，<code>text_ptr</code> 保存的就是这个 <code>text</code> 字段的地址。</p>
+<p>如果整个 <code>Line</code> 被移动到地址 B，<code>text</code> 字段也会随之移动到地址 B 对应的位置，但 <code>text_ptr</code> 仍然保存旧地址 A 中 <code>text</code> 的位置。此时，它不再指向当前 <code>Line</code> 中的 <code>text</code>，原本建立的内部指针就失效了。</p>
+<h3 id="Pin-如何限制移动">Pin 如何限制移动</h3>
+<p><code>Pin</code> 可以理解成一个带有额外约束的指针。它包住的不是值本身，而是一个指向值的指针：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Pin&lt;P&gt;</span><br></pre></td></tr></table></figure>
+<p>其中 <code>P</code> 是 <code>&amp;mut T</code>、<code>Box&lt;T&gt;</code> 这类指针类型，<code>Pin</code> 要约束的是指针指向的值。</p>
+<p>例如：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::pin::Pin;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="variable">value</span> = <span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;hallo&quot;</span>);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">pinned</span>: Pin&lt;<span class="type">Box</span>&lt;<span class="type">String</span>&gt;&gt; = <span class="type">Box</span>::<span class="title function_ invoke__">pin</span>(value);</span><br></pre></td></tr></table></figure>
+<p>被 <code>Pin</code> 固定的是 <code>Box</code> 指向的 <code>String</code>，而不是 <code>Box</code> 本身。<code>Box</code> 只是保存堆地址的指针，它仍然可以被移动：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">pinned</span> = <span class="type">Box</span>::<span class="title function_ invoke__">pin</span>(<span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;hallo&quot;</span>));</span><br><span class="line"><span class="keyword">let</span> <span class="variable">other</span> = pinned;</span><br></pre></td></tr></table></figure>
+<p>这里移动的是 <code>Pin&lt;Box&lt;String&gt;&gt;</code> 这个指针对象，<code>other</code> 仍然指向原来那块堆内存。</p>
+<p>值得注意的是，<code>String</code> 实现了 <code>Unpin</code>，即使被包在 <code>Pin&lt;Box&lt;String&gt;&gt;</code> 中，也仍然可以安全移动。<code>Pin</code> 的限制主要针对 <code>!Unpin</code> 类型：<code>Pin&lt;&amp;mut T&gt;</code> 不会直接提供普通的 <code>&amp;mut T</code>，否则调用方就可能通过赋值或 <code>std::mem::replace</code> 将值移动出去。</p>
+<p><code>Pin</code> 限制的是安全代码的访问方式，不是在内存层面强行禁止移动。<code>unsafe</code> 代码仍然可以绕过限制，但调用方必须自行保证不移动已经固定的 <code>!Unpin</code> 值，否则依赖原地址的内部指针或引用可能失效，进而导致未定义行为。</p>
+<h3 id="Unpin-是什么">Unpin 是什么</h3>
+<p><code>Unpin</code> 是一个自动特型，大多数普通类型都实现了它，例如整型、<code>String</code> 和 <code>Vec&lt;T&gt;</code>。</p>
+<p>实现 <code>Unpin</code> 表示这个类型的值即使被移动，也不会破坏类型自身的约束。当 <code>T: Unpin</code> 时，<code>Pin&lt;&amp;mut T&gt;</code> 可以安全地转换回普通的 <code>&amp;mut T</code>。相反，<code>!Unpin</code> 表示这个类型可能存在依赖内存地址的状态。对于已经固定的 <code>!Unpin</code> 值，安全代码不能再将它整体移动出去。</p>
+<p><code>!Unpin</code> 的示例：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">PinnedLine</span> &#123;</span><br><span class="line">    _pin: PhantomPinned,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">line</span> = <span class="type">Box</span>::<span class="title function_ invoke__">pin</span>(PinnedLine &#123;</span><br><span class="line">    _pin: PhantomPinned,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="variable">pinned</span>: Pin&lt;&amp;<span class="keyword">mut</span> PinnedLine&gt; = line.<span class="title function_ invoke__">as_mut</span>();</span><br><span class="line"><span class="comment">// let line: &amp;mut PinnedLine = pinned.get_mut(); // error: `PhantomPinned` cannot be unpinned</span></span><br></pre></td></tr></table></figure>
+<p><code>line.as_mut()</code> 可以得到 <code>Pin&lt;&amp;mut PinnedLine&gt;</code>，因为这个操作不会移动 <code>PinnedLine</code>。但 <code>pinned.get_mut()</code> 需要 <code>PinnedLine: Unpin</code>。由于 <code>PinnedLine</code> 包含 <code>PhantomPinned</code>，它没有实现 <code>Unpin</code>，因此不能安全地取得普通的 <code>&amp;mut PinnedLine</code>。</p>
+<h3 id="Future-中的-Pin">Future 中的 Pin</h3>
+<p><code>Future</code> 特型中的 <code>poll</code> 方法，接收的不是普通的 <code>&amp;mut self</code>，而是 <code>Pin&lt;&amp;mut Self&gt;</code>：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">trait</span> <span class="title class_">Future</span> &#123;</span><br><span class="line">    <span class="keyword">type</span> <span class="title class_">Output</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">poll</span>(</span><br><span class="line">        <span class="keyword">self</span>: Pin&lt;&amp;<span class="keyword">mut</span> <span class="keyword">Self</span>&gt;,</span><br><span class="line">        cx: &amp;<span class="keyword">mut</span> Context&lt;<span class="symbol">&#x27;_</span>&gt;,</span><br><span class="line">    ) <span class="punctuation">-&gt;</span> Poll&lt;<span class="keyword">Self</span>::Output&gt;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这是因为某些 <code>Future</code> 在执行过程中可能会进入依赖自身内存地址的状态。比如 <code>async fn</code> 编译后会生成一个状态机，用来保存 <code>.await</code> 前后的局部变量和执行位置。当这个状态机第一次被 <code>poll</code> 后，后续的 <code>poll</code> 需要继续使用之前保存的状态。如果这些状态依赖 <code>Future</code> 自身的地址，那么 <code>Future</code> 就不能在两次 <code>poll</code> 之间被移动。</p>
+<p>这也解释了上一篇笔记中 <code>block_on</code> 的这行代码：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">future</span> = <span class="type">Box</span>::<span class="title function_ invoke__">pin</span>(future);</span><br></pre></td></tr></table></figure>
+<p><code>Box::pin(future)</code> 返回 <code>Pin&lt;Box&lt;F&gt;&gt;</code>。之后调用 <code>future.as_mut()</code>，可以得到 <code>Future::poll</code> 所需要的 <code>Pin&lt;&amp;mut F&gt;</code>：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">future.<span class="title function_ invoke__">as_mut</span>().<span class="title function_ invoke__">poll</span>(&amp;<span class="keyword">mut</span> cx)</span><br></pre></td></tr></table></figure>
+<p>这样，执行器在多次调用 <code>poll</code> 时，都会通过 <code>Pin</code> 访问同一个 <code>Future</code>，避免需要稳定地址的 <code>Future</code> 在两次 <code>poll</code> 之间被随意移动。</p>
+<h3 id="最后">最后</h3>
+<p><code>Pin</code> 的思想不是让所有值都不能移动，而是为需要稳定地址的 <code>!Unpin</code> 值提供约束。普通类型通常实现了 <code>Unpin</code>，即使被包在 <code>Pin</code> 中，也仍然可以安全地移动。</p>
+<p>当然，也可以通过 <code>unsafe</code> 绕过 <code>Pin</code> 的限制，将被固定的值移动到新的内存位置：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">line</span> = <span class="type">Box</span>::<span class="title function_ invoke__">pin</span>(PinnedLine &#123;</span><br><span class="line">    _pin: PhantomPinned,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">unsafe</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">line</span> = line.<span class="title function_ invoke__">as_mut</span>().<span class="title function_ invoke__">get_unchecked_mut</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">moved</span> = mem::<span class="title function_ invoke__">replace</span>(</span><br><span class="line">        line,</span><br><span class="line">        PinnedLine &#123;</span><br><span class="line">            _pin: PhantomPinned,</span><br><span class="line">        &#125;,</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">pinned_address</span> = line <span class="keyword">as</span> *<span class="keyword">const</span> PinnedLine <span class="keyword">as</span> <span class="type">usize</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">moved_address</span> = &amp;moved <span class="keyword">as</span> *<span class="keyword">const</span> PinnedLine <span class="keyword">as</span> <span class="type">usize</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;&#123;:#x&#125;&quot;</span>, pinned_address);</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;&#123;:#x&#125;&quot;</span>, moved_address);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段不安全的代码能够正常运行，但它已经不再受 <code>Pin</code> 的安全约束保护。</p>
+
       
 
       
@@ -258,227 +300,87 @@ var _hmt = _hmt || [];
       
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2026/09/13/rust-pin/">More >></a>
-        </p>
-      
 
       
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
         
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-rust-async-runtime" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2026/09/02/rust-async-runtime/">Rust学习笔记 - Future、Waker 与异步任务调度</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2026/09/02/rust-async-runtime/" class="archive-article-date">
-  	<time datetime="2026-09-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-09-02</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">1.7k字</span>
-      </span>
+      </div>
     </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">7分钟</span>
-      </span>
-    </span>
+  </div>
 </div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>异步任务可以理解成一段能够暂停和继续执行的代码。在 Rust 中任务的暂停和恢复，主要和 <code>Future</code>、<code>poll</code>、<code>Waker</code> 这些概念有关。</p>
-<h3 id="前言">前言</h3>
-<p>很多语言都提供了异步编程的能力，本质上就是在“等结果”的这段时间里，不让线程白白挂住。像 C# 里有 <code>Task</code> 和 <code>async/await</code>，JavaScript 里有 <code>Promise</code> 和 <code>async/await</code>，目的都差不多，就是想让异步逻辑写起来不要那么蛋疼。</p>
-<p>Rust 也有 <code>async/await</code>，但它背后的实现思路和其他语言不完全一样。比如下面这个异步函数：</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">fn</span> <span class="title function_">hallo</span>() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;hallo&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>调用 <code>hallo()</code> 时，并不会立刻执行完整个函数，而是先返回一个 <code>Future</code>。</p>
-        
-      
 
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rust</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2026/09/02/rust-async-runtime/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
+<div class="page-modal wx-share js-wx-box">
+  <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+  <p>扫一扫，分享到微信</p>
+  <div class="wx-qrcode">
+    <img src="https://api.pwmqr.com/qrcode/create/?url=http://xupin.im/2026/09/13/rust-pin/" alt="微信分享二维码">
   </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-rust-mpsc" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2026/08/30/rust-mpsc/">Rust学习笔记 - mpsc 与消息通信</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2026/08/30/rust-mpsc/" class="archive-article-date">
-  	<time datetime="2026-08-29T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-08-30</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">1.2k字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">5分钟</span>
-      </span>
-    </span>
 </div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><code>mpsc</code> 是 <code>multiple producer, single consumer</code> 的缩写，表示多个发送端、一个接收端。它是一种常见的消息通信模型：多个地方可以把消息发送到同一个 channel 中，再由一个接收方按顺序取出并处理。</p>
-<h3 id="前言">前言</h3>
-<p>写服务端时，很多模块都可能需要给同一个客户端发消息。比如登录回包、消息广播、系统通知，甚至定时任务产生的推送。如果这些模块都直接操作连接对象，代码很容易碰到借用和并发访问的问题，连接本身也会变得难以维护。</p>
-<p>一种更自然的做法是，让连接只由一个地方持有，其他模块只负责投递消息，再由持有连接的任务统一写出。<code>mpsc</code> 适合解决的，正是这类“多处发送、单点处理”的通信问题。</p>
-<h3 id="标准库的-mpsc">标准库的 mpsc</h3>
-<p>先看一个简单的例子：</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::sync::mpsc;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> (tx, rx) = mpsc::<span class="title function_ invoke__">channel</span>();</span><br><span class="line"></span><br><span class="line">    tx.<span class="title function_ invoke__">send</span>(<span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;hallo&quot;</span>)).<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">message</span> = rx.<span class="title function_ invoke__">recv</span>().<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;received: &#123;&#125;&quot;</span>, message);</span><br><span class="line">    <span class="comment">// received: hallo</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-        
-      
 
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rust</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2026/08/30/rust-mpsc/">More >></a>
-        </p>
-      
-
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2026/09/02/rust-async-runtime/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Rust学习笔记 - Future、Waker 与异步任务调度</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3201242774373382"
+     crossorigin="anonymous"></script>
+  <!-- 文章广告 -->
+  <ins class="adsbygoogle"
+      style="display:block"
+      data-ad-client="ca-pub-3201242774373382"
+      data-ad-slot="3704842143"
+      data-ad-format="auto"
+      data-full-width-responsive="true"></ins>
+  <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -493,555 +395,47 @@ var _hmt = _hmt || [];
         </div>
         
         
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-rust-arc-mutex-rwlock-refcell" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2026/08/23/rust-arc-mutex-rwlock-refcell/">Rust学习笔记 - Arc、RwLock、Mutex 及 RefCell 的区别</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2026/08/23/rust-arc-mutex-rwlock-refcell/" class="archive-article-date">
-  	<time datetime="2026-08-22T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-08-23</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">1.9k字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">8分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>最近在使用 Rust 重写一些老项目时，经常会碰到 <code>Arc</code>、<code>RwLock</code>、<code>Mutex</code> 以及 <code>RefCell</code> 这些类型。它们都和“共享”或“可变”有关，这里简单整理一下它们的区别和常见使用场景。</p>
-<h3 id="前言">前言</h3>
-<p>假设现在设计一个在线用户管理模块，并且需要支持通过编号获取对应的用户实例，看起来这个需求不复杂，但如果再往前走一步，就会发现后面很快会碰到共享所有权和内部状态修改的问题。</p>
-<p>先看一个最简单的版本：</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">struct</span> <span class="title class_">User</span> &#123;</span><br><span class="line">    <span class="keyword">pub</span> id: <span class="type">u64</span>,</span><br><span class="line">    <span class="keyword">pub</span> email: <span class="type">String</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">struct</span> <span class="title class_">UserMgr</span> &#123;</span><br><span class="line">    users: HashMap&lt;<span class="type">u64</span>, User&gt;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">UserMgr</span> &#123;</span><br><span class="line">    <span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">new</span>() <span class="punctuation">-&gt;</span> <span class="keyword">Self</span> &#123;</span><br><span class="line">        <span class="keyword">Self</span> &#123;</span><br><span class="line">            users: HashMap::<span class="title function_ invoke__">new</span>(),</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">get</span>(&amp;<span class="keyword">self</span>, id: <span class="type">u64</span>) <span class="punctuation">-&gt;</span> <span class="type">Option</span>&lt;&amp;User&gt; &#123;</span><br><span class="line">        <span class="keyword">self</span>.users.<span class="title function_ invoke__">get</span>(&amp;id)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">add</span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, user: User) &#123;</span><br><span class="line">        <span class="keyword">self</span>.users.<span class="title function_ invoke__">insert</span>(user.id, user);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">remove</span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>, id: <span class="type">u64</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.users.<span class="title function_ invoke__">remove</span>(&amp;id);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>一开始这样写没什么问题，<code>UserMgr</code> 负责保存用户，通过 <code>id</code> 取出来就行了。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rust</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2026/08/23/rust-arc-mutex-rwlock-refcell/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%80%BC%E7%9A%84%E7%A7%BB%E5%8A%A8"><span class="toc-number">1.</span> <span class="toc-text">什么是值的移动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%A0%B7%E7%9A%84%E5%80%BC%E4%B8%8D%E8%83%BD%E9%9A%8F%E6%84%8F%E7%A7%BB%E5%8A%A8"><span class="toc-number">2.</span> <span class="toc-text">什么样的值不能随意移动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Pin-%E5%A6%82%E4%BD%95%E9%99%90%E5%88%B6%E7%A7%BB%E5%8A%A8"><span class="toc-number">3.</span> <span class="toc-text">Pin 如何限制移动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Unpin-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">4.</span> <span class="toc-text">Unpin 是什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Future-%E4%B8%AD%E7%9A%84-Pin"><span class="toc-number">5.</span> <span class="toc-text">Future 中的 Pin</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E5%90%8E"><span class="toc-number">6.</span> <span class="toc-text">最后</span></a></li></ol>
+                    </div>
+                </span>
             </div>
         </div>
         
-        
     </div>
 </aside>
 
 
-
-  
-    <article id="post-ds-algos-deque" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2026/06/07/ds-algos-deque/">数据结构与算法 - Deque</a>
-    </h1>
   
 
-        <!-- 发布日期 -->
-        
-        <a href="/2026/06/07/ds-algos-deque/" class="archive-article-date">
-  	<time datetime="2026-06-06T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-06-07</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">1.9k字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">8分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Deque（Double-Ended Queue，双端队列）是一种允许在头尾两端进行插入和删除的线性数据结构。</p>
-<h3 id="前言">前言</h3>
-<p>从定义上来看，Deque 只是比 Queue 多了一端的操作能力。但与 Queue 不同的是，Deque 同时具备 Stack 和 Queue 的访问模式，因此在需要灵活处理头尾两端元素的场景中广泛应用。</p>
-<p>它们之间的区别很直观：</p>
-<blockquote>
-<p>Queue: FIFO（First In, First Out，先进先出）</p>
-</blockquote>
-<blockquote>
-<p>Deque: FIFO / LIFO（先进先出 / 后进先出）</p>
-</blockquote>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">data structures</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2026/06/07/ds-algos-deque/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
   
-    <article id="post-ds-algos-rvo" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2026/05/21/ds-algos-rvo/">数据结构与算法 - RVO</a>
-    </h1>
+  <div id="gitalk-container" style="padding: 0px 30px 0px 30px;"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    if (true) {
+        var gitalk = new Gitalk({
+            clientID: 'e3e84fb1a50e16e66f89',
+            clientSecret: '5690def96adce57dd5993ec671c2413afd60aa41',
+            repo: 'xupin.github.io',
+            owner: 'xupin',
+            admin: ['xupin'],
+            id: 'Rust学习笔记 - Pin 与不可移动值',
+            distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')
+    }
+</script>
   
 
-        <!-- 发布日期 -->
-        
-        <a href="/2026/05/21/ds-algos-rvo/" class="archive-article-date">
-  	<time datetime="2026-05-20T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-05-21</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">1.7k字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">6分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>RVO（Reciprocal Velocity Obstacles，互惠速度障碍）是一种多人动态避障算法。</p>
-<p>「<a href="/2022/08/12/ds-algos-jps/" title="数据结构与算法 - JPS">数据结构与算法 - JPS</a> 」兄弟篇</p>
-<h3 id="前言">前言</h3>
-<p>如果 A*、JPS 等寻路算法解决的是“如何到达目的地”，那么 RVO 解决的就是“在移动过程中，如何避免与动态目标发生碰撞”。常用于游戏中多单位在移动过程中实现自动避让，比如：红警、星际争霸等RTS游戏。</p>
-<p>可以通俗的理解为：每个移动的单位都会主动互相让一点，避免路径撞车。</p>
-<p>这类动态避障算法的核心思想是：“按照当前速度继续移动，未来会不会发生碰撞？”，也就是 Velocity Obstacle（速度障碍）。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">data structures</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2026/05/21/ds-algos-rvo/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-rust-tokio-axum" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2026/05/10/rust-tokio-axum/">Rust学习笔记 - Axum</a>
-    </h1>
   
 
-        <!-- 发布日期 -->
-        
-        <a href="/2026/05/10/rust-tokio-axum/" class="archive-article-date">
-  	<time datetime="2026-05-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-05-10</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">1.4k字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">7分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Axum 是由 Tokio 官方团队开发的一个高性能、设计优雅的现代化 Web 框架。</p>
-<h3 id="为什么选择Axum？">为什么选择Axum？</h3>
-<p>Tokio 是 Rust 社区中最流行的异步编程框架之一（在区块链和智能合约圈子比较受欢迎），而Axum是由Tokio官方开发、且深度集成的Web框架。</p>
-<h3 id="快速使用">快速使用</h3>
-<p>假设已经安装了Rust开发环境</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// main.rs</span></span><br><span class="line"><span class="keyword">use</span> axum::&#123;Router, routing&#125;;</span><br><span class="line"><span class="keyword">use</span> tokio::net::TcpListener;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[tokio::main]</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">router</span> = Router::<span class="title function_ invoke__">new</span>().<span class="title function_ invoke__">route</span>(<span class="string">&quot;/&quot;</span>, routing::<span class="title function_ invoke__">get</span>(<span class="keyword">async</span> || <span class="string">&quot;Hi, Rust!&quot;</span>));</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">addr</span> = <span class="string">&quot;0.0.0.0:8000&quot;</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">listener</span> = TcpListener::<span class="title function_ invoke__">bind</span>(&amp;addr).<span class="keyword">await</span>.<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;listening on &#123;&#125;&quot;</span>, addr);</span><br><span class="line">    axum::<span class="title function_ invoke__">serve</span>(listener, router).<span class="keyword">await</span>.<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ curl -X GET <span class="string">&#x27;http://127.0.0.1:8000&#x27;</span></span><br><span class="line">Hi, Rust!</span><br></pre></td></tr></table></figure>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rust</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2026/05/10/rust-tokio-axum/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-reverse-cocos2djs" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2026/01/14/reverse-cocos2djs/">逆向学习笔记 - Cocos2d JS逆向提取资源</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2026/01/14/reverse-cocos2djs/" class="archive-article-date">
-  	<time datetime="2026-01-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-01-14</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">563字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">2分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>记一次半吊子逆向工程的…不那么艰难的过程。</p>
-<p>「<a href="/2024/04/08/reverse-cocos2dlua/" title="逆向学习笔记 - Cocos2d Lua逆向提取资源">逆向学习笔记 - Cocos2d Lua逆向提取资源</a> 」难弟篇</p>
-<h3 id="前言">前言</h3>
-<p>最近刷到一款某道换皮手游，玩法和美术风格都是我喜欢的类型。于是想着做点逆向学习，顺便捞一手美术资源。</p>
-<h3 id="动手">动手</h3>
-<p>一个某道换皮手游，解压安装包：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">├── AndroidManifest.xml</span><br><span class="line">├── assets</span><br><span class="line">│   ├── assets</span><br><span class="line">│   ├── jsb-adapter</span><br><span class="line">│   ├── main.js</span><br><span class="line">│   ├── project.json</span><br><span class="line">│   └── src</span><br><span class="line">├── classes.dex</span><br><span class="line">├── kotlin</span><br><span class="line">│   └── ...</span><br><span class="line">├── lib</span><br><span class="line">│   ├── arm64-v8a</span><br><span class="line">│   ├── armeabi-v7a</span><br><span class="line">│   ├── x86</span><br><span class="line">│   └── x86_64</span><br><span class="line">├── META-INF</span><br><span class="line">│   ├── CERT.RSA</span><br><span class="line">│   ├── CERT.SF</span><br><span class="line">│   ├── com</span><br><span class="line">│   └── MANIFEST.MF</span><br><span class="line">├── org</span><br><span class="line">│   └── cocos2dx</span><br><span class="line">├── res</span><br><span class="line">│   └── ...</span><br><span class="line">└── resources.arsc</span><br></pre></td></tr></table></figure>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">reverse engineering</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2026/01/14/reverse-cocos2djs/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-  
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
-    </nav>
   
 
 
@@ -1064,8 +458,8 @@ var _hmt = _hmt || [];
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
