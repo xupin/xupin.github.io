@@ -184,6 +184,112 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-rust-async-state-machine" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <!-- 标题 -->
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2026/09/25/rust-async-state-machine/">Rust学习笔记 - async/await 背后的状态机</a>
+    </h1>
+  
+
+        <!-- 发布日期 -->
+        
+        <a href="/2026/09/25/rust-async-state-machine/" class="archive-article-date">
+  	<time datetime="2026-09-24T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-09-25</time>
+</a>
+        
+        <!-- 字数统计 -->
+        
+          <div style="margin-top:10px;">
+    <span class="post-time">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-keyboard-o"></i>
+        <span class="post-meta-item-text">  全文 ≈</span>
+        <span class="post-count">2.1k字</span>
+      </span>
+    </span>
+
+    <span class="post-time">
+      &nbsp; | &nbsp;
+      <span class="post-meta-item-icon">
+        <i class="fa fa-hourglass-half"></i>
+        <span class="post-meta-item-text">  预计阅读时长</span>
+        <span class="post-count">8分钟</span>
+      </span>
+    </span>
+</div>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在「<a href="/2026/09/02/rust-async-runtime/" title="Rust学习笔记 - Future、Waker 与异步任务调度">Rust学习笔记 - Future、Waker 与异步任务调度</a>」中提到过，<code>Future</code> 可以看作一个状态机。它会保存当前执行到了哪里、后续需要哪些局部变量，以及正在等待什么。</p>
+<h3 id="前言">前言</h3>
+<p><code>async/await</code> 可以让异步代码看起来像普通的顺序代码：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> tokio::time::&#123;sleep, Duration&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">fn</span> <span class="title function_">run</span>() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;start&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="title function_ invoke__">sleep</span>(Duration::<span class="title function_ invoke__">from_secs</span>(<span class="number">1</span>)).<span class="keyword">await</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;finished&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码先输出 <code>start</code>，等待 1 秒后再输出 <code>finished</code>。等待期间，<code>run()</code> 对应的 Future 会返回 <code>Poll::Pending</code>，执行到这里暂停。</p>
+<p>定时器到期后，运行时会再次调用这个 Future 的 <code>poll</code>。这次不会重新输出 <code>start</code>，而是从 <code>sleep(...).await</code> 后面继续执行。</p>
+<p>那么，Future 是怎么记住上次执行到哪里呢？</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rust</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2026/09/25/rust-async-state-machine/">More >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-rust-pin" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -904,112 +1010,6 @@ var _hmt = _hmt || [];
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2026/05/10/rust-tokio-axum/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-reverse-cocos2djs" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2026/01/14/reverse-cocos2djs/">逆向学习笔记 - Cocos2d JS逆向提取资源</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2026/01/14/reverse-cocos2djs/" class="archive-article-date">
-  	<time datetime="2026-01-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-01-14</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">563字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">2分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>记一次半吊子逆向工程的…不那么艰难的过程。</p>
-<p>「<a href="/2024/04/08/reverse-cocos2dlua/" title="逆向学习笔记 - Cocos2d Lua逆向提取资源">逆向学习笔记 - Cocos2d Lua逆向提取资源</a> 」难弟篇</p>
-<h3 id="前言">前言</h3>
-<p>最近刷到一款某道换皮手游，玩法和美术风格都是我喜欢的类型。于是想着做点逆向学习，顺便捞一手美术资源。</p>
-<h3 id="动手">动手</h3>
-<p>一个某道换皮手游，解压安装包：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">├── AndroidManifest.xml</span><br><span class="line">├── assets</span><br><span class="line">│   ├── assets</span><br><span class="line">│   ├── jsb-adapter</span><br><span class="line">│   ├── main.js</span><br><span class="line">│   ├── project.json</span><br><span class="line">│   └── src</span><br><span class="line">├── classes.dex</span><br><span class="line">├── kotlin</span><br><span class="line">│   └── ...</span><br><span class="line">├── lib</span><br><span class="line">│   ├── arm64-v8a</span><br><span class="line">│   ├── armeabi-v7a</span><br><span class="line">│   ├── x86</span><br><span class="line">│   └── x86_64</span><br><span class="line">├── META-INF</span><br><span class="line">│   ├── CERT.RSA</span><br><span class="line">│   ├── CERT.SF</span><br><span class="line">│   ├── com</span><br><span class="line">│   └── MANIFEST.MF</span><br><span class="line">├── org</span><br><span class="line">│   └── cocos2dx</span><br><span class="line">├── res</span><br><span class="line">│   └── ...</span><br><span class="line">└── resources.arsc</span><br></pre></td></tr></table></figure>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">reverse engineering</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2026/01/14/reverse-cocos2djs/">More >></a>
         </p>
       
 

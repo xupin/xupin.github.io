@@ -16,7 +16,7 @@
 <meta property="og:description" content="在「Rust学习笔记 - Future、Waker 与异步任务调度」中实现异步任务执行器 block_on 时，用到了 Pin 来保证某些值在内存中不被移动，想着展开学习一下。 什么是值的移动 Rust 中的值默认可以移动。移动通常发生在赋值、传参和从函数返回时，例如： 12345let name &#x3D; String::from(&quot;hallo&quot;);let other &#x3D; name">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2026-09-12T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-09-14T06:44:12.989Z">
+<meta property="article:modified_time" content="2026-09-16T02:57:27.428Z">
 <meta property="article:author" content="Mark">
 <meta property="article:tag" content="develop">
 <meta property="article:tag" content="rust">
@@ -253,7 +253,7 @@ var _hmt = _hmt || [];
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">pinned</span> = <span class="type">Box</span>::<span class="title function_ invoke__">pin</span>(<span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;hallo&quot;</span>));</span><br><span class="line"><span class="keyword">let</span> <span class="variable">other</span> = pinned;</span><br></pre></td></tr></table></figure>
 <p>这里移动的是 <code>Pin&lt;Box&lt;String&gt;&gt;</code> 这个指针对象，<code>other</code> 仍然指向原来那块堆内存。</p>
 <p>值得注意的是，<code>String</code> 实现了 <code>Unpin</code>，即使被包在 <code>Pin&lt;Box&lt;String&gt;&gt;</code> 中，也仍然可以安全移动。<code>Pin</code> 的限制主要针对 <code>!Unpin</code> 类型：<code>Pin&lt;&amp;mut T&gt;</code> 不会直接提供普通的 <code>&amp;mut T</code>，否则调用方就可能通过赋值或 <code>std::mem::replace</code> 将值移动出去。</p>
-<p><code>Pin</code> 限制的是安全代码的访问方式，不是在内存层面强行禁止移动。<code>unsafe</code> 代码仍然可以绕过限制，但调用方必须自行保证不移动已经固定的 <code>!Unpin</code> 值，否则依赖原地址的内部指针或引用可能失效，进而导致未定义行为。</p>
+<p><code>Pin</code> 限制的是安全代码的访问方式，不是在内存层面强行禁止移动。</p>
 <h3 id="Unpin-是什么">Unpin 是什么</h3>
 <p><code>Unpin</code> 是一个自动特型，大多数普通类型都实现了它，例如整型、<code>String</code> 和 <code>Vec&lt;T&gt;</code>。</p>
 <p>实现 <code>Unpin</code> 表示这个类型的值即使被移动，也不会破坏类型自身的约束。当 <code>T: Unpin</code> 时，<code>Pin&lt;&amp;mut T&gt;</code> 可以安全地转换回普通的 <code>&amp;mut T</code>。相反，<code>!Unpin</code> 表示这个类型可能存在依赖内存地址的状态。对于已经固定的 <code>!Unpin</code> 值，安全代码不能再将它整体移动出去。</p>
@@ -271,9 +271,9 @@ var _hmt = _hmt || [];
 <p>这样，执行器在多次调用 <code>poll</code> 时，都会通过 <code>Pin</code> 访问同一个 <code>Future</code>，避免需要稳定地址的 <code>Future</code> 在两次 <code>poll</code> 之间被随意移动。</p>
 <h3 id="最后">最后</h3>
 <p><code>Pin</code> 的思想不是让所有值都不能移动，而是为需要稳定地址的 <code>!Unpin</code> 值提供约束。普通类型通常实现了 <code>Unpin</code>，即使被包在 <code>Pin</code> 中，也仍然可以安全地移动。</p>
-<p>当然，也可以通过 <code>unsafe</code> 绕过 <code>Pin</code> 的限制，将被固定的值移动到新的内存位置：</p>
+<p>不过，<code>Pin</code> 只限制安全代码的访问方式。绕过这些限制后，仍然可以将已经固定的值移动到新的内存位置：</p>
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">line</span> = <span class="type">Box</span>::<span class="title function_ invoke__">pin</span>(PinnedLine &#123;</span><br><span class="line">    _pin: PhantomPinned,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">unsafe</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">line</span> = line.<span class="title function_ invoke__">as_mut</span>().<span class="title function_ invoke__">get_unchecked_mut</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">moved</span> = mem::<span class="title function_ invoke__">replace</span>(</span><br><span class="line">        line,</span><br><span class="line">        PinnedLine &#123;</span><br><span class="line">            _pin: PhantomPinned,</span><br><span class="line">        &#125;,</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">pinned_address</span> = line <span class="keyword">as</span> *<span class="keyword">const</span> PinnedLine <span class="keyword">as</span> <span class="type">usize</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">moved_address</span> = &amp;moved <span class="keyword">as</span> *<span class="keyword">const</span> PinnedLine <span class="keyword">as</span> <span class="type">usize</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;&#123;:#x&#125;&quot;</span>, pinned_address);</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;&#123;:#x&#125;&quot;</span>, moved_address);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这段不安全的代码能够正常运行，但它已经不再受 <code>Pin</code> 的安全约束保护。</p>
+<p>虽然 <code>unsafe</code> 代码可以绕过限制，但调用方必须自行保证不移动已经固定的 <code>!Unpin</code> 值，否则依赖原地址的内部指针或引用可能失效，进而导致 UB。</p>
 
       
 
@@ -360,6 +360,15 @@ var _hmt = _hmt || [];
 
   
 <nav id="article-nav">
+  
+    <a href="/2026/09/25/rust-async-state-machine/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Rust学习笔记 - async/await 背后的状态机
+        
+      </div>
+    </a>
   
   
     <a href="/2026/09/02/rust-async-runtime/" id="article-nav-older" class="article-nav-link-wrap">

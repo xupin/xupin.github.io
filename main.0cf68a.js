@@ -64,10 +64,6 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	// 边缘
-
-	// 上报
-	// import './report'
 	// 图片查看器
 	(0, _util.addLoadEvent)(function () {
 		_share2.default.init();

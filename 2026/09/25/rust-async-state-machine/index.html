@@ -6,18 +6,23 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://xupin.im">
-  <title>Mark&#39;s blog</title>
+  <title>Rust学习笔记 - async/await 背后的状态机 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="安静的小屁屁">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Mark&#39;s blog">
-<meta property="og:url" content="http://xupin.im/page/2/index.html">
+  <meta name="description" content="在「Rust学习笔记 - Future、Waker 与异步任务调度」中提到过，Future 可以看作一个状态机。它会保存当前执行到了哪里、后续需要哪些局部变量，以及正在等待什么。 前言 async&#x2F;await 可以让异步代码看起来像普通的顺序代码： 123456789use tokio::time::&#123;sleep, Duration&#125;;async fn run() &#123;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust学习笔记 - async&#x2F;await 背后的状态机">
+<meta property="og:url" content="http://xupin.im/2026/09/25/rust-async-state-machine/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="安静的小屁屁">
+<meta property="og:description" content="在「Rust学习笔记 - Future、Waker 与异步任务调度」中提到过，Future 可以看作一个状态机。它会保存当前执行到了哪里、后续需要哪些局部变量，以及正在等待什么。 前言 async&#x2F;await 可以让异步代码看起来像普通的顺序代码： 123456789use tokio::time::&#123;sleep, Duration&#125;;async fn run() &#123;">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://xupin.im/assets/rust-future/multiple-await-state-machine.png">
+<meta property="article:published_time" content="2026-09-24T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-09-26T15:47:56.957Z">
 <meta property="article:author" content="Mark">
-<meta property="article:tag" content="nginx,php,golang,memcached,redis,mysql,mariadb,php7,前端,js,jquery,javascript,html5,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验">
+<meta property="article:tag" content="develop">
+<meta property="article:tag" content="rust">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://xupin.im/assets/rust-future/multiple-await-state-machine.png">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
   
@@ -182,24 +187,22 @@ var _hmt = _hmt || [];
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-reverse-cocos2djs" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-rust-async-state-machine" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         <!-- 标题 -->
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2026/01/14/reverse-cocos2djs/">逆向学习笔记 - Cocos2d JS逆向提取资源</a>
+    <h1 class="article-title" itemprop="name">
+      Rust学习笔记 - async/await 背后的状态机
     </h1>
   
 
         <!-- 发布日期 -->
         
-        <a href="/2026/01/14/reverse-cocos2djs/" class="archive-article-date">
-  	<time datetime="2026-01-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-01-14</time>
+        <a href="/2026/09/25/rust-async-state-machine/" class="archive-article-date">
+  	<time datetime="2026-09-24T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-09-25</time>
 </a>
         
         <!-- 字数统计 -->
@@ -209,7 +212,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">563字</span>
+        <span class="post-count">2.1k字</span>
       </span>
     </span>
 
@@ -218,7 +221,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-hourglass-half"></i>
         <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">2分钟</span>
+        <span class="post-count">8分钟</span>
       </span>
     </span>
 </div>
@@ -227,798 +230,86 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>记一次半吊子逆向工程的…不那么艰难的过程。</p>
-<p>「<a href="/2024/04/08/reverse-cocos2dlua/" title="逆向学习笔记 - Cocos2d Lua逆向提取资源">逆向学习笔记 - Cocos2d Lua逆向提取资源</a> 」难弟篇</p>
+        <p>在「<a href="/2026/09/02/rust-async-runtime/" title="Rust学习笔记 - Future、Waker 与异步任务调度">Rust学习笔记 - Future、Waker 与异步任务调度</a>」中提到过，<code>Future</code> 可以看作一个状态机。它会保存当前执行到了哪里、后续需要哪些局部变量，以及正在等待什么。</p>
 <h3 id="前言">前言</h3>
-<p>最近刷到一款某道换皮手游，玩法和美术风格都是我喜欢的类型。于是想着做点逆向学习，顺便捞一手美术资源。</p>
-<h3 id="动手">动手</h3>
-<p>一个某道换皮手游，解压安装包：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">├── AndroidManifest.xml</span><br><span class="line">├── assets</span><br><span class="line">│   ├── assets</span><br><span class="line">│   ├── jsb-adapter</span><br><span class="line">│   ├── main.js</span><br><span class="line">│   ├── project.json</span><br><span class="line">│   └── src</span><br><span class="line">├── classes.dex</span><br><span class="line">├── kotlin</span><br><span class="line">│   └── ...</span><br><span class="line">├── lib</span><br><span class="line">│   ├── arm64-v8a</span><br><span class="line">│   ├── armeabi-v7a</span><br><span class="line">│   ├── x86</span><br><span class="line">│   └── x86_64</span><br><span class="line">├── META-INF</span><br><span class="line">│   ├── CERT.RSA</span><br><span class="line">│   ├── CERT.SF</span><br><span class="line">│   ├── com</span><br><span class="line">│   └── MANIFEST.MF</span><br><span class="line">├── org</span><br><span class="line">│   └── cocos2dx</span><br><span class="line">├── res</span><br><span class="line">│   └── ...</span><br><span class="line">└── resources.arsc</span><br></pre></td></tr></table></figure>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">reverse engineering</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2026/01/14/reverse-cocos2djs/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-ds-algos-dag" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2025/12/30/ds-algos-dag/">数据结构与算法 - DAG</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2025/12/30/ds-algos-dag/" class="archive-article-date">
-  	<time datetime="2025-12-29T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2025-12-30</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">670字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">2分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>有向无环图（Directed Acyclic Graph，简称 DAG）是一种图结构，由若干顶点和带方向的边组成。与普通有向图不同的是，DAG 中不存在环路——也就是说，不可能从某个顶点出发，沿着边的方向走一圈，最终又回到原点。</p>
-<h3 id="背景">背景</h3>
-<p>项目<code>QueryBuilder</code>模块初始指标依赖层级相对固定，但版本多次迭代后，指标之间逐渐形成了复杂的依赖路径。原有的逻辑已无法支持，所以引入有向无环图（DAG），用于对指标依赖关系进行建模和解析。</p>
-<h3 id="定义">定义</h3>
-<p>DAG 中的每个节点只关心两类关系：我依赖的 和 依赖我的。</p>
-<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Node <span class="keyword">struct</span> &#123;</span><br><span class="line">    dependencies []*Node <span class="comment">// 当前节点依赖的前置节点</span></span><br><span class="line">    dependents   []*Node <span class="comment">// 依赖当前节点的后置节点</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">data structures</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2025/12/30/ds-algos-dag/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-ds-algos-p2c" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2025/05/22/ds-algos-p2c/">数据结构与算法 - Power of Two Choices</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2025/05/22/ds-algos-p2c/" class="archive-article-date">
-  	<time datetime="2025-05-21T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2025-05-22</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">389字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">1分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>两次随机选择法（Power of Two Choices，简称 P2C）是一种高效的负载均衡算法。</p>
-<h3 id="背景">背景</h3>
-<p>实现连接池负载均衡</p>
-<h3 id="实现思路">实现思路</h3>
-<p>连接池</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> ConnPool <span class="keyword">struct</span> &#123;</span><br><span class="line">    conns []*conn</span><br><span class="line">    i     <span class="type">uint32</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> conn <span class="keyword">struct</span> &#123;</span><br><span class="line">    clientConn *grpc.ClientConn</span><br><span class="line">    streams    <span class="type">int32</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">data structures</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2025/05/22/ds-algos-p2c/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-go-screenshot" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2025/03/19/go-screenshot/">Go学习笔记 - 截图API</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2025/03/19/go-screenshot/" class="archive-article-date">
-  	<time datetime="2025-03-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2025-03-19</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">641字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">3分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>记一次截图应用接口的实现</p>
-<h3 id="背景">背景</h3>
-<p>对不同文件类型生成缩略图，视频使用<code>ffmpeg</code>抽帧，html 文件则需要运行才能截图。</p>
-<h3 id="思路">思路</h3>
-<p>模拟浏览器访问并截图，需要工具：google-chrome、<a href="https://github.com/go-rod/rod">go-rod</a></p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">golang</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2025/03/19/go-screenshot/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-game-player-save-data" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2024/09/06/game-player-save-data/">游戏开发笔记 - 玩家数据存档</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2024/09/06/game-player-save-data/" class="archive-article-date">
-  	<time datetime="2024-09-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-09-06</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">468字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">2分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>服务器在保存玩家数据时的频次和触发机制怎么设计</p>
-<h3 id="思路">思路</h3>
-<ol>
-<li>定时保存</li>
-</ol>
-<p>定时保存可以通过设置定时器来实现，但也有两种方式：服务器定时、玩家定时。</p>
-<ol start="2">
-<li>离线保存</li>
-</ol>
-<p>玩家下线后立即保存数据，保证玩家的数据被完整存档。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">game</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2024/09/06/game-player-save-data/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-ccc-protobuf" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2024/08/29/ccc-protobuf/">Cocos Creator小知识 - 3.x项目如何使用Protobuf</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2024/08/29/ccc-protobuf/" class="archive-article-date">
-  	<time datetime="2024-08-28T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-08-29</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">316字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">1分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>记一次 Cocos Creator3.x 的 Protobuf 使用</p>
-<h3 id="环境">环境</h3>
+<p><code>async/await</code> 可以让异步代码看起来像普通的顺序代码：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> tokio::time::&#123;sleep, Duration&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">fn</span> <span class="title function_">run</span>() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;start&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="title function_ invoke__">sleep</span>(Duration::<span class="title function_ invoke__">from_secs</span>(<span class="number">1</span>)).<span class="keyword">await</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;finished&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码先输出 <code>start</code>，等待 1 秒后再输出 <code>finished</code>。等待期间，<code>run()</code> 对应的 Future 会返回 <code>Poll::Pending</code>，执行到这里暂停。</p>
+<p>定时器到期后，运行时会再次调用这个 Future 的 <code>poll</code>。这次不会重新输出 <code>start</code>，而是从 <code>sleep(...).await</code> 后面继续执行。</p>
+<p>那么，Future 是怎么记住上次执行到哪里呢？</p>
+<span id="more"></span>
+<h3 id="async-fn-中有哪些状态">async fn 中有哪些状态</h3>
+<p>Rust 编译器会将 <code>async fn</code> 转换成一个实现了 <code>Future</code> 的状态机。以前面的 <code>run()</code> 为例，为了方便理解，可以把它的执行过程简单分成三个状态：</p>
 <ul>
-<li>安装依赖</li>
+<li><code>Start</code>：还没有开始执行。</li>
+<li><code>Sleeping</code>：已经输出 <code>start</code>，正在等待定时器到期。</li>
+<li><code>Done</code>：已经输出 <code>finished</code>，执行完成。</li>
 </ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ npm i long</span><br><span class="line">$ npm i protobufjs</span><br><span class="line">$ npm i protobufjs-cli</span><br></pre></td></tr></table></figure>
-<ul>
-<li>tsconfig</li>
-</ul>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;compilerOptions&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;target&quot;</span><span class="punctuation">:</span> <span class="string">&quot;es6&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;lib&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;es2015&quot;</span><span class="punctuation">,</span> <span class="string">&quot;es2017&quot;</span><span class="punctuation">,</span> <span class="string">&quot;dom&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;module&quot;</span><span class="punctuation">:</span> <span class="string">&quot;commonjs&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;strict&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;experimentalDecorators&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;skipLibCheck&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;isolatedModules&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;moduleResolution&quot;</span><span class="punctuation">:</span> <span class="string">&quot;node&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="comment">// &quot;noEmit&quot;: true,</span></span><br><span class="line">        <span class="attr">&quot;forceConsistentCasingInFileNames&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;allowSyntheticDefaultImports&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">biscuits</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">protobuf</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2024/08/29/ccc-protobuf/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-game-gateway" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2024/08/08/game-gateway/">游戏开发笔记 - gRPC网关服务器</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2024/08/08/game-gateway/" class="archive-article-date">
-  	<time datetime="2024-08-07T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-08-08</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">794字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">3分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>因为客户端直连服务器会出现很多潜在的风险，比如暴露服务器 IP 地址导致被攻击等问题，所以增加一个网关服务器。</p>
-<h3 id="网关服务器">网关服务器</h3>
-<p>网关服务器是介于客户端与游戏服务器之间的服务，包含以下功能：</p>
-<ul>
-<li>客户端连接管理</li>
-</ul>
-<blockquote>
-<p>维护游戏客户端的连接。</p>
-</blockquote>
-<ul>
-<li>负载均衡</li>
-</ul>
-<blockquote>
-<p>负责将客户端的请求分配到空闲的游戏服务器。</p>
-</blockquote>
-<ul>
-<li>协议检查转换</li>
-</ul>
-<blockquote>
-<p>检查协议格式，如有多协议服务器也可以做协议格式转换。</p>
-</blockquote>
-<ul>
-<li>安全控制</li>
-</ul>
-<blockquote>
-<p>拦截非法请求，隐藏游戏服务器 IP 地址（避免 DDOS 攻击）。</p>
-</blockquote>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">game</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">gRPC</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2024/08/08/game-gateway/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-game-spine-change-attach" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2024/05/10/game-spine-change-attach/">游戏开发笔记 - Spine换装</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2024/05/10/game-spine-change-attach/" class="archive-article-date">
-  	<time datetime="2024-05-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2024-05-10</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">827字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">4分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="前言">前言</h3>
-<p>想给小游戏做个时装功能，在游戏中一般来说换装分为两种：</p>
+<p>用伪代码表示，大致如下：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="title class_">RunState</span> &#123;</span><br><span class="line">    Start,</span><br><span class="line">    <span class="title function_ invoke__">Sleeping</span>(Pin&lt;<span class="type">Box</span>&lt;Sleep&gt;&gt;),</span><br><span class="line">    Done,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ol>
 <li>
-<p>整体时装</p>
+<p>刚调用 <code>run()</code> 时，函数体还没有执行，对应的 Future 处于 <code>Start</code> 状态。</p>
 </li>
 <li>
-<p>局部换装</p>
+<p>第一次调用 <code>poll</code>，代码输出 <code>start</code>，接着遇到 <code>sleep(...).await</code>。此时定时器还没有到期，代码无法继续往下执行。Future 会把这个 <code>Sleep</code> 保存下来，进入 <code>Sleeping</code> 状态，然后返回 <code>Poll::Pending</code>。</p>
+</li>
+<li>
+<p>1 秒后，定时器通过 <code>Waker</code> 唤醒任务。运行时再次调用 <code>poll</code>，这次不需要从头执行，而是继续轮询之前保存的 <code>Sleep</code>。等它返回 <code>Poll::Ready(())</code>，代码继续输出 <code>finished</code>，整个 Future 进入 <code>Done</code> 状态。</p>
 </li>
 </ol>
-<p>2D 游戏中一般用到的骨骼动画 Spine 和 DragonBone(龙骨)。这里主要学习一下 Spine 换装的相关实现</p>
-        
+<p>这里不能只记住“正在等待”，还要把之前创建的 <code>Sleep</code> 一起保存下来。否则下次调用 <code>poll</code> 时，只能重新创建一个定时器，计时也会重新开始。</p>
+<p>这个例子在 <code>.await</code> 等待期间只需要保存一个 <code>Sleep</code>。如果还有局部变量在 <code>.await</code> 之后继续使用，它们同样需要成为状态机的一部分。</p>
+<h3 id="跨越-await-的局部变量">跨越 await 的局部变量</h3>
+<p>状态机保存的不只有正在等待的 Future。看下面这个稍加改造的例子：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">fn</span> <span class="title function_">run</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">message</span> = <span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;finished&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;start&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="title function_ invoke__">sleep</span>(Duration::<span class="title function_ invoke__">from_secs</span>(<span class="number">1</span>)).<span class="keyword">await</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>, message);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里的 <code>message</code> 在 <code>.await</code> 之前创建，却要在 <code>.await</code> 之后继续使用。因此，<code>message</code> 也需要和 <code>Sleep</code> 一起保存在状态机中。前面的枚举可以进一步修改为：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="title class_">RunState</span> &#123;</span><br><span class="line">    Start,</span><br><span class="line">    Sleeping &#123;</span><br><span class="line">        sleep: Pin&lt;<span class="type">Box</span>&lt;Sleep&gt;&gt;,</span><br><span class="line">        message: <span class="type">String</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    Done,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里注意并不是 <code>async fn</code> 中出现的所有局部变量都会被保存。只有在暂停之后还需要继续存活的变量，才需要成为状态机的一部分。</p>
+<h3 id="await-如何轮询内部-Future">await 如何轮询内部 Future</h3>
+<p><code>run()</code> 对应的是外层 Future，<code>Sleep</code> 则是它正在等待的内部 Future。当状态机处于 <code>Sleeping</code> 状态时，外层 Future 会继续轮询之前保存的 <code>Sleep</code>。</p>
+<p><code>sleep(...).await</code> 的执行过程可以简化为：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">match</span> sleep.<span class="title function_ invoke__">as_mut</span>().<span class="title function_ invoke__">poll</span>(cx) &#123;</span><br><span class="line">    Poll::Pending =&gt; <span class="keyword">return</span> Poll::Pending,</span><br><span class="line">    Poll::<span class="title function_ invoke__">Ready</span>(()) =&gt; &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>, message);</span><br></pre></td></tr></table></figure>
+<p>外层 Future 在轮询 <code>Sleep</code> 时，会把自己的 <code>Context</code> 继续传递下去。<code>Sleep</code> 可以通过其中的 <code>Waker</code> 记录当前任务，等定时器到期后，再通知运行时重新调度这个任务。</p>
+<p>如果 <code>Sleep</code> 返回 <code>Poll::Pending</code>，说明定时器还没有到期，外层 Future 也会返回 <code>Poll::Pending</code>。状态机仍然停留在 <code>Sleeping</code>，其中保存的 <code>Sleep</code> 和 <code>message</code> 都不会被丢弃。</p>
+<p>等外层 Future 再次被调用 <code>poll</code> 时，它会继续轮询同一个 <code>Sleep</code>。当 <code>Sleep</code> 返回 <code>Poll::Ready(())</code>，<code>.await</code> 完成，代码继续输出 <code>message</code>，状态机进入 <code>Done</code>。</p>
+<p>这个轮询过程有些像普通的函数调用栈：</p>
+<ul>
+<li>
+<p>相似的是，运行时先调用最外层 Future 的 <code>poll</code>，外层 Future 再继续调用内部 Future 的 <code>poll</code>。内部 Future 的 <code>poll</code> 返回后，控制权会回到外层 Future。如果返回 <code>Poll::Ready</code>，外层 Future 取得结果并继续执行，如果返回 <code>Poll::Pending</code>，外层 Future 通常也会将 <code>Poll::Pending</code> 继续向外返回。</p>
+</li>
+<li>
+<p>不同的是，返回 <code>Poll::Pending</code> 后，这次 <code>poll</code> 形成的调用栈就已经退出，不会一直保留在线程栈中。恢复执行所需的位置和局部变量都保存在 Future 自身的状态机里。等任务被再次唤醒，运行时会重新从最外层 Future 开始调用 <code>poll</code>。</p>
+</li>
+</ul>
+<h3 id="实现-run-的状态机">实现 run 的状态机</h3>
+<p>前面的 <code>RunState</code> 只是一个简化的状态模型。要让它真正作为 Future 运行，还需要定义一个 <code>RunFuture</code>，用来保存当前状态：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">RunFuture</span> &#123;</span><br><span class="line">    state: RunState,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">RunFuture</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">new</span>() <span class="punctuation">-&gt;</span> <span class="keyword">Self</span> &#123;</span><br><span class="line">        <span class="keyword">Self</span> &#123;</span><br><span class="line">            state: RunState::Start,</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>RunFuture::new()</code> 只创建状态机，并不会执行原来 <code>run()</code> 中的代码。和调用 <code>async fn</code> 一样，真正的执行要等到第一次调用 <code>poll</code> 才会开始。接下来为 <code>RunFuture</code> 实现 <code>Future</code>：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">impl</span> <span class="title class_">Future</span> <span class="keyword">for</span> <span class="title class_">RunFuture</span> &#123;</span><br><span class="line">    <span class="keyword">type</span> <span class="title class_">Output</span> = ();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">poll</span>(</span><br><span class="line">        <span class="keyword">mut</span> <span class="keyword">self</span>: Pin&lt;&amp;<span class="keyword">mut</span> <span class="keyword">Self</span>&gt;,</span><br><span class="line">        cx: &amp;<span class="keyword">mut</span> Context&lt;<span class="symbol">&#x27;_</span>&gt;,</span><br><span class="line">    ) <span class="punctuation">-&gt;</span> Poll&lt;<span class="keyword">Self</span>::Output&gt; &#123;</span><br><span class="line">        <span class="keyword">loop</span> &#123;</span><br><span class="line">            <span class="keyword">match</span> &amp;<span class="keyword">mut</span> <span class="keyword">self</span>.state &#123;</span><br><span class="line">                RunState::Start =&gt; &#123;</span><br><span class="line">                    <span class="built_in">println!</span>(<span class="string">&quot;start&quot;</span>);</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">self</span>.state = RunState::Sleeping &#123;</span><br><span class="line">                        sleep: <span class="type">Box</span>::<span class="title function_ invoke__">pin</span>(<span class="title function_ invoke__">sleep</span>(Duration::<span class="title function_ invoke__">from_secs</span>(<span class="number">1</span>))),</span><br><span class="line">                        message: <span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;finished&quot;</span>),</span><br><span class="line">                    &#125;;</span><br><span class="line">                &#125;</span><br><span class="line">                RunState::Sleeping &#123; sleep, message &#125; =&gt; &#123;</span><br><span class="line">                    <span class="keyword">match</span> sleep.<span class="title function_ invoke__">as_mut</span>().<span class="title function_ invoke__">poll</span>(cx) &#123;</span><br><span class="line">                        Poll::Pending =&gt; <span class="keyword">return</span> Poll::Pending,</span><br><span class="line">                        Poll::<span class="title function_ invoke__">Ready</span>(()) =&gt; &#123;</span><br><span class="line">                            <span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>, message);</span><br><span class="line">                            <span class="keyword">self</span>.state = RunState::Done;</span><br><span class="line"></span><br><span class="line">                            <span class="keyword">return</span> Poll::<span class="title function_ invoke__">Ready</span>(());</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                RunState::Done =&gt; &#123;</span><br><span class="line">                    <span class="built_in">panic!</span>(<span class="string">&quot;Future polled after completion&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 <code>Start</code> 状态中，第一次调用 <code>poll</code> 会输出 <code>start</code>，创建 <code>Sleep</code> 和 <code>message</code>，然后进入 <code>Sleeping</code>。在 <code>Sleeping</code> 状态中，状态机会轮询之前保存的 <code>Sleep</code>：</p>
+<ul>
+<li>如果返回 <code>Poll::Pending</code>，保留当前状态并等待下一次轮询。</li>
+<li>如果返回 <code>Poll::Ready(())</code>，输出 <code>message</code>，进入 <code>Done</code>，最后返回 <code>Poll::Ready(())</code>。</li>
+</ul>
+<p>Future 返回 <code>Poll::Ready(())</code> 后就已经执行完成，调用方不应该再次轮询它。这里选择在 <code>Done</code> 状态中直接 <code>panic!</code>，用于暴露这种错误调用。</p>
+<p>注意，代码使用 <code>loop</code>，是为了切换状态后，在同一次 <code>poll</code> 中继续轮询刚创建的 <code>Sleep</code>。如果还没有调用过 <code>Sleep::poll</code> 就直接返回 <code>Poll::Pending</code>，<code>Sleep</code> 也没有机会通过 <code>Context</code> 注册当前任务的 <code>Waker</code>。</p>
+<p>可以使用 Tokio 运行时驱动这个手写的 Future：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[tokio::main]</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    RunFuture::<span class="title function_ invoke__">new</span>().<span class="keyword">await</span>;</span><br><span class="line">    <span class="comment">// start</span></span><br><span class="line">    <span class="comment">// finished</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="多个-await-会咋">多个 await 会咋</h3>
+<p>每个 <code>.await</code> 都是一个可能暂停的位置。如果一个异步函数中有多个 <code>.await</code>，状态机还需要记录当前停在哪一个位置。例如：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">fn</span> <span class="title function_">run</span>() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;start&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="title function_ invoke__">sleep</span>(Duration::<span class="title function_ invoke__">from_secs</span>(<span class="number">1</span>)).<span class="keyword">await</span>;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;middle&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="title function_ invoke__">sleep</span>(Duration::<span class="title function_ invoke__">from_secs</span>(<span class="number">1</span>)).<span class="keyword">await</span>;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;finished&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个 <code>async fn</code> 有两个可能暂停的位置，前面的枚举可以修改成这样：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="title class_">RunState</span> &#123;</span><br><span class="line">    Start,</span><br><span class="line">    <span class="title function_ invoke__">Sleeping1</span>(Pin&lt;<span class="type">Box</span>&lt;Sleep&gt;&gt;),</span><br><span class="line">    <span class="title function_ invoke__">Sleeping2</span>(Pin&lt;<span class="type">Box</span>&lt;Sleep&gt;&gt;),</span><br><span class="line">    Done,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果第一个 <code>Sleep</code> 返回 <code>Poll::Pending</code>，状态机需要保存它，并记录当前停在第一个 <code>.await</code>。等它完成后，代码继续输出 <code>middle</code>，然后开始轮询第二个 <code>Sleep</code>。</p>
+<p>如果第二个 <code>Sleep</code> 也返回 <code>Poll::Pending</code>，状态机再次保存当前执行位置和正在等待的 <code>Sleep</code>。等它完成后，代码输出 <code>finished</code>，状态机进入 <code>Done</code>。</p>
+<p>从执行顺序上看，这是一条不断向前推进的状态转换路径：</p>
+<p><a href="/assets/rust-future/multiple-await-state-machine.png"><img src="/assets/rust-future/multiple-await-state-machine.png" width="760" style="max-width: 100%; height: auto;" /></a></p>
+<h3 id="最后">最后</h3>
+<p><code>Future</code> 不是通过保留线程的调用栈来记住执行位置。<code>async fn</code> 返回的 Future 本身就是一个状态机，其中保存了当前执行到哪里、正在等待的内部 Future，以及跨越暂停点仍然需要使用的局部变量。</p>
+<p>运行时每次调用 <code>poll</code>，状态机都会从当前状态继续执行。遇到 <code>.await</code> 时，外层 Future 会轮询内部 Future。如果内部 Future 返回 <code>Poll::Pending</code>，外层 Future 也会保存当前状态并返回 <code>Poll::Pending</code>。等任务被再次唤醒，运行时再从最外层 Future 开始调用 <code>poll</code>。</p>
+<p><code>async/await</code> 写起来像普通的顺序代码，实际执行时却是在一次次 <code>poll</code> 中不断推进状态机。</p>
+
       
 
       
@@ -1035,11 +326,7 @@ var _hmt = _hmt || [];
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">game</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">spine</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rust</a>
         		</li>
       		
 		</ul>
@@ -1048,16 +335,87 @@ var _hmt = _hmt || [];
       
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2024/05/10/game-spine-change-attach/">More >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+  <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+  <p>扫一扫，分享到微信</p>
+  <div class="wx-qrcode">
+    <img src="https://api.pwmqr.com/qrcode/create/?url=http://xupin.im/2026/09/25/rust-async-state-machine/" alt="微信分享二维码">
+  </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2026/09/13/rust-pin/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Rust学习笔记 - Pin 与不可移动值</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3201242774373382"
+     crossorigin="anonymous"></script>
+  <!-- 文章广告 -->
+  <ins class="adsbygoogle"
+      style="display:block"
+      data-ad-client="ca-pub-3201242774373382"
+      data-ad-slot="3704842143"
+      data-ad-format="auto"
+      data-full-width-responsive="true"></ins>
+  <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -1072,16 +430,47 @@ var _hmt = _hmt || [];
         </div>
         
         
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#async-fn-%E4%B8%AD%E6%9C%89%E5%93%AA%E4%BA%9B%E7%8A%B6%E6%80%81"><span class="toc-number">2.</span> <span class="toc-text">async fn 中有哪些状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%A8%E8%B6%8A-await-%E7%9A%84%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F"><span class="toc-number">3.</span> <span class="toc-text">跨越 await 的局部变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#await-%E5%A6%82%E4%BD%95%E8%BD%AE%E8%AF%A2%E5%86%85%E9%83%A8-Future"><span class="toc-number">4.</span> <span class="toc-text">await 如何轮询内部 Future</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0-run-%E7%9A%84%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="toc-number">5.</span> <span class="toc-text">实现 run 的状态机</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E4%B8%AA-await-%E4%BC%9A%E5%92%8B"><span class="toc-number">6.</span> <span class="toc-text">多个 await 会咋</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E5%90%8E"><span class="toc-number">7.</span> <span class="toc-text">最后</span></a></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
+        
     </div>
 </aside>
 
 
+  
 
   
+  <div id="gitalk-container" style="padding: 0px 30px 0px 30px;"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    if (true) {
+        var gitalk = new Gitalk({
+            clientID: 'e3e84fb1a50e16e66f89',
+            clientSecret: '5690def96adce57dd5993ec671c2413afd60aa41',
+            repo: 'xupin.github.io',
+            owner: 'xupin',
+            admin: ['xupin'],
+            id: 'Rust学习笔记 - async/await 背后的状态机',
+            distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')
+    }
+</script>
   
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
-    </nav>
+
+  
+
   
 
 
@@ -1104,8 +493,8 @@ var _hmt = _hmt || [];
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
