@@ -17,7 +17,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://xupin.im/assets/rust-future/multiple-await-state-machine.png">
 <meta property="article:published_time" content="2026-09-24T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-09-26T15:47:56.957Z">
+<meta property="article:modified_time" content="2026-11-03T09:13:52.232Z">
 <meta property="article:author" content="Mark">
 <meta property="article:tag" content="develop">
 <meta property="article:tag" content="rust">
@@ -212,7 +212,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">2.1k字</span>
+        <span class="post-count">1.8k字</span>
       </span>
     </span>
 
@@ -221,7 +221,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-hourglass-half"></i>
         <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">8分钟</span>
+        <span class="post-count">7分钟</span>
       </span>
     </span>
 </div>
@@ -273,25 +273,13 @@ var _hmt = _hmt || [];
 <p>外层 Future 在轮询 <code>Sleep</code> 时，会把自己的 <code>Context</code> 继续传递下去。<code>Sleep</code> 可以通过其中的 <code>Waker</code> 记录当前任务，等定时器到期后，再通知运行时重新调度这个任务。</p>
 <p>如果 <code>Sleep</code> 返回 <code>Poll::Pending</code>，说明定时器还没有到期，外层 Future 也会返回 <code>Poll::Pending</code>。状态机仍然停留在 <code>Sleeping</code>，其中保存的 <code>Sleep</code> 和 <code>message</code> 都不会被丢弃。</p>
 <p>等外层 Future 再次被调用 <code>poll</code> 时，它会继续轮询同一个 <code>Sleep</code>。当 <code>Sleep</code> 返回 <code>Poll::Ready(())</code>，<code>.await</code> 完成，代码继续输出 <code>message</code>，状态机进入 <code>Done</code>。</p>
-<p>这个轮询过程有些像普通的函数调用栈：</p>
-<ul>
-<li>
-<p>相似的是，运行时先调用最外层 Future 的 <code>poll</code>，外层 Future 再继续调用内部 Future 的 <code>poll</code>。内部 Future 的 <code>poll</code> 返回后，控制权会回到外层 Future。如果返回 <code>Poll::Ready</code>，外层 Future 取得结果并继续执行，如果返回 <code>Poll::Pending</code>，外层 Future 通常也会将 <code>Poll::Pending</code> 继续向外返回。</p>
-</li>
-<li>
-<p>不同的是，返回 <code>Poll::Pending</code> 后，这次 <code>poll</code> 形成的调用栈就已经退出，不会一直保留在线程栈中。恢复执行所需的位置和局部变量都保存在 Future 自身的状态机里。等任务被再次唤醒，运行时会重新从最外层 Future 开始调用 <code>poll</code>。</p>
-</li>
-</ul>
+<p>这个轮询过程有些像普通的函数调用：外层 Future 调用内部 Future 的 <code>poll</code>，内部返回后，控制权回到外层。</p>
+<p>不过，返回 <code>Poll::Pending</code> 后，这次 <code>poll</code> 形成的调用栈就已经退出，不会一直保留在线程栈中。恢复执行所需的位置和局部变量都保存在 Future 自身的状态机里。等任务被再次唤醒，运行时会重新从最外层 Future 开始调用 <code>poll</code>。</p>
 <h3 id="实现-run-的状态机">实现 run 的状态机</h3>
 <p>前面的 <code>RunState</code> 只是一个简化的状态模型。要让它真正作为 Future 运行，还需要定义一个 <code>RunFuture</code>，用来保存当前状态：</p>
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">RunFuture</span> &#123;</span><br><span class="line">    state: RunState,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">RunFuture</span> &#123;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">new</span>() <span class="punctuation">-&gt;</span> <span class="keyword">Self</span> &#123;</span><br><span class="line">        <span class="keyword">Self</span> &#123;</span><br><span class="line">            state: RunState::Start,</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><code>RunFuture::new()</code> 只创建状态机，并不会执行原来 <code>run()</code> 中的代码。和调用 <code>async fn</code> 一样，真正的执行要等到第一次调用 <code>poll</code> 才会开始。接下来为 <code>RunFuture</code> 实现 <code>Future</code>：</p>
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">impl</span> <span class="title class_">Future</span> <span class="keyword">for</span> <span class="title class_">RunFuture</span> &#123;</span><br><span class="line">    <span class="keyword">type</span> <span class="title class_">Output</span> = ();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">poll</span>(</span><br><span class="line">        <span class="keyword">mut</span> <span class="keyword">self</span>: Pin&lt;&amp;<span class="keyword">mut</span> <span class="keyword">Self</span>&gt;,</span><br><span class="line">        cx: &amp;<span class="keyword">mut</span> Context&lt;<span class="symbol">&#x27;_</span>&gt;,</span><br><span class="line">    ) <span class="punctuation">-&gt;</span> Poll&lt;<span class="keyword">Self</span>::Output&gt; &#123;</span><br><span class="line">        <span class="keyword">loop</span> &#123;</span><br><span class="line">            <span class="keyword">match</span> &amp;<span class="keyword">mut</span> <span class="keyword">self</span>.state &#123;</span><br><span class="line">                RunState::Start =&gt; &#123;</span><br><span class="line">                    <span class="built_in">println!</span>(<span class="string">&quot;start&quot;</span>);</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">self</span>.state = RunState::Sleeping &#123;</span><br><span class="line">                        sleep: <span class="type">Box</span>::<span class="title function_ invoke__">pin</span>(<span class="title function_ invoke__">sleep</span>(Duration::<span class="title function_ invoke__">from_secs</span>(<span class="number">1</span>))),</span><br><span class="line">                        message: <span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;finished&quot;</span>),</span><br><span class="line">                    &#125;;</span><br><span class="line">                &#125;</span><br><span class="line">                RunState::Sleeping &#123; sleep, message &#125; =&gt; &#123;</span><br><span class="line">                    <span class="keyword">match</span> sleep.<span class="title function_ invoke__">as_mut</span>().<span class="title function_ invoke__">poll</span>(cx) &#123;</span><br><span class="line">                        Poll::Pending =&gt; <span class="keyword">return</span> Poll::Pending,</span><br><span class="line">                        Poll::<span class="title function_ invoke__">Ready</span>(()) =&gt; &#123;</span><br><span class="line">                            <span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>, message);</span><br><span class="line">                            <span class="keyword">self</span>.state = RunState::Done;</span><br><span class="line"></span><br><span class="line">                            <span class="keyword">return</span> Poll::<span class="title function_ invoke__">Ready</span>(());</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                RunState::Done =&gt; &#123;</span><br><span class="line">                    <span class="built_in">panic!</span>(<span class="string">&quot;Future polled after completion&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在 <code>Start</code> 状态中，第一次调用 <code>poll</code> 会输出 <code>start</code>，创建 <code>Sleep</code> 和 <code>message</code>，然后进入 <code>Sleeping</code>。在 <code>Sleeping</code> 状态中，状态机会轮询之前保存的 <code>Sleep</code>：</p>
-<ul>
-<li>如果返回 <code>Poll::Pending</code>，保留当前状态并等待下一次轮询。</li>
-<li>如果返回 <code>Poll::Ready(())</code>，输出 <code>message</code>，进入 <code>Done</code>，最后返回 <code>Poll::Ready(())</code>。</li>
-</ul>
 <p>Future 返回 <code>Poll::Ready(())</code> 后就已经执行完成，调用方不应该再次轮询它。这里选择在 <code>Done</code> 状态中直接 <code>panic!</code>，用于暴露这种错误调用。</p>
 <p>注意，代码使用 <code>loop</code>，是为了切换状态后，在同一次 <code>poll</code> 中继续轮询刚创建的 <code>Sleep</code>。如果还没有调用过 <code>Sleep::poll</code> 就直接返回 <code>Poll::Pending</code>，<code>Sleep</code> 也没有机会通过 <code>Context</code> 注册当前任务的 <code>Waker</code>。</p>
 <p>可以使用 Tokio 运行时驱动这个手写的 Future：</p>
@@ -307,8 +295,6 @@ var _hmt = _hmt || [];
 <p><a href="/assets/rust-future/multiple-await-state-machine.png"><img src="/assets/rust-future/multiple-await-state-machine.png" width="760" style="max-width: 100%; height: auto;" /></a></p>
 <h3 id="最后">最后</h3>
 <p><code>Future</code> 不是通过保留线程的调用栈来记住执行位置。<code>async fn</code> 返回的 Future 本身就是一个状态机，其中保存了当前执行到哪里、正在等待的内部 Future，以及跨越暂停点仍然需要使用的局部变量。</p>
-<p>运行时每次调用 <code>poll</code>，状态机都会从当前状态继续执行。遇到 <code>.await</code> 时，外层 Future 会轮询内部 Future。如果内部 Future 返回 <code>Poll::Pending</code>，外层 Future 也会保存当前状态并返回 <code>Poll::Pending</code>。等任务被再次唤醒，运行时再从最外层 Future 开始调用 <code>poll</code>。</p>
-<p><code>async/await</code> 写起来像普通的顺序代码，实际执行时却是在一次次 <code>poll</code> 中不断推进状态机。</p>
 
       
 
@@ -395,6 +381,15 @@ var _hmt = _hmt || [];
 
   
 <nav id="article-nav">
+  
+    <a href="/2026/10/31/rust-async-task/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Rust学习笔记 - tokio::spawn、JoinHandle 与任务生命周期
+        
+      </div>
+    </a>
   
   
     <a href="/2026/09/13/rust-pin/" id="article-nav-older" class="article-nav-link-wrap">

@@ -16,7 +16,7 @@
 <meta property="og:description" content="安静的小屁屁">
 <meta property="og:locale" content="en_US">
 <meta property="article:author" content="Mark">
-<meta property="article:tag" content="nginx,php,golang,memcached,redis,mysql,mariadb,php7,前端,js,jquery,javascript,html5,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验">
+<meta property="article:tag" content="nginx,php,golang,rust,ida,memcached,redis,mysql,mariadb,php7,前端,js,jquery,javascript,html5,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
@@ -184,6 +184,109 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-rust-async-task" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <!-- 标题 -->
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2026/10/31/rust-async-task/">Rust学习笔记 - tokio::spawn、JoinHandle 与任务生命周期</a>
+    </h1>
+  
+
+        <!-- 发布日期 -->
+        
+        <a href="/2026/10/31/rust-async-task/" class="archive-article-date">
+  	<time datetime="2026-10-30T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-10-31</time>
+</a>
+        
+        <!-- 字数统计 -->
+        
+          <div style="margin-top:10px;">
+    <span class="post-time">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-keyboard-o"></i>
+        <span class="post-meta-item-text">  全文 ≈</span>
+        <span class="post-count">1k字</span>
+      </span>
+    </span>
+
+    <span class="post-time">
+      &nbsp; | &nbsp;
+      <span class="post-meta-item-icon">
+        <i class="fa fa-hourglass-half"></i>
+        <span class="post-meta-item-text">  预计阅读时长</span>
+        <span class="post-count">3分钟</span>
+      </span>
+    </span>
+</div>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在「<a href="/2026/08/30/rust-mpsc/" title="Rust学习笔记 - mpsc 与消息通信">Rust学习笔记 - mpsc 与消息通信</a>」中，通过 <code>tokio::spawn</code> 创建了一个负责发送消息的异步任务。当时主要学习任务之间的消息通信，这里继续展开任务本身的执行、等待和退出。</p>
+<h3 id="前言">前言</h3>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">agent_task</span> = tokio::<span class="title function_ invoke__">spawn</span>(agent.<span class="title function_ invoke__">run</span>());</span><br><span class="line"></span><br><span class="line"><span class="title function_ invoke__">handle</span>(<span class="string">&quot;login&quot;</span>, &amp;out_tx);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 释放主任务的发送端</span></span><br><span class="line"><span class="title function_ invoke__">drop</span>(out_tx);</span><br><span class="line"></span><br><span class="line">agent_task.<span class="keyword">await</span>.<span class="title function_ invoke__">unwrap</span>();</span><br></pre></td></tr></table></figure>
+<p>这里通过 <code>tokio::spawn</code> 创建任务，最后又通过 <code>agent_task.await</code> 等待它结束。这两个操作分别做了啥？</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rust</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2026/10/31/rust-async-task/">More >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-rust-async-state-machine" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -209,7 +312,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">2.1k字</span>
+        <span class="post-count">1.8k字</span>
       </span>
     </span>
 
@@ -218,7 +321,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-hourglass-half"></i>
         <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">8分钟</span>
+        <span class="post-count">7分钟</span>
       </span>
     </span>
 </div>
@@ -315,7 +418,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">1.6k字</span>
+        <span class="post-count">1.4k字</span>
       </span>
     </span>
 
@@ -324,7 +427,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-hourglass-half"></i>
         <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">6分钟</span>
+        <span class="post-count">5分钟</span>
       </span>
     </span>
 </div>
@@ -533,7 +636,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-hourglass-half"></i>
         <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">5分钟</span>
+        <span class="post-count">4分钟</span>
       </span>
     </span>
 </div>
@@ -630,7 +733,7 @@ var _hmt = _hmt || [];
       <span class="post-meta-item-icon">
         <i class="fa fa-keyboard-o"></i>
         <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">1.9k字</span>
+        <span class="post-count">1.8k字</span>
       </span>
     </span>
 
@@ -904,112 +1007,6 @@ var _hmt = _hmt || [];
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2026/05/21/ds-algos-rvo/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-rust-tokio-axum" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2026/05/10/rust-tokio-axum/">Rust学习笔记 - Axum</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2026/05/10/rust-tokio-axum/" class="archive-article-date">
-  	<time datetime="2026-05-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-05-10</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">1.4k字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">7分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Axum 是由 Tokio 官方团队开发的一个高性能、设计优雅的现代化 Web 框架。</p>
-<h3 id="为什么选择Axum？">为什么选择Axum？</h3>
-<p>Tokio 是 Rust 社区中最流行的异步编程框架之一（在区块链和智能合约圈子比较受欢迎），而Axum是由Tokio官方开发、且深度集成的Web框架。</p>
-<h3 id="快速使用">快速使用</h3>
-<p>假设已经安装了Rust开发环境</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// main.rs</span></span><br><span class="line"><span class="keyword">use</span> axum::&#123;Router, routing&#125;;</span><br><span class="line"><span class="keyword">use</span> tokio::net::TcpListener;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[tokio::main]</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">router</span> = Router::<span class="title function_ invoke__">new</span>().<span class="title function_ invoke__">route</span>(<span class="string">&quot;/&quot;</span>, routing::<span class="title function_ invoke__">get</span>(<span class="keyword">async</span> || <span class="string">&quot;Hi, Rust!&quot;</span>));</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">addr</span> = <span class="string">&quot;0.0.0.0:8000&quot;</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">listener</span> = TcpListener::<span class="title function_ invoke__">bind</span>(&amp;addr).<span class="keyword">await</span>.<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;listening on &#123;&#125;&quot;</span>, addr);</span><br><span class="line">    axum::<span class="title function_ invoke__">serve</span>(listener, router).<span class="keyword">await</span>.<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ curl -X GET <span class="string">&#x27;http://127.0.0.1:8000&#x27;</span></span><br><span class="line">Hi, Rust!</span><br></pre></td></tr></table></figure>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rust</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2026/05/10/rust-tokio-axum/">More >></a>
         </p>
       
 

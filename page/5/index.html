@@ -16,7 +16,7 @@
 <meta property="og:description" content="安静的小屁屁">
 <meta property="og:locale" content="en_US">
 <meta property="article:author" content="Mark">
-<meta property="article:tag" content="nginx,php,golang,memcached,redis,mysql,mariadb,php7,前端,js,jquery,javascript,html5,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验">
+<meta property="article:tag" content="nginx,php,golang,rust,ida,memcached,redis,mysql,mariadb,php7,前端,js,jquery,javascript,html5,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="Mark&#39;s blog" type="application/atom+xml">
@@ -184,6 +184,115 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-ds-algos-astar" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <!-- 标题 -->
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/08/01/ds-algos-astar/">数据结构与算法 - AStar(A*)</a>
+    </h1>
+  
+
+        <!-- 发布日期 -->
+        
+        <a href="/2022/08/01/ds-algos-astar/" class="archive-article-date">
+  	<time datetime="2022-07-31T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-01</time>
+</a>
+        
+        <!-- 字数统计 -->
+        
+          <div style="margin-top:10px;">
+    <span class="post-time">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-keyboard-o"></i>
+        <span class="post-meta-item-text">  全文 ≈</span>
+        <span class="post-count">2.1k字</span>
+      </span>
+    </span>
+
+    <span class="post-time">
+      &nbsp; | &nbsp;
+      <span class="post-meta-item-icon">
+        <i class="fa fa-hourglass-half"></i>
+        <span class="post-meta-item-text">  预计阅读时长</span>
+        <span class="post-count">8分钟</span>
+      </span>
+    </span>
+</div>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>寻路算法是游戏比较重要的组成部分之一，尤其在国内游戏很常见的自动寻路系统，比如操纵角色从 A 点到 B 点的移动。计算最短路径有很多不同的算法，比如：Dijkstra、AStar（A*）、NavMesh（多边形算法）、RVO 动态避障等等</p>
+<h3 id="A-寻路算法">A*寻路算法</h3>
+<p>寻路算法的移动路径核心有 2 点：最短、可移动。</p>
+<p>所以首先需要确定起点坐标的相邻节点（4 方向、8 方向），然后通过计算最靠近终点坐标的相邻坐标（不考虑障碍物）确认检索方向，再去计算“相邻坐标”移动的下一个坐标（距离终点坐标最近 &amp; 可移动），重复计算这个过程直至找到终点坐标，这就是 A*算法</p>
+<p>A*算法是一类基于网格的寻路算法，也就是把地图看作一个由网格组成的矩阵，每个坐标就是一个网格。</p>
+<p>一张 3x3 地图</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">data structures</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/08/01/ds-algos-astar/">More >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-ds-algos-linked-list" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -192,7 +301,7 @@ var _hmt = _hmt || [];
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2022/07/19/ds-algos-linked-list/">数据结构与算法 - Linked list</a>
+      <a class="article-title" href="/2022/07/19/ds-algos-linked-list/">数据结构与算法 - Linked List</a>
     </h1>
   
 
@@ -231,29 +340,27 @@ var _hmt = _hmt || [];
 <h3 id="定义">定义</h3>
 <p>链表是由一系列节点组成，除此之外链表还有几个基本概念：</p>
 <ul>
-<li>数据节点</li>
-</ul>
+<li>数据节点
 <blockquote>
 <p>一般由两块组成：数据域、指针域。</p>
 </blockquote>
-<ul>
-<li>首元节点</li>
-</ul>
+</li>
+<li>首元节点
 <blockquote>
 <p>链表的第一个数据节点。</p>
 </blockquote>
-<ul>
-<li>头节点</li>
-</ul>
+</li>
+<li>头节点
 <blockquote>
 <p>非必要节点，放在第一个数据节点前。一般用于存储链表的信息（比如说链表长度等）和保证数据节点操作的统一性。</p>
 </blockquote>
-<ul>
-<li>头指针</li>
-</ul>
+</li>
+<li>头指针
 <blockquote>
 <p>指向第一个节点的指针，如果有头节点则指向头节点，否则指向首元节点。</p>
 </blockquote>
+</li>
+</ul>
 <h3 id="单链表">单链表</h3>
 <p>最简单的一种链表，只支持一个遍历方向：链头 -&gt; 链尾。两部分组成：当前节点的数据、指向后置节点的指针（尾节点指针指向nil）。</p>
         
@@ -917,108 +1024,6 @@ var _hmt = _hmt || [];
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2022/01/14/clickhouse-array-split-group/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-go-coroutine-number" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/12/03/go-coroutine-number/">Go学习笔记 - 控制协程数量</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2021/12/03/go-coroutine-number/" class="archive-article-date">
-  	<time datetime="2021-12-02T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-03</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">363字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">1分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>之前因为需要并发同步单张数据表的脚本，因为设置协程数量太多连接数过高导致服务宕机 … 得不偿失，所以想怎么控制一下协程数量</p>
-<h3 id="Channel">Channel</h3>
-<p>利用channel阻塞，上代码：</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">golang</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/12/03/go-coroutine-number/">More >></a>
         </p>
       
 
