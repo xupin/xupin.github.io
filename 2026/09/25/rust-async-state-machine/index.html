@@ -6,18 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://xupin.im">
-  <title>Rust学习笔记 - async/await 背后的状态机 | Mark&#39;s blog</title>
+  <title>Rust 学习笔记 - async/await 背后的状态机 | Mark&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="在「Rust学习笔记 - Future、Waker 与异步任务调度」中提到过，Future 可以看作一个状态机。它会保存当前执行到了哪里、后续需要哪些局部变量，以及正在等待什么。 前言 async&#x2F;await 可以让异步代码看起来像普通的顺序代码： 123456789use tokio::time::&#123;sleep, Duration&#125;;async fn run() &#123;">
+  <meta name="description" content="在「Rust 学习笔记 - Future、Waker 与异步任务调度」中提到过，Future 可以看作一个状态机。它会保存当前执行到了哪里、后续需要哪些局部变量，以及正在等待什么。 前言 async&#x2F;await 可以让异步代码看起来像普通的顺序代码： 123456789use tokio::time::&#123;sleep, Duration&#125;;async fn run() &amp;#123">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Rust学习笔记 - async&#x2F;await 背后的状态机">
+<meta property="og:title" content="Rust 学习笔记 - async&#x2F;await 背后的状态机">
 <meta property="og:url" content="http://xupin.im/2026/09/25/rust-async-state-machine/index.html">
 <meta property="og:site_name" content="Mark&#39;s blog">
-<meta property="og:description" content="在「Rust学习笔记 - Future、Waker 与异步任务调度」中提到过，Future 可以看作一个状态机。它会保存当前执行到了哪里、后续需要哪些局部变量，以及正在等待什么。 前言 async&#x2F;await 可以让异步代码看起来像普通的顺序代码： 123456789use tokio::time::&#123;sleep, Duration&#125;;async fn run() &#123;">
+<meta property="og:description" content="在「Rust 学习笔记 - Future、Waker 与异步任务调度」中提到过，Future 可以看作一个状态机。它会保存当前执行到了哪里、后续需要哪些局部变量，以及正在等待什么。 前言 async&#x2F;await 可以让异步代码看起来像普通的顺序代码： 123456789use tokio::time::&#123;sleep, Duration&#125;;async fn run() &amp;#123">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://xupin.im/assets/rust-future/multiple-await-state-machine.png">
 <meta property="article:published_time" content="2026-09-24T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-11-03T09:13:52.232Z">
+<meta property="article:modified_time" content="2026-11-10T08:03:35.508Z">
 <meta property="article:author" content="Mark">
 <meta property="article:tag" content="develop">
 <meta property="article:tag" content="rust">
@@ -195,7 +195,7 @@ var _hmt = _hmt || [];
         
   
     <h1 class="article-title" itemprop="name">
-      Rust学习笔记 - async/await 背后的状态机
+      Rust 学习笔记 - async/await 背后的状态机
     </h1>
   
 
@@ -230,7 +230,7 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>在「<a href="/2026/09/02/rust-async-runtime/" title="Rust学习笔记 - Future、Waker 与异步任务调度">Rust学习笔记 - Future、Waker 与异步任务调度</a>」中提到过，<code>Future</code> 可以看作一个状态机。它会保存当前执行到了哪里、后续需要哪些局部变量，以及正在等待什么。</p>
+        <p>在「<a href="/2026/09/02/rust-async-runtime/" title="Rust 学习笔记 - Future、Waker 与异步任务调度">Rust 学习笔记 - Future、Waker 与异步任务调度</a>」中提到过，<code>Future</code> 可以看作一个状态机。它会保存当前执行到了哪里、后续需要哪些局部变量，以及正在等待什么。</p>
 <h3 id="前言">前言</h3>
 <p><code>async/await</code> 可以让异步代码看起来像普通的顺序代码：</p>
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> tokio::time::&#123;sleep, Duration&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">fn</span> <span class="title function_">run</span>() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;start&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="title function_ invoke__">sleep</span>(Duration::<span class="title function_ invoke__">from_secs</span>(<span class="number">1</span>)).<span class="keyword">await</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;finished&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -386,14 +386,14 @@ var _hmt = _hmt || [];
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          Rust学习笔记 - tokio::spawn、JoinHandle 与任务生命周期
+          Rust 学习笔记 - tokio::spawn、JoinHandle 与任务生命周期
         
       </div>
     </a>
   
   
     <a href="/2026/09/13/rust-pin/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Rust学习笔记 - Pin 与不可移动值</div>
+      <div class="article-nav-title">Rust 学习笔记 - Pin 与不可移动值</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -456,7 +456,7 @@ var _hmt = _hmt || [];
             repo: 'xupin.github.io',
             owner: 'xupin',
             admin: ['xupin'],
-            id: 'Rust学习笔记 - async/await 背后的状态机',
+            id: 'Rust 学习笔记 - async/await 背后的状态机',
             distractionFreeMode: 'true'
         })
         gitalk.render('gitalk-container')
@@ -668,6 +668,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">rust</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tauri</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">macos</a>
               </li>
             
             <div class="clearfix"></div>

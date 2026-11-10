@@ -184,6 +184,119 @@ var _hmt = _hmt || [];
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-tauri-webkit-startup-delay" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        <!-- 标题 -->
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2026/11/06/tauri-webkit-startup-delay/">Tauri 开发笔记 - macOS 下启动白屏 5 秒的排查</a>
+    </h1>
+  
+
+        <!-- 发布日期 -->
+        
+        <a href="/2026/11/06/tauri-webkit-startup-delay/" class="archive-article-date">
+  	<time datetime="2026-11-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-11-06</time>
+</a>
+        
+        <!-- 字数统计 -->
+        
+          <div style="margin-top:10px;">
+    <span class="post-time">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-keyboard-o"></i>
+        <span class="post-meta-item-text">  全文 ≈</span>
+        <span class="post-count">941字</span>
+      </span>
+    </span>
+
+    <span class="post-time">
+      &nbsp; | &nbsp;
+      <span class="post-meta-item-icon">
+        <i class="fa fa-hourglass-half"></i>
+        <span class="post-meta-item-text">  预计阅读时长</span>
+        <span class="post-count">3分钟</span>
+      </span>
+    </span>
+</div>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近在 macOS 上开发 Tauri 桌面应用，遇到一个启动白屏的问题：运行 <a href="https://v2.tauri.app/develop/#developing-your-desktop-application"><code>tauri dev</code></a> 后，窗口很快打开，但要等几秒才进入登录页。</p>
+<h3 id="前言">前言</h3>
+<p>项目使用 React + Vite 开发前端，通过 Tauri 构建桌面应用。当时的开发环境：</p>
+<ul>
+<li>macOS 15.5（24F74）</li>
+<li>Safari 18.5（WebKit <code>20621.2.5.11.8</code>）</li>
+<li>Tauri <code>2.12.4</code>、tauri-runtime-wry <code>2.12.2</code>、Wry <code>0.57.0</code></li>
+</ul>
+<p>一开始怀疑是前端资源加载慢，就把主界面和更新弹窗改成按需加载。同时在 <code>index.html</code> 里加了“正在启动…”占位，这部分内容不依赖 JavaScript。调整后，启动时需要加载的代码减少了，白屏却没什么变化。</p>
+<p>反而 “正在启动…” 刚显示出来，页面就进入了登录界面。</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tauri</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">macos</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2026/11/06/tauri-webkit-startup-delay/">More >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
     <article id="post-rust-async-task" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -192,7 +305,7 @@ var _hmt = _hmt || [];
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2026/10/31/rust-async-task/">Rust学习笔记 - tokio::spawn、JoinHandle 与任务生命周期</a>
+      <a class="article-title" href="/2026/10/31/rust-async-task/">Rust 学习笔记 - tokio::spawn、JoinHandle 与任务生命周期</a>
     </h1>
   
 
@@ -227,7 +340,7 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>在「<a href="/2026/08/30/rust-mpsc/" title="Rust学习笔记 - mpsc 与消息通信">Rust学习笔记 - mpsc 与消息通信</a>」中，通过 <code>tokio::spawn</code> 创建了一个负责发送消息的异步任务。当时主要学习任务之间的消息通信，这里继续展开任务本身的执行、等待和退出。</p>
+        <p>在「<a href="/2026/08/30/rust-mpsc/" title="Rust 学习笔记 - mpsc 与消息通信">Rust 学习笔记 - mpsc 与消息通信</a>」中，通过 <code>tokio::spawn</code> 创建了一个负责发送消息的异步任务。当时主要学习任务之间的消息通信，这里继续展开任务本身的执行、等待和退出。</p>
 <h3 id="前言">前言</h3>
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">agent_task</span> = tokio::<span class="title function_ invoke__">spawn</span>(agent.<span class="title function_ invoke__">run</span>());</span><br><span class="line"></span><br><span class="line"><span class="title function_ invoke__">handle</span>(<span class="string">&quot;login&quot;</span>, &amp;out_tx);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 释放主任务的发送端</span></span><br><span class="line"><span class="title function_ invoke__">drop</span>(out_tx);</span><br><span class="line"></span><br><span class="line">agent_task.<span class="keyword">await</span>.<span class="title function_ invoke__">unwrap</span>();</span><br></pre></td></tr></table></figure>
 <p>这里通过 <code>tokio::spawn</code> 创建任务，最后又通过 <code>agent_task.await</code> 等待它结束。这两个操作分别做了啥？</p>
@@ -295,7 +408,7 @@ var _hmt = _hmt || [];
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2026/09/25/rust-async-state-machine/">Rust学习笔记 - async/await 背后的状态机</a>
+      <a class="article-title" href="/2026/09/25/rust-async-state-machine/">Rust 学习笔记 - async/await 背后的状态机</a>
     </h1>
   
 
@@ -330,7 +443,7 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>在「<a href="/2026/09/02/rust-async-runtime/" title="Rust学习笔记 - Future、Waker 与异步任务调度">Rust学习笔记 - Future、Waker 与异步任务调度</a>」中提到过，<code>Future</code> 可以看作一个状态机。它会保存当前执行到了哪里、后续需要哪些局部变量，以及正在等待什么。</p>
+        <p>在「<a href="/2026/09/02/rust-async-runtime/" title="Rust 学习笔记 - Future、Waker 与异步任务调度">Rust 学习笔记 - Future、Waker 与异步任务调度</a>」中提到过，<code>Future</code> 可以看作一个状态机。它会保存当前执行到了哪里、后续需要哪些局部变量，以及正在等待什么。</p>
 <h3 id="前言">前言</h3>
 <p><code>async/await</code> 可以让异步代码看起来像普通的顺序代码：</p>
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> tokio::time::&#123;sleep, Duration&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">fn</span> <span class="title function_">run</span>() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;start&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="title function_ invoke__">sleep</span>(Duration::<span class="title function_ invoke__">from_secs</span>(<span class="number">1</span>)).<span class="keyword">await</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;finished&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -401,7 +514,7 @@ var _hmt = _hmt || [];
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2026/09/13/rust-pin/">Rust学习笔记 - Pin 与不可移动值</a>
+      <a class="article-title" href="/2026/09/13/rust-pin/">Rust 学习笔记 - Pin 与不可移动值</a>
     </h1>
   
 
@@ -436,7 +549,7 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>在「<a href="/2026/09/02/rust-async-runtime/" title="Rust学习笔记 - Future、Waker 与异步任务调度">Rust学习笔记 - Future、Waker 与异步任务调度</a>」中实现异步任务执行器 <code>block_on</code> 时，用到了 <code>Pin</code> 来保证某些值在内存中不被移动，想着展开学习一下。</p>
+        <p>在「<a href="/2026/09/02/rust-async-runtime/" title="Rust 学习笔记 - Future、Waker 与异步任务调度">Rust 学习笔记 - Future、Waker 与异步任务调度</a>」中实现异步任务执行器 <code>block_on</code> 时，用到了 <code>Pin</code> 来保证某些值在内存中不被移动，想着展开学习一下。</p>
 <h3 id="什么是值的移动">什么是值的移动</h3>
 <p>Rust 中的值默认可以移动。移动通常发生在赋值、传参和从函数返回时，例如：</p>
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">name</span> = <span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;hallo&quot;</span>);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">other</span> = name;</span><br><span class="line"></span><br><span class="line"><span class="comment">// println!(&quot;&#123;&#125;&quot;, name); // error: borrow of moved value: `name`</span></span><br><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>, other);</span><br></pre></td></tr></table></figure>
@@ -505,7 +618,7 @@ var _hmt = _hmt || [];
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2026/09/02/rust-async-runtime/">Rust学习笔记 - Future、Waker 与异步任务调度</a>
+      <a class="article-title" href="/2026/09/02/rust-async-runtime/">Rust 学习笔记 - Future、Waker 与异步任务调度</a>
     </h1>
   
 
@@ -610,7 +723,7 @@ var _hmt = _hmt || [];
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2026/08/30/rust-mpsc/">Rust学习笔记 - mpsc 与消息通信</a>
+      <a class="article-title" href="/2026/08/30/rust-mpsc/">Rust 学习笔记 - mpsc 与消息通信</a>
     </h1>
   
 
@@ -716,7 +829,7 @@ var _hmt = _hmt || [];
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2026/08/23/rust-arc-mutex-rwlock-refcell/">Rust学习笔记 - Arc、RwLock、Mutex 及 RefCell 的区别</a>
+      <a class="article-title" href="/2026/08/23/rust-arc-mutex-rwlock-refcell/">Rust 学习笔记 - Arc、RwLock、Mutex 及 RefCell 的区别</a>
     </h1>
   
 
@@ -898,115 +1011,6 @@ var _hmt = _hmt || [];
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2026/06/07/ds-algos-deque/">More >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-    <article id="post-ds-algos-rvo" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        <!-- 标题 -->
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2026/05/21/ds-algos-rvo/">数据结构与算法 - RVO</a>
-    </h1>
-  
-
-        <!-- 发布日期 -->
-        
-        <a href="/2026/05/21/ds-algos-rvo/" class="archive-article-date">
-  	<time datetime="2026-05-20T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2026-05-21</time>
-</a>
-        
-        <!-- 字数统计 -->
-        
-          <div style="margin-top:10px;">
-    <span class="post-time">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-keyboard-o"></i>
-        <span class="post-meta-item-text">  全文 ≈</span>
-        <span class="post-count">1.7k字</span>
-      </span>
-    </span>
-
-    <span class="post-time">
-      &nbsp; | &nbsp;
-      <span class="post-meta-item-icon">
-        <i class="fa fa-hourglass-half"></i>
-        <span class="post-meta-item-text">  预计阅读时长</span>
-        <span class="post-count">6分钟</span>
-      </span>
-    </span>
-</div>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>RVO（Reciprocal Velocity Obstacles，互惠速度障碍）是一种多人动态避障算法。</p>
-<p>「<a href="/2022/08/12/ds-algos-jps/" title="数据结构与算法 - JPS">数据结构与算法 - JPS</a> 」兄弟篇</p>
-<h3 id="前言">前言</h3>
-<p>如果 A*、JPS 等寻路算法解决的是“如何到达目的地”，那么 RVO 解决的就是“在移动过程中，如何避免与动态目标发生碰撞”。常用于游戏中多单位在移动过程中实现自动避让，比如：红警、星际争霸等RTS游戏。</p>
-<p>可以通俗的理解为：每个移动的单位都会主动互相让一点，避免路径撞车。</p>
-<p>这类动态避障算法的核心思想是：“按照当前速度继续移动，未来会不会发生碰撞？”，也就是 Velocity Obstacle（速度障碍）。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">develop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">data structures</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">algorithms</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2026/05/21/ds-algos-rvo/">More >></a>
         </p>
       
 
@@ -1241,6 +1245,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">rust</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">tauri</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">macos</a>
               </li>
             
             <div class="clearfix"></div>
